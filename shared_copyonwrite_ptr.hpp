@@ -26,7 +26,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-namespace HscdSupport {
+namespace jflibs {
 
   template<class T>
   class shared_copyonwrite_ptr

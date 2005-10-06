@@ -27,7 +27,7 @@
 #include <boost/intrusive_ptr.hpp>
 #include <boost/detail/lightweight_mutex.hpp>
 
-namespace HscdSupport {
+namespace jflibs {
 
   template<class T>
   class intrusive_copyonwrite_ptr {

@@ -11,9 +11,11 @@
 #define _ONEOFDEBUG(x) do {} while (0)
 //#define _ONEOFDEBUG(x) std::cerr << x << std::endl
 
+namespace jflibs {
+
 typedef int oneof_typeid;
 
-namespace smoc_detail {
+namespace detail {
 
   struct void2_st {};
 
@@ -41,16 +43,16 @@ struct NILTYPE;
 
 template <
   typename T1,
-  typename T2 = smoc_detail::void2_st,
-  typename T3 = smoc_detail::void3_st,
-  typename T4 = smoc_detail::void4_st,
-  typename T5 = smoc_detail::void5_st >
+  typename T2 = detail::void2_st,
+  typename T3 = detail::void3_st,
+  typename T4 = detail::void4_st,
+  typename T5 = detail::void5_st >
 class oneof;
 
 template <typename T, typename T1, typename T2, typename T3, typename T4, typename T5>
 bool isType( const oneof<T1,T2,T3,T4,T5> &of );
 
-namespace smoc_detail {
+namespace detail {
 
   template <typename, typename>
   struct oneofTypeid;
@@ -116,7 +118,7 @@ class oneof {
     template <typename T>
     void _construct(const T &e) {
       assert( isType<NILTYPE>(*this) );
-      valid = smoc_detail::oneofTypeid<this_type,T>::type();
+      valid = detail::oneofTypeid<this_type,T>::type();
       new(reinterpret_cast<T*>(&mem)) T(e);
     }
     template <typename T>
@@ -133,43 +135,43 @@ class oneof {
     void _destroy() {
       assert(isType<T>(*this));
       _call_destructor(reinterpret_cast<T*>(&mem));
-      valid =  smoc_detail::oneofTypeid<this_type,NILTYPE>::type();
+      valid =  detail::oneofTypeid<this_type,NILTYPE>::type();
     }
     template <class T> void _call_destructor( T  *x ) { x->~T(); }
     template <typename T> void _call_destructor( T ) {}
   public:
-    oneof(): valid(smoc_detail::oneofTypeid<this_type,NILTYPE>::type())
+    oneof(): valid(detail::oneofTypeid<this_type,NILTYPE>::type())
       { _ONEOFDEBUG("oneof()"); }
-    oneof(const this_type &x): valid(smoc_detail::oneofTypeid<this_type,NILTYPE>::type()) {
-      if ( x.valid != smoc_detail::oneofTypeid<this_type,NILTYPE>::type() )
+    oneof(const this_type &x): valid(detail::oneofTypeid<this_type,NILTYPE>::type()) {
+      if ( x.valid != detail::oneofTypeid<this_type,NILTYPE>::type() )
         _ONEOFDEBUG("oneof(const oneof &) (T" << x.valid << ")");
       else
         _ONEOFDEBUG("oneof(const oneof &) ()");
       *this = x;
     }
-    oneof(const T1 &e): valid(smoc_detail::oneofTypeid<this_type,NILTYPE>::type()) {
+    oneof(const T1 &e): valid(detail::oneofTypeid<this_type,NILTYPE>::type()) {
       _ONEOFDEBUG("oneof( const " << typeid(T1).name() << " & )");
       _construct<T1>(e);
     }
-    oneof(const T2 &e): valid(smoc_detail::oneofTypeid<this_type,NILTYPE>::type()) {
+    oneof(const T2 &e): valid(detail::oneofTypeid<this_type,NILTYPE>::type()) {
       _ONEOFDEBUG("oneof( const " << typeid(T2).name() << " & )");
       _construct<T2>(e);
     }
-    oneof(const T3 &e): valid(smoc_detail::oneofTypeid<this_type,NILTYPE>::type()) {
+    oneof(const T3 &e): valid(detail::oneofTypeid<this_type,NILTYPE>::type()) {
       _ONEOFDEBUG("oneof( const " << typeid(T3).name() << " & )");
       _construct<T3>(e);
     }
-    oneof(const T4 &e): valid(smoc_detail::oneofTypeid<this_type,NILTYPE>::type()) {
+    oneof(const T4 &e): valid(detail::oneofTypeid<this_type,NILTYPE>::type()) {
       _ONEOFDEBUG("oneof( const " << typeid(T4).name() << " & )");
       _construct<T4>(e);
     }
-    oneof(const T5 &e): valid(smoc_detail::oneofTypeid<this_type,NILTYPE>::type()) {
+    oneof(const T5 &e): valid(detail::oneofTypeid<this_type,NILTYPE>::type()) {
       _ONEOFDEBUG("oneof( const " << typeid(T5).name() << " & )");
       _construct<T5>(e);
     }
     
     this_type &operator = (const this_type &x) {
-      if ( x.valid != smoc_detail::oneofTypeid<this_type,NILTYPE>::type() )
+      if ( x.valid != detail::oneofTypeid<this_type,NILTYPE>::type() )
         _ONEOFDEBUG("oneof = const oneof & (T" << x.valid << ")");
       else
         _ONEOFDEBUG("oneof = const oneof & ()");
@@ -222,7 +224,7 @@ class oneof {
     operator const T5 &() const { return _element<T5>(); }
     
     void reset() {
-      if ( valid != smoc_detail::oneofTypeid<this_type,NILTYPE>::type() )
+      if ( valid != detail::oneofTypeid<this_type,NILTYPE>::type() )
         _ONEOFDEBUG("oneof.reset() (T" << valid << ")");
       else
         _ONEOFDEBUG("oneof.reset() ()");
@@ -247,7 +249,7 @@ class oneof {
 
 template <typename T, typename T1, typename T2, typename T3, typename T4, typename T5>
 bool isType( const oneof<T1,T2,T3,T4,T5> &of )
-  { return smoc_detail::oneofTypeid<oneof<T1,T2,T3,T4,T5>,T>::type() == of.type(); }
+  { return detail::oneofTypeid<oneof<T1,T2,T3,T4,T5>,T>::type() == of.type(); }
 
 template <typename T1, typename T2, typename T3, typename T4, typename T5>
 static inline
@@ -268,5 +270,7 @@ std::ostream &operator << (std::ostream &output, const oneof<T1,T2,T3,T4,T5> &of
   }
   return output;
 }
+
+} // namespace jflibs
 
 #endif // _INCLUDED_ONEOF_HPP

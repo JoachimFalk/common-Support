@@ -20,17 +20,13 @@
 #
 # $Log$
 
-root_srcdir=$(top_srcdir)/..
-root_builddir = $(top_builddir)/..
-
 SUBDIRS=
+
 ACLOCAL_AMFLAGS=-I ../BuildSystem/m4
 
-ac_aux_dir = @ac_aux_dir@
+include $(ac_abs_aux_dir)/jfrules.mk
 
-include $(ac_aux_dir)/jfrules.mk
-
-pkgincludeprefix=hscdsupport/
+pkgincludeprefix=jf-libs/
 
 #compileheader-libsystemoc.stamp: $(libsystemoc_CH_LTOBJS)
 #	@date > $@
@@ -55,9 +51,15 @@ PROGLDFLAGS=
 
 pkginclude_HEADERS =			\
 	oneof.hpp			\
-	commondefs.h			\
 	stl_output_for_list.hpp		\
-	stl_output_for_pair.hpp
+	stl_output_for_pair.hpp		\
+	intrusive_copyonwrite_ptr.hpp	\
+	shared_copyonwrite_ptr.hpp	\
+					\
+	commondefs.h			\
+	integertypes.h			\
+	sassert.h			\
+	snprintf.h
 
 # noinst_HEADERS=	oneof.hpp
 
