@@ -32,7 +32,6 @@ pkgincludeprefix=jf-libs/
 #	@date > $@
 
 INCLUDES =				\
-	@SYSTEMC_INCLUDE@		\
 	-I./include			\
 	-I$(srcdir)
 
@@ -55,6 +54,8 @@ pkginclude_HEADERS =			\
 	stl_output_for_pair.hpp		\
 	intrusive_copyonwrite_ptr.hpp	\
 	shared_copyonwrite_ptr.hpp	\
+	modulo_arith.hpp		\
+	arrayfifo.hpp			\
 					\
 	commondefs.h			\
 	integertypes.h			\
@@ -63,16 +64,9 @@ pkginclude_HEADERS =			\
 
 # noinst_HEADERS=	oneof.hpp
 
-#libsystemoc_CH_LTOBJS=				\
-#	$(smoc_firing_rules_hpp_CH_LTOBJS)	\
-#	$(smoc_pggen_hpp_CH_LTOBJS)
-#	$(smoc_op_hpp_CH_LTOBJS)
+noinst_PROGRAMS=test_arrayfifo
 
-#libsystemoc_la_LDFLAGS = -version-info 0:0:0 -no-undefined @SYSTEMC_LDFLAGS@ -lsystemc -lsystemcvpc -lstdc++
-#libsystemoc_la_LIBADD = $(libsystemoc_CH_LTOBJS)
-#libsystemoc_la_DEPENDENCIES = compileheader-libsystemoc.stamp include $(SYSTEMCVPC_BUILDDIR)/libsystemcvpc.la
+test_arrayfifo_SOURCES = test_arrayfifo.cpp
+test_arrayfifo_DEPENDENCIES = include
 
-#libsystemoc_la_SOURCES =
-
-# Need pkinclude files in include/$(pkgincludeprefix)
 all: include
