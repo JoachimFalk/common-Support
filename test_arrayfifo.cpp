@@ -32,6 +32,8 @@ int main( int argc, char *argv[] ) {
           --iter )
       std::cout << *(iter-1);
     std::cout << std::endl;
+    if ( fifo.empty() )
+      std::cout << "fifo empty !" << std::endl;
     assert( fifo.size() + fifo.space() == fifo.capacity() );
     assert( fifo.end() - fifo.begin() == fifo.size() );
     for ( int j = 0; j < i; ++j )

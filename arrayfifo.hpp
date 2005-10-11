@@ -137,6 +137,8 @@ namespace jflibs {
       { return (wIndex - rIndex).getValue(); }
     size_t space() const
       { return (rIndex - wIndex - 1).getValue(); }
+    bool empty() const
+      { return rIndex == wIndex; }
   };
 
 }
