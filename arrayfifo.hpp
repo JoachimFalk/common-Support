@@ -116,27 +116,46 @@ namespace jflibs {
       { return iterator(this,wIndex); }
     const_iterator end() const
       { return const_iterator(this,wIndex); }
-    
+   
+    /// front element of fifo (at rptr)
     value_type &front()
       { return buffer[rIndex.getValue()]; }
+    /// front element of fifo (at rptr)
     const value_type &front() const
       { return buffer[rIndex.getValue()]; }
+    /// back element of fifo (element one previous of wptr)
     value_type &back()
       { return buffer[(wIndex-1).getValue()]; }
+    /// back element of fifo (element one previous of wptr)
     const value_type &back() const
       { return buffer[(wIndex-1).getValue()]; }
     
+    /// increase fifo read ptr
     void pop_front()
       { sassert( rIndex++ != wIndex ); }
+    /// assign element and increase fifo write ptr
     void push_back( const value_type &v )
       { buffer[wIndex.getValue()] = v; sassert( ++wIndex != rIndex ); }
+    /// same as: while ( !empty() ) pop_front();
+    void clear_by_consume()
+      { rIndex = wIndex; }
+    /// same as: while ( !empty() ) pop_back();
+    void clear_by_invalidate()
+      { wIndex = rIndex; }
+    /// clear fifo
+    void clear()
+      { rIndex = wIndex = 0; }
     
+    /// maximal count of elements storable in the fifo
     size_t capacity() const
       { return N; }
+    /// count of elements stored in the fifo
     size_t size() const
       { return (wIndex - rIndex).getValue(); }
+    /// count of elements which could still be stored in the fifo
     size_t space() const
       { return (rIndex - wIndex - 1).getValue(); }
+    /// is the fifo empty
     bool empty() const
       { return rIndex == wIndex; }
   };
