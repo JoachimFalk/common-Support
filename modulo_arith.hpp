@@ -27,6 +27,8 @@ template <size_t N>
 class ModuloInt {
 public:
   typedef ModuloInt this_type;
+  
+  typedef size_t (this_type::*unspecified_bool_type)() const;
 protected:
   size_t v;
 public:
@@ -63,6 +65,9 @@ public:
   
   size_t getValue() const
     { return v; }
+  
+  operator unspecified_bool_type() const // never throws
+    { return v ? &this_type::getValue : NULL; }
   
   this_type &operator ++() {
     return *this += 1;
