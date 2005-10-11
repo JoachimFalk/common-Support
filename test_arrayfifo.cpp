@@ -5,6 +5,8 @@
 
 #include "arrayfifo.hpp"
 
+using namespace jflibs;
+
 template <typename T, size_t N>
 std::ostream &operator << (std::ostream &out, const ArrayFifo<T,N> &fifo) {
   out << "fifo size: " << fifo.size()
