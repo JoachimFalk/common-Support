@@ -62,7 +62,7 @@ namespace jflibs {
       template <typename FF, typename VV>
       friend class IterTemplate;
       friend class boost::iterator_core_access;
-      friend class fifo_type;
+      friend class ArrayFifo<T,N>;
       
       F               *f;
       ModuloInt<N+1>   i;
