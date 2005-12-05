@@ -20,7 +20,7 @@
 /*
  * $Log: commondefs.h,v $
  * Revision 1.2  2003/01/24 13:49:25  joachim
- * Now use new build system headers in jf-libs/xxxx
+ * Now use new build system headers in cosupport/xxxx
  *
  * Revision 1.1  2001/09/01 17:51:54  joachim
  * Initial revision

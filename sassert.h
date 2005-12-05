@@ -20,7 +20,7 @@
 /*
  * $Log: sassert.h,v $
  * Revision 1.3  2003/01/24 13:49:25  joachim
- * Now use new build system headers in jf-libs/xxxx
+ * Now use new build system headers in cosupport/xxxx
  *
  * Revision 1.2  2001/01/08 15:25:55  joachim
  * Added sassert_h_rcsid

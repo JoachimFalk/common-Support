@@ -26,7 +26,7 @@ ACLOCAL_AMFLAGS=-I ../BuildSystem/m4
 
 include $(ac_abs_aux_dir)/jfrules.mk
 
-pkgincludeprefix=jf-libs/
+pkgincludeprefix=cosupport/
 
 #compileheader-libsystemoc.stamp: $(libsystemoc_CH_LTOBJS)
 #	@date > $@
