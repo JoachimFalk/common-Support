@@ -8,7 +8,7 @@
 #include <vector>
 #include <set>
 
-namespace CoSupport::SystemC {
+namespace CoSupport { namespace SystemC {
 
   // Event handling
  
@@ -217,6 +217,6 @@ namespace CoSupport::SystemC {
     }
   }
 
-}
+} } // CoSupport::SystemC
 
 #endif // _INCLUDED_SYSTEMC_SUPPORT_HPP
