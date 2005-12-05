@@ -56,6 +56,7 @@ pkginclude_HEADERS =			\
 	shared_copyonwrite_ptr.hpp	\
 	modulo_arith.hpp		\
 	arrayfifo.hpp			\
+	systemc_support.hpp		\
 					\
 	commondefs.h			\
 	integertypes.h			\
