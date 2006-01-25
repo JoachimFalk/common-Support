@@ -61,8 +61,9 @@ pkginclude_HEADERS =			\
 	commondefs.h			\
 	integertypes.h			\
 	sassert.h			\
-	snprintf.h
-
+	snprintf.h			\
+	functor.hpp
+	
 # noinst_HEADERS=	oneof.hpp
 
 noinst_PROGRAMS=test_arrayfifo
