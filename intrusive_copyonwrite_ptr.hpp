@@ -27,7 +27,7 @@
 #include <boost/intrusive_ptr.hpp>
 #include <boost/detail/lightweight_mutex.hpp>
 
-namespace jflibs {
+namespace CoSupport {
 
   template<class T>
   class intrusive_copyonwrite_ptr {
@@ -138,6 +138,6 @@ namespace jflibs {
       lptr = new T(*rptr);				\
   }
   
-}
+} // namesapce CoSupport
 
 #endif /* _INCLUDED_INTRUSIVE_COPYONWRITE_PTR_H */

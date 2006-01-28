@@ -11,7 +11,7 @@
 #define _ONEOFDEBUG(x) do {} while (0)
 //#define _ONEOFDEBUG(x) std::cerr << x << std::endl
 
-namespace jflibs {
+namespace CoSupport {
 
 typedef int oneof_typeid;
 
@@ -271,6 +271,6 @@ std::ostream &operator << (std::ostream &output, const oneof<T1,T2,T3,T4,T5> &of
   return output;
 }
 
-} // namespace jflibs
+} // namespace CoSupport
 
 #endif // _INCLUDED_ONEOF_HPP
