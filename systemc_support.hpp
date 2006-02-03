@@ -77,16 +77,19 @@ namespace CoSupport { namespace SystemC {
   }
 
   class EventOrList
-  : public std::vector<Event *>,
-    public Event,
+  : public Event,
     protected EventListener {
   protected:
+    typedef std::vector<Event *> EventList;
+    
+    EventList eventList;
+    
     void signaled( Event *e )
       { clearListener(); notify();  }
     
     void clearListener() {
-      for ( iterator iter = begin();
-            iter != end();
+      for ( EventList::iterator iter = eventList.begin();
+            iter != eventList.end();
             ++iter )
         (*iter)->delListener(this);
     }
@@ -102,15 +105,15 @@ namespace CoSupport { namespace SystemC {
     this_type &operator |= ( Event &p ) {
       if (p)
         missing = 0;
-      push_back(&p);
+      eventList.push_back(&p);
       return *this;
     }
     
     void addListener(EventListener *el) {
       if ( ell.empty() ) {
         missing = 1;
-        for ( iterator iter = begin();
-              iter != end();
+        for ( EventList::iterator iter = eventList.begin();
+              iter != eventList.end();
               ++iter ) {
           if ( !**iter ) {
             (*iter)->addListener(this);
@@ -125,21 +128,25 @@ namespace CoSupport { namespace SystemC {
     }
     void reset() {
       missing = 0;
-      for ( iterator iter = begin();
-            iter != end();
+      for ( EventList::iterator iter = eventList.begin();
+            iter != eventList.end();
             ++iter ) {
         ++missing;
         (*iter)->reset();
       }
     }
-
+    void clear()
+      { eventList.clear(); }
   };
 
   class EventAndList
-  : public std::vector<Event *>,
-    public Event,
+  : public Event,
     protected EventListener {
   protected:
+    typedef std::vector<Event *> EventList;
+
+    EventList eventList;
+
     void signaled( Event *e ) {
       assert( missing > 0 );
       if ( !--missing )
@@ -157,15 +164,15 @@ namespace CoSupport { namespace SystemC {
     this_type &operator &= ( Event &p ) {
       if ( !p )
         ++missing;
-      push_back(&p);
+      eventList.push_back(&p);
       return *this;
     }
     
     void addListener(EventListener *el) {
       if ( ell.empty() ) {
         missing = 0;
-        for ( iterator iter = begin();
-              iter != end();
+        for ( EventList::iterator iter = eventList.begin();
+              iter != eventList.end();
               ++iter )
           if ( !**iter ) {
             ++missing;
@@ -178,13 +185,15 @@ namespace CoSupport { namespace SystemC {
     }
     void reset() {
       missing = 0;
-      for ( iterator iter = begin();
-            iter != end();
+      for ( EventList::iterator iter = eventList.begin();
+            iter != eventList.end();
             ++iter ) {
         ++missing;
         (*iter)->reset();
       }
     }
+    void clear()
+      { eventList.clear(); }
     
     virtual ~EventAndList() {}
   };
