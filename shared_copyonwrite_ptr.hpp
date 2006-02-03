@@ -26,7 +26,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-namespace jflibs {
+namespace CoSupport {
 
   template<class T>
   class shared_copyonwrite_ptr
@@ -59,6 +59,6 @@ namespace jflibs {
     T * operator->() { return get(); }
   };
 
-}
+} // namespace CoSupport
 
 #endif /* _INCLUDED_SHARED_COPYONWRITE_PTR_H */

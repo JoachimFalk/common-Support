@@ -5,7 +5,7 @@
 
 #include "arrayfifo.hpp"
 
-using namespace jflibs;
+using namespace CoSupport;
 
 template <typename T, size_t N>
 std::ostream &operator << (std::ostream &out, const ArrayFifo<T,N> &fifo) {

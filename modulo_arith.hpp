@@ -23,6 +23,8 @@
 
 #include "sassert.h"
 
+namespace CoSupport {
+
 template <size_t N>
 class ModuloInt {
 public:
@@ -86,5 +88,7 @@ public:
     return retval;
   }
 };
+
+} // namespace CoSupport
 
 #endif /* _INCLUDED_MODULO_ARITH_HPP */

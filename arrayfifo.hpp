@@ -37,7 +37,7 @@
 #include "sassert.h"
 #include "modulo_arith.hpp"
 
-namespace jflibs {
+namespace CoSupport {
 
   /*
    * Fixed Array FIFO buffer
@@ -160,6 +160,6 @@ namespace jflibs {
       { return rIndex == wIndex; }
   };
 
-}
+} // namespace CoSupport
 
 #endif /* _INCLUDED_ARRAYFIFO_HPP */
