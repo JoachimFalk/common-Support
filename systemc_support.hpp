@@ -8,137 +8,314 @@
 #include <vector>
 #include <set>
 
+#include "sassert.h"
+
+//#include <intrusive_copyonwrite_ptr.hpp>
+
 namespace CoSupport { namespace SystemC {
 
   // Event handling
  
   class EventListener {
   public:
-    friend class Event;
+    friend class EventWaiter;
   protected:
-    virtual void signaled( Event *e ) = 0;
+    // return true if event was handled
+    virtual bool signaled(EventWaiter *e) = 0;
   };
-
-  class Event {
+  
+  class EventWaiter {
   public:
-    typedef Event             this_type;
-    typedef void (this_type::*unspecified_bool_type)();
-  protected:
+    typedef EventWaiter         this_type;
+    typedef void (this_type::*unspecified_bool_type)(EventListener *);
+  private:
     typedef std::set<EventListener *>  ell_ty;
     
-    size_t  missing;
     ell_ty  ell;
-  public:
-    Event(bool startNotified = false)
-      : missing(startNotified ? 0 : 1)
-      {}
-    
-    void notify() {
-      missing = 0;
+#ifndef NDEBUG
+    bool    notifyRun;
+#endif
+  protected:
+    int     missing;
+
+    bool signalNotifyListener() {
+      if (--missing == 0) {
+#ifndef NDEBUG
+        assert(!notifyRun); notifyRun = true;
+#endif
+        for ( ell_ty::iterator iter = ell.begin();
+              iter != ell.end();
+              ++iter ) {
+          if ((*iter)->signaled(this)) {
+            // event handled => therefore one missing again
+            assert(missing == 0); missing = 1;
+            while ( iter != ell.begin() )
+              sassert(!(*iter)->signaled(this));
+          }
+        }
+#ifndef NDEBUG
+        notifyRun = false;
+#endif
+        return missing == 1;
+      } else
+        return false;
+    }
+    void signalResetListener(EventListener *el) {
+#ifndef NDEBUG
+      assert(!notifyRun); notifyRun = true;
+#endif
       for ( ell_ty::iterator iter = ell.begin();
             iter != ell.end();
             ++iter )
-        (*iter)->signaled(this);
-      ell.clear();
+        if (*iter != el)
+          sassert(!(*iter)->signaled(this));
+#ifndef NDEBUG
+      notifyRun = false;
+#endif
     }
-    
-    virtual void addListener(EventListener *el) {
-      // avoid annoying compiler warnings
-      //bool success = ell.insert(el).second;
-      ell.insert(el).second;
-  //    assert( success );
+  public:
+    EventWaiter(bool startNotified = false)
+      :
+#ifndef NDEBUG
+        notifyRun(false),
+#endif
+        missing(startNotified ? 0 : 1)
+      {}
+
+    virtual EventWaiter *reset(EventListener *el = NULL) {
+      if (!missing) {
+        missing = 1;
+        signalResetListener(el);
+        return this;
+      } else
+        return NULL;
     }
-    virtual void delListener(EventListener *el) {
-      ell.erase(el);
-    }
-    
-    virtual void reset()
-      { missing = 1; }
-    
+
+    void addListener(EventListener *el)
+      { sassert(ell.insert(el).second); }
+    void delListener(EventListener *el)
+      { sassert(ell.erase(el) == 1); }
+
     operator unspecified_bool_type() const
-      { return missing == 0 ? &this_type::notify : NULL; }
-    
-    class EventOrList  operator | ( Event &p );
-    class EventAndList operator & ( Event &p );
-    
-    virtual ~Event() {}
-    
+      { return missing <= 0 ? &this_type::addListener : NULL; }
+
+    class EventOrList  operator | (EventWaiter &e);
+    class EventAndList operator & (EventWaiter &e);
+
     void dump(std::ostream &out) const {
-      std::cout << "Event( missing: " << missing << ")";
+      std::cout << "EventWaiter( missing: " << missing << ")";
+    }
+
+    virtual ~EventWaiter() {
+      assert(ell.empty());
     }
   private:
     // disable
-    // Event( const this_type & );
+    EventWaiter( const this_type & );
   };
 
+  class Event: public EventWaiter {
+  public:
+    typedef Event this_type;
+  public:
+    Event(bool startNotified = false)
+      : EventWaiter(startNotified) {}
+
+    void notify() {
+      assert(missing == 1 || missing == 0);
+      if (missing)
+        signalNotifyListener();
+    }
+
+    void reset() {
+      EventWaiter::reset();
+    }
+  };
+  
   static inline
-  std::ostream &operator << ( std::ostream &out, const Event &se ) {
+  std::ostream &operator << (std::ostream &out, const EventWaiter &se) {
     se.dump(out); return out;
   }
 
   class EventOrList
-  : public Event,
+  : public EventWaiter,
     protected EventListener {
   protected:
-    typedef std::vector<Event *> EventList;
+    typedef std::vector<EventWaiter *> EventList;
     
-    EventList eventList;
+    EventList    eventList;
+    EventWaiter *eventTrigger;
     
-    void signaled( Event *e )
-      { clearListener(); notify();  }
+    bool signaled(EventWaiter *e) {
+      bool retval;
+      
+      assert(
+        e &&
+        find(eventList.begin(), eventList.end(), e) != eventList.end());
+      if (*e) {
+        if (!eventTrigger)
+          eventTrigger = e;
+        retval = signalNotifyListener();
+      } else {
+        if (eventTrigger == e)
+          eventTrigger = NULL;
+        if (++missing == 1)
+          signalResetListener(NULL);
+        retval = false;
+      }
+      // std::cout << "EventOrList::signaled: missing == " << missing << std::endl;
+      return retval;
+    }
     
-    void clearListener() {
+    EventWaiter *getEventTrigger() {
       for ( EventList::iterator iter = eventList.begin();
-            iter != eventList.end();
+            iter != eventList.end() && !eventTrigger;
             ++iter )
-        (*iter)->delListener(this);
+        if ( **iter )
+          eventTrigger = *iter;
+      assert((eventTrigger != NULL) == (missing <= 0));
+      return eventTrigger;
     }
   public:
     typedef EventOrList this_type;
     
     EventOrList()
-      {}
-    EventOrList( Event &p )
-      { *this |= p; }
-    this_type operator | ( Event &p )
-      { return this_type(*this) |= p; }
-    this_type &operator |= ( Event &p ) {
-      if (p)
-        missing = 0;
-      eventList.push_back(&p);
+      : EventWaiter(false), eventTrigger(NULL) {
+    }
+    EventOrList(EventWaiter &e )
+      : EventWaiter(false), eventTrigger(NULL) {
+      *this |= e;
+    }
+    EventOrList(const EventOrList &el)
+      : EventWaiter(false), eventTrigger(NULL) {
+      for ( EventList::const_iterator iter = el.eventList.begin();
+            iter != el.eventList.end();
+            ++iter )
+        *this |= **iter;
+    }
+    
+    this_type operator | (EventWaiter &e)
+      { return this_type(*this) |= e; }
+    this_type &operator |= (EventWaiter &e) {
+      if (e) {
+        --missing;
+        if (!eventTrigger)
+          eventTrigger = &e;
+      }
+      eventList.push_back(&e);
+      e.addListener(this);
       return *this;
     }
     
-    void addListener(EventListener *el) {
-      if ( ell.empty() ) {
-        missing = 1;
+    EventWaiter *reset(EventListener *el = NULL) {
+      EventWaiter *retval = NULL;
+      
+      if (missing <= 0) {
+        retval = getEventTrigger()->reset(this);
+        if (!*getEventTrigger()) {
+          ++missing; eventTrigger = NULL;
+        }
+        // just toggled from enabled to disabled
+        if (missing > 0)
+          signalResetListener(el);
+      }
+      return retval;
+    }
+    void clear() {
+      for ( EventList::iterator iter = eventList.begin();
+            iter != eventList.end();
+            ++iter )
+        (*iter)->delListener(this);
+      missing = 0;
+      eventList.clear();
+    }
+    
+    ~EventOrList()
+      { clear(); }
+  };
+
+  class EventAndList
+  : public EventWaiter,
+    protected EventListener {
+  protected:
+    typedef std::vector<EventWaiter *> EventList;
+    
+    EventList  eventList;
+    
+    bool signaled(EventWaiter *e) {
+      bool retval;
+      
+      assert(
+        e &&
+        find(eventList.begin(), eventList.end(), e) != eventList.end());
+      if (*e) {
+        retval = signalNotifyListener();
+      } else {
+        if (++missing == 1)
+          signalResetListener(NULL);
+        retval = false;
+      }
+      // std::cout << "EventAndList::signaled: missing == " << missing << std::endl;
+      return retval;
+    }
+  public:
+    typedef EventAndList this_type;
+    
+    EventAndList()
+      : EventWaiter(true) {
+    }
+    EventAndList(EventWaiter &e)
+      : EventWaiter(true)  {
+      *this &= e;
+    }
+    EventAndList(const EventAndList &el)
+      : EventWaiter(true)  {
+      for ( EventList::const_iterator iter = el.eventList.begin();
+            iter != el.eventList.end();
+            ++iter )
+        *this &= **iter;
+    }
+    
+    this_type operator & (EventWaiter &e)
+      { return this_type(*this) &= e; }
+    this_type &operator &= (EventWaiter &e) {
+      if (!e)
+        ++missing;
+      eventList.push_back(&e);
+      e.addListener(this);
+      return *this;
+    }
+    
+    EventWaiter *reset(EventListener *el = NULL) {
+      if (missing <= 0) {
         for ( EventList::iterator iter = eventList.begin();
               iter != eventList.end();
               ++iter ) {
-          if ( !**iter ) {
-            (*iter)->addListener(this);
-          } else {
-            missing = 0;
-          }
+          (*iter)->reset(this);
+          if (!**iter)
+            ++missing;
         }
-      }
-      Event::addListener(el);
-      if ( !missing )
-        notify();
+        // just toggled from enabled to disabled
+        if (missing > 0)
+          signalResetListener(el);
+        return this;
+      } else
+        return NULL;
     }
-    void reset() {
-      missing = 0;
+    void clear() {
       for ( EventList::iterator iter = eventList.begin();
             iter != eventList.end();
-            ++iter ) {
-        ++missing;
-        (*iter)->reset();
-      }
+            ++iter )
+        (*iter)->delListener(this);
+      missing = 0;
+      eventList.clear();
     }
-    void clear()
-      { eventList.clear(); }
+    
+    ~EventAndList()
+      { clear(); }
   };
 
+/*
   class EventAndList
   : public Event,
     protected EventListener {
@@ -197,32 +374,36 @@ namespace CoSupport { namespace SystemC {
     
     virtual ~EventAndList() {}
   };
+*/
 
   inline
-  EventOrList  Event::operator | ( Event &p )
-    { return EventOrList(*this) |= p; }
+  EventOrList  EventWaiter::operator | (EventWaiter &e)
+    { return EventOrList(*this) |= e; }
 
   inline
-  EventAndList Event::operator & ( Event &p )
-    { return EventAndList(*this) &= p; }
+  EventAndList EventWaiter::operator & (EventWaiter &e)
+    { return EventAndList(*this) &= e; }
 
   static inline
-  void notify(Event& se)
-    { return se.notify(); }
+  void notify(Event& e)
+    { return e.notify(); }
   static inline
-  void reset(Event& se)
-    { return se.reset(); }
+  EventWaiter *reset(EventWaiter& e)
+    { return e.reset(); }
   static inline
-  void wait( Event &se ) {
-    if ( !se ) {
+  void wait(EventWaiter &e) {
+    if (!e) {
       struct _: public EventListener {
-        sc_event e;
-        void signaled( Event * )
-        { e.notify(); }
+        sc_event sce;
+        bool signaled(EventWaiter *_e) {
+          sce.notify();
+          return false;
+        }
         virtual ~_() {}
       } w;
-      se.addListener(&w);
-      wait(w.e);
+      e.addListener(&w);
+      wait(w.sce);
+      e.delListener(&w);
     }
   }
 

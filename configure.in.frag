@@ -9,5 +9,7 @@ ACJF_TYPE_SIZE_T
 ACJF_CHECK_STDINT
 ACJF_CHECK_VA_COPY
 
+ACJF_SYSTEMC
+
 AC_CONFIG_FILES([Support/Makefile])
 subdirs="$subdris Support"

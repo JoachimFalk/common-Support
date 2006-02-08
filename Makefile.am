@@ -66,9 +66,22 @@ pkginclude_HEADERS =			\
 	
 # noinst_HEADERS=	oneof.hpp
 
-noinst_PROGRAMS=test_arrayfifo
+noinst_PROGRAMS=			\
+	test_arrayfifo			\
+	test_event_and_list		\
+	test_event_or_list
 
-test_arrayfifo_SOURCES = test_arrayfifo.cpp
+test_arrayfifo_SOURCES      = test_arrayfifo.cpp
 test_arrayfifo_DEPENDENCIES = include
+
+test_event_and_list_SOURCES	  = test_event_and_list.cpp
+test_event_and_list_DEPENDENCIES  = include
+test_event_and_list_LDFLAGS	  = @SYSTEMC_LDFLAGS@ -lsystemc
+test_event_and_list_CXXFLAGS	  = @SYSTEMC_INCLUDE@
+
+test_event_or_list_SOURCES	  = test_event_or_list.cpp
+test_event_or_list_DEPENDENCIES	  = include
+test_event_or_list_LDFLAGS	  = @SYSTEMC_LDFLAGS@ -lsystemc
+test_event_or_list_CXXFLAGS	  = @SYSTEMC_INCLUDE@
 
 all: include
