@@ -5,6 +5,28 @@
 
 namespace CoSupport {
 
+namespace detail {
+/*
+  template<typename T>
+  struct MakeRef {
+    typedef T &type;
+  };
+  template<typename T>
+  struct MakeRef<T &> {
+    typedef T &type;
+  };
+
+  template<typename T>
+  struct MakeConstRef {
+    typedef const T &type;
+  };
+  template<typename T>
+  struct MakeConstRef<T &> {
+    typedef const T &type;
+  };
+*/
+}
+
 //
 // ParamNode: Used to store bound parameters
 // 
@@ -17,7 +39,7 @@ struct ParamNode
   P p;
   PN pn;
   
-  ParamNode(const P &_p, const PN &_pn) : p(_p), pn(_pn) {}
+  ParamNode(P _p, const PN &_pn) : p(_p), pn(_pn) {}
 };
 
 template<>
@@ -80,7 +102,7 @@ struct ParamAccumulator
   
   ParamAccumulator(const F& _f, const PL &_pl = PL()) : f(_f), pl(_pl) {}
   
-  return_type operator()(const typename ML::ListHead &p) {
+  return_type operator()(typename ML::ListHead p) {
     return return_type(f, ParamNode<typename ML::ListHead, PL>(p, pl));
   }
 };
