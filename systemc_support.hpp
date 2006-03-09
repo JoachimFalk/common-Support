@@ -22,6 +22,7 @@ namespace CoSupport { namespace SystemC {
   protected:
     // return true if event was handled
     virtual bool signaled(EventWaiter *e) = 0;
+    virtual void removeEvent(EventWaiter *e) = 0;
   };
   
   class EventWaiter {
@@ -107,7 +108,10 @@ namespace CoSupport { namespace SystemC {
     }
 
     virtual ~EventWaiter() {
-      assert(ell.empty());
+      for ( ell_ty::iterator iter = ell.begin();
+            iter != ell.end();
+            ++iter )
+        (*iter)->removeEvent(this);
     }
   private:
     // disable
@@ -166,7 +170,17 @@ namespace CoSupport { namespace SystemC {
       // std::cout << "EventOrList::signaled: missing == " << missing << std::endl;
       return retval;
     }
-    
+
+    void removeEvent(EventWaiter *e) {
+      for ( EventList::iterator iter = eventList.begin();
+            iter != eventList.end();
+            ++iter )
+        if (*iter != e)
+          (*iter)->delListener(this);
+      missing = 1;
+      eventList.clear();
+    }
+
     EventWaiter *getEventTrigger() {
       for ( EventList::iterator iter = eventList.begin();
             iter != eventList.end() && !eventTrigger;
@@ -226,7 +240,7 @@ namespace CoSupport { namespace SystemC {
             iter != eventList.end();
             ++iter )
         (*iter)->delListener(this);
-      missing = 0;
+      missing = 1;
       eventList.clear();
     }
     
@@ -257,6 +271,16 @@ namespace CoSupport { namespace SystemC {
       }
       // std::cout << "EventAndList::signaled: missing == " << missing << std::endl;
       return retval;
+    }
+
+    void removeEvent(EventWaiter *e) {
+      for ( EventList::iterator iter = eventList.begin();
+            iter != eventList.end();
+            ++iter )
+        if (*iter != e)
+          (*iter)->delListener(this);
+      missing = 0;
+      eventList.clear();
     }
   public:
     typedef EventAndList this_type;
@@ -398,6 +422,9 @@ namespace CoSupport { namespace SystemC {
         bool signaled(EventWaiter *_e) {
           sce.notify();
           return false;
+        }
+        void removeEvent(EventWaiter *_e) {
+          // sce.notify();
         }
         virtual ~_() {}
       } w;
