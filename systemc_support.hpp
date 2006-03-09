@@ -339,67 +339,6 @@ namespace CoSupport { namespace SystemC {
       { clear(); }
   };
 
-/*
-  class EventAndList
-  : public Event,
-    protected EventListener {
-  protected:
-    typedef std::vector<Event *> EventList;
-
-    EventList eventList;
-
-    void signaled( Event *e ) {
-      assert( missing > 0 );
-      if ( !--missing )
-        notify();
-    }
-  public:
-    typedef EventAndList this_type;
-    
-    EventAndList()
-      { missing = 0; }
-    EventAndList( Event &p )
-      { missing = 0; *this &= p; }
-    this_type operator & ( Event &p )
-      { return this_type(*this) &= p; }
-    this_type &operator &= ( Event &p ) {
-      if ( !p )
-        ++missing;
-      eventList.push_back(&p);
-      return *this;
-    }
-    
-    void addListener(EventListener *el) {
-      if ( ell.empty() ) {
-        missing = 0;
-        for ( EventList::iterator iter = eventList.begin();
-              iter != eventList.end();
-              ++iter )
-          if ( !**iter ) {
-            ++missing;
-            (*iter)->addListener(this);
-          }
-      }
-      Event::addListener(el);
-      if ( !missing )
-        notify();
-    }
-    void reset() {
-      missing = 0;
-      for ( EventList::iterator iter = eventList.begin();
-            iter != eventList.end();
-            ++iter ) {
-        ++missing;
-        (*iter)->reset();
-      }
-    }
-    void clear()
-      { eventList.clear(); }
-    
-    virtual ~EventAndList() {}
-  };
-*/
-
   inline
   EventOrList  EventWaiter::operator | (EventWaiter &e)
     { return EventOrList(*this) |= e; }
