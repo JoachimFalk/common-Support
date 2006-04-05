@@ -47,6 +47,7 @@ namespace detail {
       { return v(obj); }
   };
   
+  template <>
   struct CallVisitor<void2_st> {
     template <class V> static
     typename V::result_type apply(const void2_st &obj, const V &v)
@@ -57,6 +58,7 @@ namespace detail {
       { assert(1 ? 0 : "oneof contains void2_st !"); }
   };
   
+  template <>
   struct CallVisitor<void3_st> {
     template <class V> static
     typename V::result_type apply(const void3_st &obj, const V &v)
@@ -67,6 +69,7 @@ namespace detail {
       { assert(1 ? 0 : "oneof contains void3_st !"); }
   };
 
+  template <>
   struct CallVisitor<void4_st> {
     template <class V> static
     typename V::result_type apply(const void4_st &obj, const V &v)
@@ -77,6 +80,7 @@ namespace detail {
       { assert(1 ? 0 : "oneof contains void3_st !"); }
   };
 
+  template <>
   struct CallVisitor<void5_st> {
     template <class V> static
     typename V::result_type apply(const void5_st &obj, const V &v)
@@ -87,6 +91,7 @@ namespace detail {
       { assert(1 ? 0 : "oneof contains void5_st !"); }
   };
 
+  template <>
   struct CallVisitor<NILTYPE> {
     template <class V> static
     typename V::result_type apply(const V &v)
