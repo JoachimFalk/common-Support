@@ -15,31 +15,94 @@ namespace CoSupport {
 
 typedef int oneof_typeid;
 
+struct NILTYPE;
+
 namespace detail {
 
   struct void2_st {};
+  struct void3_st {};
+  struct void4_st {};
+  struct void5_st {};
 
   static inline
   std::ostream &operator << (std::ostream &o, const void2_st &) { return o; }
 
-  struct void3_st {};
-
   static inline
   std::ostream &operator << (std::ostream &o, const void3_st &) { return o; }
-  
-  struct void4_st {};
 
   static inline
   std::ostream &operator << (std::ostream &o, const void4_st &) { return o; }
 
-  struct void5_st {};
-
   static inline
   std::ostream &operator << (std::ostream &o, const void5_st &) { return o; }
 
-};
+  template <typename T>
+  struct CallVisitor {
+    template <class V> static
+    typename V::result_type apply(const T &obj, const V &v)
+      { return v(obj); }
+    
+    template <class V> static
+    typename V::result_type apply(const T &obj, V &v)
+      { return v(obj); }
+  };
+  
+  template <>
+  struct CallVisitor<void2_st> {
+    template <class V> static
+    typename V::result_type apply(const void2_st &obj, const V &v)
+      { assert(1 ? 0 : "oneof contains void2_st !"); }
+    
+    template <class V> static
+    typename V::result_type apply(const void2_st &obj, V &v)
+      { assert(1 ? 0 : "oneof contains void2_st !"); }
+  };
+  
+  template <>
+  struct CallVisitor<void3_st> {
+    template <class V> static
+    typename V::result_type apply(const void3_st &obj, const V &v)
+      { assert(1 ? 0 : "oneof contains void3_st !"); }
+    
+    template <class V> static
+    typename V::result_type apply(const void3_st &obj, V &v)
+      { assert(1 ? 0 : "oneof contains void3_st !"); }
+  };
 
-struct NILTYPE;
+  template <>
+  struct CallVisitor<void4_st> {
+    template <class V> static
+    typename V::result_type apply(const void4_st &obj, const V &v)
+      { assert(1 ? 0 : "oneof contains void4_st !"); }
+    
+    template <class V> static
+    typename V::result_type apply(const void3_st &obj, V &v)
+      { assert(1 ? 0 : "oneof contains void3_st !"); }
+  };
+
+  template <>
+  struct CallVisitor<void5_st> {
+    template <class V> static
+    typename V::result_type apply(const void5_st &obj, const V &v)
+      { assert(1 ? 0 : "oneof contains void5_st !"); }
+    
+    template <class V> static  
+    typename V::result_type apply(const void5_st &obj, V &v)
+      { assert(1 ? 0 : "oneof contains void5_st !"); }
+  };
+
+  template <>
+  struct CallVisitor<NILTYPE> {
+    template <class V> static
+    typename V::result_type apply(const V &v)
+      { assert(1 ? 0 : "oneof contains NILTYPE !"); }
+    
+    template <class V> static
+    typename V::result_type apply(V &v)
+      { assert(1 ? 0 : "oneof contains NILTYPE !"); }
+  };
+  
+};
 
 template <
   typename T1,
@@ -250,6 +313,47 @@ class oneof {
 template <typename T, typename T1, typename T2, typename T3, typename T4, typename T5>
 bool isType( const oneof<T1,T2,T3,T4,T5> &of )
   { return detail::oneofTypeid<oneof<T1,T2,T3,T4,T5>,T>::type() == of.type(); }
+
+template <typename V, typename T1, typename T2, typename T3, typename T4, typename T5>
+static inline
+typename V::result_type applyVisitor( const oneof<T1,T2,T3,T4,T5> &of, const V &v ) {
+  if ( isType<T1>(of) ) {
+    return detail::CallVisitor<T1>::apply(static_cast<const T1 &>(of), v);
+  } else if ( isType<T2>(of) ) {
+    return detail::CallVisitor<T2>::apply(static_cast<const T2 &>(of), v);
+  } else if ( isType<T3>(of) ) {
+    return detail::CallVisitor<T3>::apply(static_cast<const T3 &>(of), v);
+  } else if ( isType<T4>(of) ) {
+    return detail::CallVisitor<T4>::apply(static_cast<const T4 &>(of), v);
+  } else if ( isType<T5>(of) ) {
+    return detail::CallVisitor<T5>::apply(static_cast<const T5 &>(of), v);
+  } else {
+    return detail::CallVisitor<NILTYPE>::apply(v);
+  }
+}
+
+template <typename V, typename T1, typename T2, typename T3, typename T4, typename T5>
+static inline
+typename V::result_type applyVisitor( const oneof<T1,T2,T3,T4,T5> &of )
+  { return applyVisitor(of, V()); }
+
+template <typename V, typename T1, typename T2, typename T3, typename T4, typename T5>
+static inline
+typename V::result_type applyVisitor( const oneof<T1,T2,T3,T4,T5> &of, V &v ) {
+  if ( isType<T1>(of) ) {
+    return detail::CallVisitor<T1>::apply(static_cast<const T1 &>(of), v);
+  } else if ( isType<T2>(of) ) {
+    return detail::CallVisitor<T2>::apply(static_cast<const T2 &>(of), v);
+  } else if ( isType<T3>(of) ) {
+    return detail::CallVisitor<T3>::apply(static_cast<const T3 &>(of), v);
+  } else if ( isType<T4>(of) ) {
+    return detail::CallVisitor<T4>::apply(static_cast<const T4 &>(of), v);
+  } else if ( isType<T5>(of) ) {
+    return detail::CallVisitor<T5>::apply(static_cast<const T5 &>(of), v);
+  } else {
+    return detail::CallVisitor<NILTYPE>::apply(v);
+  }
+}
 
 template <typename T1, typename T2, typename T3, typename T4, typename T5>
 static inline
