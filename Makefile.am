@@ -66,7 +66,10 @@ pkginclude_HEADERS =			\
 	
 # noinst_HEADERS=	oneof.hpp
 
+lib_LTLIBRARIES= libcosupport.la
 noinst_PROGRAMS=test_arrayfifo
+
+libcosupport_la_SOURCES=
 
 test_arrayfifo_SOURCES = test_arrayfifo.cpp
 test_arrayfifo_DEPENDENCIES = include
