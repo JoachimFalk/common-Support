@@ -57,19 +57,29 @@ pkginclude_HEADERS =			\
 	modulo_arith.hpp		\
 	arrayfifo.hpp			\
 	systemc_support.hpp		\
+	functor.hpp                     \
+	checked_vector.hpp              \
+	string_convert.hpp              \
 					\
 	commondefs.h			\
 	integertypes.h			\
 	sassert.h			\
 	snprintf.h			\
-	functor.hpp
+					\
+	par_actor.hpp			\
+	par_actor_factory.hpp		\
+	par_manager.hpp			\
+	par_port.hpp
 	
 # noinst_HEADERS=	oneof.hpp
 
+lib_LTLIBRARIES= libcosupport.la
 noinst_PROGRAMS=			\
 	test_arrayfifo			\
 	test_event_and_list		\
 	test_event_or_list
+
+libcosupport_la_SOURCES = par_manager.cpp
 
 test_arrayfifo_SOURCES      = test_arrayfifo.cpp
 test_arrayfifo_DEPENDENCIES = include

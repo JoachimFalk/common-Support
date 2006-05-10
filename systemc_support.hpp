@@ -103,9 +103,12 @@ namespace CoSupport { namespace SystemC {
     class EventOrList  operator | (EventWaiter &e);
     class EventAndList operator & (EventWaiter &e);
 
+#ifndef NDEBUG
+    virtual
     void dump(std::ostream &out) const {
-      std::cout << "EventWaiter( missing: " << missing << ")";
+      out << "EventWaiter(" << this << ", missing: " << missing << ")";
     }
+#endif
 
     virtual ~EventWaiter() {
       for ( ell_ty::iterator iter = ell.begin();
@@ -117,6 +120,13 @@ namespace CoSupport { namespace SystemC {
     // disable
     EventWaiter( const this_type & );
   };
+
+#ifndef NDEBUG
+  static inline
+  std::ostream &operator << (std::ostream &out, const EventWaiter &se) {
+    se.dump(out); return out;
+  }
+#endif
 
   class Event: public EventWaiter {
   public:
@@ -131,16 +141,18 @@ namespace CoSupport { namespace SystemC {
         signalNotifyListener();
     }
 
+#ifndef NDEBUG
+    virtual
+    void dump(std::ostream &out) const {
+      out << "Event(" << this << ", missing: " << missing << ")";
+    }
+#endif
+
     void reset() {
       EventWaiter::reset();
     }
   };
   
-  static inline
-  std::ostream &operator << (std::ostream &out, const EventWaiter &se) {
-    se.dump(out); return out;
-  }
-
   class EventOrList
   : public EventWaiter,
     protected EventListener {
@@ -244,6 +256,18 @@ namespace CoSupport { namespace SystemC {
       eventList.clear();
     }
     
+#ifndef NDEBUG
+    virtual
+    void dump(std::ostream &out) const {
+      out << "EventOrList([";
+      for ( EventList::const_iterator iter = eventList.begin();
+            iter != eventList.end();
+            ++iter )
+        out << (iter != eventList.begin() ? ", " : "") << **iter;
+      out << "], missing: " << missing << ")";
+    }
+#endif
+
     ~EventOrList()
       { clear(); }
   };
@@ -335,6 +359,18 @@ namespace CoSupport { namespace SystemC {
       eventList.clear();
     }
     
+#ifndef NDEBUG
+    virtual
+    void dump(std::ostream &out) const {
+      out << "EventAndList([";
+      for ( EventList::const_iterator iter = eventList.begin();
+            iter != eventList.end();
+            ++iter )
+        out << (iter != eventList.begin() ? ", " : "") << **iter;
+      out << "], missing: " << missing << ")";
+    }
+#endif
+
     ~EventAndList()
       { clear(); }
   };
