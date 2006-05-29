@@ -24,6 +24,9 @@ namespace CoSupport { namespace SystemC {
     virtual bool signaled(EventWaiter *e) = 0;
     virtual void removeEvent(EventWaiter *e) = 0;
   };
+
+  template <class T> class EventOrList;
+  template <class T> class EventAndList;
   
   class EventWaiter {
   public:
@@ -100,8 +103,8 @@ namespace CoSupport { namespace SystemC {
     operator unspecified_bool_type() const
       { return missing <= 0 ? &this_type::addListener : NULL; }
 
-    class EventOrList  operator | (EventWaiter &e);
-    class EventAndList operator & (EventWaiter &e);
+    class EventOrList<this_type>  operator | (EventWaiter &e);
+    class EventAndList<this_type> operator & (EventWaiter &e);
 
 #ifndef NDEBUG
     virtual
@@ -153,16 +156,19 @@ namespace CoSupport { namespace SystemC {
     }
   };
   
+  template <class T>
   class EventOrList
   : public EventWaiter,
     protected EventListener {
+  public:
+    typedef T EventType;
   protected:
-    typedef std::vector<EventWaiter *> EventList;
+    typedef std::vector<EventType *> EventList;
     
     EventList    eventList;
-    EventWaiter *eventTrigger;
+    EventType   *eventTrigger;
     
-    bool signaled(EventWaiter *e) {
+    bool signaled(EventType *e) {
       bool retval;
       
       assert(
@@ -183,8 +189,8 @@ namespace CoSupport { namespace SystemC {
       return retval;
     }
 
-    void removeEvent(EventWaiter *e) {
-      for ( EventList::iterator iter = eventList.begin();
+    void removeEvent(EventType *e) {
+      for ( typename EventList::iterator iter = eventList.begin();
             iter != eventList.end();
             ++iter )
         if (*iter != e)
@@ -192,37 +198,27 @@ namespace CoSupport { namespace SystemC {
       missing = 1;
       eventList.clear();
     }
-
-    EventWaiter *getEventTrigger() {
-      for ( EventList::iterator iter = eventList.begin();
-            iter != eventList.end() && !eventTrigger;
-            ++iter )
-        if ( **iter )
-          eventTrigger = *iter;
-      assert((eventTrigger != NULL) == (missing <= 0));
-      return eventTrigger;
-    }
   public:
     typedef EventOrList this_type;
     
     EventOrList()
       : EventWaiter(false), eventTrigger(NULL) {
     }
-    EventOrList(EventWaiter &e )
+    EventOrList(EventType &e )
       : EventWaiter(false), eventTrigger(NULL) {
       *this |= e;
     }
     EventOrList(const EventOrList &el)
       : EventWaiter(false), eventTrigger(NULL) {
-      for ( EventList::const_iterator iter = el.eventList.begin();
+      for ( typename EventList::const_iterator iter = el.eventList.begin();
             iter != el.eventList.end();
             ++iter )
         *this |= **iter;
     }
     
-    this_type operator | (EventWaiter &e)
+    this_type operator | (EventType &e)
       { return this_type(*this) |= e; }
-    this_type &operator |= (EventWaiter &e) {
+    this_type &operator |= (EventType &e) {
       if (e) {
         --missing;
         if (!eventTrigger)
@@ -232,9 +228,19 @@ namespace CoSupport { namespace SystemC {
       e.addListener(this);
       return *this;
     }
-    
-    EventWaiter *reset(EventListener *el = NULL) {
-      EventWaiter *retval = NULL;
+
+    EventType *getEventTrigger() {
+      for ( typename EventList::iterator iter = eventList.begin();
+            iter != eventList.end() && !eventTrigger;
+            ++iter )
+        if ( **iter )
+          eventTrigger = *iter;
+      assert((eventTrigger != NULL) == (missing <= 0));
+      return eventTrigger;
+    }
+
+    EventType *reset(EventListener *el = NULL) {
+      EventType *retval = NULL;
       
       if (missing <= 0) {
         retval = getEventTrigger()->reset(this);
@@ -248,7 +254,7 @@ namespace CoSupport { namespace SystemC {
       return retval;
     }
     void clear() {
-      for ( EventList::iterator iter = eventList.begin();
+      for ( typename EventList::iterator iter = eventList.begin();
             iter != eventList.end();
             ++iter )
         (*iter)->delListener(this);
@@ -260,7 +266,7 @@ namespace CoSupport { namespace SystemC {
     virtual
     void dump(std::ostream &out) const {
       out << "EventOrList([";
-      for ( EventList::const_iterator iter = eventList.begin();
+      for ( typename EventList::const_iterator iter = eventList.begin();
             iter != eventList.end();
             ++iter )
         out << (iter != eventList.begin() ? ", " : "") << **iter;
@@ -272,15 +278,18 @@ namespace CoSupport { namespace SystemC {
       { clear(); }
   };
 
+  template <class T>
   class EventAndList
   : public EventWaiter,
     protected EventListener {
+  public:
+    typedef T EventType;
   protected:
-    typedef std::vector<EventWaiter *> EventList;
+    typedef std::vector<EventType *> EventList;
     
     EventList  eventList;
     
-    bool signaled(EventWaiter *e) {
+    bool signaled(EventType *e) {
       bool retval;
       
       assert(
@@ -297,8 +306,8 @@ namespace CoSupport { namespace SystemC {
       return retval;
     }
 
-    void removeEvent(EventWaiter *e) {
-      for ( EventList::iterator iter = eventList.begin();
+    void removeEvent(EventType *e) {
+      for ( typename EventList::iterator iter = eventList.begin();
             iter != eventList.end();
             ++iter )
         if (*iter != e)
@@ -312,21 +321,21 @@ namespace CoSupport { namespace SystemC {
     EventAndList()
       : EventWaiter(true) {
     }
-    EventAndList(EventWaiter &e)
+    EventAndList(EventType &e)
       : EventWaiter(true)  {
       *this &= e;
     }
     EventAndList(const EventAndList &el)
       : EventWaiter(true)  {
-      for ( EventList::const_iterator iter = el.eventList.begin();
+      for ( typename EventList::const_iterator iter = el.eventList.begin();
             iter != el.eventList.end();
             ++iter )
         *this &= **iter;
     }
     
-    this_type operator & (EventWaiter &e)
+    this_type operator & (EventType &e)
       { return this_type(*this) &= e; }
-    this_type &operator &= (EventWaiter &e) {
+    this_type &operator &= (EventType &e) {
       if (!e)
         ++missing;
       eventList.push_back(&e);
@@ -334,9 +343,9 @@ namespace CoSupport { namespace SystemC {
       return *this;
     }
     
-    EventWaiter *reset(EventListener *el = NULL) {
+    EventType *reset(EventListener *el = NULL) {
       if (missing <= 0) {
-        for ( EventList::iterator iter = eventList.begin();
+        for ( typename EventList::iterator iter = eventList.begin();
               iter != eventList.end();
               ++iter ) {
           (*iter)->reset(this);
@@ -351,7 +360,7 @@ namespace CoSupport { namespace SystemC {
         return NULL;
     }
     void clear() {
-      for ( EventList::iterator iter = eventList.begin();
+      for ( typename EventList::iterator iter = eventList.begin();
             iter != eventList.end();
             ++iter )
         (*iter)->delListener(this);
@@ -363,7 +372,7 @@ namespace CoSupport { namespace SystemC {
     virtual
     void dump(std::ostream &out) const {
       out << "EventAndList([";
-      for ( EventList::const_iterator iter = eventList.begin();
+      for ( typename EventList::const_iterator iter = eventList.begin();
             iter != eventList.end();
             ++iter )
         out << (iter != eventList.begin() ? ", " : "") << **iter;
@@ -376,12 +385,12 @@ namespace CoSupport { namespace SystemC {
   };
 
   inline
-  EventOrList  EventWaiter::operator | (EventWaiter &e)
-    { return EventOrList(*this) |= e; }
+  EventOrList<EventWaiter>  EventWaiter::operator | (EventWaiter &e)
+    { return EventOrList<EventWaiter>(*this) |= e; }
 
   inline
-  EventAndList EventWaiter::operator & (EventWaiter &e)
-    { return EventAndList(*this) &= e; }
+  EventAndList<EventWaiter> EventWaiter::operator & (EventWaiter &e)
+    { return EventAndList<EventWaiter>(*this) &= e; }
 
   static inline
   void notify(Event& e)

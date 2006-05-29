@@ -40,7 +40,7 @@ m_signaler a6("a6",  63, 57);
 
 
 class m_waiterI: public sc_module {
-  EventOrList e;
+  EventOrList<EventWaiter> e;
   
   void process() {
     while ( 1 ) {
@@ -75,7 +75,7 @@ public:
 };
 
 class m_waiterII: public sc_module {
-  EventOrList e;
+  EventOrList<EventWaiter> e;
   
   void process() {
     while ( 1 ) {
