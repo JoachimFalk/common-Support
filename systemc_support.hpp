@@ -243,22 +243,22 @@ namespace CoSupport { namespace SystemC {
       return *this;
     }
 
-    EventType *getEventTrigger() {
+    EventType &getEventTrigger() {
       for ( typename EventList::iterator iter = eventList.begin();
             iter != eventList.end() && !eventTrigger;
             ++iter )
         if ( **iter )
           eventTrigger = *iter;
-      assert((eventTrigger != NULL) == (missing <= 0));
-      return eventTrigger;
+      assert((eventTrigger != NULL) && (missing <= 0) && *eventTrigger);
+      return *eventTrigger;
     }
 
     EventWaiter *reset(EventListener *el = NULL) {
       EventWaiter *retval = NULL;
       
       if (missing <= 0) {
-        retval = getEventTrigger()->reset(this);
-        if (!*getEventTrigger()) {
+        retval = getEventTrigger().reset(this);
+        if (!getEventTrigger()) {
           ++missing; eventTrigger = NULL;
         }
         // just toggled from enabled to disabled
