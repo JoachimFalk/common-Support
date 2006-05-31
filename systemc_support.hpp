@@ -22,7 +22,7 @@ namespace CoSupport { namespace SystemC {
   protected:
     // return true if event was handled
     virtual bool signaled(EventWaiter *e) = 0;
-    virtual void removeEvent(EventWaiter *e) = 0;
+    virtual void eventDestroyed(EventWaiter *e) = 0;
   };
 
   template <class T> class EventOrList;
@@ -117,7 +117,7 @@ namespace CoSupport { namespace SystemC {
       for ( ell_ty::iterator iter = ell.begin();
             iter != ell.end();
             ++iter )
-        (*iter)->removeEvent(this);
+        (*iter)->eventDestroyed(this);
     }
   private:
     // disable
@@ -189,7 +189,7 @@ namespace CoSupport { namespace SystemC {
       return retval;
     }
 
-    void removeEvent(EventWaiter *e) {
+    void eventDestroyed(EventWaiter *e) {
       for ( typename EventList::iterator iter = eventList.begin();
             iter != eventList.end();
             ++iter )
@@ -306,7 +306,7 @@ namespace CoSupport { namespace SystemC {
       return retval;
     }
 
-    void removeEvent(EventWaiter *e) {
+    void eventDestroyed(EventWaiter *e) {
       for ( typename EventList::iterator iter = eventList.begin();
             iter != eventList.end();
             ++iter )
@@ -407,7 +407,7 @@ namespace CoSupport { namespace SystemC {
           sce.notify();
           return false;
         }
-        void removeEvent(EventWaiter *_e) {
+        void eventDestroyed(EventWaiter *_e) {
           // sce.notify();
         }
         virtual ~_() {}
