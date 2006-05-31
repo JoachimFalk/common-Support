@@ -216,6 +216,18 @@ namespace CoSupport { namespace SystemC {
         *this |= **iter;
     }
     
+    void remove(EventType &e) {
+      typename EventList::iterator iter = find(
+        eventList.begin(), eventList.end(), &e);
+      if (iter != eventList.end()) {
+        eventList.erase(iter); e.delListener(this);
+        if (&e == eventTrigger)
+          eventTrigger = NULL;
+        if (e)
+          ++missing;
+      }
+    }
+    
     this_type operator | (EventType &e)
       { return this_type(*this) |= e; }
     this_type &operator |= (EventType &e) {
@@ -333,6 +345,16 @@ namespace CoSupport { namespace SystemC {
         *this &= **iter;
     }
 
+    void remove(EventType &e) {
+      typename EventList::iterator iter = find(
+        eventList.begin(), eventList.end(), &e);
+      if (iter != eventList.end()) {
+        eventList.erase(iter); e.delListener(this);
+        if (!e)
+          --missing;
+      }
+    }
+    
     this_type operator & (EventType &e)
       { return this_type(*this) &= e; }
     this_type &operator &= (EventType &e) {
