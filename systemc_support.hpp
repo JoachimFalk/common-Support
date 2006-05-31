@@ -111,6 +111,8 @@ namespace CoSupport { namespace SystemC {
     void dump(std::ostream &out) const {
       out << "EventWaiter(" << this << ", missing: " << missing << ")";
     }
+#else
+    void dump(std::ostream &out) const {}
 #endif
 
     virtual ~EventWaiter() {
