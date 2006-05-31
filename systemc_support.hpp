@@ -168,15 +168,15 @@ namespace CoSupport { namespace SystemC {
     EventList    eventList;
     EventType   *eventTrigger;
     
-    bool signaled(EventType *e) {
+    bool signaled(EventWaiter *e) {
       bool retval;
       
-      assert(
-        e &&
-        find(eventList.begin(), eventList.end(), e) != eventList.end());
+      assert( e && "/* e must be notified */" );
+      assert( find(eventList.begin(), eventList.end(), e) != eventList.end() );
+      assert( dynamic_cast<EventType *>(e) );
       if (*e) {
         if (!eventTrigger)
-          eventTrigger = e;
+          eventTrigger = reinterpret_cast<EventType *>(e);
         retval = signalNotifyListener();
       } else {
         if (eventTrigger == e)
@@ -189,7 +189,7 @@ namespace CoSupport { namespace SystemC {
       return retval;
     }
 
-    void removeEvent(EventType *e) {
+    void removeEvent(EventWaiter *e) {
       for ( typename EventList::iterator iter = eventList.begin();
             iter != eventList.end();
             ++iter )
@@ -239,8 +239,8 @@ namespace CoSupport { namespace SystemC {
       return eventTrigger;
     }
 
-    EventType *reset(EventListener *el = NULL) {
-      EventType *retval = NULL;
+    EventWaiter *reset(EventListener *el = NULL) {
+      EventWaiter *retval = NULL;
       
       if (missing <= 0) {
         retval = getEventTrigger()->reset(this);
@@ -289,7 +289,7 @@ namespace CoSupport { namespace SystemC {
     
     EventList  eventList;
     
-    bool signaled(EventType *e) {
+    bool signaled(EventWaiter *e) {
       bool retval;
       
       assert(
@@ -306,7 +306,7 @@ namespace CoSupport { namespace SystemC {
       return retval;
     }
 
-    void removeEvent(EventType *e) {
+    void removeEvent(EventWaiter *e) {
       for ( typename EventList::iterator iter = eventList.begin();
             iter != eventList.end();
             ++iter )
@@ -332,7 +332,7 @@ namespace CoSupport { namespace SystemC {
             ++iter )
         *this &= **iter;
     }
-    
+
     this_type operator & (EventType &e)
       { return this_type(*this) &= e; }
     this_type &operator &= (EventType &e) {
