@@ -47,9 +47,12 @@ namespace CoSupport { namespace SystemC {
 #ifndef NDEBUG
         assert(!notifyRun); notifyRun = true;
 #endif
-        for ( ell_ty::iterator iter = ell.begin();
+        ell_ty::iterator iter, niter;
+        
+        for ( iter = ell.begin();
               iter != ell.end();
-              ++iter ) {
+              iter = niter ) {
+          ++(niter = iter);
           if ((*iter)->signaled(this)) {
             // event handled => therefore one missing again
             assert(missing == 0); missing = 1;
@@ -68,11 +71,15 @@ namespace CoSupport { namespace SystemC {
 #ifndef NDEBUG
       assert(!notifyRun); notifyRun = true;
 #endif
-      for ( ell_ty::iterator iter = ell.begin();
+      ell_ty::iterator iter, niter;
+      
+      for ( iter = ell.begin();
             iter != ell.end();
-            ++iter )
+            iter = niter) {
+        ++(niter = iter);
         if (*iter != el)
           sassert(!(*iter)->signaled(this));
+      }
 #ifndef NDEBUG
       notifyRun = false;
 #endif
