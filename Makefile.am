@@ -22,9 +22,7 @@
 
 SUBDIRS=
 
-ACLOCAL_AMFLAGS=-I ../BuildSystem/m4
-
-include $(ac_abs_aux_dir)/jfrules.mk
+include $(auxdir)/jfrules.mk
 
 pkgincludeprefix=cosupport/
 
@@ -52,6 +50,7 @@ pkginclude_HEADERS =			\
 	oneof.hpp			\
 	stl_output_for_list.hpp		\
 	stl_output_for_pair.hpp		\
+	refcount.hpp			\
 	intrusive_copyonwrite_ptr.hpp	\
 	shared_copyonwrite_ptr.hpp	\
 	modulo_arith.hpp		\
