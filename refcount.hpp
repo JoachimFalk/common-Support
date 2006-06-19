@@ -1,9 +1,9 @@
-#ifndef _INCLUDED_JFLIBS_REFCOUNT_HPP
-#define _INCLUDED_JFLIBS_REFCOUNT_HPP
+#ifndef _INCLUDED_COSUPPORT_REFCOUNT_HPP
+#define _INCLUDED_COSUPPORT_REFCOUNT_HPP
 
 #include <boost/detail/lightweight_mutex.hpp>
 
-namespace JFLibs {
+namespace CoSupport {
 
   class RefCount {
   private:
@@ -47,6 +47,6 @@ namespace JFLibs {
     }
   };
 
-} // namespace JFLibs
+} // namespace CoSupport 
 
-#endif // _INCLUDED_JFLIBS_REFCOUNT_HPP
+#endif // _INCLUDED_COSUPPORT_REFCOUNT_HPP

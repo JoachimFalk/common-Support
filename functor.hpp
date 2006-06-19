@@ -1,5 +1,7 @@
-#ifndef _FUNCTOR_HPP_
-#define _FUNCTOR_HPP_
+// vim: set sw=2 ts=8:
+
+#ifndef _INCLUDED_COSUPPORT_FUNCTOR_HPP
+#define _INCLUDED_COSUPPORT_FUNCTOR_HPP
 
 #include <cassert>
 
@@ -209,4 +211,4 @@ CONSTRUCT(ConstFunctor, TEMPLATELIST_4, PARAMLIST_4, const, PARAMCALL_4, MISSING
   
 } // namespace CoSupport
 
-#endif // _FUNCTOR_HPP_
+#endif // _INCLUDED_COSUPPORT_FUNCTOR_HPP

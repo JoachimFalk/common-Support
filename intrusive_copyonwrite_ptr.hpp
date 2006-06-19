@@ -21,8 +21,8 @@
  * $Log$
  */
 
-#ifndef _INCLUDED_JFLIBS_INTRUSIVE_COPYONWRITE_PTR_HPP
-#define _INCLUDED_JFLIBS_INTRUSIVE_COPYONWRITE_PTR_HPP
+#ifndef _INCLUDED_COSUPPORT_INTRUSIVE_COPYONWRITE_PTR_HPP
+#define _INCLUDED_COSUPPORT_INTRUSIVE_COPYONWRITE_PTR_HPP
 
 #include "refcount.hpp"
 
@@ -74,7 +74,7 @@ namespace CoSupport {
   };
 
 #define DECL_INTRUSIVE_COPYONWRITE_PTR(T,PST)	                \
-  typedef ::JFLibs::intrusive_copyonwrite_ptr<T> PST;	        \
+  typedef ::CoSupport::intrusive_copyonwrite_ptr<T> PST;	\
   void intrusive_ptr_add_ref(T *);		                \
   void intrusive_ptr_release(T *);		                \
   void intrusive_ptr_mkunique(PST &)
@@ -88,12 +88,12 @@ namespace CoSupport {
       delete p;					                \
   }                                                             \
   void intrusive_ptr_mkunique                                   \
-    ( ::JFLibs::intrusive_copyonwrite_ptr<T> &lptr ) {          \
-    const ::JFLibs::intrusive_copyonwrite_ptr<T> &rptr = lptr;  \
+    ( ::CoSupport::intrusive_copyonwrite_ptr<T> &lptr ) {       \
+    const ::CoSupport::intrusive_copyonwrite_ptr<T> &rptr = lptr;\
     if ( !rptr->unique_ref() )                                  \
       lptr = new T(*rptr);                                      \
   }
   
 } // namesapce CoSupport
 
-#endif // _INCLUDED_JFLIBS_INTRUSIVE_COPYONWRITE_PTR_HPP
+#endif // _INCLUDED_COSUPPORT_INTRUSIVE_COPYONWRITE_PTR_HPP

@@ -1,5 +1,7 @@
-#ifndef PAR_PORT_HPP
-#define PAR_PORT_HPP
+// vim: set sw=2 ts=8:
+
+#ifndef _INCLUDED_COSUPPORT_PAR_PORT_HPP
+#define _INCLUDED_COSUPPORT_PAR_PORT_HPP
 
 #include "checked_vector.hpp"
 
@@ -37,4 +39,4 @@ struct par_port_in { typedef par_port< smoc_port_in<T> > ty; };
 
 }
 
-#endif // PAR_PORT_HPP
+#endif // _INCLUDED_COSUPPORT_PAR_PORT_HPP

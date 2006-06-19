@@ -1,5 +1,7 @@
-#ifndef _PORTABLE_SNPRINTF_H_
-#define _PORTABLE_SNPRINTF_H_
+// vim: set sw=2 ts=8:
+
+#ifndef _INCLUDED_COSUPPORT_PORTABLE_SNPRINTF_H
+#define _INCLUDED_COSUPPORT_PORTABLE_SNPRINTF_H
 
 #define PORTABLE_SNPRINTF_VERSION_MAJOR 2
 #define PORTABLE_SNPRINTF_VERSION_MINOR 1
@@ -39,4 +41,4 @@ extern int vasnprintf(char **ptr, size_t str_m, const char *fmt, va_list ap);
 }
 #endif
 
-#endif
+#endif // _INCLUDED_COSUPPORT_PORTABLE_SNPRINTF_H
