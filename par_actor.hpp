@@ -1,5 +1,7 @@
-#ifndef PAR_ACTOR_HPP
-#define PAR_ACTOR_HPP
+// vim: set sw=2 ts=8:
+
+#ifndef _INCLUDED_COSUPPORT_PAR_ACTOR_HPP
+#define _INCLUDED_COSUPPORT_PAR_ACTOR_HPP
 
 #include "checked_vector.hpp"
 #include "par_manager.hpp"
@@ -33,4 +35,4 @@ public:
 
 }
 
-#endif // PAR_ACTOR_HPP
+#endif // _INCLUDED_COSUPPORT_PAR_ACTOR_HPP

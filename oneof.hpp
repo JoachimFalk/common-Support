@@ -101,7 +101,18 @@ namespace detail {
     typename V::result_type apply(V &v)
       { assert(1 ? 0 : "oneof contains NILTYPE !"); }
   };
-  
+
+  struct OutputVisitor {
+    typedef void result_type;
+
+    std::ostream &output;
+
+    OutputVisitor(std::ostream &output): output(output) {}
+
+    template <typename T>
+    void operator()(const T &e) const
+      { output << "oneof(" << typeid(T).name() << ":" << e << ")"; }
+  };
 };
 
 template <
@@ -316,7 +327,7 @@ bool isType( const oneof<T1,T2,T3,T4,T5> &of )
 
 template <typename V, typename T1, typename T2, typename T3, typename T4, typename T5>
 static inline
-typename V::result_type applyVisitor( const oneof<T1,T2,T3,T4,T5> &of, const V &v ) {
+typename V::result_type applyVisitor(const oneof<T1,T2,T3,T4,T5> &of, const V &v = V()) {
   if ( isType<T1>(of) ) {
     return detail::CallVisitor<T1>::apply(static_cast<const T1 &>(of), v);
   } else if ( isType<T2>(of) ) {
@@ -334,12 +345,7 @@ typename V::result_type applyVisitor( const oneof<T1,T2,T3,T4,T5> &of, const V &
 
 template <typename V, typename T1, typename T2, typename T3, typename T4, typename T5>
 static inline
-typename V::result_type applyVisitor( const oneof<T1,T2,T3,T4,T5> &of )
-  { return applyVisitor(of, V()); }
-
-template <typename V, typename T1, typename T2, typename T3, typename T4, typename T5>
-static inline
-typename V::result_type applyVisitor( const oneof<T1,T2,T3,T4,T5> &of, V &v ) {
+typename V::result_type applyVisitor(const oneof<T1,T2,T3,T4,T5> &of, V &v) {
   if ( isType<T1>(of) ) {
     return detail::CallVisitor<T1>::apply(static_cast<const T1 &>(of), v);
   } else if ( isType<T2>(of) ) {
@@ -357,23 +363,8 @@ typename V::result_type applyVisitor( const oneof<T1,T2,T3,T4,T5> &of, V &v ) {
 
 template <typename T1, typename T2, typename T3, typename T4, typename T5>
 static inline
-std::ostream &operator << (std::ostream &output, const oneof<T1,T2,T3,T4,T5> &of) {
-  if ( isType<T1>(of) ) {
-    output << "oneof(" << typeid(T1).name() << ":" << static_cast<const T1 &>(of) << ")";
-  } else if ( isType<T2>(of) ) {
-    output << "oneof(" << typeid(T2).name() << ":" << static_cast<const T2 &>(of) << ")";
-  } else if ( isType<T3>(of) ) {
-    output << "oneof(" << typeid(T3).name() << ":" << static_cast<const T3 &>(of) << ")";
-  } else if ( isType<T4>(of) ) {
-    output << "oneof(" << typeid(T4).name() << ":" << static_cast<const T4 &>(of) << ")";
-  } else if ( isType<T5>(of) ) {
-    output << "oneof(" << typeid(T5).name() << ":" << static_cast<const T5 &>(of) << ")";
-  } else {
-    assert( isType<NILTYPE>(of) );
-    output << "oneof()";
-  }
-  return output;
-}
+std::ostream &operator << (std::ostream &output, const oneof<T1,T2,T3,T4,T5> &of)
+  { applyVisitor(of, detail::OutputVisitor(output)); return output; }
 
 } // namespace CoSupport
 

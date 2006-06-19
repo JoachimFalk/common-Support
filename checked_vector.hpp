@@ -1,5 +1,7 @@
-#ifndef CHECKED_VECTOR_HPP
-#define CHECKED_VECTOR_HPP
+// vim: set sw=2 ts=8:
+
+#ifndef _INCLUDED_COSUPPORT_CHECKED_VECTOR_HPP
+#define _INCLUDED_COSUPPORT_CHECKED_VECTOR_HPP
 
 #include <memory>
 #include <cassert>
@@ -129,4 +131,4 @@ int main() {
 }
 */
 
-#endif // CHECKED_VECTOR_HPP
+#endif // _INCLUDED_COSUPPORT_CHECKED_VECTOR_HPP

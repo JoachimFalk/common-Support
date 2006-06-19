@@ -1,5 +1,7 @@
-#ifndef PAR_ACTOR_FACTORY_HPP
-#define PAR_ACTOR_FACTORY_HPP
+// vim: set sw=2 ts=8:
+
+#ifndef _INCLUDED_COSUPPORT_PAR_ACTOR_FACTORY_HPP
+#define _INCLUDED_COSUPPORT_PAR_ACTOR_FACTORY_HPP
 
 #include "string_convert.hpp"
 
@@ -36,4 +38,4 @@ public:
 
 }
 
-#endif // PAR_ACTOR_FACTORY_HPP
+#endif // _INCLUDED_COSUPPORT_PAR_ACTOR_FACTORY_HPP

@@ -1,5 +1,7 @@
-#ifndef STRING_CONVERT_HPP
-#define STRING_CONVERT_HPP
+// vim: set sw=2 ts=8:
+
+#ifndef _INCLUDED_COSUPPORT_STRING_CONVERT_HPP
+#define _INCLUDED_COSUPPORT_STRING_CONVERT_HPP
 
 #include <sstream>
 #include <string>
@@ -52,4 +54,4 @@ int main() {
 }
 */
 
-#endif // STRING_CONVERT_HPP
+#endif // _INCLUDED_COSUPPORT_STRING_CONVERT_HPP

@@ -21,11 +21,12 @@
  * $Log$
  */
 
-#ifndef _INCLUDED_INTRUSIVE_COPYONWRITE_PTR_H
-#define _INCLUDED_INTRUSIVE_COPYONWRITE_PTR_H
+#ifndef _INCLUDED_COSUPPORT_INTRUSIVE_COPYONWRITE_PTR_HPP
+#define _INCLUDED_COSUPPORT_INTRUSIVE_COPYONWRITE_PTR_HPP
+
+#include "refcount.hpp"
 
 #include <boost/intrusive_ptr.hpp>
-#include <boost/detail/lightweight_mutex.hpp>
 
 namespace CoSupport {
 
@@ -54,7 +55,7 @@ namespace CoSupport {
     typedef void (this_type::*unspecified_bool_type) ( this_type & );
     
     operator unspecified_bool_type () const {
-      return sptr ? 0: &this_type::swap;
+      return sptr.get() == NULL ? 0: &this_type::swap;
     }
     
     // operator! is a Borland-specific workaround
@@ -72,72 +73,27 @@ namespace CoSupport {
     T * operator->() { return get(); }
   };
 
-  class refonly_count {
-  private:
-    typedef boost::detail::lightweight_mutex mutex_type;
-    
-#if defined(BOOST_HAS_THREADS)
-    mutable mutex_type mtx_;
-#endif
-    /* how many references are there */
-    long use_count_;
-  public:
-    refonly_count()
-      : use_count_(0) {}
-    /* each copy start refcounting anew */
-    refonly_count(const refonly_count &x)
-      : use_count_(0) {}
-    
-    ~refonly_count() // nothrow
-      {}
-    
-    void add_ref( void ) {
-#if defined(BOOST_HAS_THREADS)
-      mutex_type::scoped_lock lock(mtx_);
-#endif
-      ++use_count_;
-    }
-    
-    bool del_ref( void ) {
-#if defined(BOOST_HAS_THREADS)
-      mutex_type::scoped_lock lock(mtx_);
-#endif
-      --use_count_;
-      return use_count_ == 0;
-    }
-    
-    bool unique_ref() const { // nothrow
-#if defined(BOOST_HAS_THREADS)
-      mutex_type::scoped_lock lock(mtx_);
-#endif
-      return use_count_ == 1;
-    }
-  };
+#define DECL_INTRUSIVE_COPYONWRITE_PTR(T,PST)	                \
+  typedef ::CoSupport::intrusive_copyonwrite_ptr<T> PST;	\
+  void intrusive_ptr_add_ref(T *);		                \
+  void intrusive_ptr_release(T *);		                \
+  void intrusive_ptr_mkunique(PST &)
 
-#define DECL_INTRUSIVE_COPYONWRITE_PTR(T,PST)	\
-  typedef intrusive_copyonwrite_ptr<T> PST;	\
-  void intrusive_ptr_add_ref( T * );		\
-  void intrusive_ptr_release( T * );		\
-  void intrusive_ptr_mkunique( PST & )
-
-#define IMPL_INTRUSIVE_PTR(T)			\
-  void intrusive_ptr_add_ref( T *p ) {		\
-    p->add_ref();				\
-  }						\
-  void intrusive_ptr_release( T *p ) {		\
-    if ( p->del_ref() )				\
-      delete p;					\
-  }
-
-#define IMPL_INTRUSIVE_COPYONWRITE_PTR(T)		\
-  IMPL_INTRUSIVE_PTR(T)					\
-  void intrusive_ptr_mkunique				\
-    ( intrusive_copyonwrite_ptr<T> &lptr ) {		\
-    const intrusive_copyonwrite_ptr<T> &rptr = lptr;	\
-    if ( !rptr->unique_ref() )				\
-      lptr = new T(*rptr);				\
+#define IMPL_INTRUSIVE_COPYONWRITE_PTR(T)                       \
+  void intrusive_ptr_add_ref(T *p) {		                \
+    p->add_ref();				                \
+  }						                \
+  void intrusive_ptr_release(T *p) {		                \
+    if ( p->del_ref() )				                \
+      delete p;					                \
+  }                                                             \
+  void intrusive_ptr_mkunique                                   \
+    ( ::CoSupport::intrusive_copyonwrite_ptr<T> &lptr ) {       \
+    const ::CoSupport::intrusive_copyonwrite_ptr<T> &rptr = lptr;\
+    if ( !rptr->unique_ref() )                                  \
+      lptr = new T(*rptr);                                      \
   }
   
 } // namesapce CoSupport
 
-#endif /* _INCLUDED_INTRUSIVE_COPYONWRITE_PTR_H */
+#endif // _INCLUDED_COSUPPORT_INTRUSIVE_COPYONWRITE_PTR_HPP

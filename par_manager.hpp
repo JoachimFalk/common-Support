@@ -1,5 +1,7 @@
-#ifndef PAR_MANAGER_HPP
-#define PAR_MANAGER_HPP
+// vim: set sw=2 ts=8:
+
+#ifndef _INCLUDED_COSUPPORT_PAR_MANAGER_HPP
+#define _INCLUDED_COSUPPORT_PAR_MANAGER_HPP
 
 #include <string>
 #include <map>
@@ -21,4 +23,4 @@ private:
   par_manager& operator=(const par_manager&);
 };
 
-#endif // PAR_MANAGER_HPP
+#endif // _INCLUDED_COSUPPORT_PAR_MANAGER_HPP
