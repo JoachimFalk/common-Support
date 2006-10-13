@@ -26,9 +26,6 @@ include $(auxdir)/jfrules.mk
 
 pkgincludeprefix=cosupport/
 
-#compileheader-libsystemoc.stamp: $(libsystemoc_CH_LTOBJS)
-#	@date > $@
-
 INCLUDES =				\
 	-I./include			\
 	-I$(srcdir)
@@ -51,6 +48,7 @@ pkginclude_HEADERS =			\
 	stl_output_for_list.hpp		\
 	stl_output_for_pair.hpp		\
 	refcount.hpp			\
+	refcount_object.hpp		\
 	intrusive_copyonwrite_ptr.hpp	\
 	shared_copyonwrite_ptr.hpp	\
 	modulo_arith.hpp		\
@@ -78,19 +76,26 @@ noinst_PROGRAMS=			\
 	test_event_and_list		\
 	test_event_or_list
 
-libcosupport_la_SOURCES = par_manager.cpp
+compileheader-libcosupport.stamp: $(refcount_CH_LTOBJS) $(refcount_object_CH_LTOBJS)
+	@date > $@
+
+libcosupport_la_LIBADD =  $(refcount_CH_LTOBJS) $(refcount_object_CH_LTOBJS)
+libcosupport_la_DEPENDENCIES = compileheader-libcosupport.stamp
+libcosupport_la_SOURCES =		\
+	par_manager.cpp			\
+	refcount_object.cpp
 
 test_arrayfifo_SOURCES      = test_arrayfifo.cpp
 test_arrayfifo_DEPENDENCIES = include
 
-test_event_and_list_SOURCES	  = test_event_and_list.cpp
 test_event_and_list_DEPENDENCIES  = include
 test_event_and_list_LDFLAGS	  = @SYSTEMC_LDFLAGS@ -lsystemc
 test_event_and_list_CXXFLAGS	  = @SYSTEMC_INCLUDE@
+test_event_and_list_SOURCES	  = test_event_and_list.cpp
 
-test_event_or_list_SOURCES	  = test_event_or_list.cpp
 test_event_or_list_DEPENDENCIES	  = include
 test_event_or_list_LDFLAGS	  = @SYSTEMC_LDFLAGS@ -lsystemc
 test_event_or_list_CXXFLAGS	  = @SYSTEMC_INCLUDE@
+test_event_or_list_SOURCES	  = test_event_or_list.cpp
 
 all: include

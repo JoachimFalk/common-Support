@@ -27,15 +27,11 @@
 
 #define DECL_INTRUSIVE_REFCOUNT_PTR(T,PST)	                \
   typedef ::boost::intrusive_ptr<T> PST;                        \
-  void intrusive_ptr_add_ref(T *);		                \
   void intrusive_ptr_release(T *);
 
 #define IMPL_INTRUSIVE_REFCOUNT_PTR(T)		                \
-  void intrusive_ptr_add_ref(T *p) {		                \
-    p->add_ref();				                \
-  }						                \
   void intrusive_ptr_release(T *p) {		                \
-    if ( p->del_ref() )				                \
+    if (p->del_ref())				                \
       delete p;					                \
   }
 
