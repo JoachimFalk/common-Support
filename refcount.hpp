@@ -7,10 +7,6 @@
 
 namespace CoSupport {
 
-#ifdef BOOST_HAS_THREADS
-# error BOOST_HAS_THREADS
-#endif
-
   class RefCount {
   private:
     typedef boost::detail::lightweight_mutex mutex_type;
