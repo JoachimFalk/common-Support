@@ -57,6 +57,7 @@ pkginclude_HEADERS =			\
 	functor.hpp                     \
 	checked_vector.hpp              \
 	string_convert.hpp              \
+	iterator_dump.hpp		\
 					\
 	commondefs.h			\
 	integertypes.h			\
