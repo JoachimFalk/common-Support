@@ -19,29 +19,23 @@
 # Boston, MA 02111-1307, USA.
 #
 # $Log$
-
-SUBDIRS=
+root_srcdir   := $(shell cd $(top_srcdir)/.. && pwd)
+root_builddir := $(shell cd $(top_builddir)/.. && pwd)
 
 include $(auxdir)/jfrules.mk
 
+SUBDIRS=
+
 pkgincludeprefix=cosupport/
 
-INCLUDES =				\
+AM_CPPFLAGS=				\
+	@AM_CPPFLAGS@			\
 	-I./include			\
 	-I$(srcdir)
 
-AM_LDFLAGS=
-
-
-#noinst_SCRIPTS  = test_pathstuff.sh
+#AM_LDFLAGS= @AM_LDFLAGS@
 
 EXTRA_DIST	=
-
-#noinst_PROGRAMS = test_pathstuff
-
-PROGLDFLAGS=
-
-#lib_LTLIBRARIES = libsystemoc.la
 
 pkginclude_HEADERS =			\
 	oneof.hpp			\
@@ -69,7 +63,9 @@ pkginclude_HEADERS =			\
 	par_manager.hpp			\
 	par_port.hpp
 	
-# noinst_HEADERS=	oneof.hpp
+#noinst_HEADERS=	oneof.hpp
+
+#noinst_SCRIPTS= test_pathstuff.sh
 
 lib_LTLIBRARIES= libcosupport.la
 noinst_PROGRAMS=			\
