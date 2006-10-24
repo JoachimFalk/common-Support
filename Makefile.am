@@ -28,12 +28,19 @@ SUBDIRS=
 
 pkgincludeprefix=cosupport/
 
+
 AM_CPPFLAGS=				\
 	@AM_CPPFLAGS@			\
+	@BOOST_INCLUDE@			\
+	@SYSTEMC_INCLUDE@		\
 	-I./include			\
 	-I$(srcdir)
 
-#AM_LDFLAGS= @AM_LDFLAGS@
+AM_LDFLAGS=				\
+	@AM_LDFLAGS@			\
+	@SYSTEMC_LDFLAGS@		\
+	@BOOST_LDFLAGS@
+
 
 EXTRA_DIST	=
 
@@ -62,7 +69,7 @@ pkginclude_HEADERS =			\
 	par_actor_factory.hpp		\
 	par_manager.hpp			\
 	par_port.hpp
-	
+
 #noinst_HEADERS=	oneof.hpp
 
 #noinst_SCRIPTS= test_pathstuff.sh
