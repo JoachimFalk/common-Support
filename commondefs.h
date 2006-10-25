@@ -37,15 +37,21 @@
 #define PE_PTRERRORNR(x)	((unsigned long) (x))
 
 #ifndef __SCFE__
-# ifndef HAVE_C99_INLINE
+# ifdef __cplusplus
 #   define GNU89_STATIC_INLINE	static inline
-#   define GNU89_EXTERN_INLINE	extern inline
-#   define GNU89_INLINE		inline
-# else
-#   define GNU89_STATIC_INLINE	static inline
-#   define GNU89_EXTERN_INLINE	inline
-#   define GNU89_INLINE		extern inline
-# endif
+#   define GNU89_EXTERN_INLINE  inline
+#   define GNU89_INLINE         inline
+# else // !__cplusplus
+#   ifndef HAVE_C99_INLINE
+#     define GNU89_STATIC_INLINE	static inline
+#     define GNU89_EXTERN_INLINE	extern inline
+#     define GNU89_INLINE		inline
+#   else
+#     define GNU89_STATIC_INLINE	static inline
+#     define GNU89_EXTERN_INLINE	inline
+#     define GNU89_INLINE		extern inline
+#   endif
+# endif // __cplusplus
 #else
 # define GNU89_STATIC_INLINE	
 # define GNU89_EXTERN_INLINE	

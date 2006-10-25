@@ -250,6 +250,21 @@ namespace CoSupport { namespace SystemC {
       return *this;
     }
 
+    this_type operator | (this_type &ew)
+      { return this_type(*this) |= ew; }
+    this_type &operator |= (this_type &eol) {
+      for( typename EventList::iterator iter = eol.eventList.begin();
+	   iter != eol.eventList.end(); iter++ ) {
+	if(**iter){
+	  --missing;
+	  if (!eventTrigger) eventTrigger = *iter;
+	}
+	eventList.push_back(*iter);
+	(*iter)->addListener(this);
+      }
+      return *this;
+    }
+
     EventType &getEventTrigger() {
       for ( typename EventList::iterator iter = eventList.begin();
             iter != eventList.end() && !eventTrigger;

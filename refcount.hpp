@@ -1,6 +1,8 @@
 #ifndef _INCLUDED_COSUPPORT_REFCOUNT_HPP
 #define _INCLUDED_COSUPPORT_REFCOUNT_HPP
 
+#include "commondefs.h"
+
 #include <boost/detail/lightweight_mutex.hpp>
 
 namespace CoSupport {
@@ -48,5 +50,12 @@ namespace CoSupport {
   };
 
 } // namespace CoSupport 
+
+#ifndef _COMPILEHEADER_INTRUSIVE_PTR_ADD_REF_REFCOUNT
+GNU89_EXTERN_INLINE
+#endif
+void intrusive_ptr_add_ref(CoSupport::RefCount *p) {
+  p->add_ref();
+}
 
 #endif // _INCLUDED_COSUPPORT_REFCOUNT_HPP

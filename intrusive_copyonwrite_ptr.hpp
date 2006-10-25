@@ -73,25 +73,25 @@ namespace CoSupport {
     T * operator->() { return get(); }
   };
 
-#define DECL_INTRUSIVE_COPYONWRITE_PTR(T,PST)	                \
-  typedef ::CoSupport::intrusive_copyonwrite_ptr<T> PST;	\
-  void intrusive_ptr_add_ref(T *);		                \
-  void intrusive_ptr_release(T *);		                \
+#define DECL_INTRUSIVE_COPYONWRITE_PTR(T,PST)	                  \
+  typedef ::CoSupport::intrusive_copyonwrite_ptr<T> PST;	  \
+  void intrusive_ptr_add_ref(T *);		                  \
+  void intrusive_ptr_release(T *);		                  \
   void intrusive_ptr_mkunique(PST &)
 
-#define IMPL_INTRUSIVE_COPYONWRITE_PTR(T)                       \
-  void intrusive_ptr_add_ref(T *p) {		                \
-    p->add_ref();				                \
-  }						                \
-  void intrusive_ptr_release(T *p) {		                \
-    if ( p->del_ref() )				                \
-      delete p;					                \
-  }                                                             \
-  void intrusive_ptr_mkunique                                   \
-    ( ::CoSupport::intrusive_copyonwrite_ptr<T> &lptr ) {       \
-    const ::CoSupport::intrusive_copyonwrite_ptr<T> &rptr = lptr;\
-    if ( !rptr->unique_ref() )                                  \
-      lptr = new T(*rptr);                                      \
+#define IMPL_INTRUSIVE_COPYONWRITE_PTR(T)                         \
+  void intrusive_ptr_add_ref(T *p) {		                  \
+    p->add_ref();                                                 \
+  }                                                               \
+  void intrusive_ptr_release(T *p) {		                  \
+    if (p->del_ref())				                  \
+      delete p;					                  \
+  }                                                               \
+  void intrusive_ptr_mkunique                                     \
+    ( ::CoSupport::intrusive_copyonwrite_ptr<T> &lptr ) {         \
+    const ::CoSupport::intrusive_copyonwrite_ptr<T> &rptr = lptr; \
+    if ( !rptr->unique_ref() )                                    \
+      lptr = new T(*rptr);                                        \
   }
   
 } // namesapce CoSupport
