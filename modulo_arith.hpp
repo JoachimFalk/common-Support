@@ -36,7 +36,7 @@ protected:
 public:
   ModuloInt( size_t v = 0 )
     : v(v) {
-    assert( v >= 0 && v < N );
+    assert( v < N );
   }
   ModuloInt( int _v )
     : v(_v >= 0 ? _v : N + _v) {

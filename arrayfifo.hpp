@@ -39,6 +39,26 @@
 
 namespace CoSupport {
 
+  namespace Detail {
+    template <typename X>
+    struct DiscardConst {
+      typedef X type;
+    };
+    template <typename X>
+    struct DiscardConst<const X> {
+      typedef X type;
+    };
+
+    template <typename X>
+    struct ToggleConst {
+      typedef const X type;
+    };
+    template <typename X>
+    struct ToggleConst<const X> {
+      typedef X type;
+    };
+  };
+
   /*
    * Fixed Array FIFO buffer
    */
@@ -47,8 +67,6 @@ namespace CoSupport {
   public:
     typedef ArrayFifo<T,N>  this_type;
     typedef T               value_type;
-  private:
-    struct enabler {};
   protected:
     typedef this_type       fifo_type;
     
@@ -59,8 +77,9 @@ namespace CoSupport {
         V,
         boost::random_access_traversal_tag> {
     private:
-      template <typename FF, typename VV>
-      friend class IterTemplate;
+      friend class IterTemplate<
+        typename Detail::ToggleConst<F>::type,
+        typename Detail::ToggleConst<V>::type>;
       friend class boost::iterator_core_access;
       friend class ArrayFifo<T,N>;
       
@@ -70,12 +89,11 @@ namespace CoSupport {
       IterTemplate()
         : f(NULL) {}
       
-      template <typename FF, typename VV>
+      // Copy Constructor from const_iterator
       IterTemplate(
-          IterTemplate<FF,VV> const &iter,
-          typename boost::enable_if<
-             boost::is_convertible<FF *, F *>,
-             enabler>::type = enabler() )
+        IterTemplate<
+          typename Detail::DiscardConst<F>::type,
+          typename Detail::DiscardConst<V>::type> const &iter)
         : f(iter.f), i(iter.i) {}
     protected:
       IterTemplate( F *f, ModuloInt<N+1> i )
