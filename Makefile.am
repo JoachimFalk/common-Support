@@ -50,6 +50,7 @@ pkginclude_HEADERS =			\
 	stl_output_for_pair.hpp		\
 	refcount.hpp			\
 	refcount_object.hpp		\
+	intrusive_refcount_ptr.hpp	\
 	intrusive_copyonwrite_ptr.hpp	\
 	shared_copyonwrite_ptr.hpp	\
 	modulo_arith.hpp		\
