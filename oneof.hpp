@@ -39,20 +39,12 @@ namespace detail {
   template <typename T>
   struct CallVisitor {
     template <class V> static
-    typename V::result_type apply(const T &obj, const V &v)
-      { return v(obj); }
-    
-    template <class V> static
     typename V::result_type apply(const T &obj, V &v)
       { return v(obj); }
   };
   
   template <>
   struct CallVisitor<void2_st> {
-    template <class V> static
-    typename V::result_type apply(const void2_st &obj, const V &v)
-      { assert(1 ? 0 : "oneof contains void2_st !"); }
-    
     template <class V> static
     typename V::result_type apply(const void2_st &obj, V &v)
       { assert(1 ? 0 : "oneof contains void2_st !"); }
@@ -61,10 +53,6 @@ namespace detail {
   template <>
   struct CallVisitor<void3_st> {
     template <class V> static
-    typename V::result_type apply(const void3_st &obj, const V &v)
-      { assert(1 ? 0 : "oneof contains void3_st !"); }
-    
-    template <class V> static
     typename V::result_type apply(const void3_st &obj, V &v)
       { assert(1 ? 0 : "oneof contains void3_st !"); }
   };
@@ -72,31 +60,19 @@ namespace detail {
   template <>
   struct CallVisitor<void4_st> {
     template <class V> static
-    typename V::result_type apply(const void4_st &obj, const V &v)
+    typename V::result_type apply(const void4_st &obj, V &v)
       { assert(1 ? 0 : "oneof contains void4_st !"); }
-    
-    template <class V> static
-    typename V::result_type apply(const void3_st &obj, V &v)
-      { assert(1 ? 0 : "oneof contains void3_st !"); }
   };
 
   template <>
   struct CallVisitor<void5_st> {
     template <class V> static
-    typename V::result_type apply(const void5_st &obj, const V &v)
-      { assert(1 ? 0 : "oneof contains void5_st !"); }
-    
-    template <class V> static  
     typename V::result_type apply(const void5_st &obj, V &v)
       { assert(1 ? 0 : "oneof contains void5_st !"); }
   };
 
   template <>
   struct CallVisitor<NILTYPE> {
-    template <class V> static
-    typename V::result_type apply(const V &v)
-      { assert(1 ? 0 : "oneof contains NILTYPE !"); }
-    
     template <class V> static
     typename V::result_type apply(V &v)
       { assert(1 ? 0 : "oneof contains NILTYPE !"); }
@@ -374,26 +350,6 @@ class oneof {
 
 template <typename V, typename T1, typename T2, typename T3, typename T4, typename T5>
 static inline
-typename V::result_type applyVisitor(const oneof<T1,T2,T3,T4,T5> &of, const V &v) {
-  typedef oneof<T1,T2,T3,T4,T5> this_type;
-  switch( of.type() ) {
-    case oneofTypeid<this_type, T1>::type:
-      return detail::CallVisitor<T1>::apply(of, v);
-    case oneofTypeid<this_type, T2>::type:
-      return detail::CallVisitor<T2>::apply(of, v);
-    case oneofTypeid<this_type, T3>::type:
-      return detail::CallVisitor<T3>::apply(of, v);
-    case oneofTypeid<this_type, T4>::type:
-      return detail::CallVisitor<T4>::apply(of, v);
-    case oneofTypeid<this_type, T5>::type:
-      return detail::CallVisitor<T5>::apply(of, v);
-    default:
-      return detail::CallVisitor<NILTYPE>::apply(v);
-  }
-}
-
-template <typename V, typename T1, typename T2, typename T3, typename T4, typename T5>
-static inline
 typename V::result_type applyVisitor(const oneof<T1,T2,T3,T4,T5> &of, V &v) {
   typedef oneof<T1,T2,T3,T4,T5> this_type;
   switch( of.type() ) {
@@ -415,7 +371,11 @@ typename V::result_type applyVisitor(const oneof<T1,T2,T3,T4,T5> &of, V &v) {
 template <typename T1, typename T2, typename T3, typename T4, typename T5>
 static inline
 std::ostream &operator << (std::ostream &output, const oneof<T1,T2,T3,T4,T5> &of)
-  { applyVisitor(of, detail::OutputVisitor(output)); return output; }
+  {
+    detail::OutputVisitor ov(output);
+    applyVisitor(of, ov);
+    return output;
+  }
 
 } // namespace CoSupport
 
