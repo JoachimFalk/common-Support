@@ -184,7 +184,7 @@ const oneof_typeid oneofTypeid<const oneof<T1,T2,T3,T4,T5>,NILTYPE>::type = 0;
 
 template <typename T, typename T1, typename T2, typename T3, typename T4, typename T5>
 static inline
-bool isType( const oneof<T1,T2,T3,T4,T5> of )
+bool isType( const oneof<T1,T2,T3,T4,T5> &of )
   { return oneofTypeid<oneof<T1,T2,T3,T4,T5>,T>::type == of.type(); }
 
 template <typename T1, typename T2, typename T3, typename T4, typename T5>
