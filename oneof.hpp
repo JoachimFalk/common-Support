@@ -184,7 +184,7 @@ const oneof_typeid oneofTypeid<const oneof<T1,T2,T3,T4,T5>,NILTYPE>::type = 0;
 
 template <typename T, typename T1, typename T2, typename T3, typename T4, typename T5>
 static inline
-bool isType( const oneof<T1,T2,T3,T4,T5> of )
+bool isType( const oneof<T1,T2,T3,T4,T5> &of )
   { return oneofTypeid<oneof<T1,T2,T3,T4,T5>,T>::type == of.type(); }
 
 template <typename T1, typename T2, typename T3, typename T4, typename T5>
@@ -232,7 +232,7 @@ class oneof {
       { _ONEOFDEBUG("oneof()"); }
     oneof(const this_type &x): valid(oneofTypeid<this_type,NILTYPE>::type) {
       if ( x.valid != oneofTypeid<this_type,NILTYPE>::type )
-        _ONEOFDEBUG("oneof(const oneof &) (T" << x.valid << ")");
+        _ONEOFDEBUG("oneof(const oneof &) (T" << static_cast<size_t>(x.valid) << ")");
       else
         _ONEOFDEBUG("oneof(const oneof &) ()");
       *this = x;
@@ -260,7 +260,7 @@ class oneof {
     
     this_type &operator = (const this_type &x) {
       if ( x.valid != oneofTypeid<this_type,NILTYPE>::type )
-        _ONEOFDEBUG("oneof = const oneof & (T" << x.valid << ")");
+        _ONEOFDEBUG("oneof = const oneof & (T" << static_cast<size_t>(x.valid) << ")");
       else
         _ONEOFDEBUG("oneof = const oneof & ()");
       switch( x.valid ) {
@@ -319,7 +319,7 @@ class oneof {
     
     void reset() {
       if ( valid != oneofTypeid<this_type,NILTYPE>::type )
-        _ONEOFDEBUG("oneof.reset() (T" << valid << ")");
+        _ONEOFDEBUG("oneof.reset() (T" << static_cast<size_t>(valid) << ")");
       else
         _ONEOFDEBUG("oneof.reset() ()");
       switch( valid ) {
