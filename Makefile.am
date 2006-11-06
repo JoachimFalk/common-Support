@@ -60,6 +60,7 @@ pkginclude_HEADERS =			\
 	checked_vector.hpp              \
 	string_convert.hpp              \
 	iterator_dump.hpp		\
+	bit_buffer.hpp			\
 					\
 	commondefs.h			\
 	integertypes.h			\
