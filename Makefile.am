@@ -70,7 +70,10 @@ pkginclude_HEADERS =			\
 	par_actor.hpp			\
 	par_actor_factory.hpp		\
 	par_manager.hpp			\
-	par_port.hpp
+	par_port.hpp \
+	smoc_ostream.hpp \
+	smoc_debug_out.hpp
+
 
 #noinst_HEADERS=	oneof.hpp
 
@@ -89,7 +92,10 @@ libcosupport_la_LIBADD =  $(refcount_CH_LTOBJS) $(refcount_object_CH_LTOBJS)
 libcosupport_la_DEPENDENCIES = compileheader-libcosupport.stamp
 libcosupport_la_SOURCES =		\
 	par_manager.cpp			\
-	refcount_object.cpp
+	refcount_object.cpp \
+	smoc_debug_out.cpp \
+	smoc_ostream.cpp
+
 
 test_arrayfifo_SOURCES      = test_arrayfifo.cpp
 test_arrayfifo_DEPENDENCIES = include
