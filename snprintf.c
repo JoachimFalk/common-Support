@@ -1,151 +1,37 @@
 /*
- * snprintf.c - a portable implementation of snprintf
- *
- * AUTHOR
- *   Mark Martinec <mark.martinec@ijs.si>, April 1999.
- *
- *   Copyright 1999, Mark Martinec. All rights reserved.
- *
- * TERMS AND CONDITIONS
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the "Frontier Artistic License" which comes
- *   with this Kit.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty
- *   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *   See the Frontier Artistic License for more details.
- *
- *   You should have received a copy of the Frontier Artistic License
- *   with this Kit in the file named LICENSE.txt .
- *   If not, I'll be glad to provide one.
- *
- * FEATURES
- * - careful adherence to specs regarding flags, field width and precision;
- * - good performance for large string handling (large format, large
- *   argument or large paddings). Performance is similar to system's sprintf
- *   and in several cases significantly better (make sure you compile with
- *   optimizations turned on, tell the compiler the code is strict ANSI
- *   if necessary to give it more freedom for optimizations);
- * - return value semantics as per ISO C9X;
- * - written in standard ISO/ANSI C - requires an ANSI C compiler.
- *
- * SUPPORTED FORMATS AND DATA TYPES
- *
- * This snprintf only supports format specifiers:
- * s, c, d, o, u, x, X, p  (and synonyms: i, D, U, O - see below)
- * with flags: '-', '+', ' ', '0' and '#'.
- * An asterisk is supported for field width as well as precision.
- *
- * Data type modifiers 'h' (short int), 'l' (long int)
- * and 'll' (long long int) are supported.
- * NOTE:
- *   If macro SNPRINTF_LONGLONG_SUPPORT is not defined (default) the
- *   data type modifier 'll' is recognized but treated the same as 'l',
- *   which may cause argument value truncation! Defining
- *   SNPRINTF_LONGLONG_SUPPORT requires that your system's sprintf also
- *   handles data type modifier 'll'. long long int is a language
- *   extension which may not be portable.
- *
- * Conversion of numeric data (formats d, o, u, x, X, p) with data type
- * modifiers (none or h, l, ll) is left to the system routine sprintf,
- * but all handling of flags, field width and precision as well as c and
- * s formats is done very carefully by this portable routine. If a string
- * precision (truncation) is specified (e.g. %.8s) it is guaranteed the
- * string beyond the specified precision will not be referenced.
- *
- * Data type modifiers h, l and ll are ignored for c and s formats (data
- * types wint_t and wchar_t are not supported).
- *
- * The following common synonyms for conversion characters are supported:
- *   - i is a synonym for d
- *   - D is a synonym for ld, explicit data type modifiers are ignored
- *   - U is a synonym for lu, explicit data type modifiers are ignored
- *   - O is a synonym for lo, explicit data type modifiers are ignored
- *
- * The following is specifically not supported:
- *   - flag ' (thousands' grouping character) is recognized but ignored
- *   - numeric formats: f, e, E, g, G and synonym F
- *   - data type modifier 'L' (long double) and 'q' (quad - use 'll' instead)
- *   - wide character/string formats: C, lc, S, ls
- *   - writeback of converted string length: conversion character n
- *   - the n$ specification for direct reference to n-th argument
- *   - locales
- *
- * It is permitted for str_m to be zero, and it is permitted to specify NULL
- * pointer for resulting string argument if str_m is zero (as per ISO C9X).
- *
- * The return value is the number of characters which would be generated
- * for the given input, excluding the trailing null. If this value
- * is greater or equal to str_m, not all characters from the result
- * have been stored in str. If str_m is greater than zero it is
- * guaranteed the resulting string will be null-terminated.
- *
- * NOTE that this matches the ISO C9X and GNU C library 2.1,
- * but is different from some older implementations!
- *
- * Routines asprintf and vasprintf return a pointer (in the ptr argument)
- * to a buffer sufficiently large to hold the resulting string. This pointer
- * should be passed to free(3) to release the allocated storage when it is
- * no longer needed. If sufficient space cannot be allocated, these functions
- * will return -1 and set ptr to be a NULL pointer. These two routines are a
- * GNU C library extensions (glibc).
- *
- * Routines asnprintf and vasnprintf are similar to asprintf and vasprintf,
- * yet, like snprintf and vsnprintf counterparts, will write at most str_m-1
- * characters into the allocated output string, the last character in the
- * allocated buffer then gets the terminating null. If the formatted string
- * length (the return value) is greater than or equal to the str_m argument,
- * the resulting string was truncated and some of the formatted characters
- * were discarded. These routines present a handy way to limit the amount
- * of allocated memory to some sane value.
- *
- * AVAILABILITY
- *   http://www.ijs.si/software/snprintf/
- *
- * REVISION HISTORY
- * 1999-04	V0.9  Mark Martinec
- *		- initial version, some modifications after comparing printf
- *		  man pages for Digital Unix 4.0, Solaris 2.6 and HPUX 10,
- *		  and checking how Perl handles sprintf (differently!);
- * 1999-04-09	V1.0  Mark Martinec <mark.martinec@ijs.si>
- *		- added main test program, fixed remaining inconsistencies,
- *		  added optional (long long int) support;
- * 1999-04-12	V1.1  Mark Martinec <mark.martinec@ijs.si>
- *		- support the 'p' format (pointer to void);
- *		- if a string precision is specified
- *		  make sure the string beyond the specified precision
- *		  will not be referenced (e.g. by strlen);
- * 1999-04-13	V1.2  Mark Martinec <mark.martinec@ijs.si>
- *		- support synonyms %D=%ld, %U=%lu, %O=%lo;
- *		- speed up the case of long format string with few conversions;
- * 1999-06-30	V1.3  Mark Martinec <mark.martinec@ijs.si>
- *		- fixed runaway loop (eventually crashing when str_l wraps
- *		  beyond 2*31) while copying format string without
- *		  conversion specifiers to a buffer that is too short
- *		  (thanks to Edwin Young <edwiny@autonomy.com> for
- *		  spotting the problem);
- *		- added macros PORTABLE_SNPRINTF_VERSION_(MAJOR|MINOR)
- *		  to snprintf.h
- * 2000-02-14	V2.0 (never released) Mark Martinec <mark.martinec@ijs.si>
- *		- relaxed license terms: The Artistic License now applies.
- *		  You may still apply the GNU GENERAL PUBLIC LICENSE
- *		  as was distributed with previous versions, if you prefer;
- *		- changed REVISION HISTORY dates to use ISO 8601 date format;
- *		- added vsnprintf (patch also independently proposed by
- *		  Caolan McNamara 2000-05-04, and Keith M Willenson 2000-06-01)
- * 2000-06-27	V2.1  Mark Martinec <mark.martinec@ijs.si>
- *		- removed POSIX check for str_m<1; value 0 for str_m is
- *		  allowed by ISO C9X (and GNU C library 2.1) - (pointed out
- *		  on 2000-05-04 by Caolan McNamara, caolan@ csn dot ul dot ie).
- *		  Besides relaxed license this change in standards adherence
- *		  is the main reason to bump up the major version number;
- *		- added nonstandard routines asnprintf, vasnprintf, asprintf,
- *		  vasprintf that dynamically allocate storage for the
- *		  resulting string; these routines are not compiled by default,
- *		  see comments where NEED_V?ASN?PRINTF macros are defined;
- *		- autoconf contributed by Caolan McNamara
+ * Copyright (c) 2004-2006 Hardware-Software-CoDesign, University of
+ * Erlangen-Nuremberg. All rights reserved.
+ * 
+ *   This library is free software; you can redistribute it and/or modify it under
+ *   the terms of the GNU Lesser General Public License as published by the Free
+ *   Software Foundation; either version 2 of the License, or (at your option) any
+ *   later version.
+ * 
+ *   This library is distributed in the hope that it will be useful, but WITHOUT
+ *   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ *   FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ *   details.
+ * 
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with this library; if not, write to the Free Software Foundation, Inc.,
+ *   59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ * 
+ * --- This software and any associated documentation is provided "as is" 
+ * 
+ * IN NO EVENT SHALL HARDWARE-SOFTWARE-CODESIGN, UNIVERSITY OF ERLANGEN NUREMBERG
+ * BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR
+ * CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS
+ * DOCUMENTATION, EVEN IF HARDWARE-SOFTWARE-CODESIGN, UNIVERSITY OF ERLANGEN
+ * NUREMBERG HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * HARDWARE-SOFTWARE-CODESIGN, UNIVERSITY OF ERLANGEN NUREMBERG, SPECIFICALLY
+ * DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE SOFTWARE PROVIDED
+ * HEREUNDER IS ON AN "AS IS" BASIS, AND HARDWARE-SOFTWARE-CODESIGN, UNIVERSITY OF
+ * ERLANGEN NUREMBERG HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
+ * ENHANCEMENTS, OR MODIFICATIONS.
  */
+
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
