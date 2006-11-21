@@ -61,6 +61,7 @@ pkginclude_HEADERS =			\
 	string_convert.hpp              \
 	iterator_dump.hpp		\
 	bit_buffer.hpp			\
+	indent_ostream.hpp		\
 					\
 	commondefs.h			\
 	integertypes.h			\
@@ -70,8 +71,8 @@ pkginclude_HEADERS =			\
 	par_actor.hpp			\
 	par_actor_factory.hpp		\
 	par_manager.hpp			\
-	par_port.hpp \
-	smoc_ostream.hpp \
+	par_port.hpp 			\
+	smoc_ostream.hpp 		\
 	smoc_debug_out.hpp
 
 
@@ -92,9 +93,10 @@ libcosupport_la_LIBADD =  $(refcount_CH_LTOBJS) $(refcount_object_CH_LTOBJS)
 libcosupport_la_DEPENDENCIES = compileheader-libcosupport.stamp
 libcosupport_la_SOURCES =		\
 	par_manager.cpp			\
-	refcount_object.cpp \
-	smoc_debug_out.cpp \
-	smoc_ostream.cpp
+	refcount_object.cpp 		\
+	smoc_debug_out.cpp 		\
+	smoc_ostream.cpp		\
+	indent_ostream.cpp
 
 
 test_arrayfifo_SOURCES      = test_arrayfifo.cpp

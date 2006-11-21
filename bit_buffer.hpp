@@ -42,7 +42,7 @@
 namespace CoSupport {
 
 /**
- *  \brief Bit Buffer
+ * \brief Bit Buffer
  *
  * the bit_buffer class manages a (std::string based) buffer
  */
@@ -168,15 +168,15 @@ public:
 };
 
 /**
-  *  \brief Bit Field
-  *
-  *  a bit field represents a bit range within a
-  *  bit_buffer. this range can be read/written.
-  *
-  *  a bit_field is initialized with a reference
-  *  to the buffer, a bit offset and a bit range
-  *  of the field
-  */
+ * \brief Bit Field
+ *
+ * a bit field represents a bit range within a
+ * bit_buffer. this range can be read/written.
+ *
+ * a bit_field is initialized with a reference
+ * to the buffer, a bit offset and a bit range
+ * of the field
+ */
 template<typename T> class bit_field
 {
 public:
@@ -202,6 +202,45 @@ public:
   /// read value from bit_field
   T get() const
   { return bb.template get_range<T>(bo, bl); }
+  
+  /// convenience method for reading the
+  /// appropriate value out of this bit_field
+  operator T() const
+  { return get(); }
+};
+
+
+/**
+ * \brief Bit Field (for enums)
+ *
+ * this class can be used to access enum values
+ * (via static_cast)
+ */
+template<typename T> class bit_field_enum
+{
+public:
+  bit_buffer &bb;
+  size_t bo;
+  size_t bl;
+
+public:
+  /// constructor
+  bit_field_enum(bit_buffer &bb, size_t bo, size_t bl) :
+    bb(bb), bo(bo), bl(bl)
+  {}
+  
+  /// write bit_field with value x
+  void set(T x)
+  { bb.template set_range<unsigned int>(static_cast<unsigned int>(x), bo, bl); }
+  
+  /// convenience method for setting this
+  /// bit_field to specified value
+  bit_field_enum<T> &operator=(T x)
+  { set(x); return *this; }
+      
+  /// read value from bit_field
+  T get() const
+  { return static_cast<T>(bb.template get_range<unsigned int>(bo, bl)); }
   
   /// convenience method for reading the
   /// appropriate value out of this bit_field
