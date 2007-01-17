@@ -61,7 +61,7 @@ pkginclude_HEADERS =			\
 	string_convert.hpp              \
 	iterator_dump.hpp		\
 	bit_buffer.hpp			\
-	indent_ostream.hpp		\
+	filter_ostream.hpp		\
 					\
 	commondefs.h			\
 	integertypes.h			\
@@ -96,7 +96,7 @@ libcosupport_la_SOURCES =		\
 	refcount_object.cpp 		\
 	smoc_debug_out.cpp 		\
 	smoc_ostream.cpp		\
-	indent_ostream.cpp
+	filter_ostream.cpp
 
 
 test_arrayfifo_SOURCES      = test_arrayfifo.cpp
