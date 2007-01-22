@@ -47,6 +47,7 @@ EXTRA_DIST	=
 pkginclude_HEADERS =			\
 	oneof.hpp			\
 	stl_output_for_list.hpp		\
+	stl_output_for_vector.hpp	\
 	stl_output_for_pair.hpp		\
 	refcount.hpp			\
 	refcount_object.hpp		\
