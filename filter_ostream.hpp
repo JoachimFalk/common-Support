@@ -102,10 +102,21 @@ protected:
 struct Header
 {
   /// new header
-  const char *value;
+  std::string value;
+  
+  /// flag if value (and following chars)
+  /// should be added to the header
+  bool add;
   
   /// constructs a new Header object
-  Header(const char *value);
+  Header(const std::string &value, bool add = false);
+  
+  /// constructs a new Header object
+  Header(const char *value, bool add = false);
+  
+  /// predefined headers
+  static const Header Start;
+  static const Header End;
 };
 
 
@@ -116,10 +127,21 @@ struct Header
 struct Footer
 {
   // new footer
-  const char *value;
+  std::string value;
+  
+  /// flag if value (and following chars)
+  /// should be added to the header
+  bool add;
   
   /// constructs a new Footer object
-  Footer(const char *value);
+  Footer(const std::string &value, bool add = false);
+  
+  /// constructs a new Footer object
+  Footer(const char *value, bool add = false);
+  
+  /// predefined footers
+  static const Footer Start;
+  static const Footer End;
 };
 
 
@@ -137,6 +159,12 @@ private:
   /// currently used footer string
   std::string footer;
   
+  /// indicator if chars should be added to header
+  bool add_header;
+
+  /// indicator if chars should be added to footer
+  bool add_footer;
+  
   /// indicator if newline was encountered 
   bool newline;
   
@@ -146,6 +174,8 @@ public:
   HeaderFooterStreambuf(
       const std::string &header = "",
       const std::string &footer = "",
+      bool add_header = false,
+      bool add_footer = false,
       std::streambuf *next = 0);
   
   /// sets a new header
@@ -153,6 +183,14 @@ public:
   
   /// sets a new footer
   void setFooter(const std::string &value);
+
+  /// set flag if following chars will be appendend
+  /// to the current header
+  void setAddHeader(bool value);
+
+  /// set flag if following chars will be appendend
+  /// to the current footer
+  void setAddFooter(bool value);
   
 protected:
   int overflow(int c);
@@ -182,7 +220,11 @@ std::ostream& operator<<(std::ostream &os, const Footer &p);
 struct Color
 {
   /// console escape code for this color
-  const char *escape;
+  std::string escape;
+  
+  /// constructs a new object with the specified escape
+  /// code
+  Color(const std::string &escape);
   
   /// constructs a new object with the specified escape
   /// code

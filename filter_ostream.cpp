@@ -70,32 +70,78 @@ int LineNumberStreambuf::overflow(int c)
 }
 
 
-Header::Header(const char *value) :
-  value(value)
+Header::Header(const std::string &value, bool add) :
+  value(value),
+  add(add)
 {}
 
-Footer::Footer(const char *value) :
-  value(value)
+Header::Header(const char *value, bool add) :
+  value(value),
+  add(add)
 {}
+
+const Header Header::Start("", true);
+const Header Header::End("", false);
+
+Footer::Footer(const std::string &value, bool add) :
+  value(value),
+  add(add)
+{}
+
+Footer::Footer(const char *value, bool add) :
+  value(value),
+  add(add)
+{}
+
+const Footer Footer::Start("", true);
+const Footer Footer::End("", false);
 
 HeaderFooterStreambuf::HeaderFooterStreambuf(
     const std::string &header,
     const std::string &footer,
+    bool add_header,
+    bool add_footer,
     std::streambuf *next) :
   FilterStreambuf(next),
   header(header),
   footer(footer),
+  add_header(add_header),
+  add_footer(add_footer),
   newline(true)
 {}
 
 void HeaderFooterStreambuf::setHeader(const std::string &value)
-{ header = value; }
+{
+  if(add_header)
+    header += value;
+  else
+    header = value;
+}
 
 void HeaderFooterStreambuf::setFooter(const std::string &value)
-{ footer = value; }
+{
+  if(add_footer)
+    footer += value;
+  else
+    footer = value;
+}
+
+void HeaderFooterStreambuf::setAddHeader(bool value)
+{ add_header = value; }
+
+void HeaderFooterStreambuf::setAddFooter(bool value)
+{ add_footer = value; }
 
 int HeaderFooterStreambuf::overflow(int c)
 {
+  if(add_header || add_footer) {
+    if(add_header)
+      header += c;
+    if(add_footer)
+      footer += c;
+    return 1;
+  }
+  
   if(newline) {
     next->sputn(header.c_str(), header.size());
     newline = false;
@@ -119,7 +165,10 @@ std::ostream& operator<<(std::ostream &os, const Header &p)
 {
   HeaderFooterStreambuf *buf =
     static_cast<HeaderFooterStreambuf *>(os.pword(HeaderFooterStreambuf::index));
-  if(buf) buf->setHeader(p.value);
+  if(buf) {
+    buf->setHeader(p.value);
+    buf->setAddHeader(p.add);
+  }
   return os;
 }
 
@@ -127,10 +176,17 @@ std::ostream& operator<<(std::ostream &os, const Footer &p)
 {
   HeaderFooterStreambuf *buf =
     static_cast<HeaderFooterStreambuf *>(os.pword(HeaderFooterStreambuf::index));
-  if(buf) buf->setFooter(p.value);
+  if(buf) {
+    buf->setFooter(p.value);
+    buf->setAddFooter(p.add);
+  }
   return os;
 }
 
+
+Color::Color(const std::string &escape) :
+  escape(escape)
+{}
 
 Color::Color(const char *escape) :
   escape(escape)
@@ -167,11 +223,11 @@ void ColorStreambuf::setReset(const Color &c)
 int ColorStreambuf::overflow(int c)
 {
   if(newline) {
-    next->sputn(color.escape, std::strlen(color.escape));
+    next->sputn(color.escape.c_str(), color.escape.size());
     newline = false;
   }
   if(!newline && c == '\n') {
-    next->sputn(reset.escape, std::strlen(reset.escape));
+    next->sputn(reset.escape.c_str(), reset.escape.size());
     newline = true;
   } 
   return next->sputc(c);
