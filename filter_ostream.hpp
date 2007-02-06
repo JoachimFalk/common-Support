@@ -222,26 +222,31 @@ struct Color
   /// console escape code for this color
   std::string escape;
   
-  /// constructs a new object with the specified escape
-  /// code
-  Color(const std::string &escape);
+  /// constructs a new object with the specified attribute
+  /// and foreground color
+  Color(size_t color, size_t attr);
   
-  /// constructs a new object with the specified escape
-  /// code
-  Color(const char *escape);
-
+  /// constructs a new object whith the specified attribute
+  /// (no change to the foreground color)
+  Color(size_t attr);
+  
   /// predefined colors 
   static const Color Auto;
   static const Color Black;
-  static const Color Blue;
-  static const Color Brown;
-  static const Color Cyan;
-  static const Color Gray;
-  static const Color Green;
-  static const Color Purple;
   static const Color Red;
-  static const Color White;
-  static const Color Yellow;
+  static const Color BrightRed;
+  static const Color Green;
+  static const Color BrightGreen;
+  static const Color Brown;
+  static const Color BrightBrown;
+  static const Color Blue;
+  static const Color BrightBlue;
+  static const Color Purple;
+  static const Color BrightPurple;
+  static const Color Cyan;
+  static const Color BrightCyan;
+  static const Color Gray;
+  static const Color BrightGray;
 };
 
 /**

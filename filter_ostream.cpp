@@ -183,26 +183,30 @@ std::ostream& operator<<(std::ostream &os, const Footer &p)
   return os;
 }
 
-
-Color::Color(const std::string &escape) :
-  escape(escape)
+Color::Color(size_t color, size_t attr) :
+  escape("\e[" + string_cast(attr) + ";" + string_cast(color) + "m")
 {}
 
-Color::Color(const char *escape) :
-  escape(escape)
+Color::Color(size_t attr) :
+  escape("\e[" + string_cast(attr) + "m")
 {}
   
-const Color Color::Auto("\e[0m");
-const Color Color::Black("\e[0;30m");
-const Color Color::Blue("\e[0;34m");
-const Color Color::Brown("\e[0;33m");
-const Color Color::Cyan("\e[0;36m");
-const Color Color::Gray("\e[0;37m");
-const Color Color::Green("\e[0;32m");
-const Color Color::Purple("\e[0;35m");
-const Color Color::Red("\e[0;31m");
-const Color Color::White("\e[1;37m");
-const Color Color::Yellow("\e[1;33m");
+const Color Color::Auto         (0);
+const Color Color::Black        (30, 0);
+const Color Color::Red          (31, 0);
+const Color Color::BrightRed    (31, 1);
+const Color Color::Green        (32, 0);
+const Color Color::BrightGreen  (32, 1);
+const Color Color::Brown        (33, 0);
+const Color Color::BrightBrown  (33, 1);
+const Color Color::Blue         (34, 0);
+const Color Color::BrightBlue   (34, 1);
+const Color Color::Purple       (35, 0);
+const Color Color::BrightPurple (35, 1);
+const Color Color::Cyan         (36, 0);
+const Color Color::BrightCyan   (36, 1);
+const Color Color::Gray         (37, 0);
+const Color Color::BrightGray   (37, 1);
 
 ColorStreambuf::ColorStreambuf(
     const Color &color,
