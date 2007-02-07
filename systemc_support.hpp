@@ -332,6 +332,19 @@ namespace CoSupport { namespace SystemC {
       eventList.clear();
     }
     
+    bool empty(){
+      return eventList.empty();
+    }
+
+    size_t size(){
+      return eventList.size();
+    }
+
+    bool contains(EventType &e){
+      typename EventList::iterator iter = find(eventList.begin(), eventList.end(), &e);
+      return ( iter != eventList.end());
+    }
+
 #ifndef NDEBUG
     virtual
     void dump(std::ostream &out) const {
