@@ -48,6 +48,8 @@
 
 namespace CoSupport { namespace SystemC {
 
+  class EventWaiter;
+
   // Event handling
  
   class EventListener {
