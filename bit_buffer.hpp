@@ -38,6 +38,9 @@
 
 #include <cassert>
 #include <string>
+#include <iostream>
+
+#include <limits.h>
 
 namespace CoSupport {
 
@@ -49,16 +52,16 @@ namespace CoSupport {
 class bit_buffer 
 {
 private:
-  std::string buffer;
-  /// should be 'char'
-  typedef std::string::value_type Char;
-  /// size of char (in bytes)
-  static const size_t char_bytes = sizeof(Char);
-  /// size of byte (in bits)
-  static const size_t byte_bits = 8;
-  /// size of char (in bits)
-  static const size_t char_bits = char_bytes * byte_bits;
-
+  typedef std::string   storage_type;
+  typedef unsigned char primitive_type;
+  
+  /// size of storage primitive in bits
+  static const size_t primitive_bits =
+    sizeof(primitive_type) * CHAR_BIT;
+  
+public:
+  /// storage for octet stream
+  storage_type buffer;
 public:
     /// read string from buffer
     std::string get_string()
@@ -70,100 +73,150 @@ public:
     
     /// constructor for empty bit_buffer
     bit_buffer(size_t length) : 
-      buffer(length, 0)
+      buffer(length / sizeof(primitive_type), 0)
     {}
     
     /// constructur with initial buffer value
     bit_buffer(std::string data) :
       buffer(data)
     {}
-   
-    /// calculate byte mask 76543210
-    /// e.g n=3:            00000111
-    static size_t mask(size_t n)
-    { return (1<<n)-1; }
     
-    /// calculate total bits in this buffer
-    size_t num_bits() const
-    { return buffer.size() * char_bits; }
-
+    /// generate bit mask (mask(3) --> 00000111)
+    static size_t mask(size_t n)
+    { return (1 << n) - 1; }
+    
+    /// get some bits out of x
+    static primitive_type get_range(primitive_type x, size_t start, size_t length)
+    { return (x >> start) & mask(length); }
+    
+    /// get least significant bits out of x
+    static primitive_type get_lsb(primitive_type x, size_t length)
+    { return x & mask(length); }
+    
+    /// get most significant bits out of x
+    static primitive_type get_msb(primitive_type x, size_t length)
+    { return x >> (primitive_bits - length); }
+    
     /// read specified bits out of the buffer
     template<class T>
-    T get_range(size_t start, size_t length) const {
-      assert(start + length <= num_bits());
-      assert(sizeof(T) * byte_bits >= length);
-
-      // calculate bits before the first byte boundary
-      size_t prefix_bits = char_bits - start % char_bits;
-
+    T get_range(const size_t start, const size_t length) const {
+      // read value from this bitbuffer
+      // with offset start and length length
+      //
+      // not_prefix|prefix  middle  postfix|not_postfix
+      //      ------XX     XXXXXXXX      XX------
+      //      --XXXXX-     --------      --------
+      // BIT  76543210     76543210      76543210
+      // BYTE     0            1             2
+      
+      // this is the index of the last postfix bit
+      const size_t end = start + length - 1;
+      assert(end < buffer.size() * primitive_bits);
+      
       // calculate character which contains the prefix bits
-      start /= char_bits;
-
+      const size_t start_byte = start / primitive_bits;
+      
+      // calculate character which contains the postfix bits
+      const size_t end_byte = end / primitive_bits;
+ 
+      // prefix bits
+      const size_t prefix_bits = primitive_bits - start % primitive_bits;
+      
+      // postfix bits
+      const size_t postfix_bits = end % primitive_bits + 1;
+      
+      /*std::cout << "start: " << start << "; length: " << length << "; end: " << end
+                << "; start_byte: " << start_byte << "; end_byte: " << end_byte
+                << "; prefix_bits: " << prefix_bits << "; postfix_bits: " << postfix_bits
+                << std::endl;*/
+      
+      if(start_byte == end_byte)
+        return T(get_range(buffer[start_byte], 8 - postfix_bits, length));
+      
       // get the character which contains the prefix bits
-      // and copy those into the return value (maybe too
-      // much bits are copied; this is handled in the return
-      // statement)
-      T ret(buffer[start++] & mask(prefix_bits));
-
-      // calculate remaining bits to be copied (this needs
-      // to be signed; so we cannot reuse length)
-      int len = length - prefix_bits;
-
-      // copy whole bytes until we have copied all bits
-      // (or copied too much)
-      for(; len > 0; len -= char_bits) {
-        ret <<= char_bits;
-        ret |= buffer[start++];
+      // and copy those into the return value
+      size_t byte_index = start_byte;
+      T ret(get_lsb(buffer[byte_index++], prefix_bits));
+      size_t bits = length - prefix_bits;
+      
+      // copy whole bytes
+      for(; bits >= primitive_bits; bits -= primitive_bits) {
+        ret <<= primitive_bits;
+        ret |= static_cast<primitive_type>(buffer[byte_index++]);
       }
-
-      // if we did copy too much bits, shift the unnecessary
-      // bits out of the return value
-      return ret >>= -len;
+      
+      // assert remaining bits equals postfix_bits (which may already
+      // be copied in the above for-loop)
+      assert(bits == postfix_bits % 8);
+      
+      // copy remaining bits
+      if(bits) {
+        ret <<= bits;
+        ret |= get_msb(buffer[byte_index], bits);
+      }
+      
+      return ret;
     }
     
     /// write specified bits into the buffer
     template<class T>
-    void set_range(T t, size_t start, size_t length) {
-      assert(start + length <= num_bits());
-      assert(sizeof(T) * byte_bits >= length);
-
-      // calculate end bit
-      size_t end = start + length - 1;
-
-      // calculate bits following the last byte boundary
-      size_t postfix_bits = end % char_bits + 1;
-
+    void set_range(T t, const size_t start, const size_t length) {
+      // set value t into this bitbuffer
+      // with offset start and length length
+      //
+      // not_prefix|prefix  middle  postfix|not_postfix
+      //      ------XX     XXXXXXXX      XX------
+      // BIT  76543210     76543210      76543210
+      // BYTE     0            1             2
+      
+      // this is the index of the last postfix bit
+      const size_t end = start + length - 1;
+      assert(end < buffer.size() * primitive_bits);
+      
+      // calculate character which contains the prefix bits
+      const size_t start_byte = start / primitive_bits;
+      
       // calculate character which contains the postfix bits
-      end /= char_bits;
+      const size_t end_byte = end / primitive_bits;
+ 
+      // prefix bits
+      const size_t prefix_bits = primitive_bits - start % primitive_bits;
+      
+      // postfix bits
+      const size_t postfix_bits = end % primitive_bits + 1;
 
+      /*std::cout << "start: " << start << "; length: " << length << "; end: " << end
+                << "; start_byte: " << start_byte << "; end_byte: " << end_byte
+                << "; prefix_bits: " << prefix_bits << "; postfix_bits: " << postfix_bits
+                << std::endl;*/
+      
       // get the character which contains the postfix bits;
       // set postfix bits to zero and overwrite them with their
       // new value
-      Char c = buffer[end];
-      c &= mask(char_bits - postfix_bits);
-      c |= (t << (char_bits - postfix_bits));
+      size_t byte_index = end_byte;
+      primitive_type c = buffer[byte_index];
+      c &= mask(primitive_bits - postfix_bits);
+      c |= (t << (primitive_bits - postfix_bits));
       t >>= postfix_bits;
-
-      // calculate remaining bits to be copied (this needs
-      // to be signed; so we cannot reuse length)
-      int len = length - postfix_bits;
-
+      int bits = length - postfix_bits;
+      
       // copy whole bytes until we have copied all bits
       // (or copied too much)
-      for(; len > 0; len -= char_bits) {
-        buffer[end--] = c;
+      for(; bits > 0; bits -= primitive_bits) {
+        buffer[byte_index--] = c;
         c = t;
-        t >>= char_bits;
+        t >>= primitive_bits;
       }
 
       // fix prefix bytes
-      if(len < 0) {
-        size_t prefix_bits = char_bits + len;
+      if(bits < 0) {
+        // assert -length == not_prefix_bits
+        assert(primitive_bits + bits == prefix_bits);
         c &= mask(prefix_bits);
-        c |= buffer[end] & ~mask(prefix_bits);
+        c |= static_cast<primitive_type>(buffer[byte_index]) & ~mask(prefix_bits);
       }
 
-      buffer[end] = c;
+      buffer[byte_index] = c;
     }
 };
 
