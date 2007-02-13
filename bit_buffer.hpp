@@ -174,7 +174,7 @@ public:
       assert(end < buffer.size() * primitive_bits);
       
       // calculate character which contains the prefix bits
-      const size_t start_byte = start / primitive_bits;
+      //const size_t start_byte = start / primitive_bits;
       
       // calculate character which contains the postfix bits
       const size_t end_byte = end / primitive_bits;
