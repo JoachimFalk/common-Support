@@ -177,9 +177,15 @@ public:
       bool add_header = false,
       bool add_footer = false,
       std::streambuf *next = 0);
+ 
+  /// returns the current header
+  const std::string& getHeader() const;
   
   /// sets a new header
   void setHeader(const std::string &value);
+  
+  /// returns the current footer
+  const std::string& getFooter() const;
   
   /// sets a new footer
   void setFooter(const std::string &value);

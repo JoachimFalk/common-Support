@@ -110,6 +110,9 @@ HeaderFooterStreambuf::HeaderFooterStreambuf(
   newline(true)
 {}
 
+const std::string& HeaderFooterStreambuf::getHeader() const
+{ return header; }
+
 void HeaderFooterStreambuf::setHeader(const std::string &value)
 {
   if(add_header)
@@ -117,6 +120,9 @@ void HeaderFooterStreambuf::setHeader(const std::string &value)
   else
     header = value;
 }
+
+const std::string& HeaderFooterStreambuf::getFooter() const
+{ return footer; }
 
 void HeaderFooterStreambuf::setFooter(const std::string &value)
 {
