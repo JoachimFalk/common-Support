@@ -35,8 +35,31 @@
 #ifndef DEBUG_OUT_H
 #define DEBUG_OUT_H
 
-#include "smoc_ostream.hpp"
+#include <cosupport/filter_ostream.hpp>
 
-extern smoc_ostream dout;
+
+namespace CoSupport {
+
+	class DebugOstream :
+		public FilterOstream
+	{
+	public:
+		/// construct a new object which uses the streambuffer
+		/// of the specified stream as initial target
+		DebugOstream(std::ostream &os)
+			: FilterOstream(os)
+		{
+			insert(indenter);
+		}
+
+		CoSupport::IndentStreambuf indenter;
+  
+	};
+
+	extern DebugOstream dout;
+
+} // namespace CoSupport
+
+
 
 #endif

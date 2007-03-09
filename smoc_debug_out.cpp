@@ -32,8 +32,12 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#include "smoc_ostream.hpp"
+#include <cosupport/smoc_debug_out.hpp>
 #include <iostream>
 
-//debug output
-smoc_ostream dout(std::cerr);
+namespace CoSupport {
+
+	//debug output
+	DebugOstream dout(std::cerr);
+
+};

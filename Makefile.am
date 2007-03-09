@@ -71,7 +71,6 @@ pkginclude_HEADERS =				\
 	cosupport/par_actor_factory.hpp		\
 	cosupport/par_manager.hpp		\
 	cosupport/par_port.hpp 			\
-	cosupport/smoc_ostream.hpp 		\
 	cosupport/smoc_debug_out.hpp
 
 
@@ -94,7 +93,6 @@ libcosupport_la_SOURCES =		\
 	par_manager.cpp			\
 	refcount_object.cpp 		\
 	smoc_debug_out.cpp 		\
-	smoc_ostream.cpp		\
 	filter_ostream.cpp
 
 
