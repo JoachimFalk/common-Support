@@ -400,7 +400,7 @@ public:
   /// constructs a new object with the specified debug
   /// level
   DebugStreambuf(
-      const Debug &dbg = Debug::None,
+      const Debug &dbg = Debug::Low,
       std::streambuf *next = 0);
   
   /// set a new debug level

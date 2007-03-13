@@ -325,7 +325,7 @@ DebugStreambuf::DebugStreambuf(
     std::streambuf *next) :
   FilterStreambuf(next),
   level(dbg.level),
-  visible(false)
+  visible(true)
 {}
 
 void DebugStreambuf::setLevel(const Debug &dbg)

@@ -50,9 +50,15 @@ namespace CoSupport {
 			: FilterOstream(os)
 		{
 			insert(indenter);
+                        insert(headerFooter);
+                        insert(colorer);
+                        insert(debuglevel);
 		}
 
 		CoSupport::IndentStreambuf indenter;
+                CoSupport::HeaderFooterStreambuf headerFooter;
+                CoSupport::ColorStreambuf colorer;
+                CoSupport::DebugStreambuf debuglevel;
   
 	};
 
