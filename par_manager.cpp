@@ -35,7 +35,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
-#include <par_manager.hpp>
+#include <cosupport/par_manager.hpp>
 
 std::auto_ptr<par_manager> par_manager::inst(new par_manager());
 

@@ -32,7 +32,7 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#include "refcount_object.hpp"
+#include <cosupport/refcount_object.hpp>
 
 namespace CoSupport {
 

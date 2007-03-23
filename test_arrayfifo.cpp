@@ -36,7 +36,7 @@
 #include <assert.h>
 #include <iostream>
 
-#include "arrayfifo.hpp"
+#include <cosupport/arrayfifo.hpp>
 
 using namespace CoSupport;
 

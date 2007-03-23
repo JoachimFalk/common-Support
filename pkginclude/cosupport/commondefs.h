@@ -27,8 +27,6 @@
  *
  */
 
-// foo bar
-
 #ifndef _INCLUDED_COMMONDEFS_H
 #define _INCLUDED_COMMONDEFS_H
 

@@ -33,8 +33,8 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#include "filter_ostream.hpp"
-#include "string_convert.hpp"
+#include <cosupport/filter_ostream.hpp>
+#include <cosupport/string_convert.hpp>
 
 namespace CoSupport {
   

@@ -32,7 +32,7 @@ AM_CPPFLAGS=				\
 	@AM_CPPFLAGS@			\
 	@BOOST_INCLUDE@			\
 	@SYSTEMC_INCLUDE@		\
-	-I$(srcdir)/cosupport		\
+	-I$(srcdir)/pkinclude		\
 	-I$(srcdir)
 
 AM_LDFLAGS=				\

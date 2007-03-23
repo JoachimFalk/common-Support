@@ -35,8 +35,7 @@
 #ifndef DEBUG_OUT_H
 #define DEBUG_OUT_H
 
-#include <cosupport/filter_ostream.hpp>
-
+#include "filter_ostream.hpp"
 
 namespace CoSupport {
 
