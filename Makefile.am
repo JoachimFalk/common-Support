@@ -32,7 +32,7 @@ AM_CPPFLAGS=				\
 	@AM_CPPFLAGS@			\
 	@BOOST_INCLUDE@			\
 	@SYSTEMC_INCLUDE@		\
-	-I$(srcdir)/pkinclude		\
+	-I$(srcdir)/pkginclude		\
 	-I$(srcdir)
 
 AM_LDFLAGS=				\
@@ -42,36 +42,36 @@ AM_LDFLAGS=				\
 
 EXTRA_DIST	=
 
-pkginclude_HEADERS =				\
-	cosupport/oneof.hpp			\
-	cosupport/stl_output_for_list.hpp	\
-	cosupport/stl_output_for_vector.hpp	\
-	cosupport/stl_output_for_pair.hpp	\
-	cosupport/refcount.hpp			\
-	cosupport/refcount_object.hpp		\
-	cosupport/intrusive_refcount_ptr.hpp	\
-	cosupport/intrusive_copyonwrite_ptr.hpp	\
-	cosupport/shared_copyonwrite_ptr.hpp	\
-	cosupport/modulo_arith.hpp		\
-	cosupport/arrayfifo.hpp			\
-	cosupport/systemc_support.hpp		\
-	cosupport/functor.hpp			\
-	cosupport/checked_vector.hpp		\
-	cosupport/string_convert.hpp		\
-	cosupport/iterator_dump.hpp		\
-	cosupport/bit_buffer.hpp		\
-	cosupport/filter_ostream.hpp		\
-						\
-	cosupport/commondefs.h			\
-	cosupport/integertypes.h		\
-	cosupport/sassert.h			\
-	cosupport/snprintf.h			\
-						\
-	cosupport/par_actor.hpp			\
-	cosupport/par_actor_factory.hpp		\
-	cosupport/par_manager.hpp		\
-	cosupport/par_port.hpp 			\
-	cosupport/smoc_debug_out.hpp
+pkginclude_HEADERS =						\
+	pkginclude/cosupport/oneof.hpp				\
+	pkginclude/cosupport/stl_output_for_list.hpp		\
+	pkginclude/cosupport/stl_output_for_vector.hpp		\
+	pkginclude/cosupport/stl_output_for_pair.hpp		\
+	pkginclude/cosupport/refcount.hpp			\
+	pkginclude/cosupport/refcount_object.hpp		\
+	pkginclude/cosupport/intrusive_refcount_ptr.hpp		\
+	pkginclude/cosupport/intrusive_copyonwrite_ptr.hpp	\
+	pkginclude/cosupport/shared_copyonwrite_ptr.hpp		\
+	pkginclude/cosupport/modulo_arith.hpp			\
+	pkginclude/cosupport/arrayfifo.hpp			\
+	pkginclude/cosupport/systemc_support.hpp		\
+	pkginclude/cosupport/functor.hpp			\
+	pkginclude/cosupport/checked_vector.hpp			\
+	pkginclude/cosupport/string_convert.hpp			\
+	pkginclude/cosupport/iterator_dump.hpp			\
+	pkginclude/cosupport/bit_buffer.hpp			\
+	pkginclude/cosupport/filter_ostream.hpp			\
+								\
+	pkginclude/cosupport/commondefs.h			\
+	pkginclude/cosupport/integertypes.h			\
+	pkginclude/cosupport/sassert.h				\
+	pkginclude/cosupport/snprintf.h				\
+								\
+	pkginclude/cosupport/par_actor.hpp			\
+	pkginclude/cosupport/par_actor_factory.hpp		\
+	pkginclude/cosupport/par_manager.hpp			\
+	pkginclude/cosupport/par_port.hpp 			\
+	pkginclude/cosupport/smoc_debug_out.hpp
 
 
 #noinst_HEADERS=	oneof.hpp
