@@ -32,39 +32,39 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef DEBUG_OUT_H
-#define DEBUG_OUT_H
+#ifndef _INCLUDED_COSUPPORT_SMOC_DEBUG_OUT_HPP
+#define _INCLUDED_COSUPPORT_SMOC_DEBUG_OUT_HPP
 
 #include "filter_ostream.hpp"
 
 namespace CoSupport {
 
-	class DebugOstream :
-		public FilterOstream
-	{
-	public:
-		/// construct a new object which uses the streambuffer
-		/// of the specified stream as initial target
-		DebugOstream(std::ostream &os)
-			: FilterOstream(os)
-		{
-			insert(indenter);
-                        insert(headerFooter);
-                        insert(colorer);
-                        insert(debuglevel);
-		}
+  class DebugOstream: public FilterOstream {
+  public:
+    /// construct a new object which uses the streambuffer
+    /// of the specified stream as initial target
+    DebugOstream(std::ostream &os, const Debug &dbg = Debug::Low)
+      : FilterOstream(os),
+        debuglevel(dbg)
+    {
+      insert(indenter);
+      insert(headerFooter);
+      insert(colorer);
+      insert(debuglevel);
+    }
 
-		CoSupport::IndentStreambuf indenter;
-                CoSupport::HeaderFooterStreambuf headerFooter;
-                CoSupport::ColorStreambuf colorer;
-                CoSupport::DebugStreambuf debuglevel;
-  
-	};
+    /// set a new debug level
+    void setLevel(const Debug &dbg)
+      { return debuglevel.setLevel(dbg); }
 
-	extern DebugOstream dout;
+    CoSupport::IndentStreambuf indenter;
+    CoSupport::HeaderFooterStreambuf headerFooter;
+    CoSupport::ColorStreambuf colorer;
+    CoSupport::DebugStreambuf debuglevel;
+  };
+
+  extern DebugOstream dout;
 
 } // namespace CoSupport
 
-
-
-#endif
+#endif // _INCLUDED_COSUPPORT_SMOC_DEBUG_OUT_HPP
