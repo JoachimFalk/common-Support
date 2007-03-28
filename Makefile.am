@@ -71,7 +71,10 @@ pkginclude_HEADERS =						\
 	pkginclude/cosupport/par_actor_factory.hpp		\
 	pkginclude/cosupport/par_manager.hpp			\
 	pkginclude/cosupport/par_port.hpp 			\
-	pkginclude/cosupport/smoc_debug_out.hpp
+	pkginclude/cosupport/smoc_debug_out.hpp			\
+								\
+	pkginclude/cosupport/xerces_support.hpp			\
+	pkginclude/cosupport/xalan_support.hpp
 
 
 #noinst_HEADERS=	oneof.hpp
