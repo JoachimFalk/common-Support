@@ -38,9 +38,43 @@
 
 #include <sstream>
 #include <string>
+#include <stdexcept>
+
+#include "typename.hpp"
 
 namespace CoSupport {
+
+template <typename T>
+T strAs(const std::string &str) {
+  T                   retval;
+  std::istringstream  in(str);
   
+  in >> retval;
+  
+  if (!in.fail()) {
+    while (in.good()) {
+      if (!std::isspace(in.get()))
+        { in.unget(); break; }
+    }
+    if (in.eof())
+      in.clear(std::ios::eofbit);
+  }
+  if (in.fail() || !in.eof()) {
+    std::ostringstream msg;
+    
+    msg << "Invalid conversion from '" << str << "' to " << CoSupport::TypeName<T>::name() << " !";
+    throw std::runtime_error(msg.str());
+  }
+  return retval;
+}
+
+template <typename T>
+std::string asStr(const T &value) {
+  std::ostringstream str;
+  str << value;
+  return str.str();
+}
+
 /**
  * function for converting any type that overloads operator<<
  * into a string
