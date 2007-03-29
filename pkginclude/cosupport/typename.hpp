@@ -45,64 +45,41 @@ struct TypeName;
 #define COSUPPORT_REGISTER_TYPENAME(T)                    \
 namespace CoSupport {                                     \
   template <>                                             \
-  struct TypeName<T>                                      \
-    { static const std::string name; };                   \
-  template <> const std::string TypeName<T>::name = #T;   \
+  struct TypeName<T> {                                    \
+    static const std::string name() { return #T; }        \
+  };                                                      \
 }
 
 template <typename T>
 struct TypeName<const T> {
-  static const std::string name;
+  static const std::string name()
+    { return std::string("const ") + TypeName<T>::name(); }
 };
-
-template <typename T>
-const std::string TypeName<const T>::name =
-  std::string("const ") + TypeName<T>::name;
-
 template <typename T>
 struct TypeName<T &> {
-  static const std::string name;
+  static const std::string name()
+    { return TypeName<T>::name() + " &"; }
 };
-
-template <typename T>
-const std::string TypeName<T &>::name =
-  TypeName<T>::name + " &";
-
 template <typename T>
 struct TypeName<T *> {
-  static const std::string name;
+  static const std::string name()
+    { return TypeName<T>::name() + " *"; }
 };
-
-template <typename T>
-const std::string TypeName<T *>::name =
-  TypeName<T>::name + " *";
-
 template <typename T>
 struct TypeName<T *const> {
-  static const std::string name;
+  static const std::string name()
+    { return TypeName<T>::name() + " *const"; }
 };
-
-template <typename T>
-const std::string TypeName<T *const>::name =
-  TypeName<T>::name + " *const";
-
 template <typename T>
 struct TypeName<T **> {
-  static const std::string name;
+  static const std::string name()
+    { return TypeName<T *>::name() + "*"; }
 };
-
-template <typename T>
-const std::string TypeName<T **>::name =
-  TypeName<T *>::name + "*";
-
 template <typename T>
 struct TypeName<T **const> {
-  static const std::string name;
+  static const std::string name()
+    { return TypeName<T *>::name() + "*const"; }
 };
-
-template <typename T>
-const std::string TypeName<T **const>::name =
-  TypeName<T *>::name + "*const";
 
 } // namespace CoSupport
 
