@@ -66,6 +66,41 @@ namespace CoSupport { namespace Xalan {
     }
   };
 
+  inline
+  XN::XalanNode *getAttrNode(const XN::XalanNode *node, const XN::XalanDOMString &attr) {
+    XN::XalanNode               *result = NULL;
+    const XN::XalanNamedNodeMap *attrs  = node->getAttributes();
+    
+    if (attrs != NULL)
+      result = attrs->getNamedItem(attr);
+    if (result == NULL) {
+      std::stringstream ss;
+      ss << "ERROR: Tag '" << node->getNodeName()
+         << "' missing attribute '" << attr << "' !";
+      throw std::runtime_error(ss.str().c_str());
+    }
+    return result;
+  }
+
+  inline
+  XN::XalanNode *getAttrNode(XN::XalanNode *node, const char *attr)
+    { return getAttrNode(node, XN::XalanDOMString(attr)); }
+
+  /// Convert value in node to type T.
+  /// This throws an exception if the conversion is invalid.
+  template <typename T>
+  T getNodeValueAs(const XN::XalanNode *xalanNode);
+
+  template <>
+  XN::XalanDOMString getNodeValueAs<XN::XalanDOMString>(const XN::XalanNode *node) {
+    return node->getNodeValue();
+  }
+
+  template <>
+  std::string getNodeValueAs<std::string>(const XN::XalanNode *node) {
+    return NStr(getNodeValueAs<XN::XalanDOMString>(node).c_str());
+  }
+
 } } // namespace CoSupport::Xalan
 
 #endif // _INCLUDED_XALAN_SUPPORT_HPP
