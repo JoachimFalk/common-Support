@@ -39,7 +39,7 @@
 #include <string>
 
 #include "sassert.h"
-
+#include "string_convert.hpp"
 #include "xerces_support.hpp"
 
 //#include <xalanc/Include/PlatformDefinitions.hpp>
@@ -68,38 +68,42 @@ namespace CoSupport { namespace Xalan {
 
   inline
   XN::XalanNode *getAttrNode(const XN::XalanNode *node, const XN::XalanDOMString &attr) {
-    XN::XalanNode               *result = NULL;
+    XN::XalanNode               *retval = NULL;
     const XN::XalanNamedNodeMap *attrs  = node->getAttributes();
     
     if (attrs != NULL)
-      result = attrs->getNamedItem(attr);
-    if (result == NULL) {
-      std::stringstream ss;
-      ss << "ERROR: Tag '" << node->getNodeName()
-         << "' missing attribute '" << attr << "' !";
-      throw std::runtime_error(ss.str().c_str());
+      retval = attrs->getNamedItem(attr);
+    if (retval == NULL) {
+      std::stringstream msg;
+      
+      msg << "Tag \"" << node->getNodeName() << "\""
+              " has no attribute \"" << attr << "\" !";
+      throw std::runtime_error(msg.str());
     }
-    return result;
+    return retval;
   }
-
-  inline
-  XN::XalanNode *getAttrNode(XN::XalanNode *node, const char *attr)
-    { return getAttrNode(node, XN::XalanDOMString(attr)); }
 
   /// Convert value in node to type T.
   /// This throws an exception if the conversion is invalid.
   template <typename T>
-  T getNodeValueAs(const XN::XalanNode *xalanNode);
-
+  T getNodeValueAs(const XN::XalanNode *node)
+    { return strAs<T>(getNodeValueAs<std::string>(node)); }
   template <>
-  XN::XalanDOMString getNodeValueAs<XN::XalanDOMString>(const XN::XalanNode *node) {
-    return node->getNodeValue();
-  }
-
+  inline
+  XN::XalanDOMString getNodeValueAs<XN::XalanDOMString>(const XN::XalanNode *node)
+    { return node->getNodeValue(); }
   template <>
-  std::string getNodeValueAs<std::string>(const XN::XalanNode *node) {
-    return NStr(getNodeValueAs<XN::XalanDOMString>(node).c_str());
-  }
+  inline
+  XStr getNodeValueAs<XStr>(const XN::XalanNode *node)
+    { return node->getNodeValue().c_str(); }
+  template <>
+  inline
+  std::string getNodeValueAs<std::string>(const XN::XalanNode *node)
+    { return NStr(getNodeValueAs<XN::XalanDOMString>(node).c_str()); }
+
+  template <typename T>
+  T getAttrValueAs(const XN::XalanNode *node, const XN::XalanDOMString &attr)
+    { return getNodeValueAs<T>(getAttrNode(node, attr)); }
 
 } } // namespace CoSupport::Xalan
 

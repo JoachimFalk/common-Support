@@ -41,6 +41,7 @@
 #include <stdexcept>
 
 #include "sassert.h"
+#include "string_convert.hpp"
 
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XMLString.hpp>
@@ -95,20 +96,16 @@ namespace CoSupport { namespace Xerces {
   };
 
   inline
-  const XMLCh *getNodeAttr(const XN::DOMNode *node, const XMLCh *attr) {
-    XN::DOMNamedNodeMap *attrMap  =
-      node != NULL
-        ? node->getAttributes()
-        : NULL;
-    XN::DOMNode         *attrNode =
-      attrMap != NULL
-        ? attrMap->getNamedItem(attr)
-        : NULL;
-    const XMLCh         *retval   =
-      attrNode != NULL
-        ? attrNode->getNodeValue()
-        : NULL;
+  std::ostream &operator << (std::ostream &out, const XMLCh *const str)
+    { out << NStr(str); return out; }
+
+  inline
+  XN::DOMNode *getAttrNode(const XN::DOMNode *node, const XMLCh *const attr) {
+    XN::DOMNode               *retval = NULL;
+    const XN::DOMNamedNodeMap *attrs  = node->getAttributes();
     
+    if (attrs != NULL)
+      retval = attrs->getNamedItem(attr);
     if (retval == NULL) {
       std::stringstream msg;
       
@@ -120,8 +117,33 @@ namespace CoSupport { namespace Xerces {
   }
 
   inline
-  std::ostream &operator << (std::ostream &out, const XMLCh *const str)
-    { out << NStr(str); return out; }
+  XN::DOMNode *getAttrNode(const XN::DOMNode *node, const char *attr)
+    { return getAttrNode(node, XStr(attr)); }
+
+  /// Convert value in node to type T.
+  /// This throws an exception if the conversion is invalid.
+  template <typename T>
+  T getNodeValueAs(const XN::DOMNode *node)
+    { return strAs<T>(getNodeValueAs<std::string>(node)); }
+  template <>
+  inline
+  const XMLCh *getNodeValueAs<const XMLCh *>(const XN::DOMNode *node)
+    { return node->getNodeValue(); }
+  template <>
+  inline
+  XStr getNodeValueAs<XStr>(const XN::DOMNode *node)
+    { return node->getNodeValue(); }
+  template <>
+  inline
+  std::string getNodeValueAs<std::string>(const XN::DOMNode *node)
+    { return NStr(getNodeValueAs<const XMLCh *>(node)); }
+
+  template <typename T>
+  T getAttrValueAs(const XN::DOMNode *node, const XMLCh *const attr)
+    { return getNodeValueAs<T>(getAttrNode(node, attr)); }
+  template <typename T>
+  T getAttrValueAs(const XN::DOMNode *node, const char *const attr)
+    { return getNodeValueAs<T>(getAttrNode(node, attr)); }
 
 } } // namespace CoSupport::Xerces
 
