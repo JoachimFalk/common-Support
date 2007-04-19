@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2006 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2007 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -37,51 +37,51 @@
 
 #include <string>
 
-namespace CoSupport {
+namespace CoSupport { namespace Type {
 
 template <typename T>
-struct TypeName;
+struct Name;
 
 #define COSUPPORT_REGISTER_TYPENAME(T)                    \
-namespace CoSupport {                                     \
+namespace CoSupport { namespace Type {                    \
   template <>                                             \
-  struct TypeName<T> {                                    \
+  struct Name<T> {                                        \
     static const std::string name() { return #T; }        \
   };                                                      \
-}
+} }
 
 template <typename T>
-struct TypeName<const T> {
+struct Name<const T> {
   static const std::string name()
-    { return std::string("const ") + TypeName<T>::name(); }
+    { return std::string("const ") + Name<T>::name(); }
 };
 template <typename T>
-struct TypeName<T &> {
+struct Name<T &> {
   static const std::string name()
-    { return TypeName<T>::name() + " &"; }
+    { return Name<T>::name() + " &"; }
 };
 template <typename T>
-struct TypeName<T *> {
+struct Name<T *> {
   static const std::string name()
-    { return TypeName<T>::name() + " *"; }
+    { return Name<T>::name() + " *"; }
 };
 template <typename T>
-struct TypeName<T *const> {
+struct Name<T *const> {
   static const std::string name()
-    { return TypeName<T>::name() + " *const"; }
+    { return Name<T>::name() + " *const"; }
 };
 template <typename T>
-struct TypeName<T **> {
+struct Name<T **> {
   static const std::string name()
-    { return TypeName<T *>::name() + "*"; }
+    { return Name<T *>::name() + "*"; }
 };
 template <typename T>
-struct TypeName<T **const> {
+struct Name<T **const> {
   static const std::string name()
-    { return TypeName<T *>::name() + "*const"; }
+    { return Name<T *>::name() + "*const"; }
 };
 
-} // namespace CoSupport
+} } // namespace CoSupport::Type
 
 /// Known C++ PODs
 COSUPPORT_REGISTER_TYPENAME(char);

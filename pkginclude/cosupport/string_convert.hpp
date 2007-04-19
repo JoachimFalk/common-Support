@@ -62,7 +62,7 @@ T strAs(const std::string &str) {
   if (in.fail() || !in.eof()) {
     std::ostringstream msg;
     
-    msg << "Invalid conversion from '" << str << "' to " << CoSupport::TypeName<T>::name() << " !";
+    msg << "Invalid conversion from '" << str << "' to " << CoSupport::Type::Name<T>::name() << " !";
     throw std::runtime_error(msg.str());
   }
   return retval;
