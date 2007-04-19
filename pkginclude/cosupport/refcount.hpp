@@ -56,17 +56,21 @@ namespace CoSupport {
     /* each copy start refcounting anew */
     RefCount(const RefCount &x)
       : use_count_(0) {}
-    
+
+    /* Do not overwrite reference counter ! */
+    RefCount &operator = (const RefCount &)
+      { return *this; }
+
     ~RefCount() // nothrow
       {}
-    
+
     void add_ref( void ) {
 #if defined(BOOST_HAS_THREADS)
       mutex_type::scoped_lock lock(mtx_);
 #endif
       ++use_count_;
     }
-    
+
     bool del_ref( void ) {
 #if defined(BOOST_HAS_THREADS)
       mutex_type::scoped_lock lock(mtx_);
@@ -74,7 +78,7 @@ namespace CoSupport {
       --use_count_;
       return use_count_ == 0;
     }
-    
+
     bool unique_ref() const { // nothrow
 #if defined(BOOST_HAS_THREADS)
       mutex_type::scoped_lock lock(mtx_);
