@@ -35,12 +35,15 @@
 #ifndef _INCLUDED_XALAN_SUPPORT_HPP
 #define _INCLUDED_XALAN_SUPPORT_HPP
 
+#ifdef _INCLUDED_XERCES_SUPPORT_HPP
+# error "Include xalan_support.hpp before xerces_support.hpp !!!"
+#endif // _INCLUDED_XERCES_SUPPORT_HPP
+
 #include <iostream>
 #include <string>
 
 #include "sassert.h"
 #include "string_convert.hpp"
-#include "xerces_support.hpp"
 
 //#include <xalanc/Include/PlatformDefinitions.hpp>
 #include <xalanc/XalanTransformer/XalanTransformer.hpp>
@@ -50,6 +53,8 @@ namespace CoSupport { namespace Xerces {
     XALAN_CPP_NAMESPACE_USE
   } // namespace XN
 } } // namespace CoSupport::Xerces
+
+#include "xerces_support.hpp"
 
 namespace CoSupport { namespace Xalan {
   using namespace Xerces;
@@ -104,6 +109,9 @@ namespace CoSupport { namespace Xalan {
   template <typename T>
   T getAttrValueAs(const XN::XalanNode *node, const XN::XalanDOMString &attr)
     { return getNodeValueAs<T>(getAttrNode(node, attr)); }
+  template <typename T>
+  T getAttrValueAs(const XN::XalanNode *node, const char *const attr)
+    { return getNodeValueAs<T>(getAttrNode(node, XN::XalanDOMString(attr))); }
 
 } } // namespace CoSupport::Xalan
 

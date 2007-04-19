@@ -73,6 +73,12 @@ namespace CoSupport { namespace Xerces {
       // Cut back to real size
       resize(XN::XMLString::stringLen(c_str()));
     }
+    XStr(const std::string &str) {
+      resize(str.length() + 1);
+      sassert(XN::XMLString::transcode(str.c_str(), &this->operator[](0), size() - 1));
+      // Cut back to real size
+      resize(XN::XMLString::stringLen(c_str()));
+    }
 
     operator const XMLCh *() const
       { return c_str(); }
@@ -82,7 +88,17 @@ namespace CoSupport { namespace Xerces {
   public:
     NStr(const char  *const str)
       :  std::basic_string<char>(str) {}
-    NStr(const XMLCh *const str) {
+    NStr(const XMLCh *const str)
+      { fromXMLCh(str); }
+#ifdef _INCLUDED_XALAN_SUPPORT_HPP
+    NStr(const XN::XalanDOMString &str)
+      { fromXMLCh(str.c_str()); }
+#endif
+
+    operator const char *() const
+      { return c_str(); }
+  private:
+    void fromXMLCh(const XMLCh *const str) {
       size_type len = XN::XMLString::stringLen(str);
       resize(len + (len >> 1) + 1);
       while (!XN::XMLString::transcode(str, &this->operator[](0), size() - 1))
@@ -90,9 +106,6 @@ namespace CoSupport { namespace Xerces {
       // Cut back to real size
       resize(strlen(c_str()));
     }
-
-    operator const char *() const
-      { return c_str(); }
   };
 
   inline
