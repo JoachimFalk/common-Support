@@ -128,10 +128,28 @@ namespace CoSupport { namespace Xerces {
     }
     return retval;
   }
-
   inline
   XN::DOMNode *getAttrNode(const XN::DOMNode *node, const char *attr)
     { return getAttrNode(node, XStr(attr)); }
+
+  /// get XML attribute node attr of XML node node.
+  /// Create the attribute node if it does not exist.
+  inline
+  XN::DOMNode *createAttrNode(const XN::DOMNode *node, const XMLCh *const attr) {
+    XN::DOMNamedNodeMap *attrs = node->getAttributes();
+    assert(attrs != NULL);
+    XN::DOMNode *retval = attrs->getNamedItem(attr);
+    if (retval == NULL) {
+      // Attribute missing => create it
+      XN::DOMAttr *attrNode = node->getOwnerDocument()->createAttribute(attr);
+      attrs->setNamedItem(attrNode);
+      retval = attrNode;
+    }
+    return retval;
+  }
+  inline
+  XN::DOMNode *createAttrNode(const XN::DOMNode *node, const char *attr)
+    { return createAttrNode(node, XStr(attr)); }
 
   /// Convert value in node to type T.
   /// This throws an exception if the conversion is invalid.
@@ -151,12 +169,37 @@ namespace CoSupport { namespace Xerces {
   std::string getNodeValueAs<std::string>(const XN::DOMNode *node)
     { return NStr(getNodeValueAs<const XMLCh *>(node)); }
 
+  /// Convert set value in node from type T.
+  /// This throws an exception if the conversion is invalid.
+  template <typename T>
+  void setNodeValueFrom(XN::DOMNode *node, const T &v)
+    { setNodeValueFrom<std::string>(node, asStr<T>(v)); }
+  template <>
+  inline
+  void setNodeValueFrom<const XMLCh *>(XN::DOMNode *node, const XMLCh *const &v)
+    { node->setNodeValue(v); }
+  template <>
+  inline
+  void setNodeValueFrom<XStr>(XN::DOMNode *node, const XStr &v)
+    { node->setNodeValue(v); }
+  template <>
+  inline
+  void setNodeValueFrom<std::string>(XN::DOMNode *node, const std::string &v)
+    { setNodeValueFrom<XStr>(node, v); }
+
   template <typename T>
   T getAttrValueAs(const XN::DOMNode *node, const XMLCh *const attr)
     { return getNodeValueAs<T>(getAttrNode(node, attr)); }
   template <typename T>
   T getAttrValueAs(const XN::DOMNode *node, const char *const attr)
     { return getNodeValueAs<T>(getAttrNode(node, attr)); }
+
+  template <typename T>
+  void setAttrValueFrom(XN::DOMNode *node, const XMLCh *const attr, const T &v)
+    { setNodeValueFrom<T>(createAttrNode(node, attr), v); }
+  template <typename T>
+  void setAttrValueFrom(XN::DOMNode *node, const char *const attr, const T &v)
+    { setNodeValueFrom<T>(createAttrNode(node, attr), v); }
 
 } } // namespace CoSupport::Xerces
 
