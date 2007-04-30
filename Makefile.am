@@ -61,6 +61,7 @@ pkginclude_HEADERS =						\
 	pkginclude/cosupport/iterator_dump.hpp			\
 	pkginclude/cosupport/bit_buffer.hpp			\
 	pkginclude/cosupport/filter_ostream.hpp			\
+	pkginclude/cosupport/function_objects.hpp		\
 								\
 	pkginclude/cosupport/commondefs.h			\
 	pkginclude/cosupport/integertypes.h			\
