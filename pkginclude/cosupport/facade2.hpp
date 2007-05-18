@@ -63,7 +63,7 @@ protected:
 
   template <class TT, template <class> class CC> friend class FacadeRef;
 public:
-  FacadeRef(const SmartPtr &p)
+  explicit FacadeRef(const SmartPtr &p)
     : T(p) {}
   FacadeRef(const FacadeRef<T,C> &t)
     : T(t._impl()) {}
@@ -71,20 +71,28 @@ public:
 
 template <class T, template <class> class C>
 class FacadePtr {
+  typedef FacadePtr<T,C> this_type;
 protected:
   typedef typename T::ImplType  ImplType;
   typedef typename T::SmartPtr  SmartPtr;
 
   template <class TT, template <class> class CC> friend class FacadePtr;
+public:
+  typedef typename T::RefConst  RefConst;
+  typedef typename T::Ref       Ref;
+  typedef typename T::PtrConst  PtrConst;
+  typedef typename T::Ptr       Ptr;
+
+  typedef T &(this_type::*unspecified_bool_type)();
 private:
   FacadeRef<T, C> ref;
 public:
-  FacadePtr(const SmartPtr &p)
+  explicit FacadePtr(const SmartPtr &p)
     : ref(p) {}
   FacadePtr(const FacadePtr<T, CoSupport::Type::Mutable> &t)
     : ref(t.ref) {}
   FacadePtr(typename C<T>::type *t)
-    : ref(t->_impl()) {}
+    : ref(t != NULL ? t->_impl() : SmartPtr()) {}
 
   T &operator *()
     { return ref; }
@@ -94,6 +102,17 @@ public:
     { return &ref; }
   const T *operator ->() const
     { return &ref; }
+
+  operator unspecified_bool_type() const {
+    return ref._impl() != NULL
+      ? static_cast<unspecified_bool_type>(&this_type::operator *)
+      : NULL;
+  }
+  unspecified_bool_type operator ==(const this_type &x) const {
+    return ref._impl() == x.ref._impl()
+      ? static_cast<unspecified_bool_type>(&this_type::operator *)
+      : NULL;
+  }
 };
 
 template <class Derived, class Impl, class Base = Detail::Storage<Impl> >
@@ -101,14 +120,14 @@ class FacadeFoundation: public Base {
   template <class TT, template <class> class CC> friend class FacadeRef;
   template <class TT, template <class> class CC> friend class FacadePtr;
 protected:
-  typedef Impl                                             ImplType;
-  typedef ::boost::intrusive_ptr<ImplType>                 SmartPtr;
-  typedef FacadeFoundation<Derived,Impl,Base>              FFType;
+  typedef Impl                                              ImplType;
+  typedef ::boost::intrusive_ptr<ImplType>                  SmartPtr;
+  typedef FacadeFoundation<Derived,Impl,Base>               FFType;
 public:
-  typedef const FacadeRef<Derived, CoSupport::Type::Const> ConstRef;
-  typedef FacadeRef<Derived, CoSupport::Type::Mutable>     Ref;
-  typedef const FacadePtr<Derived, CoSupport::Type::Const> ConstPtr;
-  typedef FacadePtr<Derived, CoSupport::Type::Mutable>     Ptr;
+  typedef const FacadeRef<Derived, CoSupport::Type::Const>  RefConst;
+  typedef FacadeRef<Derived, CoSupport::Type::Mutable>      Ref;
+  typedef FacadePtr<Derived, CoSupport::Type::Const>        PtrConst;
+  typedef FacadePtr<Derived, CoSupport::Type::Mutable>      Ptr;
 private:
   //
   // Curiously Recurring Template interface.
@@ -116,11 +135,11 @@ private:
   const SmartPtr &_impl() const
     { return static_cast<const Derived*>(this)->getImpl(); }
 protected:
-  FacadeFoundation(const typename Base::SmartPtr &p)
+  explicit FacadeFoundation(const typename Base::SmartPtr &p)
     : Base(p) {}
 public:
-  operator ConstRef &() const // do dirty magic
-    { return reinterpret_cast<ConstRef &>(*this); }
+  operator RefConst &() const // do dirty magic
+    { return reinterpret_cast<RefConst &>(*this); }
   operator Ref &() // do dirty magic
     { return reinterpret_cast<Ref &>(*this); }
 private:
