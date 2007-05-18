@@ -88,6 +88,8 @@ namespace CoSupport {
     typedef typename FacadeUser<T>::ImplType  ImplType;
     typedef typename FacadeUser<T>::SmartPtr  SmartPtr;
   public:
+    FacadePolish()
+      : FacadeUser<T>() {}
     FacadePolish(const SmartPtr &obj)
       : FacadeUser<T>(obj) {}
     FacadePolish(const this_type &obj)

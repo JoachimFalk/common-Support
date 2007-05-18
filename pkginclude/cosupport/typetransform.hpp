@@ -57,6 +57,6 @@ namespace CoSupport { namespace Type {
   template <typename T>
   struct ToggleConst<const T> { typedef T type; };
 
-} } // namespace CoSupport::TypeTransform
+} } // namespace CoSupport::Type
 
 #endif // _INCLUDED_COSUPPORT_TYPETRANSFORM_HPP
