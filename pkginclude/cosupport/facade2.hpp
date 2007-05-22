@@ -103,6 +103,9 @@ public:
   const T *operator ->() const
     { return &ref; }
 
+  this_type &operator =(const this_type &x)
+    { ref._impl(x.ref._impl()); return *this; }
+
   operator unspecified_bool_type() const {
     return ref._impl() != NULL
       ? static_cast<unspecified_bool_type>(&this_type::operator *)
@@ -134,7 +137,16 @@ private:
   //
   const SmartPtr &_impl() const
     { return static_cast<const Derived*>(this)->getImpl(); }
+  void _impl(const SmartPtr &p)
+    { return static_cast<Derived*>(this)->setImpl(p); }
 protected:
+  // may be overridden in derived class
+  const SmartPtr &getImpl() const
+    { return this->pImpl; }
+  // may be overridden in derived class
+  void setImpl(const SmartPtr &p)
+    { this->pImpl = p; }
+
   explicit FacadeFoundation(const typename Base::SmartPtr &p)
     : Base(p) {}
 public:
