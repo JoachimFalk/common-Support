@@ -58,8 +58,8 @@ namespace Detail {
 template <class T, template <class> class C>
 class FacadeRef: public T {
 protected:
-  typedef typename T::ImplType  ImplType;
-  typedef typename T::SmartPtr  SmartPtr;
+  typedef typename T::_H::ImplType  ImplType;
+  typedef typename T::_H::SmartPtr  SmartPtr;
 
   template <class TT, template <class> class CC> friend class FacadeRef;
 public:
@@ -73,15 +73,15 @@ template <class T, template <class> class C>
 class FacadePtr {
   typedef FacadePtr<T,C> this_type;
 protected:
-  typedef typename T::ImplType  ImplType;
-  typedef typename T::SmartPtr  SmartPtr;
+  typedef typename T::_H::ImplType  ImplType;
+  typedef typename T::_H::SmartPtr  SmartPtr;
 
   template <class TT, template <class> class CC> friend class FacadePtr;
 public:
-  typedef typename T::RefConst  RefConst;
-  typedef typename T::Ref       Ref;
-  typedef typename T::PtrConst  PtrConst;
-  typedef typename T::Ptr       Ptr;
+  typedef typename T::_H::RefConst  RefConst;
+  typedef typename T::_H::Ref       Ref;
+  typedef typename T::_H::PtrConst  PtrConst;
+  typedef typename T::_H::Ptr       Ptr;
 
   typedef T &(this_type::*unspecified_bool_type)();
 private:
@@ -132,6 +132,8 @@ public:
   typedef FacadePtr<Derived, CoSupport::Type::Const>        PtrConst;
   typedef FacadePtr<Derived, CoSupport::Type::Mutable>      Ptr;
 private:
+  // hack for type downward traversal
+  typedef FFType                                            _H;
   //
   // Curiously Recurring Template interface.
   //
