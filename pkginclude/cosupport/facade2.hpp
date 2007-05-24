@@ -156,6 +156,11 @@ public:
     { return reinterpret_cast<RefConst &>(*this); }
   operator Ref &() // do dirty magic
     { return reinterpret_cast<Ref &>(*this); }
+
+  PtrConst toPtr() const
+    { return PtrConst(static_cast<const Derived *>(this)); }
+  Ptr toPtr()
+    { return Ptr(static_cast<Derived *>(this)); }
 private:
   // default no copy no assign
   FacadeFoundation(const FacadeFoundation &);
