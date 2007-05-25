@@ -76,6 +76,8 @@ pkginclude_HEADERS =						\
 	pkginclude/cosupport/par_port.hpp 			\
 	pkginclude/cosupport/smoc_debug_out.hpp			\
 								\
+	pkginclude/cosupport/PerformanceEvaluation.hpp		\
+								\
 	pkginclude/cosupport/xerces_support.hpp			\
 	pkginclude/cosupport/xalan_support.hpp
 
@@ -99,7 +101,8 @@ libcosupport_la_SOURCES =		\
 	par_manager.cpp			\
 	refcount_object.cpp 		\
 	smoc_debug_out.cpp 		\
-	filter_ostream.cpp
+	filter_ostream.cpp 		\
+	PerformanceEvaluation.cpp
 
 
 test_arrayfifo_SOURCES      = test_arrayfifo.cpp
