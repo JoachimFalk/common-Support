@@ -257,6 +257,26 @@ struct min_arg :
   }
 };
 
+/**
+ * pointer-to-member function object
+ */
+template<class C, class T>
+struct mem_ptr_t :
+  public std::unary_function<C,T>
+{
+  T C::*ptm;
+  
+  mem_ptr_t(T C::*ptm) :
+    ptm(ptm)
+  {}
+  
+  const T& operator()(const C& c) const
+  { return c.*ptm; }
+};
+
+template<class C, class T>
+mem_ptr_t<C,T> mem_ptr(T C::*ptm)
+{ return mem_ptr_t<C,T>(ptm); }
 
 /**
  * for_each with binary function
