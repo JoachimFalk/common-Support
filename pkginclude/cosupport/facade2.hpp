@@ -44,10 +44,10 @@ namespace CoSupport {
 namespace Detail {
   template <class Impl>
   class Storage {
-  protected:
+  public:
     typedef Impl                              ImplType;
     typedef ::boost::intrusive_ptr<ImplType>  SmartPtr;
-
+  protected:
     SmartPtr pImpl;
   protected:
     explicit Storage(const SmartPtr &p)
@@ -57,16 +57,22 @@ namespace Detail {
 
 template <class T, template <class> class C>
 class FacadeRef: public T {
+  typedef FacadeRef<T, C> this_type;
 protected:
   typedef typename T::_H::ImplType  ImplType;
   typedef typename T::_H::SmartPtr  SmartPtr;
 
   template <class TT, template <class> class CC> friend class FacadeRef;
 public:
-  explicit FacadeRef(const SmartPtr &p)
+  FacadeRef(const SmartPtr &p)
     : T(p) {}
   FacadeRef(const FacadeRef<T,C> &t)
     : T(t._impl()) {}
+
+  // bounce assign to base class
+  template <typename TT>
+  this_type &operator =(const TT &obj)
+    { return static_cast<this_type &>(T::operator =(obj)); }
 };
 
 template <class T, template <class> class C>
@@ -78,16 +84,22 @@ protected:
 
   template <class TT, template <class> class CC> friend class FacadePtr;
 public:
-  typedef typename T::_H::RefConst  RefConst;
+  typedef typename T::_H::ConstRef  ConstRef;
   typedef typename T::_H::Ref       Ref;
-  typedef typename T::_H::PtrConst  PtrConst;
+  typedef typename T::_H::ConstPtr  ConstPtr;
   typedef typename T::_H::Ptr       Ptr;
 
   typedef T &(this_type::*unspecified_bool_type)();
 private:
   FacadeRef<T, C> ref;
+//FIXME: protected:
 public:
-  explicit FacadePtr(const SmartPtr &p)
+  const SmartPtr &getImpl() const
+    { return ref.getImpl(); }
+  void setImpl(const SmartPtr &p)
+    { return ref.setImpl(p); }
+public:
+  FacadePtr(const SmartPtr &p)
     : ref(p) {}
   FacadePtr(const FacadePtr<T, CoSupport::Type::Mutable> &t)
     : ref(t.ref) {}
@@ -116,20 +128,25 @@ public:
       ? static_cast<unspecified_bool_type>(&this_type::operator *)
       : NULL;
   }
+  unspecified_bool_type operator ==(const ImplType *x) const {
+    return ref._impl().get() == x
+      ? static_cast<unspecified_bool_type>(&this_type::operator *)
+      : NULL;
+  }
 };
 
-template <class Derived, class Impl, class Base = Detail::Storage<Impl> >
+template <class Derived, class Impl, class Base = Detail::Storage<Impl>, class SPtr = typename Base::SmartPtr>
 class FacadeFoundation: public Base {
   template <class TT, template <class> class CC> friend class FacadeRef;
   template <class TT, template <class> class CC> friend class FacadePtr;
 protected:
   typedef Impl                                              ImplType;
-  typedef ::boost::intrusive_ptr<ImplType>                  SmartPtr;
-  typedef FacadeFoundation<Derived,Impl,Base>               FFType;
+  typedef SPtr                                              SmartPtr;
+  typedef FacadeFoundation<Derived,Impl,Base,SPtr>          FFType;
 public:
-  typedef const FacadeRef<Derived, CoSupport::Type::Const>  RefConst;
+  typedef const FacadeRef<Derived, CoSupport::Type::Const>  ConstRef;
   typedef FacadeRef<Derived, CoSupport::Type::Mutable>      Ref;
-  typedef FacadePtr<Derived, CoSupport::Type::Const>        PtrConst;
+  typedef FacadePtr<Derived, CoSupport::Type::Const>        ConstPtr;
   typedef FacadePtr<Derived, CoSupport::Type::Mutable>      Ptr;
 private:
   // hack for type downward traversal
@@ -141,7 +158,8 @@ private:
     { return static_cast<const Derived*>(this)->getImpl(); }
   void _impl(const SmartPtr &p)
     { return static_cast<Derived*>(this)->setImpl(p); }
-protected:
+//FIXME: protected:
+public:
   // may be overridden in derived class
   const SmartPtr &getImpl() const
     { return this->pImpl; }
@@ -152,13 +170,13 @@ protected:
   explicit FacadeFoundation(const typename Base::SmartPtr &p)
     : Base(p) {}
 public:
-  operator RefConst &() const // do dirty magic
-    { return reinterpret_cast<RefConst &>(*this); }
+  operator ConstRef &() const // do dirty magic
+    { return reinterpret_cast<ConstRef &>(*this); }
   operator Ref &() // do dirty magic
     { return reinterpret_cast<Ref &>(*this); }
 
-  PtrConst toPtr() const
-    { return PtrConst(static_cast<const Derived *>(this)); }
+  ConstPtr toPtr() const
+    { return ConstPtr(static_cast<const Derived *>(this)); }
   Ptr toPtr()
     { return Ptr(static_cast<Derived *>(this)); }
 private:
