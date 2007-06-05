@@ -62,7 +62,7 @@ pkginclude_HEADERS =						\
 	pkginclude/cosupport/bit_buffer.hpp			\
 	pkginclude/cosupport/filter_ostream.hpp			\
 	pkginclude/cosupport/function_objects.hpp		\
-	pkginclude/cosupport/facade2.hpp			\
+	pkginclude/cosupport/facade.hpp				\
 	pkginclude/cosupport/list_facade.hpp			\
 								\
 	pkginclude/cosupport/commondefs.h			\
