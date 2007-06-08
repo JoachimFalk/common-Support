@@ -47,11 +47,12 @@ namespace CoSupport {
     class Derived,            // The derived list container being constructed
     class Iter,
     class Value,
-    class Reference = Value &
+    class Reference = Value &,
+    class Ptr       = Value *
   >
   class ListFacade {
   private:
-    typedef ListFacade<Derived, Iter, Value, Reference> this_type;
+    typedef ListFacade<Derived, Iter, Value, Reference, Ptr> this_type;
 
     template <template <class> class M>
     class IterTemplate
@@ -63,7 +64,7 @@ namespace CoSupport {
       friend class IterTemplate<CoSupport::Type::Mutable>;
       friend class IterTemplate<CoSupport::Type::Const>;
       friend class boost::iterator_core_access;
-      friend class ListFacade<Derived, Iter, Value, Reference>;
+      friend class ListFacade<Derived, Iter, Value, Reference, Ptr>;
     private:
       Iter iter;
     public:
@@ -73,10 +74,9 @@ namespace CoSupport {
         : iter(iter.iter) {}
 
       // overwrite operator -> from boost which thinks he knows best
-      boost::detail::operator_arrow_proxy<typename M<Reference>::type>
-      operator->() const {
+      typename M<Ptr>::type operator->() const {
         typename M<Reference>::type ref = dereference();
-        return boost::detail::operator_arrow_proxy<typename M<Reference>::type>(&ref);
+        return &ref;
       }
     protected:
       IterTemplate(const Iter &iter)
