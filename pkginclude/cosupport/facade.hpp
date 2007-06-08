@@ -58,11 +58,11 @@ namespace Detail {
 template <class T, template <class> class C>
 class FacadeRef: public T {
   typedef FacadeRef<T, C> this_type;
-protected:
-  typedef typename T::_H::ImplType  ImplType;
-  typedef typename T::_H::SmartPtr  SmartPtr;
 
   template <class TT, template <class> class CC> friend class FacadeRef;
+public:
+  typedef typename T::_H::ImplType  ImplType;
+  typedef typename T::_H::SmartPtr  SmartPtr;
 public:
   FacadeRef(const SmartPtr &p)
     : T(p) {}
@@ -78,12 +78,12 @@ public:
 template <class T, template <class> class C>
 class FacadePtr {
   typedef FacadePtr<T,C> this_type;
-protected:
-  typedef typename T::_H::ImplType  ImplType;
-  typedef typename T::_H::SmartPtr  SmartPtr;
 
   template <class TT, template <class> class CC> friend class FacadePtr;
 public:
+  typedef typename T::_H::ImplType  ImplType;
+  typedef typename T::_H::SmartPtr  SmartPtr;
+
   typedef typename T::_H::ConstRef  ConstRef;
   typedef typename T::_H::Ref       Ref;
   typedef typename T::_H::ConstPtr  ConstPtr;
@@ -137,13 +137,16 @@ public:
 
 template <class Derived, class Impl, class Base = Detail::Storage<Impl>, class SPtr = typename Base::SmartPtr>
 class FacadeFoundation: public Base {
+  typedef FacadeFoundation<Derived,Impl,Base,SPtr>          this_type;
+
   template <class TT, template <class> class CC> friend class FacadeRef;
   template <class TT, template <class> class CC> friend class FacadePtr;
 protected:
+  typedef this_type                                         FFType;
+public:
   typedef Impl                                              ImplType;
   typedef SPtr                                              SmartPtr;
-  typedef FacadeFoundation<Derived,Impl,Base,SPtr>          FFType;
-public:
+
   typedef const FacadeRef<Derived, CoSupport::Type::Const>  ConstRef;
   typedef FacadeRef<Derived, CoSupport::Type::Mutable>      Ref;
   typedef FacadePtr<Derived, CoSupport::Type::Const>        ConstPtr;
