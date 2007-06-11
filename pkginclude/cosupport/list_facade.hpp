@@ -144,6 +144,15 @@ namespace CoSupport {
       { erase(--end()); }
     void pop_front()
       { erase(begin()); }
+
+    size_t size() const {
+      const_iterator iter;
+      size_t         retval = 0;
+
+      for (iter = begin(); iter != end(); ++iter)
+        ++retval;
+      return retval;
+    }
   };
 
 } // namespace CoSupport
