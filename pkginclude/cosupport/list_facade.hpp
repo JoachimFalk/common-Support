@@ -146,10 +146,9 @@ namespace CoSupport {
       { erase(begin()); }
 
     size_t size() const {
-      const_iterator iter;
-      size_t         retval = 0;
-
-      for (iter = begin(); iter != end(); ++iter)
+      size_t retval = 0;
+      
+      for (const_iterator iter = begin(); iter != end(); ++iter)
         ++retval;
       return retval;
     }
