@@ -90,7 +90,8 @@ lib_LTLIBRARIES= libcosupport.la
 noinst_PROGRAMS=			\
 	test_arrayfifo			\
 	test_event_and_list		\
-	test_event_or_list
+	test_event_or_list		\
+	test_nested_event_lists
 
 compileheader-libcosupport.stamp: $(refcount_CH_LTOBJS) $(refcount_object_CH_LTOBJS)
 	@date > $@
@@ -114,3 +115,7 @@ test_event_and_list_SOURCES	  = test_event_and_list.cpp
 test_event_or_list_LDFLAGS	  = @SYSTEMC_LDFLAGS@ -lsystemc
 test_event_or_list_CXXFLAGS	  = @SYSTEMC_INCLUDE@
 test_event_or_list_SOURCES	  = test_event_or_list.cpp
+
+test_nested_event_lists_LDFLAGS	  = @SYSTEMC_LDFLAGS@ -lsystemc -lcosupport
+test_nested_event_lists_CXXFLAGS  = @SYSTEMC_INCLUDE@
+test_nested_event_lists_SOURCES	  = test_nested_event_lists.cpp
