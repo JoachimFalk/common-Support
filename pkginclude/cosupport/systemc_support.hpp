@@ -52,18 +52,31 @@ namespace CoSupport { namespace SystemC {
 
   // Event handling
  
+  /**
+   *
+   */ 
   class EventListener {
   public:
     friend class EventWaiter;
   protected:
-    // return true if event was handled
-    virtual bool signaled(EventWaiter *e) = 0;
+    /**
+     * Tell this listener about an event changing in EventWaiter e.
+     * E.g. the waiter was reseted or notified.
+     */
+    virtual void signaled(EventWaiter *e) = 0;
+
+    /**
+     * The lifetime of the given EventWaiter is over.
+     */
     virtual void eventDestroyed(EventWaiter *e) = 0;
   };
 
   template <class T> class EventOrList;
   template <class T> class EventAndList;
   
+  /**
+   *
+   */ 
   class EventWaiter {
   public:
     typedef EventWaiter         this_type;
@@ -72,41 +85,31 @@ namespace CoSupport { namespace SystemC {
     typedef std::set<EventListener *>  ell_ty;
     
     ell_ty  ell;
-#ifndef NDEBUG
-    bool    notifyRun;
-#endif
   protected:
     int     missing;
 
-    bool signalNotifyListener() {
-      if (--missing == 0) {
-#ifndef NDEBUG
-        assert(!notifyRun); notifyRun = true;
-#endif
+    /**
+     * Forward event notifications to all listners.
+     */
+    void signalNotifyListener() {
+      // forward notification only once, when missing is set to 0
+      // if missing < 0 then the listeners must be notified allready
+      if (missing == 0) {
         ell_ty::iterator iter, niter;
         
         for ( iter = ell.begin();
               iter != ell.end();
               iter = niter ) {
           ++(niter = iter);
-          if ((*iter)->signaled(this)) {
-            // event handled => therefore one missing again
-            assert(missing == 0); missing = 1;
-            while ( iter != ell.begin() )
-              sassert(!(*iter)->signaled(this));
-          }
+          (*iter)->signaled(this);
         }
-#ifndef NDEBUG
-        notifyRun = false;
-#endif
-        return missing == 1;
-      } else
-        return false;
+      }
     }
+
+    /**
+     * Forward event resets to all listners.
+     */
     void signalResetListener(EventListener *el) {
-#ifndef NDEBUG
-      assert(!notifyRun); notifyRun = true;
-#endif
       ell_ty::iterator iter, niter;
       
       for ( iter = ell.begin();
@@ -114,18 +117,12 @@ namespace CoSupport { namespace SystemC {
             iter = niter) {
         ++(niter = iter);
         if (*iter != el)
-          sassert(!(*iter)->signaled(this));
+          (*iter)->signaled(this);
       }
-#ifndef NDEBUG
-      notifyRun = false;
-#endif
     }
   public:
     EventWaiter(bool startNotified = false)
       :
-#ifndef NDEBUG
-        notifyRun(false),
-#endif
         missing(startNotified ? 0 : 1)
       {}
 
@@ -138,8 +135,11 @@ namespace CoSupport { namespace SystemC {
         return NULL;
     }
 
+    //
     void addListener(EventListener *el)
-      { sassert(ell.insert(el).second); }
+    {
+      sassert(ell.insert(el).second); //assert "el" was NOT in set previously
+    }
     void delListener(EventListener *el)
       { sassert(ell.erase(el) == 1); }
 
@@ -176,6 +176,9 @@ namespace CoSupport { namespace SystemC {
   }
 #endif
 
+  /**
+   *
+   */ 
   class Event: public EventWaiter {
   public:
     typedef Event this_type;
@@ -185,8 +188,10 @@ namespace CoSupport { namespace SystemC {
 
     void notify() {
       assert(missing == 1 || missing == 0);
-      if (missing)
+      if(missing) {  // only update listener at first call of notify
+        missing = 0; // toggle to notified
         signalNotifyListener();
+      }
     }
 
 #ifndef NDEBUG
@@ -201,6 +206,9 @@ namespace CoSupport { namespace SystemC {
     }
   };
   
+  /**
+   *
+   */ 
   template <class T>
   class EventOrList
   : public EventWaiter,
@@ -213,25 +221,27 @@ namespace CoSupport { namespace SystemC {
     EventList    eventList;
     EventType   *eventTrigger;
     
-    bool signaled(EventWaiter *e) {
-      bool retval;
-      
+    void signaled(EventWaiter *e) {
       assert( e && "/* e must be notified */" );
       assert( find(eventList.begin(), eventList.end(), e) != eventList.end() );
       assert( dynamic_cast<EventType *>(e) );
       if (*e) {
         if (!eventTrigger)
           eventTrigger = reinterpret_cast<EventType *>(e);
-        retval = signalNotifyListener();
+        --missing;
+        signalNotifyListener();
       } else {
         if (eventTrigger == e)
           eventTrigger = NULL;
-        if (++missing == 1)
+        if (++missing == 1){
           signalResetListener(NULL);
-        retval = false;
+        }else if(missing > 1){
+          // prevent from overflow
+          // an OR list at maximum misses one event
+          missing = 1;
+        }
       }
       // std::cout << "EventOrList::signaled: missing == " << missing << std::endl;
-      return retval;
     }
 
     void eventDestroyed(EventWaiter *e) {
@@ -268,35 +278,37 @@ namespace CoSupport { namespace SystemC {
         eventList.erase(iter); e.delListener(this);
         if (&e == eventTrigger)
           eventTrigger = NULL;
-        if (e)
+        if (e){
           ++missing;
+          if(missing > 0) signalResetListener(NULL);
+        }
       }
     }
     
+    // or´ing this event_or_lists with event e
     this_type operator | (EventType &e)
       { return this_type(*this) |= e; }
+
+    // or´ing this event_or_lists with event e
     this_type &operator |= (EventType &e) {
-      if (e) {
-        --missing;
-        if (!eventTrigger)
-          eventTrigger = &e;
-      }
       eventList.push_back(&e);
       e.addListener(this);
+      if(e){
+        --missing; // added another activating event
+        signalNotifyListener(); // update event list
+      }
       return *this;
     }
 
-    this_type operator | (this_type &ew)
-      { return this_type(*this) |= ew; }
+    // or´ing this event_or_lists with event_or_list eol
+    this_type operator | (this_type &eol)
+      { return this_type(*this) |= eol; }
+
+    // or´ing this event_or_lists with event_or_list eol
     this_type &operator |= (this_type &eol) {
       for( typename EventList::iterator iter = eol.eventList.begin();
 	   iter != eol.eventList.end(); iter++ ) {
-	if(**iter){
-	  --missing;
-	  if (!eventTrigger) eventTrigger = *iter;
-	}
-	eventList.push_back(*iter);
-	(*iter)->addListener(this);
+        *this |= **iter;
       }
       return *this;
     }
@@ -357,12 +369,31 @@ namespace CoSupport { namespace SystemC {
         out << (iter != eventList.begin() ? ", " : "") << **iter;
       out << "], missing: " << missing << ")";
     }
+
+    /*
+"#include <cosupport/filter_ostream.hpp>"
+
+    virtual
+    void dump(std::ostream &out) const {
+      out << "EventOrList(missing: " << missing << ", [\n";
+      out << Indent::Up;
+      for ( typename EventList::const_iterator iter = eventList.begin();
+            iter != eventList.end();
+            ++iter )
+        out << (iter != eventList.begin() ? ",\n" : "") << **iter;
+      out <<Indent::Down;
+      out << "\n])";
+    }
+    */
 #endif
 
     ~EventOrList()
       { clear(); }
   };
 
+  /**
+   *
+   */ 
   template <class T>
   class EventAndList
   : public EventWaiter,
@@ -374,21 +405,22 @@ namespace CoSupport { namespace SystemC {
     
     EventList  eventList;
     
-    bool signaled(EventWaiter *e) {
-      bool retval;
-      
+    void signaled(EventWaiter *e) {
       assert(
         e &&
         find(eventList.begin(), eventList.end(), e) != eventList.end());
       if (*e) {
-        retval = signalNotifyListener();
+        // to prevent missing from "underflow"
+        // only notify if this list was not active yet
+        if(!*this)
+          --missing;
+        signalNotifyListener();
+        
       } else {
         if (++missing == 1)
           signalResetListener(NULL);
-        retval = false;
       }
       // std::cout << "EventAndList::signaled: missing == " << missing << std::endl;
-      return retval;
     }
 
     void eventDestroyed(EventWaiter *e) {
@@ -423,18 +455,25 @@ namespace CoSupport { namespace SystemC {
         eventList.begin(), eventList.end(), &e);
       if (iter != eventList.end()) {
         eventList.erase(iter); e.delListener(this);
-        if (!e)
+        if (!e && missing > 0){ //prevent missing from underflow
           --missing;
+          signalNotifyListener();
+        }
       }
     }
     
+    // and´ing this event_and_lists with event e
     this_type operator & (EventType &e)
       { return this_type(*this) &= e; }
+
+    // and´ing this event_and_lists with event e
     this_type &operator &= (EventType &e) {
-      if (!e)
-        ++missing;
       eventList.push_back(&e);
       e.addListener(this);
+      if(!e){
+        ++missing; // e is not signaled -> another event to wait for
+        signalResetListener(NULL); // update event list
+      }
       return *this;
     }
     
@@ -473,6 +512,20 @@ namespace CoSupport { namespace SystemC {
         out << (iter != eventList.begin() ? ", " : "") << **iter;
       out << "], missing: " << missing << ")";
     }
+
+    /*
+    virtual
+    void dump(std::ostream &out) const {
+      out << "EventAndList(missing: " << missing << ", [\n";
+      out << Indent::Up;
+      for ( typename EventList::const_iterator iter = eventList.begin();
+            iter != eventList.end();
+            ++iter )
+        out << (iter != eventList.begin() ? ",\n" : "") << **iter;
+      out << Indent::Down;
+      out << "\n])";
+    }
+    */
 #endif
 
     ~EventAndList()
@@ -498,9 +551,9 @@ namespace CoSupport { namespace SystemC {
     if (!e) {
       struct _: public EventListener {
         sc_event sce;
-        bool signaled(EventWaiter *_e) {
+        void signaled(EventWaiter *_e) {
           sce.notify();
-          return false;
+          return;// false;
         }
         void eventDestroyed(EventWaiter *_e) {
           // sce.notify();
