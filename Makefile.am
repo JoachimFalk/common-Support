@@ -64,6 +64,7 @@ pkginclude_HEADERS =						\
 	pkginclude/cosupport/function_objects.hpp		\
 	pkginclude/cosupport/facade.hpp				\
 	pkginclude/cosupport/list_facade.hpp			\
+	pkginclude/cosupport/container_insert.hpp		\
 								\
 	pkginclude/cosupport/commondefs.h			\
 	pkginclude/cosupport/integertypes.h			\
