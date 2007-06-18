@@ -25,10 +25,13 @@ do
   gold=$golden_logs_dir/$bin.log #logfile has the name of the binary as prefix
 
   # call binary
-  $test_bin > $logoutfile 2> $err_log || (\  # if binary crashes
-      echo " $bin: Support autotest failed: test crashed."; \
-      cat $err_log; \
-      test_failed=1)
+  $test_bin > $logoutfile 2> $err_log
+
+  if [ $? -gt 0 ]; then # if binary crashes
+      echo " $bin: Support autotest failed: test crashed.";
+      cat $err_log;
+      test_failed=1
+  fi
 
   # make sure 'golden' logfile exist
   if [ -f $gold ]; then
