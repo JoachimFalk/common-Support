@@ -95,9 +95,9 @@ private:
 //FIXME: protected:
 public:
   const SmartPtr &getImpl() const
-    { return ref.getImpl(); }
+    { return ref._impl(); }
   void setImpl(const SmartPtr &p)
-    { return ref.setImpl(p); }
+    { return ref._impl(p); }
 public:
   FacadePtr(const SmartPtr &p)
     : ref(p) {}
