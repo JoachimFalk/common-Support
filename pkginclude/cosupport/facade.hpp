@@ -44,6 +44,7 @@ namespace CoSupport {
 namespace Detail {
   template <class Impl>
   class Storage {
+    typedef Storage<Impl>                     this_type;
   public:
     typedef Impl                              ImplType;
     typedef ::boost::intrusive_ptr<ImplType>  SmartPtr;
@@ -52,6 +53,9 @@ namespace Detail {
   protected:
     explicit Storage(const SmartPtr &p)
       : pImpl(p) {}
+
+    void assign(const this_type &x)
+      { pImpl = x.pImpl; }
   };
 } // namespace Detail
 
@@ -96,8 +100,8 @@ private:
 public:
   const SmartPtr &getImpl() const
     { return ref._impl(); }
-  void setImpl(const SmartPtr &p)
-    { return ref._impl(p); }
+//void setImpl(const SmartPtr &p)
+//  { return ref._impl(p); }
 public:
   FacadePtr(const SmartPtr &p)
     : ref(p) {}
@@ -116,7 +120,7 @@ public:
     { return &ref; }
 
   this_type &operator =(const this_type &x)
-    { ref._impl(x.ref._impl()); return *this; }
+    { ref.assign(x.ref); return *this; }
 
   operator unspecified_bool_type() const {
     return ref._impl() != NULL
@@ -159,16 +163,16 @@ private:
   //
   const SmartPtr &_impl() const
     { return static_cast<const Derived*>(this)->getImpl(); }
-  void _impl(const SmartPtr &p)
-    { return static_cast<Derived*>(this)->setImpl(p); }
+//void _impl(const SmartPtr &p)
+//  { return static_cast<Derived*>(this)->setImpl(p); }
 //FIXME: protected:
 public:
   // may be overridden in derived class
   const SmartPtr &getImpl() const
     { return this->pImpl; }
-  // may be overridden in derived class
-  void setImpl(const SmartPtr &p)
-    { this->pImpl = p; }
+//// may be overridden in derived class
+//void setImpl(const SmartPtr &p)
+//  { this->pImpl = p; }
 
   explicit FacadeFoundation(const typename Base::SmartPtr &p)
     : Base(p) {}
