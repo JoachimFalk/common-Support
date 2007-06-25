@@ -92,6 +92,7 @@ public:
   typedef typename T::_H::Ref       Ref;
   typedef typename T::_H::ConstPtr  ConstPtr;
   typedef typename T::_H::Ptr       Ptr;
+  typedef T                         Facade;
 
   typedef T &(this_type::*unspecified_bool_type)();
 private:
@@ -191,6 +192,10 @@ private:
   FacadeFoundation(const FacadeFoundation &);
   FacadeFoundation &operator =(const FacadeFoundation &);
 };
+
+template <class TT, class T, template <class> class C>
+const CoSupport::FacadePtr<TT,C> dynamic_pointer_cast(const CoSupport::FacadePtr<T,C> &ptr)
+  { return TT::upcast(*ptr); }
 
 namespace Type {
 
