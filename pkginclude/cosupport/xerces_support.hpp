@@ -113,12 +113,12 @@ namespace CoSupport { namespace Xerces {
     { out << NStr(str); return out; }
 
   inline
-  XN::DOMNode *getAttrNode(const XN::DOMNode *node, const XMLCh *const attr) {
-    XN::DOMNode               *retval = NULL;
+  XN::DOMAttr *getAttrNode(const XN::DOMNode *node, const XMLCh *const attr) {
+    XN::DOMAttr               *retval = NULL;
     const XN::DOMNamedNodeMap *attrs  = node->getAttributes();
     
     if (attrs != NULL)
-      retval = attrs->getNamedItem(attr);
+      retval = static_cast<XN::DOMAttr *>(attrs->getNamedItem(attr));
     if (retval == NULL) {
       std::stringstream msg;
       
@@ -129,26 +129,25 @@ namespace CoSupport { namespace Xerces {
     return retval;
   }
   inline
-  XN::DOMNode *getAttrNode(const XN::DOMNode *node, const char *attr)
+  XN::DOMAttr *getAttrNode(const XN::DOMNode *node, const char *attr)
     { return getAttrNode(node, XStr(attr)); }
 
   /// get XML attribute node attr of XML node node.
   /// Create the attribute node if it does not exist.
   inline
-  XN::DOMNode *createAttrNode(const XN::DOMNode *node, const XMLCh *const attr) {
+  XN::DOMAttr *createAttrNode(const XN::DOMNode *node, const XMLCh *const attr) {
     XN::DOMNamedNodeMap *attrs = node->getAttributes();
     assert(attrs != NULL);
-    XN::DOMNode *retval = attrs->getNamedItem(attr);
+    XN::DOMAttr *retval = static_cast<XN::DOMAttr *>(attrs->getNamedItem(attr));
     if (retval == NULL) {
       // Attribute missing => create it
-      XN::DOMAttr *attrNode = node->getOwnerDocument()->createAttribute(attr);
-      attrs->setNamedItem(attrNode);
-      retval = attrNode;
+      retval = node->getOwnerDocument()->createAttribute(attr);
+      attrs->setNamedItem(retval);
     }
     return retval;
   }
   inline
-  XN::DOMNode *createAttrNode(const XN::DOMNode *node, const char *attr)
+  XN::DOMAttr *createAttrNode(const XN::DOMNode *node, const char *attr)
     { return createAttrNode(node, XStr(attr)); }
 
   /// Convert value in node to type T.
