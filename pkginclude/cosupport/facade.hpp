@@ -84,6 +84,8 @@ class FacadePtr {
   typedef FacadePtr<T,C> this_type;
 
   template <class TT, template <class> class CC> friend class FacadePtr;
+private:
+  typedef typename C<T>::type       value_type;
 public:
   typedef typename T::_H::ImplType  ImplType;
   typedef typename T::_H::SmartPtr  SmartPtr;
@@ -92,9 +94,8 @@ public:
   typedef typename T::_H::Ref       Ref;
   typedef typename T::_H::ConstPtr  ConstPtr;
   typedef typename T::_H::Ptr       Ptr;
-  typedef T                         Facade;
 
-  typedef T &(this_type::*unspecified_bool_type)();
+  typedef value_type &(this_type::*unspecified_bool_type)() const;
 private:
   FacadeRef<T, C> ref;
 //FIXME: protected:
@@ -111,14 +112,14 @@ public:
   FacadePtr(typename C<T>::type *t)
     : ref(t != NULL ? t->_impl() : SmartPtr()) {}
 
-  T &operator *()
-    { return ref; }
-  const T &operator *() const
-    { return ref; }
-  T *operator ->()
-    { return &ref; }
-  const T *operator ->() const
-    { return &ref; }
+  value_type &operator *() const {
+    return const_cast<value_type &>
+      (static_cast<const T &>(ref));
+  }
+  value_type *operator ->() const {
+    return const_cast<value_type *>
+      (static_cast<const T *>(&ref));
+  }
 
   this_type &operator =(const this_type &x)
     { ref.assign(x.ref); return *this; }
