@@ -175,9 +175,9 @@ public:
     : Base(p) {}
 public:
   operator ConstRef &() const // do dirty magic
-    { return reinterpret_cast<ConstRef &>(*this); }
+    { return static_cast<ConstRef &>(*this); }
   operator Ref &() // do dirty magic
-    { return reinterpret_cast<Ref &>(*this); }
+    { return static_cast<Ref &>(*this); }
 
   ConstPtr toPtr() const
     { return ConstPtr(static_cast<const Derived *>(this)); }
