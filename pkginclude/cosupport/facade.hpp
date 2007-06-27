@@ -49,7 +49,7 @@ namespace Detail {
     typedef Impl                              ImplType;
     typedef ::boost::intrusive_ptr<ImplType>  SmartPtr;
   protected:
-    SmartPtr pImpl;
+    SmartPtr pImpl; //< this is the storage smart ptr, its name must be pImpl
   protected:
     explicit Storage(const SmartPtr &p)
       : pImpl(p) {}
@@ -71,7 +71,7 @@ public:
   FacadeRef(const SmartPtr &p)
     : T(p) {}
   FacadeRef(const FacadeRef<T,C> &t)
-    : T(t._impl()) {}
+    : T(SmartPtr()) { this->assign(t); }
 
   // bounce assign to base class
   template <typename TT>
@@ -100,17 +100,15 @@ private:
   FacadeRef<T, C> ref;
 //FIXME: protected:
 public:
-  const SmartPtr &getImpl() const
+  ImplType *getImpl() const
     { return ref._impl(); }
-//void setImpl(const SmartPtr &p)
-//  { return ref._impl(p); }
 public:
   FacadePtr(const SmartPtr &p)
     : ref(p) {}
   FacadePtr(const FacadePtr<T, CoSupport::Type::Mutable> &t)
     : ref(t.ref) {}
   FacadePtr(typename C<T>::type *t)
-    : ref(t != NULL ? t->_impl() : SmartPtr()) {}
+    : ref(SmartPtr()) { if (t) ref.assign(*t); }
 
   value_type &operator *() const {
     return const_cast<value_type &>
@@ -125,17 +123,12 @@ public:
     { ref.assign(x.ref); return *this; }
 
   operator unspecified_bool_type() const {
-    return ref._impl() != NULL
+    return ref.pImpl != NULL
       ? static_cast<unspecified_bool_type>(&this_type::operator *)
       : NULL;
   }
   unspecified_bool_type operator ==(const this_type &x) const {
-    return ref._impl() == x.ref._impl()
-      ? static_cast<unspecified_bool_type>(&this_type::operator *)
-      : NULL;
-  }
-  unspecified_bool_type operator ==(const ImplType *x) const {
-    return ref._impl().get() == x
+    return ref.pImpl != x.ref.pImpl
       ? static_cast<unspecified_bool_type>(&this_type::operator *)
       : NULL;
   }
@@ -163,13 +156,13 @@ private:
   //
   // Curiously Recurring Template interface.
   //
-  const SmartPtr &_impl() const
+  ImplType *_impl() const
     { return static_cast<const Derived*>(this)->getImpl(); }
 //FIXME: protected:
 public:
   // may be overridden in derived class
-  const SmartPtr &getImpl() const
-    { return this->pImpl; }
+  ImplType *getImpl() const
+    { return this->pImpl.get(); }
 
   explicit FacadeFoundation(const typename Base::SmartPtr &p)
     : Base(p) {}
