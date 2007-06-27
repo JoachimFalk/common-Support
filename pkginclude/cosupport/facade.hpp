@@ -165,16 +165,11 @@ private:
   //
   const SmartPtr &_impl() const
     { return static_cast<const Derived*>(this)->getImpl(); }
-//void _impl(const SmartPtr &p)
-//  { return static_cast<Derived*>(this)->setImpl(p); }
 //FIXME: protected:
 public:
   // may be overridden in derived class
   const SmartPtr &getImpl() const
     { return this->pImpl; }
-//// may be overridden in derived class
-//void setImpl(const SmartPtr &p)
-//  { this->pImpl = p; }
 
   explicit FacadeFoundation(const typename Base::SmartPtr &p)
     : Base(p) {}
@@ -197,6 +192,10 @@ private:
 template <class TT, class T, template <class> class C>
 const CoSupport::FacadePtr<TT,C> dynamic_pointer_cast(const CoSupport::FacadePtr<T,C> &ptr)
   { return TT::upcast(*ptr); }
+
+template <class TT, class T, template <class> class C>
+const CoSupport::FacadePtr<TT,C> static_pointer_cast(const CoSupport::FacadePtr<T,C> &ptr)
+  { return &static_cast<typename C<TT>::type &>(*ptr); }
 
 namespace Type {
 
