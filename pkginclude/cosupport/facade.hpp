@@ -128,7 +128,7 @@ public:
       : NULL;
   }
   unspecified_bool_type operator ==(const this_type &x) const {
-    return ref.pImpl != x.ref.pImpl
+    return ref.pImpl == x.ref.pImpl
       ? static_cast<unspecified_bool_type>(&this_type::operator *)
       : NULL;
   }
