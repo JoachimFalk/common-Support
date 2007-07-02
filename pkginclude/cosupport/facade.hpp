@@ -122,6 +122,11 @@ public:
   this_type &operator =(const this_type &x)
     { ref.assign(x.ref); return *this; }
 
+  // "operator bool()" would be utilized in comparisons if the
+  // comp. operator is not specified (e.g. if "operator!="
+  // is not defined, (a != b) results always [assuming pImpl
+  // is valid] in (true != true), which is WRONG!!!)
+  // -> define all comparison operators
   operator unspecified_bool_type() const {
     return ref.pImpl != NULL
       ? static_cast<unspecified_bool_type>(&this_type::operator *)
@@ -129,6 +134,31 @@ public:
   }
   unspecified_bool_type operator ==(const this_type &x) const {
     return ref.pImpl == x.ref.pImpl
+      ? static_cast<unspecified_bool_type>(&this_type::operator *)
+      : NULL;
+  }
+  unspecified_bool_type operator !=(const this_type &x) const {
+    return ref.pImpl != x.ref.pImpl
+      ? static_cast<unspecified_bool_type>(&this_type::operator *)
+      : NULL;
+  }
+  unspecified_bool_type operator <(const this_type &x) const {
+    return ref.pImpl < x.ref.pImpl
+      ? static_cast<unspecified_bool_type>(&this_type::operator *)
+      : NULL;
+  }
+  unspecified_bool_type operator <=(const this_type &x) const {
+    return ref.pImpl <= x.ref.pImpl
+      ? static_cast<unspecified_bool_type>(&this_type::operator *)
+      : NULL;
+  }
+  unspecified_bool_type operator >(const this_type &x) const {
+    return ref.pImpl > x.ref.pImpl
+      ? static_cast<unspecified_bool_type>(&this_type::operator *)
+      : NULL;
+  }
+  unspecified_bool_type operator >=(const this_type &x) const {
+    return ref.pImpl >= x.ref.pImpl
       ? static_cast<unspecified_bool_type>(&this_type::operator *)
       : NULL;
   }
