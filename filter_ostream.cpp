@@ -35,6 +35,7 @@
 
 #include <cosupport/filter_ostream.hpp>
 #include <cosupport/string_convert.hpp>
+#include <cassert>
 
 namespace CoSupport {
   
@@ -278,10 +279,18 @@ IndentStreambuf::IndentStreambuf(
 {}
 
 void IndentStreambuf::setIndentation(int value)
-{ indent = value; }
+{
+  if(value < 0)
+    assert(!"Negative indention not allowed!");
+  indent = value;
+}
 
 void IndentStreambuf::setDeltaLevel(int value)
-{ indent += value * delta; }
+{
+  if(value < 0 && indent < -(value * delta))
+    assert(!"Too much negative delta indentation!");
+  indent += value * delta;
+}
 
 int IndentStreambuf::overflow(int c)
 {
