@@ -102,7 +102,7 @@ namespace CoSupport {
     Derived const& derived() const
       { return *static_cast<Derived const*>(this); }
   public:
-    typedef Value                                           value_type;
+    typedef Value                                  value_type;
 
     typedef IterTemplate<CoSupport::Type::Mutable> iterator;
     typedef IterTemplate<CoSupport::Type::Const>   const_iterator;

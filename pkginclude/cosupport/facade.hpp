@@ -132,36 +132,41 @@ public:
       ? static_cast<unspecified_bool_type>(&this_type::operator *)
       : NULL;
   }
-  unspecified_bool_type operator ==(const this_type &x) const {
-    return ref.pImpl == x.ref.pImpl
-      ? static_cast<unspecified_bool_type>(&this_type::operator *)
-      : NULL;
-  }
-  unspecified_bool_type operator !=(const this_type &x) const {
-    return ref.pImpl != x.ref.pImpl
-      ? static_cast<unspecified_bool_type>(&this_type::operator *)
-      : NULL;
-  }
-  unspecified_bool_type operator <(const this_type &x) const {
-    return ref.pImpl < x.ref.pImpl
-      ? static_cast<unspecified_bool_type>(&this_type::operator *)
-      : NULL;
-  }
-  unspecified_bool_type operator <=(const this_type &x) const {
-    return ref.pImpl <= x.ref.pImpl
-      ? static_cast<unspecified_bool_type>(&this_type::operator *)
-      : NULL;
-  }
-  unspecified_bool_type operator >(const this_type &x) const {
-    return ref.pImpl > x.ref.pImpl
-      ? static_cast<unspecified_bool_type>(&this_type::operator *)
-      : NULL;
-  }
-  unspecified_bool_type operator >=(const this_type &x) const {
-    return ref.pImpl >= x.ref.pImpl
-      ? static_cast<unspecified_bool_type>(&this_type::operator *)
-      : NULL;
-  }
+  template <template <class> class CC>
+  bool operator ==(const FacadePtr<T,CC> &x) const
+    { return ref.pImpl == x.ref.pImpl; }
+  bool operator ==(const T *x) const
+    { return ref.pImpl == (x ? x->pImpl : NULL); }
+
+  template <template <class> class CC>
+  bool operator !=(const FacadePtr<T,CC> &x) const
+    { return ref.pImpl != x.ref.pImpl; }
+  bool operator !=(const T *x) const
+    { return ref.pImpl != (x ? x->pImpl : NULL); }
+
+  template <template <class> class CC>
+  bool operator <(const FacadePtr<T,CC> &x) const
+    { return ref.pImpl < x.ref.pImpl; }
+  bool operator <(const T *x) const
+    { return ref.pImpl < (x ? x->pImpl : NULL); }
+
+  template <template <class> class CC>
+  bool operator <=(const FacadePtr<T,CC> &x) const
+    { return ref.pImpl <= x.ref.pImpl; }
+  bool operator <=(const T *x) const
+    { return ref.pImpl <= (x ? x->pImpl : NULL); }
+
+  template <template <class> class CC>
+  bool operator >(const FacadePtr<T,CC> &x) const
+    { return ref.pImpl > x.ref.pImpl; }
+  bool operator >(const T *x) const
+    { return ref.pImpl > (x ? x->pImpl : NULL); }
+
+  template <template <class> class CC>
+  bool operator >=(const FacadePtr<T,CC> &x) const
+    { return ref.pImpl >= x.ref.pImpl; }
+  bool operator >=(const T *x) const
+    { return ref.pImpl >= (x ? x->pImpl : NULL); }
 };
 
 template <class Derived, class Impl, class Base = Detail::Storage<Impl>, class SPtr = typename Base::SmartPtr>
