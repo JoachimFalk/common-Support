@@ -30,6 +30,7 @@
 #define _INCLUDED_CONTAINER_INSERT_HPP
 
 #include <cassert>
+#include <utility>
 
 namespace CoSupport
 {
