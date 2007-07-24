@@ -134,39 +134,39 @@ public:
   }
   template <template <class> class CC>
   bool operator ==(const FacadePtr<T,CC> &x) const
-    { return ref.pImpl == x.ref.pImpl; }
+    { return ref.pImpl.get() == x.ref.pImpl.get(); }
   bool operator ==(const T *x) const
-    { return ref.pImpl == (x ? x->pImpl : NULL); }
+    { return ref.pImpl.get() == (x ? x->pImpl.get() : NULL); }
 
   template <template <class> class CC>
   bool operator !=(const FacadePtr<T,CC> &x) const
-    { return ref.pImpl != x.ref.pImpl; }
+    { return ref.pImpl.get() != x.ref.pImpl.get(); }
   bool operator !=(const T *x) const
-    { return ref.pImpl != (x ? x->pImpl : NULL); }
+    { return ref.pImpl.get() != (x ? x->pImpl.get() : NULL); }
 
   template <template <class> class CC>
   bool operator <(const FacadePtr<T,CC> &x) const
-    { return ref.pImpl < x.ref.pImpl; }
+    { return ref.pImpl.get() < x.ref.pImpl.get(); }
   bool operator <(const T *x) const
-    { return ref.pImpl < (x ? x->pImpl : NULL); }
+    { return ref.pImpl.get() < (x ? x->pImpl.get() : NULL); }
 
   template <template <class> class CC>
   bool operator <=(const FacadePtr<T,CC> &x) const
-    { return ref.pImpl <= x.ref.pImpl; }
+    { return ref.pImpl.get() <= x.ref.pImpl.get(); }
   bool operator <=(const T *x) const
-    { return ref.pImpl <= (x ? x->pImpl : NULL); }
+    { return ref.pImpl.get() <= (x ? x->pImpl.get() : NULL); }
 
   template <template <class> class CC>
   bool operator >(const FacadePtr<T,CC> &x) const
-    { return ref.pImpl > x.ref.pImpl; }
+    { return ref.pImpl.get() > x.ref.pImpl.get(); }
   bool operator >(const T *x) const
-    { return ref.pImpl > (x ? x->pImpl : NULL); }
+    { return ref.pImpl.get() > (x ? x->pImpl.get() : NULL); }
 
   template <template <class> class CC>
   bool operator >=(const FacadePtr<T,CC> &x) const
-    { return ref.pImpl >= x.ref.pImpl; }
+    { return ref.pImpl.get() >= x.ref.pImpl.get(); }
   bool operator >=(const T *x) const
-    { return ref.pImpl >= (x ? x->pImpl : NULL); }
+    { return ref.pImpl.get() >= (x ? x->pImpl.get() : NULL); }
 };
 
 template <class Derived, class Impl, class Base = Detail::Storage<Impl>, class SPtr = typename Base::SmartPtr>
