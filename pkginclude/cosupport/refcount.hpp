@@ -36,8 +36,10 @@
 #define _INCLUDED_COSUPPORT_REFCOUNT_HPP
 
 #include "commondefs.h"
+#include "sassert.h"
 
 #include <boost/detail/lightweight_mutex.hpp>
+#include <cassert>
 
 namespace CoSupport {
 
@@ -62,7 +64,7 @@ namespace CoSupport {
       { return *this; }
 
     ~RefCount() // nothrow
-      {}
+      { assert(use_count_ == 0); }
 
     void add_ref( void ) {
 #if defined(BOOST_HAS_THREADS)
@@ -85,6 +87,48 @@ namespace CoSupport {
 #endif
       return use_count_ == 1;
     }
+  };
+
+  template <typename T>
+  class ScopedRefCountPtr {
+  private:
+    T obj;
+  public:
+    explicit ScopedRefCountPtr()
+      : obj() { obj.add_ref(); }
+    template <typename T1>
+    explicit ScopedRefCountPtr(const T1 &p1)
+      : obj(p1) { obj.add_ref(); }
+    template <typename T1, typename T2>
+    explicit ScopedRefCountPtr(const T1 &p1, const T2 &p2)
+      : obj(p1, p2) { obj.add_ref(); }
+    template <typename T1, typename T2, typename T3>
+    explicit ScopedRefCountPtr(const T1 &p1, const T2 &p2, const T3 &p3)
+      : obj(p1, p2, p3) { obj.add_ref(); }
+    template <typename T1, typename T2, typename T3, typename T4>
+    explicit ScopedRefCountPtr(const T1 &p1, const T2 &p2, const T3 &p3, const T4 &p4)
+      : obj(p1, p2, p3, p4) { obj.add_ref(); }
+    template <typename T1, typename T2, typename T3, typename T4, typename T5>
+    explicit ScopedRefCountPtr(const T1 &p1, const T2 &p2, const T3 &p3, const T4 &p4, const T5 &p5)
+      : obj(p1, p2, p3, p4, p5) { obj.add_ref(); }
+
+    operator T *()
+      { return &obj; }
+    operator const T *() const
+      { return &obj; }
+
+    T *operator ->()
+      { return &obj; }
+    const T *operator ->() const
+      { return &obj; }
+
+    T &operator *()
+      { return obj; }
+    const T &operator *() const
+      { return obj; }
+
+    ~ScopedRefCountPtr()
+      { sassert(obj.del_ref()); }
   };
 
 } // namespace CoSupport 

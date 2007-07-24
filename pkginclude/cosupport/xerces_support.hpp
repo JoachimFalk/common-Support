@@ -49,9 +49,7 @@
 
 namespace CoSupport { namespace Xerces {
 
-  namespace XN {
-    XERCES_CPP_NAMESPACE_USE 
-  }
+  namespace XN = XERCES_CPP_NAMESPACE;
 
   class XercesInitializer {
   public:
