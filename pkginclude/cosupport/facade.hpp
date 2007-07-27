@@ -127,46 +127,58 @@ public:
   // is not defined, (a != b) results always [assuming pImpl
   // is valid] in (true != true), which is WRONG!!!)
   // -> define all comparison operators
-  operator unspecified_bool_type() const {
+    operator unspecified_bool_type() const {
     return ref.pImpl != NULL
       ? static_cast<unspecified_bool_type>(&this_type::operator *)
       : NULL;
   }
-  template <template <class> class CC>
-  bool operator ==(const FacadePtr<T,CC> &x) const
+  bool operator ==(const FacadePtr<T,Type::Const> &x) const
     { return ref.pImpl.get() == x.ref.pImpl.get(); }
   bool operator ==(const T *x) const
     { return ref.pImpl.get() == (x ? x->pImpl.get() : NULL); }
 
-  template <template <class> class CC>
-  bool operator !=(const FacadePtr<T,CC> &x) const
+  bool operator !=(const FacadePtr<T,Type::Const> &x) const
     { return ref.pImpl.get() != x.ref.pImpl.get(); }
   bool operator !=(const T *x) const
     { return ref.pImpl.get() != (x ? x->pImpl.get() : NULL); }
 
-  template <template <class> class CC>
-  bool operator <(const FacadePtr<T,CC> &x) const
+  bool operator <(const FacadePtr<T,Type::Const> &x) const
     { return ref.pImpl.get() < x.ref.pImpl.get(); }
   bool operator <(const T *x) const
     { return ref.pImpl.get() < (x ? x->pImpl.get() : NULL); }
 
-  template <template <class> class CC>
-  bool operator <=(const FacadePtr<T,CC> &x) const
+  bool operator <=(const FacadePtr<T,Type::Const> &x) const
     { return ref.pImpl.get() <= x.ref.pImpl.get(); }
   bool operator <=(const T *x) const
     { return ref.pImpl.get() <= (x ? x->pImpl.get() : NULL); }
 
-  template <template <class> class CC>
-  bool operator >(const FacadePtr<T,CC> &x) const
+  bool operator >(const FacadePtr<T,Type::Const> &x) const
     { return ref.pImpl.get() > x.ref.pImpl.get(); }
   bool operator >(const T *x) const
     { return ref.pImpl.get() > (x ? x->pImpl.get() : NULL); }
 
-  template <template <class> class CC>
-  bool operator >=(const FacadePtr<T,CC> &x) const
+  bool operator >=(const FacadePtr<T,Type::Const> &x) const
     { return ref.pImpl.get() >= x.ref.pImpl.get(); }
   bool operator >=(const T *x) const
     { return ref.pImpl.get() >= (x ? x->pImpl.get() : NULL); }
+  
+  bool operator ==(const FacadePtr<T,Type::Mutable> &x) const
+    { return ref.pImpl.get() == x.ref.pImpl.get(); }
+
+  bool operator !=(const FacadePtr<T,Type::Mutable> &x) const
+    { return ref.pImpl.get() != x.ref.pImpl.get(); }
+
+  bool operator <(const FacadePtr<T,Type::Mutable> &x) const
+    { return ref.pImpl.get() < x.ref.pImpl.get(); }
+
+  bool operator <=(const FacadePtr<T,Type::Mutable> &x) const
+    { return ref.pImpl.get() <= x.ref.pImpl.get(); }
+
+  bool operator >(const FacadePtr<T,Type::Mutable> &x) const
+    { return ref.pImpl.get() > x.ref.pImpl.get(); }
+
+  bool operator >=(const FacadePtr<T,Type::Mutable> &x) const
+    { return ref.pImpl.get() >= x.ref.pImpl.get(); }
 };
 
 template <class Derived, class Impl, class Base = Detail::Storage<Impl>, class SPtr = typename Base::SmartPtr>
