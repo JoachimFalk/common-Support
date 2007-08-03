@@ -152,6 +152,32 @@ namespace CoSupport {
         ++retval;
       return retval;
     }
+    
+    template<class Predicate>
+    const_iterator find_if(Predicate pred) const
+      { return std::find_if(begin(), end(), pred); }
+    
+    template<class Predicate>
+    iterator find_if(Predicate pred)
+      { return std::find_if(begin(), end(), pred); }
+    
+    template<class Predicate>
+    typename CoSupport::Type::Const<Ptr>::type lookup(Predicate pred) const {
+      const_iterator i = find_if(pred);
+      if(i == end())
+        return NULL;
+      typename CoSupport::Type::Const<Reference>::type ref = *i;
+      return &ref;
+    }
+    
+    template<class Predicate>
+    Ptr lookup(Predicate pred) {
+      iterator i = find_if(pred);
+      if(i == end())
+        return NULL;
+      Reference ref = *i;
+      return &ref;
+    }
   };
 
 } // namespace CoSupport
