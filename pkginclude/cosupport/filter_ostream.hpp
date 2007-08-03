@@ -70,6 +70,9 @@ public:
   /// returns the index for the ostream extensible array
   /// (obtained with std::ostream::xalloc())
   virtual int getIndex() const;
+  
+  /// virtual destructor
+  virtual ~FilterStreambuf();
 };
 
 
@@ -407,6 +410,7 @@ public:
   /// level
   DebugStreambuf(
       const Debug &dbg = Debug::Low,
+      bool visible = true,
       std::streambuf *next = 0);
   
   /// set a new debug level
@@ -433,6 +437,20 @@ public:
 /// output operator for the Debug manipulator
 std::ostream& operator<<(std::ostream &os, const Debug &d);
 
+/**
+ * discards everything
+ */
+class NullStreambuf :
+  public FilterStreambuf
+{
+public:
+  /// constructs a new object with the specified debug
+  /// level
+  NullStreambuf(std::streambuf *next = 0);
+  
+protected:
+  int overflow(int c);
+};
 
 /**
  * convenience class for managing a custom streambuffer

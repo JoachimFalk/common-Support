@@ -49,6 +49,9 @@ bool FilterStreambuf::hasManip() const
 int FilterStreambuf::getIndex() const
 { return -1; }
 
+FilterStreambuf::~FilterStreambuf()
+{}
+
   
 LineNumberStreambuf::LineNumberStreambuf(std::streambuf *next) :
   FilterStreambuf(next),
@@ -337,10 +340,11 @@ const Debug Debug::None(3);
 
 DebugStreambuf::DebugStreambuf(
     const Debug &dbg,
+    bool visible,
     std::streambuf *next) :
   FilterStreambuf(next),
   level(dbg.level),
-  visible(true)
+  visible(visible)
 {}
 
 void DebugStreambuf::setLevel(const Debug &dbg)
@@ -371,6 +375,14 @@ std::ostream& operator<<(std::ostream &os, const Debug &d)
   if(buf) buf->setVisibility(d);
   return os;
 }
+
+  
+NullStreambuf::NullStreambuf(std::streambuf *next) :
+  FilterStreambuf(next)
+{}
+
+int NullStreambuf::overflow(int c)
+{ return 1; }
 
 
 FilterOstream::FilterOstream(std::ostream &os) :
