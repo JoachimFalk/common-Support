@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2006 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2007 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -44,9 +44,12 @@
 
 #include "sassert.h"
 #include "string_convert.hpp"
+#include "basic_initializer.hpp"
 
 //#include <xalanc/Include/PlatformDefinitions.hpp>
 #include <xalanc/XalanTransformer/XalanTransformer.hpp>
+#include <xalanc/XalanDOM/XalanNode.hpp>
+#include <xalanc/XalanDOM/XalanNamedNodeMap.hpp>
 
 namespace CoSupport { namespace Xerces {
   namespace XN {
@@ -56,19 +59,23 @@ namespace CoSupport { namespace Xerces {
 
 #include "xerces_support.hpp"
 
-namespace CoSupport { namespace Xalan {
+namespace CoSupport {
+
+  template <>
+  struct BasicInitializerTraits<Xerces::XN::XalanTransformer> {
+    static void initialize()
+      { Xerces::XN::XalanTransformer::initialize(); }
+    static void terminate() {
+      Xerces::XN::XalanTransformer::terminate();
+      Xerces::XN::XalanTransformer::ICUCleanUp();
+    }
+  };
+
+namespace Xalan {
   using namespace Xerces;
 
-  class XalanInitializer: public XercesInitializer {
-  public:
-    // Init Xalan C++
-    XalanInitializer()
-      { XN::XalanTransformer::initialize(); }
-    // Done Xalan C++
-    ~XalanInitializer() {
-      XN::XalanTransformer::terminate();
-      XN::XalanTransformer::ICUCleanUp();
-    }
+  class XalanInitializer : public XercesInitializer {
+    BasicInitializer<Xalan::XN::XalanTransformer> m_initializer;
   };
 
   inline

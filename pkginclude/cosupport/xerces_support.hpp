@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2006 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2007 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -42,25 +42,32 @@
 
 #include "sassert.h"
 #include "string_convert.hpp"
+#include "basic_initializer.hpp"
 
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/dom/DOM.hpp>
 
 namespace CoSupport { namespace Xerces {
+  namespace XN {
+    XERCES_CPP_NAMESPACE_USE
+  } // namespace XN
+} } // namespace CoSupport::Xerces
 
-  namespace XN = XERCES_CPP_NAMESPACE;
+namespace CoSupport {
 
-  class XercesInitializer {
-  public:
-    // Init Xerces C++
-    XercesInitializer()
-      { XN::XMLPlatformUtils::Initialize(); }
-    // Done Xerces C++
-    ~XercesInitializer()
-      { XN::XMLPlatformUtils::Terminate(); }
+  template <>
+  struct BasicInitializerTraits<Xerces::XN::XMLPlatformUtils> {
+    static void initialize()
+      { Xerces::XN::XMLPlatformUtils::Initialize(); }
+    static void terminate()
+      { Xerces::XN::XMLPlatformUtils::Terminate(); }
   };
 
+namespace Xerces {
+
+  typedef BasicInitializer<XN::XMLPlatformUtils> XercesInitializer;
+  
   class XStr: public std::basic_string<XMLCh> {
   public:
     XStr(const XMLCh *const str)

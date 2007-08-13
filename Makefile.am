@@ -79,6 +79,7 @@ pkginclude_HEADERS =						\
 								\
 	pkginclude/cosupport/PerformanceEvaluation.hpp		\
 								\
+	pkginclude/cosupport/basic_initializer.hpp		\
 	pkginclude/cosupport/xerces_support.hpp			\
 	pkginclude/cosupport/xalan_support.hpp
 
@@ -103,6 +104,7 @@ libcosupport_la_SOURCES =		\
 	par_manager.cpp			\
 	refcount_object.cpp 		\
 	smoc_debug_out.cpp 		\
+	basic_initializer.cpp           \
 	filter_ostream.cpp 		\
 	PerformanceEvaluation.cpp
 
