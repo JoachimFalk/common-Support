@@ -162,6 +162,15 @@ namespace CoSupport {
       { return std::find_if(begin(), end(), pred); }
     
     template<class Predicate>
+    bool erase_if(Predicate pred) {
+      iterator i = find_if(pred);
+      if(i == end())
+        return false;
+      erase(i);
+      return true;
+    }
+    
+    template<class Predicate>
     typename CoSupport::Type::Const<Ptr>::type lookup(Predicate pred) const {
       const_iterator i = find_if(pred);
       if(i == end())
