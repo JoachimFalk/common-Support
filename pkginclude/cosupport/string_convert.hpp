@@ -142,14 +142,6 @@ public:
   { return ret.str(); }
 };
   
-/**
- * output operator for Concat
- */
-inline std::ostream& operator<<(std::ostream& out, const Concat& c) {
-  std::string s = c;
-  return out << c;
-}
-
 }
 
 /*
