@@ -111,7 +111,7 @@ private:
   std::ostringstream ret;
 public:
   template<class T>
-  Concat(const T& t)
+  explicit Concat(const T& t)
   { ret << t; }
   
   template<class T>
