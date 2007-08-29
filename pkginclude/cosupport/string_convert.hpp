@@ -100,6 +100,56 @@ T string_cast(const std::string& s)
   return t;
 }
 
+/**
+ * convenience class that can be used to concatenate
+ * some values (instead of using string_cast and operator+,
+ * this class is much more efficient, and allows stream
+ * manipulators)
+ */
+class Concat {
+private:
+  std::ostringstream ret;
+public:
+  template<class T>
+  Concat(const T& t)
+  { ret << t; }
+  
+  template<class T>
+  Concat& operator()(const T& t)  {
+    ret << t;
+    return *this;
+  }
+  
+  Concat& operator()(std::ostream& (*manip)(std::ostream&)) {
+    ret << manip;
+    return *this;
+  }
+  
+  Concat& operator()(std::ios& (*manip)(std::ios&)) {
+    ret << manip;
+    return *this;
+  }
+  
+  Concat& operator()(std::ios_base& (*manip)(std::ios_base&)) {
+    ret << manip;
+    return *this;
+  }
+  
+  std::string get() const
+  { return ret.str(); }
+
+  operator std::string() const
+  { return ret.str(); }
+};
+  
+/**
+ * output operator for Concat
+ */
+inline std::ostream& operator<<(std::ostream& out, const Concat& c) {
+  std::string s = c;
+  return out << c;
+}
+
 }
 
 /*
