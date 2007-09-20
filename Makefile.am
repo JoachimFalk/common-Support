@@ -23,8 +23,12 @@ root_srcdir   := $(shell cd $(top_srcdir)/.. && pwd)
 root_builddir := $(shell cd $(top_builddir)/.. && pwd)
 
 include $(auxdir)/jfrules.mk
+include ../BuildSystem/doxygen.am
 
 SUBDIRS=
+
+# This is only needed if there is a configure.in in this directory
+ACLOCAL_AMFLAGS=-I ../BuildSystem/m4
 
 pkgincludedir=$(includedir)/cosupport
 

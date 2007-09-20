@@ -38,16 +38,16 @@
 #include "commondefs.h"
 #include "sassert.h"
 
-#include <boost/detail/lightweight_mutex.hpp>
+#include <boost/thread/mutex.hpp>
 #include <cassert>
 
 namespace CoSupport {
 
   class RefCount {
   private:
-    typedef boost::detail::lightweight_mutex mutex_type;
+    typedef boost::mutex mutex_type;
     
-#if defined(BOOST_HAS_THREADS)
+#if defined(_REENTRANT)
     mutable mutex_type mtx_;
 #endif
     /* how many references are there */
@@ -67,14 +67,14 @@ namespace CoSupport {
       { assert(use_count_ == 0); }
 
     void add_ref( void ) {
-#if defined(BOOST_HAS_THREADS)
+#if defined(_REENTRANT)
       mutex_type::scoped_lock lock(mtx_);
 #endif
       ++use_count_;
     }
 
     bool del_ref( void ) {
-#if defined(BOOST_HAS_THREADS)
+#if defined(_REENTRANT)
       mutex_type::scoped_lock lock(mtx_);
 #endif
       --use_count_;
@@ -82,7 +82,7 @@ namespace CoSupport {
     }
 
     bool unique_ref() const { // nothrow
-#if defined(BOOST_HAS_THREADS)
+#if defined(_REENTRANT)
       mutex_type::scoped_lock lock(mtx_);
 #endif
       return use_count_ == 1;
