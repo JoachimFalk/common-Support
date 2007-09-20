@@ -69,6 +69,8 @@ namespace CoSupport { namespace SystemC {
      * The lifetime of the given EventWaiter is over.
      */
     virtual void eventDestroyed(EventWaiter *e) = 0;
+
+    virtual ~EventListener() {}
   };
 
   template <class T> class EventOrList;
