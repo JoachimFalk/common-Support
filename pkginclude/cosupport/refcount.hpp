@@ -37,19 +37,23 @@
 
 #include "commondefs.h"
 #include "sassert.h"
-
-#include <boost/thread/mutex.hpp>
 #include <cassert>
+
+#if defined(_REENTRANT)
+// boost/thread/mutex.hpp seems to define _REENTRANT
+# include <boost/thread/mutex.hpp>
+#endif
 
 namespace CoSupport {
 
   class RefCount {
   private:
-    typedef boost::mutex mutex_type;
-    
 #if defined(_REENTRANT)
+    typedef boost::mutex mutex_type;
+
     mutable mutex_type mtx_;
 #endif
+
     /* how many references are there */
     long use_count_;
   public:
