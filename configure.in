@@ -51,8 +51,10 @@ dnl check for exe extension
 AC_EXEEXT
 
 dnl Checks for libraries.
-ACJF_CHECK_LIB_BOOST
 ACJF_CHECK_LIB_SYSTEMC
+ACJF_CHECK_LIB_BOOST
+ACJF_CHECK_LIB_XERCES
+ACJF_CHECK_LIB_XALAN
 
 dnl Checks for header files.
 #AC_HEADER_DIRENT
