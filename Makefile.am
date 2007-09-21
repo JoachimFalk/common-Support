@@ -36,13 +36,17 @@ AM_CPPFLAGS=				\
 	@AM_CPPFLAGS@			\
 	@BOOST_INCLUDE@			\
 	@SYSTEMC_INCLUDE@		\
+	@XALAN_INCLUDE@			\
+	@XERCES_INCLUDE@		\
 	-I$(srcdir)/pkginclude		\
 	-I$(srcdir)
 
 AM_LDFLAGS=				\
 	@AM_LDFLAGS@			\
+	@BOOST_LDFLAGS@			\
 	@SYSTEMC_LDFLAGS@		\
-	@BOOST_LDFLAGS@
+	@XALAN_LDFLAGS@			\
+	@XERCES_LDFLAGS@
 
 EXTRA_DIST	=
 
