@@ -49,10 +49,10 @@ protected:
     while ( 1 ) {
       wait(stime, SC_NS);
       s = true; notify(e);
-      std::cout << name() << ": Event notify at " << sc_simulation_time() << "ns" << std::endl;
+      std::cout << name() << ": Event notify at " << sc_time_stamp().to_default_time_units() << "ns" << std::endl;
       wait(rtime, SC_NS);
       s = false; reset(e);
-      std::cout << name() << ": Event reset at " << sc_simulation_time() << "ns" << std::endl;
+      std::cout << name() << ": Event reset at " << sc_time_stamp().to_default_time_units() << "ns" << std::endl;
     }
   }
   
@@ -94,7 +94,7 @@ class m_waiterI: public sc_module {
         } else {
           assert(&a6.e == x && a6.s); a6.s = false;
         }
-        std::cout << name() << ": Event received at " << sc_simulation_time() << "ns" << std::endl;
+        std::cout << name() << ": Event received at " << sc_time_stamp().to_default_time_units() << "ns" << std::endl;
       }
     }
   }
@@ -129,7 +129,7 @@ class m_waiterII: public sc_module {
           assert(&a5.e == x);
           assert(a5.s); a5.s = false;
         }
-        std::cout << name() << ": Event received at " << sc_simulation_time() << "ns" << std::endl;
+        std::cout << name() << ": Event received at " << sc_time_stamp().to_default_time_units() << "ns" << std::endl;
         wait(13, SC_NS);
       }
     }
