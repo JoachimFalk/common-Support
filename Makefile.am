@@ -106,7 +106,7 @@ noinst_PROGRAMS=			\
 compileheader-libcosupport.stamp: $(refcount_CH_LTOBJS) $(refcount_object_CH_LTOBJS)
 	@date > $@
 
-libcosupport_la_LIBADD =  $(refcount_CH_LTOBJS) $(refcount_object_CH_LTOBJS)
+libcosupport_la_LIBADD =  $(refcount_CH_LTOBJS) $(refcount_object_CH_LTOBJS) foo
 libcosupport_la_DEPENDENCIES = compileheader-libcosupport.stamp
 libcosupport_la_SOURCES =		\
 	par_manager.cpp			\
@@ -115,6 +115,8 @@ libcosupport_la_SOURCES =		\
 	basic_initializer.cpp           \
 	filter_ostream.cpp 		\
 	PerformanceEvaluation.cpp
+libcosupport_la_LDFLAGS =		\
+	-lboost_thread-gcc-mt
 
 
 test_arrayfifo_SOURCES      = test_arrayfifo.cpp
