@@ -14,9 +14,9 @@ err_log=stderr.log
 
 # testing binaries
 bins="test_arrayfifo"
-bins+=" test_nested_event_lists"
-bins+=" test_event_and_list"
-#bins+=" test_event_or_list" # FIXME: buggy testcase??
+bins="$bins test_nested_event_lists"
+bins="$bins test_event_and_list"
+bins="$bins test_event_or_list"
 
 for bin in $bins;
 do

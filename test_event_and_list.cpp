@@ -48,11 +48,13 @@ protected:
   void process() {
     while ( 1 ) {
       wait(stime, SC_NS);
+      //std::cout << name() << ": Event notify at " << sc_time_stamp().to_default_time_units() << "ns" << std::endl;
       s = true; notify(e);
-      // std::cout << name() << ": Event notify at " << sc_time_stamp().to_default_time_units() << "ns" << std::endl;
+      //std::cout << std::endl;
       wait(rtime, SC_NS);
+      //std::cout << name() << ": Event reset at " << sc_time_stamp().to_default_time_units() << "ns" << std::endl;
       s = false; reset(e);
-      // std::cout << name() << ": Event reset at " << sc_time_stamp().to_default_time_units() << "ns" << std::endl;
+      //std::cout << std::endl;
     }
   }
   
@@ -79,10 +81,14 @@ class m_waiterI: public sc_module {
   void process() {
     while ( 1 ) {
       CoSupport::SystemC::wait(e);
+      std::cout << name() << ": Event waited at " << sc_time_stamp().to_default_time_units() << "ns";
       if (e.reset()) {
+        std::cout << " (active) " << std::endl;
         assert(a2.s && a3.s && a4.s && a5.s && a6.s);
         a2.s = a3.s = a4.s = a5.s = a6.s = false;
-        std::cout << name() << ": Event received at " << sc_time_stamp().to_default_time_units() << "ns" << std::endl;
+      }
+      else {
+        std::cout << " (inactive) " << std::endl;
       }
     }
   }
@@ -102,10 +108,14 @@ class m_waiterII: public sc_module {
   void process() {
     while ( 1 ) {
       CoSupport::SystemC::wait(e);
+      std::cout << name() << ": Event waited at " << sc_time_stamp().to_default_time_units() << "ns";
       if (e.reset()) {
+        std::cout << " (active) " << std::endl;
         assert(a1.s && a2.s && a3.s && a4.s && a5.s);
         a1.s = a2.s = a3.s = a4.s = a5.s = false;
-        std::cout << name() << ": Event received at " << sc_time_stamp().to_default_time_units() << "ns" << std::endl;
+      }
+      else {
+        std::cout << " (inactive) " << std::endl;
       }
     }
   }
@@ -118,10 +128,42 @@ public:
   }
 };
 
+struct blub : public EventListener {
+  void signaled(EventWaiter* e)
+  { std::cout << "--> blub::signaled(): e = " << *e << std::endl; }
+  void eventDestroyed(EventWaiter *e)
+  { std::cout << "blub::eventDestroyed(): e = " << *e << std::endl; }
+};
+
 int sc_main(int argc, char *argv[]) {
   m_waiterI  w1("w1");
-  m_waiterII w2("w2");
-  
+  m_waiterII w2("w2"); 
   sc_start(100000, SC_NS);
+
+/*  Event* a = new Event();
+  Event* b = new Event();
+
+  EventAndList<EventWaiter> l;
+  blub bl;
+  l.addListener(&bl);
+
+  l &= *a; // trigger 1
+  l &= *b;
+
+  a->notify();
+  b->notify(); // trigger 2
+
+  a->reset(); // trigger 3
+  l.remove(*a); // trigger 4
+
+  b->reset(); // trigger 5
+  outDbg << "deleting " << *b << std::endl;
+  delete b; // trigger 6
+
+  l &= *a; // trigger 7
+  l.clear(); // trigger 8
+
+  l.delListener(&bl);*/
+  
   return 0;
 }

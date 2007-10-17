@@ -1,699 +1,1080 @@
-w1: Event received at 115ns
-w2: Event received at 263ns
-w2: Event received at 371ns
-w2: Event received at 523ns
-w2: Event received at 639ns
-w1: Event received at 787ns
-w2: Event received at 1039ns
-w1: Event received at 1167ns
-w1: Event received at 1315ns
-w2: Event received at 1439ns
-w2: Event received at 1571ns
-w2: Event received at 1723ns
-w2: Event received at 1967ns
-w1: Event received at 2115ns
-w2: Event received at 2239ns
-w2: Event received at 2387ns
-w1: Event received at 2495ns
-w2: Event received at 2639ns
-w2: Event received at 2767ns
-w2: Event received at 2919ns
-w2: Event received at 3039ns
-w2: Event received at 3167ns
-w2: Event received at 3299ns
-w1: Event received at 3443ns
-w2: Event received at 3563ns
-w1: Event received at 3695ns
-w1: Event received at 3839ns
-w2: Event received at 3987ns
-w2: Event received at 4095ns
-w2: Event received at 4247ns
-w2: Event received at 4363ns
-w2: Event received at 4515ns
-w1: Event received at 4623ns
-w2: Event received at 4763ns
-w1: Event received at 4891ns
-w1: Event received at 5039ns
-w2: Event received at 5163ns
-w2: Event received at 5295ns
-w2: Event received at 5447ns
-w2: Event received at 5691ns
-w1: Event received at 5823ns
-w2: Event received at 5963ns
-w2: Event received at 6115ns
-w1: Event received at 6219ns
-w2: Event received at 6363ns
-w2: Event received at 6491ns
-w2: Event received at 6643ns
-w2: Event received at 6763ns
-w2: Event received at 6891ns
-w2: Event received at 7023ns
-w1: Event received at 7167ns
-w1: Event received at 7287ns
-w1: Event received at 7419ns
-w2: Event received at 7819ns
-w2: Event received at 7971ns
-w2: Event received at 8087ns
-w2: Event received at 8239ns
-w1: Event received at 8347ns
-w2: Event received at 8487ns
-w1: Event received at 8615ns
-w2: Event received at 8771ns
-w2: Event received at 8887ns
-w2: Event received at 9019ns
-w2: Event received at 9171ns
-w2: Event received at 9415ns
-w1: Event received at 9547ns
-w2: Event received at 9687ns
-w2: Event received at 9839ns
-w1: Event received at 9943ns
-w2: Event received at 10087ns
-w2: Event received at 10215ns
-w2: Event received at 10367ns
-w2: Event received at 10487ns
-w2: Event received at 10615ns
-w1: Event received at 10743ns
-w1: Event received at 10891ns
-w2: Event received at 11015ns
-w1: Event received at 11143ns
-w2: Event received at 11299ns
-w2: Event received at 11543ns
-w2: Event received at 11695ns
-w2: Event received at 11815ns
-w2: Event received at 11963ns
-w1: Event received at 12071ns
-w2: Event received at 12215ns
-w1: Event received at 12339ns
-w2: Event received at 12495ns
-w2: Event received at 12615ns
-w2: Event received at 12743ns
-w2: Event received at 12895ns
-w1: Event received at 13023ns
-w2: Event received at 13139ns
-w1: Event received at 13271ns
-w1: Event received at 13415ns
-w2: Event received at 13563ns
-w1: Event received at 13667ns
-w2: Event received at 13823ns
-w2: Event received at 13939ns
-w2: Event received at 14091ns
-w2: Event received at 14339ns
-w1: Event received at 14467ns
-w1: Event received at 14615ns
-w2: Event received at 14739ns
-w1: Event received at 14867ns
-w1: Event received at 14999ns
-w2: Event received at 15267ns
-w2: Event received at 15419ns
-w2: Event received at 15539ns
-w2: Event received at 15687ns
-w1: Event received at 15795ns
-w2: Event received at 15939ns
-w1: Event received at 16063ns
-w2: Event received at 16219ns
-w2: Event received at 16339ns
-w2: Event received at 16467ns
-w2: Event received at 16599ns
-w1: Event received at 16743ns
-w2: Event received at 16863ns
-w1: Event received at 16995ns
-w1: Event received at 17139ns
-w2: Event received at 17287ns
-w1: Event received at 17391ns
-w2: Event received at 17547ns
-w2: Event received at 17663ns
-w2: Event received at 17815ns
-w2: Event received at 18063ns
-w1: Event received at 18191ns
-w1: Event received at 18339ns
-w2: Event received at 18463ns
-w1: Event received at 18591ns
-w2: Event received at 18747ns
-w2: Event received at 18991ns
-w2: Event received at 19143ns
-w2: Event received at 19263ns
-w2: Event received at 19415ns
-w1: Event received at 19519ns
-w2: Event received at 19663ns
-w1: Event received at 19787ns
-w2: Event received at 19943ns
-w2: Event received at 20063ns
-w2: Event received at 20191ns
-w2: Event received at 20323ns
-w1: Event received at 20467ns
-w1: Event received at 20587ns
-w1: Event received at 20719ns
-w1: Event received at 20863ns
-w1: Event received at 20999ns
-w1: Event received at 21115ns
-w2: Event received at 21271ns
-w2: Event received at 21387ns
-w2: Event received at 21539ns
-w2: Event received at 21787ns
-w1: Event received at 21915ns
-w1: Event received at 22063ns
-w2: Event received at 22187ns
-w1: Event received at 22315ns
-w2: Event received at 22471ns
-w2: Event received at 22715ns
-w1: Event received at 22863ns
-w2: Event received at 22987ns
-w2: Event received at 23139ns
-w1: Event received at 23243ns
-w2: Event received at 23387ns
-w2: Event received at 23515ns
-w2: Event received at 23667ns
-w2: Event received at 23787ns
-w2: Event received at 23915ns
-w2: Event received at 24047ns
-w1: Event received at 24191ns
-w2: Event received at 24315ns
-w1: Event received at 24443ns
-w1: Event received at 24587ns
-w1: Event received at 24839ns
-w2: Event received at 24995ns
-w2: Event received at 25115ns
-w2: Event received at 25263ns
-w2: Event received at 25515ns
-w1: Event received at 25639ns
-w1: Event received at 25787ns
-w2: Event received at 25915ns
-w1: Event received at 26039ns
-w2: Event received at 26195ns
-w2: Event received at 26439ns
-w1: Event received at 26587ns
-w1: Event received at 26715ns
-w2: Event received at 26863ns
-w1: Event received at 26967ns
-w1: Event received at 27115ns
-w2: Event received at 27239ns
-w2: Event received at 27391ns
-w2: Event received at 27639ns
-w2: Event received at 27771ns
-w1: Event received at 27915ns
-w2: Event received at 28039ns
-w1: Event received at 28167ns
-w1: Event received at 28299ns
-w2: Event received at 28567ns
-w2: Event received at 28719ns
-w2: Event received at 28839ns
-w2: Event received at 28987ns
-w2: Event received at 29099ns
-w2: Event received at 29239ns
-w1: Event received at 29363ns
-w1: Event received at 29515ns
-w2: Event received at 29639ns
-w2: Event received at 29767ns
-w2: Event received at 29899ns
-w2: Event received at 30163ns
-w2: Event received at 30299ns
-w1: Event received at 30439ns
-w2: Event received at 30587ns
-w1: Event received at 30691ns
-w1: Event received at 30839ns
-w2: Event received at 30963ns
-w2: Event received at 31115ns
-w2: Event received at 31363ns
-w2: Event received at 31495ns
-w1: Event received at 31639ns
-w2: Event received at 31763ns
-w1: Event received at 31891ns
-w1: Event received at 32023ns
-w2: Event received at 32291ns
-w2: Event received at 32443ns
-w2: Event received at 32563ns
-w2: Event received at 32715ns
-w2: Event received at 32823ns
-w2: Event received at 32963ns
-w1: Event received at 33087ns
-w1: Event received at 33239ns
-w2: Event received at 33363ns
-w2: Event received at 33491ns
-w2: Event received at 33623ns
-w2: Event received at 33887ns
-w2: Event received at 34023ns
-w1: Event received at 34163ns
-w1: Event received at 34299ns
-w1: Event received at 34415ns
-w2: Event received at 34571ns
-w2: Event received at 34687ns
-w2: Event received at 34839ns
-w2: Event received at 35087ns
-w2: Event received at 35219ns
-w1: Event received at 35363ns
-w2: Event received at 35487ns
-w1: Event received at 35615ns
-w1: Event received at 35747ns
-w2: Event received at 36015ns
-w2: Event received at 36167ns
-w2: Event received at 36287ns
-w2: Event received at 36439ns
-w1: Event received at 36543ns
-w2: Event received at 36687ns
-w2: Event received at 36815ns
-w2: Event received at 36967ns
-w2: Event received at 37087ns
-w2: Event received at 37215ns
-w2: Event received at 37347ns
-w2: Event received at 37499ns
-w2: Event received at 37615ns
-w1: Event received at 37743ns
-w1: Event received at 37887ns
-w1: Event received at 38023ns
-w1: Event received at 38139ns
-w2: Event received at 38295ns
-w2: Event received at 38415ns
-w2: Event received at 38563ns
-w2: Event received at 38815ns
-w2: Event received at 38943ns
-w1: Event received at 39087ns
-w2: Event received at 39215ns
-w1: Event received at 39339ns
-w1: Event received at 39471ns
-w2: Event received at 39739ns
-w2: Event received at 39891ns
-w1: Event received at 40023ns
-w2: Event received at 40163ns
-w1: Event received at 40267ns
-w1: Event received at 40415ns
-w2: Event received at 40539ns
-w2: Event received at 40691ns
-w1: Event received at 40799ns
-w2: Event received at 40939ns
-w2: Event received at 41071ns
-w2: Event received at 41223ns
-w2: Event received at 41339ns
-w1: Event received at 41467ns
-w1: Event received at 41599ns
-w1: Event received at 41747ns
-w1: Event received at 41863ns
-w1: Event received at 41999ns
-w2: Event received at 42139ns
-w2: Event received at 42287ns
-w2: Event received at 42399ns
-w2: Event received at 42539ns
-w1: Event received at 42663ns
-w1: Event received at 42815ns
-w2: Event received at 42939ns
-w1: Event received at 43063ns
-w1: Event received at 43195ns
-w2: Event received at 43463ns
-w2: Event received at 43599ns
-w1: Event received at 43743ns
-w2: Event received at 43887ns
-w1: Event received at 43991ns
-w1: Event received at 44139ns
-w2: Event received at 44263ns
-w2: Event received at 44415ns
-w2: Event received at 44663ns
-w2: Event received at 44795ns
-w1: Event received at 44943ns
-w2: Event received at 45063ns
-w1: Event received at 45191ns
-w1: Event received at 45323ns
-w1: Event received at 45471ns
-w1: Event received at 45587ns
-w2: Event received at 45743ns
-w2: Event received at 45863ns
-w2: Event received at 46015ns
-w2: Event received at 46123ns
-w2: Event received at 46263ns
-w1: Event received at 46387ns
-w1: Event received at 46539ns
-w2: Event received at 46663ns
-w1: Event received at 46787ns
-w1: Event received at 46919ns
-w2: Event received at 47187ns
-w2: Event received at 47323ns
-w1: Event received at 47463ns
-w1: Event received at 47599ns
-w1: Event received at 47715ns
-w1: Event received at 47863ns
-w2: Event received at 47987ns
-w2: Event received at 48139ns
-w2: Event received at 48387ns
-w2: Event received at 48519ns
-w1: Event received at 48663ns
-w2: Event received at 48787ns
-w1: Event received at 48915ns
-w1: Event received at 49047ns
-w1: Event received at 49195ns
-w2: Event received at 49315ns
-w2: Event received at 49467ns
-w2: Event received at 49587ns
-w2: Event received at 49739ns
-w2: Event received at 49847ns
-w2: Event received at 49987ns
-w2: Event received at 50115ns
-w1: Event received at 50263ns
-w2: Event received at 50387ns
-w2: Event received at 50515ns
-w2: Event received at 50647ns
-w2: Event received at 50799ns
-w2: Event received at 50915ns
-w2: Event received at 51047ns
-w1: Event received at 51187ns
-w1: Event received at 51323ns
-w1: Event received at 51439ns
-w1: Event received at 51587ns
-w2: Event received at 51715ns
-w2: Event received at 51863ns
-w2: Event received at 52115ns
-w2: Event received at 52243ns
-w1: Event received at 52387ns
-w2: Event received at 52515ns
-w1: Event received at 52639ns
-w1: Event received at 52771ns
-w1: Event received at 52919ns
-w2: Event received at 53039ns
-w2: Event received at 53191ns
-w2: Event received at 53463ns
-w2: Event received at 53571ns
-w1: Event received at 53715ns
-w2: Event received at 53839ns
-w1: Event received at 53987ns
-w1: Event received at 54099ns
-w2: Event received at 54239ns
-w2: Event received at 54371ns
-w2: Event received at 54523ns
-w2: Event received at 54639ns
-w2: Event received at 54771ns
-w1: Event received at 54915ns
-w1: Event received at 55047ns
-w1: Event received at 55163ns
-w1: Event received at 55299ns
-w2: Event received at 55439ns
-w2: Event received at 55587ns
-w2: Event received at 55699ns
-w2: Event received at 55839ns
-w2: Event received at 55967ns
-w1: Event received at 56115ns
-w2: Event received at 56239ns
-w1: Event received at 56363ns
-w1: Event received at 56495ns
-w2: Event received at 56763ns
-w2: Event received at 56899ns
-w2: Event received at 57187ns
-w2: Event received at 57295ns
-w1: Event received at 57439ns
-w2: Event received at 57563ns
-w2: Event received at 57715ns
-w1: Event received at 57823ns
-w2: Event received at 57963ns
-w2: Event received at 58095ns
-w2: Event received at 58247ns
-w2: Event received at 58363ns
-w2: Event received at 58495ns
-w1: Event received at 58623ns
-w1: Event received at 58771ns
-w1: Event received at 58887ns
-w1: Event received at 59023ns
-w2: Event received at 59163ns
-w2: Event received at 59315ns
-w2: Event received at 59423ns
-w2: Event received at 59563ns
-w2: Event received at 59691ns
-w1: Event received at 59839ns
-w2: Event received at 59963ns
-w1: Event received at 60087ns
-w1: Event received at 60219ns
-w2: Event received at 60487ns
-w2: Event received at 60623ns
-w2: Event received at 61019ns
-w1: Event received at 61163ns
-w2: Event received at 61287ns
-w2: Event received at 61439ns
-w1: Event received at 61547ns
-w2: Event received at 61687ns
-w2: Event received at 61819ns
-w2: Event received at 61971ns
-w2: Event received at 62087ns
-w2: Event received at 62219ns
-w1: Event received at 62347ns
-w1: Event received at 62495ns
-w2: Event received at 62615ns
-w1: Event received at 62747ns
-w2: Event received at 62887ns
-w2: Event received at 63039ns
-w2: Event received at 63147ns
-w2: Event received at 63287ns
-w2: Event received at 63415ns
-w1: Event received at 63563ns
-w2: Event received at 63687ns
-w2: Event received at 63815ns
-w1: Event received at 63943ns
-w2: Event received at 64099ns
-w2: Event received at 64215ns
-w2: Event received at 64347ns
-w2: Event received at 64499ns
-w1: Event received at 64623ns
-w1: Event received at 64743ns
-w1: Event received at 64887ns
-w2: Event received at 65015ns
-w2: Event received at 65163ns
-w1: Event received at 65271ns
-w2: Event received at 65415ns
-w2: Event received at 65543ns
-w2: Event received at 65695ns
-w2: Event received at 65815ns
-w2: Event received at 65943ns
-w1: Event received at 66071ns
-w1: Event received at 66219ns
-w2: Event received at 66339ns
-w1: Event received at 66471ns
-w2: Event received at 66763ns
-w2: Event received at 66871ns
-w2: Event received at 67023ns
-w2: Event received at 67139ns
-w1: Event received at 67287ns
-w1: Event received at 67399ns
-w2: Event received at 67539ns
-w1: Event received at 67667ns
-w2: Event received at 67823ns
-w2: Event received at 67939ns
-w2: Event received at 68071ns
-w2: Event received at 68223ns
-w1: Event received at 68347ns
-w1: Event received at 68463ns
-w1: Event received at 68599ns
-w2: Event received at 68739ns
-w2: Event received at 68887ns
-w1: Event received at 68995ns
-w2: Event received at 69139ns
-w2: Event received at 69267ns
-w2: Event received at 69419ns
-w2: Event received at 69539ns
-w1: Event received at 69663ns
-w1: Event received at 69795ns
-w1: Event received at 69943ns
-w2: Event received at 70063ns
-w1: Event received at 70195ns
-w2: Event received at 70487ns
-w2: Event received at 70595ns
-w1: Event received at 70743ns
-w2: Event received at 70863ns
-w2: Event received at 71015ns
-w1: Event received at 71123ns
-w2: Event received at 71263ns
-w1: Event received at 71391ns
-w2: Event received at 71547ns
-w2: Event received at 71663ns
-w2: Event received at 71795ns
-w1: Event received at 71943ns
-w1: Event received at 72071ns
-w1: Event received at 72187ns
-w1: Event received at 72323ns
-w2: Event received at 72463ns
-w2: Event received at 72615ns
-w1: Event received at 72719ns
-w2: Event received at 72863ns
-w2: Event received at 72991ns
-w2: Event received at 73143ns
-w2: Event received at 73263ns
-w1: Event received at 73387ns
-w1: Event received at 73519ns
-w1: Event received at 73667ns
-w1: Event received at 73787ns
-w1: Event received at 73919ns
-w2: Event received at 74319ns
-w1: Event received at 74463ns
-w2: Event received at 74587ns
-w2: Event received at 74739ns
-w1: Event received at 74847ns
-w2: Event received at 74987ns
-w1: Event received at 75115ns
-w2: Event received at 75271ns
-w2: Event received at 75387ns
-w2: Event received at 75519ns
-w1: Event received at 75663ns
-w1: Event received at 75795ns
-w2: Event received at 75915ns
-w1: Event received at 76047ns
-w2: Event received at 76187ns
-w2: Event received at 76339ns
-w2: Event received at 76447ns
-w2: Event received at 76587ns
-w2: Event received at 76715ns
-w1: Event received at 76863ns
-w2: Event received at 76987ns
-w2: Event received at 77115ns
-w1: Event received at 77243ns
-w1: Event received at 77391ns
-w2: Event received at 77515ns
-w2: Event received at 77647ns
-w2: Event received at 77799ns
-w2: Event received at 78043ns
-w1: Event received at 78187ns
-w2: Event received at 78315ns
-w2: Event received at 78463ns
-w1: Event received at 78571ns
-w2: Event received at 78715ns
-w1: Event received at 78839ns
-w2: Event received at 78995ns
-w2: Event received at 79115ns
-w2: Event received at 79243ns
-w1: Event received at 79387ns
-w1: Event received at 79519ns
-w2: Event received at 79639ns
-w1: Event received at 79771ns
-w1: Event received at 79915ns
-w2: Event received at 80063ns
-w2: Event received at 80171ns
-w2: Event received at 80323ns
-w2: Event received at 80439ns
-w1: Event received at 80587ns
-w2: Event received at 80839ns
-w1: Event received at 80967ns
-w1: Event received at 81115ns
-w2: Event received at 81239ns
-w2: Event received at 81371ns
-w2: Event received at 81523ns
-w2: Event received at 81767ns
-w1: Event received at 81915ns
-w2: Event received at 82039ns
-w2: Event received at 82187ns
-w1: Event received at 82295ns
-w2: Event received at 82439ns
-w2: Event received at 82567ns
-w2: Event received at 82719ns
-w2: Event received at 82839ns
-w2: Event received at 82967ns
-w2: Event received at 83099ns
-w1: Event received at 83243ns
-w2: Event received at 83363ns
-w1: Event received at 83495ns
-w1: Event received at 83639ns
-w2: Event received at 83787ns
-w2: Event received at 83895ns
-w2: Event received at 84047ns
-w2: Event received at 84163ns
-w2: Event received at 84315ns
-w1: Event received at 84423ns
-w2: Event received at 84563ns
-w1: Event received at 84691ns
-w1: Event received at 84839ns
-w2: Event received at 84963ns
-w2: Event received at 85095ns
-w2: Event received at 85247ns
-w2: Event received at 85491ns
-w1: Event received at 85623ns
-w2: Event received at 85763ns
-w2: Event received at 85915ns
-w1: Event received at 86019ns
-w2: Event received at 86163ns
-w2: Event received at 86291ns
-w2: Event received at 86443ns
-w2: Event received at 86563ns
-w2: Event received at 86691ns
-w2: Event received at 86823ns
-w1: Event received at 86967ns
-w1: Event received at 87087ns
-w1: Event received at 87219ns
-w2: Event received at 87619ns
-w2: Event received at 87771ns
-w2: Event received at 87887ns
-w2: Event received at 88039ns
-w1: Event received at 88147ns
-w2: Event received at 88287ns
-w1: Event received at 88415ns
-w2: Event received at 88571ns
-w2: Event received at 88687ns
-w2: Event received at 88819ns
-w2: Event received at 88971ns
-w2: Event received at 89215ns
-w1: Event received at 89347ns
-w2: Event received at 89487ns
-w2: Event received at 89639ns
-w1: Event received at 89743ns
-w2: Event received at 89887ns
-w2: Event received at 90015ns
-w2: Event received at 90167ns
-w2: Event received at 90287ns
-w2: Event received at 90415ns
-w1: Event received at 90543ns
-w1: Event received at 90691ns
-w2: Event received at 90815ns
-w1: Event received at 90943ns
-w2: Event received at 91099ns
-w2: Event received at 91343ns
-w2: Event received at 91495ns
-w2: Event received at 91615ns
-w2: Event received at 91763ns
-w1: Event received at 91871ns
-w2: Event received at 92015ns
-w1: Event received at 92139ns
-w2: Event received at 92295ns
-w2: Event received at 92415ns
-w2: Event received at 92543ns
-w2: Event received at 92695ns
-w1: Event received at 92823ns
-w2: Event received at 92939ns
-w1: Event received at 93071ns
-w1: Event received at 93215ns
-w2: Event received at 93363ns
-w1: Event received at 93467ns
-w2: Event received at 93623ns
-w2: Event received at 93739ns
-w2: Event received at 93891ns
-w2: Event received at 94139ns
-w1: Event received at 94267ns
-w1: Event received at 94415ns
-w2: Event received at 94539ns
-w1: Event received at 94667ns
-w1: Event received at 94799ns
-w2: Event received at 95067ns
-w2: Event received at 95219ns
-w2: Event received at 95339ns
-w2: Event received at 95487ns
-w1: Event received at 95595ns
-w2: Event received at 95739ns
-w1: Event received at 95863ns
-w2: Event received at 96019ns
-w2: Event received at 96139ns
-w2: Event received at 96267ns
-w2: Event received at 96399ns
-w1: Event received at 96543ns
-w2: Event received at 96663ns
-w1: Event received at 96795ns
-w1: Event received at 96939ns
-w2: Event received at 97087ns
-w1: Event received at 97191ns
-w2: Event received at 97347ns
-w2: Event received at 97463ns
-w2: Event received at 97615ns
-w2: Event received at 97863ns
-w1: Event received at 97991ns
-w1: Event received at 98139ns
-w2: Event received at 98263ns
-w1: Event received at 98391ns
-w2: Event received at 98547ns
-w2: Event received at 98791ns
-w2: Event received at 98943ns
-w2: Event received at 99063ns
-w2: Event received at 99215ns
-w1: Event received at 99319ns
-w2: Event received at 99463ns
-w1: Event received at 99587ns
-w2: Event received at 99743ns
-w2: Event received at 99863ns
-w2: Event received at 99991ns
+w2: Event waited at 112ns (inactive) 
+w1: Event waited at 112ns (inactive) 
+w1: Event waited at 115ns (active) 
+w2: Event waited at 263ns (active) 
+w2: Event waited at 371ns (active) 
+w2: Event waited at 512ns (inactive) 
+w2: Event waited at 523ns (active) 
+w2: Event waited at 639ns (active) 
+w1: Event waited at 787ns (active) 
+w2: Event waited at 1039ns (active) 
+w1: Event waited at 1039ns (inactive) 
+w1: Event waited at 1167ns (active) 
+w1: Event waited at 1315ns (active) 
+w2: Event waited at 1439ns (active) 
+w1: Event waited at 1439ns (inactive) 
+w2: Event waited at 1568ns (inactive) 
+w2: Event waited at 1571ns (active) 
+w2: Event waited at 1720ns (inactive) 
+w2: Event waited at 1723ns (active) 
+w2: Event waited at 1967ns (active) 
+w1: Event waited at 2112ns (inactive) 
+w1: Event waited at 2115ns (active) 
+w2: Event waited at 2239ns (active) 
+w1: Event waited at 2239ns (inactive) 
+w2: Event waited at 2387ns (active) 
+w1: Event waited at 2387ns (inactive) 
+w1: Event waited at 2495ns (active) 
+w2: Event waited at 2639ns (active) 
+w1: Event waited at 2639ns (inactive) 
+w2: Event waited at 2767ns (active) 
+w2: Event waited at 2919ns (active) 
+w2: Event waited at 3039ns (active) 
+w2: Event waited at 3164ns (inactive) 
+w2: Event waited at 3167ns (active) 
+w2: Event waited at 3299ns (active) 
+w1: Event waited at 3443ns (active) 
+w2: Event waited at 3563ns (active) 
+w1: Event waited at 3563ns (inactive) 
+w1: Event waited at 3692ns (inactive) 
+w1: Event waited at 3695ns (active) 
+w1: Event waited at 3839ns (active) 
+w2: Event waited at 3987ns (active) 
+w2: Event waited at 4095ns (active) 
+w2: Event waited at 4247ns (active) 
+w2: Event waited at 4363ns (active) 
+w1: Event waited at 4512ns (inactive) 
+w2: Event waited at 4515ns (active) 
+w1: Event waited at 4515ns (inactive) 
+w1: Event waited at 4623ns (active) 
+w2: Event waited at 4763ns (active) 
+w1: Event waited at 4763ns (inactive) 
+w1: Event waited at 4891ns (active) 
+w1: Event waited at 5039ns (active) 
+w2: Event waited at 5163ns (active) 
+w2: Event waited at 5292ns (inactive) 
+w2: Event waited at 5295ns (active) 
+w2: Event waited at 5444ns (inactive) 
+w2: Event waited at 5447ns (active) 
+w2: Event waited at 5691ns (active) 
+w1: Event waited at 5823ns (active) 
+w2: Event waited at 5963ns (active) 
+w1: Event waited at 5963ns (inactive) 
+w2: Event waited at 6112ns (inactive) 
+w1: Event waited at 6112ns (inactive) 
+w2: Event waited at 6115ns (active) 
+w1: Event waited at 6115ns (inactive) 
+w1: Event waited at 6219ns (active) 
+w2: Event waited at 6363ns (active) 
+w2: Event waited at 6491ns (active) 
+w2: Event waited at 6643ns (active) 
+w2: Event waited at 6763ns (active) 
+w2: Event waited at 6888ns (inactive) 
+w2: Event waited at 6891ns (active) 
+w2: Event waited at 7023ns (active) 
+w1: Event waited at 7023ns (inactive) 
+w1: Event waited at 7167ns (active) 
+w1: Event waited at 7287ns (active) 
+w2: Event waited at 7287ns (inactive) 
+w1: Event waited at 7416ns (inactive) 
+w1: Event waited at 7419ns (active) 
+w2: Event waited at 7572ns (inactive) 
+w2: Event waited at 7712ns (inactive) 
+w2: Event waited at 7819ns (active) 
+w2: Event waited at 7971ns (active) 
+w2: Event waited at 8087ns (active) 
+w2: Event waited at 8239ns (active) 
+w1: Event waited at 8239ns (inactive) 
+w1: Event waited at 8347ns (active) 
+w2: Event waited at 8487ns (active) 
+w1: Event waited at 8487ns (inactive) 
+w1: Event waited at 8615ns (active) 
+w2: Event waited at 8771ns (active) 
+w2: Event waited at 8887ns (active) 
+w2: Event waited at 9016ns (inactive) 
+w2: Event waited at 9019ns (active) 
+w2: Event waited at 9168ns (inactive) 
+w2: Event waited at 9171ns (active) 
+w2: Event waited at 9415ns (active) 
+w1: Event waited at 9544ns (inactive) 
+w1: Event waited at 9547ns (active) 
+w2: Event waited at 9687ns (active) 
+w1: Event waited at 9687ns (inactive) 
+w2: Event waited at 9839ns (active) 
+w1: Event waited at 9839ns (inactive) 
+w1: Event waited at 9943ns (active) 
+w2: Event waited at 10087ns (active) 
+w2: Event waited at 10215ns (active) 
+w2: Event waited at 10367ns (active) 
+w2: Event waited at 10487ns (active) 
+w2: Event waited at 10615ns (active) 
+w1: Event waited at 10743ns (active) 
+w1: Event waited at 10891ns (active) 
+w2: Event waited at 11012ns (inactive) 
+w1: Event waited at 11012ns (inactive) 
+w2: Event waited at 11015ns (active) 
+w1: Event waited at 11015ns (inactive) 
+w1: Event waited at 11140ns (inactive) 
+w1: Event waited at 11143ns (active) 
+w1: Event waited at 11275ns (inactive) 
+w2: Event waited at 11296ns (inactive) 
+w2: Event waited at 11299ns (active) 
+w2: Event waited at 11543ns (active) 
+w2: Event waited at 11695ns (active) 
+w2: Event waited at 11812ns (inactive) 
+w2: Event waited at 11815ns (active) 
+w2: Event waited at 11963ns (active) 
+w1: Event waited at 11963ns (inactive) 
+w1: Event waited at 12071ns (active) 
+w2: Event waited at 12212ns (inactive) 
+w1: Event waited at 12212ns (inactive) 
+w2: Event waited at 12215ns (active) 
+w1: Event waited at 12215ns (inactive) 
+w1: Event waited at 12339ns (active) 
+w2: Event waited at 12495ns (active) 
+w2: Event waited at 12612ns (inactive) 
+w2: Event waited at 12615ns (active) 
+w2: Event waited at 12740ns (inactive) 
+w2: Event waited at 12743ns (active) 
+w2: Event waited at 12875ns (inactive) 
+w2: Event waited at 12892ns (inactive) 
+w2: Event waited at 12895ns (active) 
+w1: Event waited at 13023ns (active) 
+w2: Event waited at 13139ns (active) 
+w1: Event waited at 13268ns (inactive) 
+w1: Event waited at 13271ns (active) 
+w2: Event waited at 13412ns (inactive) 
+w1: Event waited at 13412ns (inactive) 
+w1: Event waited at 13415ns (active) 
+w2: Event waited at 13563ns (active) 
+w1: Event waited at 13667ns (active) 
+w1: Event waited at 13800ns (inactive) 
+w2: Event waited at 13812ns (inactive) 
+w2: Event waited at 13823ns (active) 
+w2: Event waited at 13939ns (active) 
+w2: Event waited at 14091ns (active) 
+w2: Event waited at 14339ns (active) 
+w1: Event waited at 14467ns (active) 
+w1: Event waited at 14615ns (active) 
+w2: Event waited at 14739ns (active) 
+w1: Event waited at 14739ns (inactive) 
+w1: Event waited at 14864ns (inactive) 
+w1: Event waited at 14867ns (active) 
+w1: Event waited at 14999ns (active) 
+w2: Event waited at 15267ns (active) 
+w2: Event waited at 15419ns (active) 
+w2: Event waited at 15539ns (active) 
+w2: Event waited at 15687ns (active) 
+w1: Event waited at 15687ns (inactive) 
+w1: Event waited at 15795ns (active) 
+w2: Event waited at 15939ns (active) 
+w1: Event waited at 15939ns (inactive) 
+w1: Event waited at 16063ns (active) 
+w2: Event waited at 16219ns (active) 
+w2: Event waited at 16339ns (active) 
+w2: Event waited at 16464ns (inactive) 
+w2: Event waited at 16467ns (active) 
+w2: Event waited at 16599ns (active) 
+w1: Event waited at 16743ns (active) 
+w2: Event waited at 16863ns (active) 
+w1: Event waited at 16863ns (inactive) 
+w1: Event waited at 16992ns (inactive) 
+w1: Event waited at 16995ns (active) 
+w1: Event waited at 17139ns (active) 
+w1: Event waited at 17275ns (inactive) 
+w2: Event waited at 17287ns (active) 
+w1: Event waited at 17391ns (active) 
+w2: Event waited at 17547ns (active) 
+w2: Event waited at 17663ns (active) 
+w2: Event waited at 17815ns (active) 
+w2: Event waited at 18063ns (active) 
+w1: Event waited at 18063ns (inactive) 
+w1: Event waited at 18191ns (active) 
+w1: Event waited at 18339ns (active) 
+w2: Event waited at 18463ns (active) 
+w1: Event waited at 18463ns (inactive) 
+w1: Event waited at 18588ns (inactive) 
+w1: Event waited at 18591ns (active) 
+w2: Event waited at 18744ns (inactive) 
+w2: Event waited at 18747ns (active) 
+w2: Event waited at 18991ns (active) 
+w2: Event waited at 19124ns (inactive) 
+w2: Event waited at 19143ns (active) 
+w1: Event waited at 19143ns (inactive) 
+w2: Event waited at 19263ns (active) 
+w1: Event waited at 19263ns (inactive) 
+w2: Event waited at 19412ns (inactive) 
+w1: Event waited at 19412ns (inactive) 
+w2: Event waited at 19415ns (active) 
+w1: Event waited at 19415ns (inactive) 
+w1: Event waited at 19519ns (active) 
+w2: Event waited at 19663ns (active) 
+w1: Event waited at 19663ns (inactive) 
+w1: Event waited at 19787ns (active) 
+w2: Event waited at 19943ns (active) 
+w2: Event waited at 20063ns (active) 
+w2: Event waited at 20188ns (inactive) 
+w2: Event waited at 20191ns (active) 
+w2: Event waited at 20323ns (active) 
+w1: Event waited at 20467ns (active) 
+w1: Event waited at 20587ns (active) 
+w2: Event waited at 20587ns (inactive) 
+w1: Event waited at 20716ns (inactive) 
+w1: Event waited at 20719ns (active) 
+w1: Event waited at 20863ns (active) 
+w1: Event waited at 20999ns (active) 
+w1: Event waited at 21115ns (active) 
+w2: Event waited at 21271ns (active) 
+w2: Event waited at 21387ns (active) 
+w2: Event waited at 21539ns (active) 
+w2: Event waited at 21787ns (active) 
+w1: Event waited at 21787ns (inactive) 
+w1: Event waited at 21915ns (active) 
+w1: Event waited at 22063ns (active) 
+w2: Event waited at 22187ns (active) 
+w1: Event waited at 22187ns (inactive) 
+w1: Event waited at 22315ns (active) 
+w2: Event waited at 22468ns (inactive) 
+w2: Event waited at 22471ns (active) 
+w2: Event waited at 22715ns (active) 
+w2: Event waited at 22848ns (inactive) 
+w1: Event waited at 22863ns (active) 
+w2: Event waited at 22987ns (active) 
+w1: Event waited at 22987ns (inactive) 
+w2: Event waited at 23139ns (active) 
+w1: Event waited at 23139ns (inactive) 
+w1: Event waited at 23243ns (active) 
+w2: Event waited at 23387ns (active) 
+w1: Event waited at 23387ns (inactive) 
+w1: Event waited at 23512ns (inactive) 
+w2: Event waited at 23515ns (active) 
+w1: Event waited at 23515ns (inactive) 
+w2: Event waited at 23667ns (active) 
+w2: Event waited at 23787ns (active) 
+w2: Event waited at 23915ns (active) 
+w2: Event waited at 24047ns (active) 
+w1: Event waited at 24191ns (active) 
+w2: Event waited at 24312ns (inactive) 
+w1: Event waited at 24312ns (inactive) 
+w2: Event waited at 24315ns (active) 
+w1: Event waited at 24315ns (inactive) 
+w1: Event waited at 24440ns (inactive) 
+w1: Event waited at 24443ns (active) 
+w1: Event waited at 24575ns (inactive) 
+w1: Event waited at 24587ns (active) 
+w1: Event waited at 24839ns (active) 
+w2: Event waited at 24995ns (active) 
+w2: Event waited at 25112ns (inactive) 
+w2: Event waited at 25115ns (active) 
+w2: Event waited at 25263ns (active) 
+w1: Event waited at 25263ns (inactive) 
+w2: Event waited at 25512ns (inactive) 
+w1: Event waited at 25512ns (inactive) 
+w2: Event waited at 25515ns (active) 
+w1: Event waited at 25515ns (inactive) 
+w1: Event waited at 25639ns (active) 
+w1: Event waited at 25787ns (active) 
+w2: Event waited at 25912ns (inactive) 
+w1: Event waited at 25912ns (inactive) 
+w2: Event waited at 25915ns (active) 
+w1: Event waited at 25915ns (inactive) 
+w1: Event waited at 26039ns (active) 
+w2: Event waited at 26175ns (inactive) 
+w2: Event waited at 26192ns (inactive) 
+w2: Event waited at 26195ns (active) 
+w2: Event waited at 26439ns (active) 
+w2: Event waited at 26572ns (inactive) 
+w1: Event waited at 26587ns (active) 
+w2: Event waited at 26712ns (inactive) 
+w1: Event waited at 26712ns (inactive) 
+w1: Event waited at 26715ns (active) 
+w2: Event waited at 26863ns (active) 
+w1: Event waited at 26863ns (inactive) 
+w1: Event waited at 26967ns (active) 
+w1: Event waited at 27100ns (inactive) 
+w2: Event waited at 27112ns (inactive) 
+w1: Event waited at 27112ns (inactive) 
+w1: Event waited at 27115ns (active) 
+w2: Event waited at 27239ns (active) 
+w1: Event waited at 27239ns (inactive) 
+w2: Event waited at 27391ns (active) 
+w2: Event waited at 27639ns (active) 
+w2: Event waited at 27771ns (active) 
+w1: Event waited at 27915ns (active) 
+w2: Event waited at 28039ns (active) 
+w1: Event waited at 28039ns (inactive) 
+w1: Event waited at 28164ns (inactive) 
+w1: Event waited at 28167ns (active) 
+w1: Event waited at 28299ns (active) 
+w2: Event waited at 28567ns (active) 
+w2: Event waited at 28719ns (active) 
+w2: Event waited at 28839ns (active) 
+w2: Event waited at 28987ns (active) 
+w1: Event waited at 28987ns (inactive) 
+w2: Event waited at 29099ns (active) 
+w2: Event waited at 29239ns (active) 
+w1: Event waited at 29239ns (inactive) 
+w1: Event waited at 29363ns (active) 
+w1: Event waited at 29512ns (inactive) 
+w1: Event waited at 29515ns (active) 
+w2: Event waited at 29639ns (active) 
+w1: Event waited at 29639ns (inactive) 
+w2: Event waited at 29764ns (inactive) 
+w2: Event waited at 29767ns (active) 
+w2: Event waited at 29899ns (active) 
+w2: Event waited at 30163ns (active) 
+w2: Event waited at 30296ns (inactive) 
+w2: Event waited at 30299ns (active) 
+w1: Event waited at 30439ns (active) 
+w1: Event waited at 30575ns (inactive) 
+w2: Event waited at 30587ns (active) 
+w1: Event waited at 30587ns (inactive) 
+w1: Event waited at 30691ns (active) 
+w1: Event waited at 30824ns (inactive) 
+w1: Event waited at 30839ns (active) 
+w2: Event waited at 30963ns (active) 
+w2: Event waited at 31115ns (active) 
+w2: Event waited at 31363ns (active) 
+w2: Event waited at 31495ns (active) 
+w1: Event waited at 31639ns (active) 
+w2: Event waited at 31763ns (active) 
+w1: Event waited at 31763ns (inactive) 
+w1: Event waited at 31888ns (inactive) 
+w1: Event waited at 31891ns (active) 
+w1: Event waited at 32023ns (active) 
+w2: Event waited at 32291ns (active) 
+w2: Event waited at 32424ns (inactive) 
+w2: Event waited at 32443ns (active) 
+w2: Event waited at 32563ns (active) 
+w2: Event waited at 32712ns (inactive) 
+w1: Event waited at 32712ns (inactive) 
+w2: Event waited at 32715ns (active) 
+w1: Event waited at 32715ns (inactive) 
+w2: Event waited at 32823ns (active) 
+w1: Event waited at 32823ns (inactive) 
+w2: Event waited at 32963ns (active) 
+w1: Event waited at 32963ns (inactive) 
+w1: Event waited at 33087ns (active) 
+w1: Event waited at 33239ns (active) 
+w2: Event waited at 33363ns (active) 
+w2: Event waited at 33488ns (inactive) 
+w2: Event waited at 33491ns (active) 
+w2: Event waited at 33623ns (active) 
+w2: Event waited at 33775ns (inactive) 
+w2: Event waited at 33887ns (active) 
+w2: Event waited at 34020ns (inactive) 
+w2: Event waited at 34023ns (active) 
+w1: Event waited at 34023ns (inactive) 
+w1: Event waited at 34163ns (active) 
+w1: Event waited at 34299ns (active) 
+w1: Event waited at 34415ns (active) 
+w1: Event waited at 34548ns (inactive) 
+w2: Event waited at 34571ns (active) 
+w2: Event waited at 34687ns (active) 
+w2: Event waited at 34839ns (active) 
+w2: Event waited at 35087ns (active) 
+w2: Event waited at 35219ns (active) 
+w1: Event waited at 35363ns (active) 
+w2: Event waited at 35487ns (active) 
+w1: Event waited at 35487ns (inactive) 
+w1: Event waited at 35615ns (active) 
+w1: Event waited at 35747ns (active) 
+w2: Event waited at 36015ns (active) 
+w2: Event waited at 36148ns (inactive) 
+w2: Event waited at 36167ns (active) 
+w2: Event waited at 36287ns (active) 
+w2: Event waited at 36439ns (active) 
+w1: Event waited at 36439ns (inactive) 
+w1: Event waited at 36543ns (active) 
+w2: Event waited at 36687ns (active) 
+w1: Event waited at 36687ns (inactive) 
+w1: Event waited at 36812ns (inactive) 
+w2: Event waited at 36815ns (active) 
+w1: Event waited at 36815ns (inactive) 
+w2: Event waited at 36967ns (active) 
+w2: Event waited at 37087ns (active) 
+w2: Event waited at 37215ns (active) 
+w2: Event waited at 37347ns (active) 
+w2: Event waited at 37499ns (active) 
+w2: Event waited at 37612ns (inactive) 
+w2: Event waited at 37615ns (active) 
+w1: Event waited at 37743ns (active) 
+w1: Event waited at 37887ns (active) 
+w1: Event waited at 38023ns (active) 
+w1: Event waited at 38139ns (active) 
+w1: Event waited at 38272ns (inactive) 
+w2: Event waited at 38295ns (active) 
+w2: Event waited at 38412ns (inactive) 
+w2: Event waited at 38415ns (active) 
+w2: Event waited at 38563ns (active) 
+w2: Event waited at 38812ns (inactive) 
+w2: Event waited at 38815ns (active) 
+w2: Event waited at 38943ns (active) 
+w1: Event waited at 38943ns (inactive) 
+w1: Event waited at 39087ns (active) 
+w2: Event waited at 39212ns (inactive) 
+w1: Event waited at 39212ns (inactive) 
+w2: Event waited at 39215ns (active) 
+w1: Event waited at 39215ns (inactive) 
+w1: Event waited at 39339ns (active) 
+w1: Event waited at 39471ns (active) 
+w2: Event waited at 39739ns (active) 
+w2: Event waited at 39872ns (inactive) 
+w2: Event waited at 39891ns (active) 
+w2: Event waited at 40012ns (inactive) 
+w1: Event waited at 40023ns (active) 
+w2: Event waited at 40163ns (active) 
+w1: Event waited at 40163ns (inactive) 
+w1: Event waited at 40267ns (active) 
+w1: Event waited at 40400ns (inactive) 
+w2: Event waited at 40412ns (inactive) 
+w1: Event waited at 40412ns (inactive) 
+w1: Event waited at 40415ns (active) 
+w2: Event waited at 40539ns (active) 
+w1: Event waited at 40539ns (inactive) 
+w2: Event waited at 40691ns (active) 
+w1: Event waited at 40799ns (active) 
+w2: Event waited at 40939ns (active) 
+w2: Event waited at 41071ns (active) 
+w2: Event waited at 41223ns (active) 
+w1: Event waited at 41223ns (inactive) 
+w2: Event waited at 41339ns (active) 
+w1: Event waited at 41464ns (inactive) 
+w1: Event waited at 41467ns (active) 
+w1: Event waited at 41599ns (active) 
+w1: Event waited at 41747ns (active) 
+w1: Event waited at 41863ns (active) 
+w1: Event waited at 41996ns (inactive) 
+w1: Event waited at 41999ns (active) 
+w2: Event waited at 42139ns (active) 
+w2: Event waited at 42287ns (active) 
+w2: Event waited at 42399ns (active) 
+w2: Event waited at 42539ns (active) 
+w1: Event waited at 42663ns (active) 
+w1: Event waited at 42812ns (inactive) 
+w1: Event waited at 42815ns (active) 
+w2: Event waited at 42939ns (active) 
+w1: Event waited at 42939ns (inactive) 
+w1: Event waited at 43063ns (active) 
+w1: Event waited at 43195ns (active) 
+w2: Event waited at 43463ns (active) 
+w2: Event waited at 43596ns (inactive) 
+w2: Event waited at 43599ns (active) 
+w1: Event waited at 43743ns (active) 
+w1: Event waited at 43875ns (inactive) 
+w2: Event waited at 43887ns (active) 
+w1: Event waited at 43887ns (inactive) 
+w1: Event waited at 43991ns (active) 
+w1: Event waited at 44124ns (inactive) 
+w1: Event waited at 44139ns (active) 
+w2: Event waited at 44263ns (active) 
+w1: Event waited at 44263ns (inactive) 
+w2: Event waited at 44415ns (active) 
+w2: Event waited at 44663ns (active) 
+w2: Event waited at 44795ns (active) 
+w1: Event waited at 44943ns (active) 
+w2: Event waited at 45063ns (active) 
+w1: Event waited at 45063ns (inactive) 
+w1: Event waited at 45188ns (inactive) 
+w1: Event waited at 45191ns (active) 
+w1: Event waited at 45323ns (active) 
+w1: Event waited at 45471ns (active) 
+w1: Event waited at 45587ns (active) 
+w1: Event waited at 45720ns (inactive) 
+w2: Event waited at 45724ns (inactive) 
+w2: Event waited at 45743ns (active) 
+w2: Event waited at 45863ns (active) 
+w2: Event waited at 46012ns (inactive) 
+w2: Event waited at 46015ns (active) 
+w2: Event waited at 46123ns (active) 
+w2: Event waited at 46263ns (active) 
+w1: Event waited at 46263ns (inactive) 
+w1: Event waited at 46387ns (active) 
+w1: Event waited at 46539ns (active) 
+w2: Event waited at 46663ns (active) 
+w1: Event waited at 46663ns (inactive) 
+w1: Event waited at 46787ns (active) 
+w1: Event waited at 46919ns (active) 
+w2: Event waited at 47075ns (inactive) 
+w2: Event waited at 47187ns (active) 
+w2: Event waited at 47320ns (inactive) 
+w2: Event waited at 47323ns (active) 
+w1: Event waited at 47463ns (active) 
+w1: Event waited at 47599ns (active) 
+w1: Event waited at 47715ns (active) 
+w1: Event waited at 47848ns (inactive) 
+w1: Event waited at 47863ns (active) 
+w2: Event waited at 47987ns (active) 
+w1: Event waited at 47987ns (inactive) 
+w2: Event waited at 48139ns (active) 
+w2: Event waited at 48387ns (active) 
+w2: Event waited at 48519ns (active) 
+w1: Event waited at 48663ns (active) 
+w2: Event waited at 48787ns (active) 
+w1: Event waited at 48787ns (inactive) 
+w1: Event waited at 48915ns (active) 
+w1: Event waited at 49047ns (active) 
+w1: Event waited at 49195ns (active) 
+w1: Event waited at 49312ns (inactive) 
+w2: Event waited at 49315ns (active) 
+w1: Event waited at 49315ns (inactive) 
+w2: Event waited at 49448ns (inactive) 
+w2: Event waited at 49467ns (active) 
+w2: Event waited at 49587ns (active) 
+w2: Event waited at 49739ns (active) 
+w2: Event waited at 49847ns (active) 
+w2: Event waited at 49987ns (active) 
+w1: Event waited at 49987ns (inactive) 
+w1: Event waited at 50112ns (inactive) 
+w2: Event waited at 50115ns (active) 
+w1: Event waited at 50115ns (inactive) 
+w1: Event waited at 50263ns (active) 
+w2: Event waited at 50387ns (active) 
+w1: Event waited at 50387ns (inactive) 
+w1: Event waited at 50512ns (inactive) 
+w2: Event waited at 50515ns (active) 
+w1: Event waited at 50515ns (inactive) 
+w2: Event waited at 50647ns (active) 
+w2: Event waited at 50799ns (active) 
+w2: Event waited at 50912ns (inactive) 
+w2: Event waited at 50915ns (active) 
+w2: Event waited at 51044ns (inactive) 
+w2: Event waited at 51047ns (active) 
+w1: Event waited at 51187ns (active) 
+w1: Event waited at 51323ns (active) 
+w1: Event waited at 51439ns (active) 
+w1: Event waited at 51572ns (inactive) 
+w1: Event waited at 51587ns (active) 
+w2: Event waited at 51712ns (inactive) 
+w1: Event waited at 51712ns (inactive) 
+w2: Event waited at 51715ns (active) 
+w1: Event waited at 51715ns (inactive) 
+w2: Event waited at 51863ns (active) 
+w2: Event waited at 52112ns (inactive) 
+w2: Event waited at 52115ns (active) 
+w2: Event waited at 52243ns (active) 
+w1: Event waited at 52387ns (active) 
+w2: Event waited at 52512ns (inactive) 
+w1: Event waited at 52512ns (inactive) 
+w2: Event waited at 52515ns (active) 
+w1: Event waited at 52515ns (inactive) 
+w1: Event waited at 52639ns (active) 
+w1: Event waited at 52771ns (active) 
+w1: Event waited at 52919ns (active) 
+w2: Event waited at 53039ns (active) 
+w1: Event waited at 53039ns (inactive) 
+w2: Event waited at 53172ns (inactive) 
+w2: Event waited at 53191ns (active) 
+w2: Event waited at 53312ns (inactive) 
+w2: Event waited at 53324ns (inactive) 
+w2: Event waited at 53463ns (active) 
+w1: Event waited at 53463ns (inactive) 
+w2: Event waited at 53571ns (active) 
+w2: Event waited at 53712ns (inactive) 
+w1: Event waited at 53712ns (inactive) 
+w1: Event waited at 53715ns (active) 
+w2: Event waited at 53839ns (active) 
+w1: Event waited at 53839ns (inactive) 
+w1: Event waited at 53987ns (active) 
+w1: Event waited at 54099ns (active) 
+w2: Event waited at 54239ns (active) 
+w1: Event waited at 54239ns (inactive) 
+w2: Event waited at 54371ns (active) 
+w2: Event waited at 54523ns (active) 
+w2: Event waited at 54639ns (active) 
+w2: Event waited at 54768ns (inactive) 
+w2: Event waited at 54771ns (active) 
+w1: Event waited at 54912ns (inactive) 
+w1: Event waited at 54915ns (active) 
+w1: Event waited at 55047ns (active) 
+w1: Event waited at 55163ns (active) 
+w1: Event waited at 55296ns (inactive) 
+w1: Event waited at 55299ns (active) 
+w2: Event waited at 55439ns (active) 
+w1: Event waited at 55439ns (inactive) 
+w2: Event waited at 55587ns (active) 
+w2: Event waited at 55699ns (active) 
+w2: Event waited at 55839ns (active) 
+w2: Event waited at 55967ns (active) 
+w1: Event waited at 56112ns (inactive) 
+w1: Event waited at 56115ns (active) 
+w2: Event waited at 56239ns (active) 
+w1: Event waited at 56239ns (inactive) 
+w1: Event waited at 56363ns (active) 
+w1: Event waited at 56495ns (active) 
+w2: Event waited at 56763ns (active) 
+w2: Event waited at 56896ns (inactive) 
+w2: Event waited at 56899ns (active) 
+w2: Event waited at 57048ns (inactive) 
+w2: Event waited at 57187ns (active) 
+w1: Event waited at 57187ns (inactive) 
+w2: Event waited at 57295ns (active) 
+w1: Event waited at 57424ns (inactive) 
+w1: Event waited at 57439ns (active) 
+w2: Event waited at 57563ns (active) 
+w1: Event waited at 57563ns (inactive) 
+w1: Event waited at 57712ns (inactive) 
+w2: Event waited at 57715ns (active) 
+w1: Event waited at 57715ns (inactive) 
+w1: Event waited at 57823ns (active) 
+w2: Event waited at 57963ns (active) 
+w2: Event waited at 58095ns (active) 
+w2: Event waited at 58247ns (active) 
+w2: Event waited at 58363ns (active) 
+w2: Event waited at 58492ns (inactive) 
+w2: Event waited at 58495ns (active) 
+w1: Event waited at 58623ns (active) 
+w1: Event waited at 58771ns (active) 
+w1: Event waited at 58887ns (active) 
+w1: Event waited at 59020ns (inactive) 
+w1: Event waited at 59023ns (active) 
+w2: Event waited at 59163ns (active) 
+w2: Event waited at 59312ns (inactive) 
+w2: Event waited at 59315ns (active) 
+w2: Event waited at 59423ns (active) 
+w2: Event waited at 59563ns (active) 
+w2: Event waited at 59691ns (active) 
+w1: Event waited at 59839ns (active) 
+w2: Event waited at 59963ns (active) 
+w1: Event waited at 59963ns (inactive) 
+w1: Event waited at 60087ns (active) 
+w1: Event waited at 60219ns (active) 
+w2: Event waited at 60375ns (inactive) 
+w2: Event waited at 60487ns (active) 
+w2: Event waited at 60620ns (inactive) 
+w2: Event waited at 60623ns (active) 
+w2: Event waited at 60772ns (inactive) 
+w2: Event waited at 60912ns (inactive) 
+w1: Event waited at 60912ns (inactive) 
+w2: Event waited at 61019ns (active) 
+w1: Event waited at 61148ns (inactive) 
+w1: Event waited at 61163ns (active) 
+w2: Event waited at 61287ns (active) 
+w1: Event waited at 61287ns (inactive) 
+w2: Event waited at 61439ns (active) 
+w1: Event waited at 61439ns (inactive) 
+w1: Event waited at 61547ns (active) 
+w2: Event waited at 61687ns (active) 
+w2: Event waited at 61819ns (active) 
+w2: Event waited at 61971ns (active) 
+w2: Event waited at 62087ns (active) 
+w2: Event waited at 62216ns (inactive) 
+w2: Event waited at 62219ns (active) 
+w1: Event waited at 62347ns (active) 
+w1: Event waited at 62495ns (active) 
+w1: Event waited at 62612ns (inactive) 
+w2: Event waited at 62615ns (active) 
+w1: Event waited at 62615ns (inactive) 
+w1: Event waited at 62744ns (inactive) 
+w1: Event waited at 62747ns (active) 
+w2: Event waited at 62887ns (active) 
+w2: Event waited at 63039ns (active) 
+w2: Event waited at 63147ns (active) 
+w2: Event waited at 63287ns (active) 
+w2: Event waited at 63415ns (active) 
+w1: Event waited at 63563ns (active) 
+w2: Event waited at 63687ns (active) 
+w1: Event waited at 63687ns (inactive) 
+w1: Event waited at 63812ns (inactive) 
+w2: Event waited at 63815ns (active) 
+w1: Event waited at 63815ns (inactive) 
+w1: Event waited at 63943ns (active) 
+w2: Event waited at 64099ns (active) 
+w2: Event waited at 64212ns (inactive) 
+w2: Event waited at 64215ns (active) 
+w2: Event waited at 64344ns (inactive) 
+w2: Event waited at 64347ns (active) 
+w2: Event waited at 64496ns (inactive) 
+w2: Event waited at 64499ns (active) 
+w1: Event waited at 64623ns (active) 
+w1: Event waited at 64743ns (active) 
+w2: Event waited at 64743ns (inactive) 
+w1: Event waited at 64872ns (inactive) 
+w1: Event waited at 64887ns (active) 
+w2: Event waited at 65012ns (inactive) 
+w1: Event waited at 65012ns (inactive) 
+w2: Event waited at 65015ns (active) 
+w1: Event waited at 65015ns (inactive) 
+w2: Event waited at 65163ns (active) 
+w1: Event waited at 65271ns (active) 
+w2: Event waited at 65412ns (inactive) 
+w2: Event waited at 65415ns (active) 
+w2: Event waited at 65543ns (active) 
+w2: Event waited at 65695ns (active) 
+w2: Event waited at 65812ns (inactive) 
+w2: Event waited at 65815ns (active) 
+w2: Event waited at 65940ns (inactive) 
+w2: Event waited at 65943ns (active) 
+w1: Event waited at 65943ns (inactive) 
+w1: Event waited at 66071ns (active) 
+w1: Event waited at 66219ns (active) 
+w2: Event waited at 66339ns (active) 
+w1: Event waited at 66339ns (inactive) 
+w1: Event waited at 66468ns (inactive) 
+w1: Event waited at 66471ns (active) 
+w2: Event waited at 66612ns (inactive) 
+w2: Event waited at 66624ns (inactive) 
+w2: Event waited at 66763ns (active) 
+w2: Event waited at 66871ns (active) 
+w2: Event waited at 67012ns (inactive) 
+w2: Event waited at 67023ns (active) 
+w1: Event waited at 67023ns (inactive) 
+w2: Event waited at 67139ns (active) 
+w1: Event waited at 67287ns (active) 
+w1: Event waited at 67399ns (active) 
+w2: Event waited at 67539ns (active) 
+w1: Event waited at 67539ns (inactive) 
+w1: Event waited at 67667ns (active) 
+w2: Event waited at 67823ns (active) 
+w2: Event waited at 67939ns (active) 
+w2: Event waited at 68068ns (inactive) 
+w2: Event waited at 68071ns (active) 
+w2: Event waited at 68220ns (inactive) 
+w2: Event waited at 68223ns (active) 
+w1: Event waited at 68223ns (inactive) 
+w1: Event waited at 68347ns (active) 
+w1: Event waited at 68463ns (active) 
+w1: Event waited at 68596ns (inactive) 
+w1: Event waited at 68599ns (active) 
+w2: Event waited at 68739ns (active) 
+w1: Event waited at 68739ns (inactive) 
+w2: Event waited at 68887ns (active) 
+w1: Event waited at 68995ns (active) 
+w2: Event waited at 69139ns (active) 
+w2: Event waited at 69267ns (active) 
+w2: Event waited at 69419ns (active) 
+w2: Event waited at 69539ns (active) 
+w1: Event waited at 69663ns (active) 
+w1: Event waited at 69795ns (active) 
+w1: Event waited at 69943ns (active) 
+w2: Event waited at 70063ns (active) 
+w1: Event waited at 70063ns (inactive) 
+w1: Event waited at 70192ns (inactive) 
+w1: Event waited at 70195ns (active) 
+w2: Event waited at 70348ns (inactive) 
+w2: Event waited at 70487ns (active) 
+w2: Event waited at 70595ns (active) 
+w1: Event waited at 70743ns (active) 
+w2: Event waited at 70863ns (active) 
+w1: Event waited at 70863ns (inactive) 
+w1: Event waited at 71012ns (inactive) 
+w2: Event waited at 71015ns (active) 
+w1: Event waited at 71015ns (inactive) 
+w1: Event waited at 71123ns (active) 
+w2: Event waited at 71263ns (active) 
+w1: Event waited at 71263ns (inactive) 
+w1: Event waited at 71391ns (active) 
+w2: Event waited at 71547ns (active) 
+w2: Event waited at 71663ns (active) 
+w2: Event waited at 71792ns (inactive) 
+w2: Event waited at 71795ns (active) 
+w1: Event waited at 71943ns (active) 
+w1: Event waited at 72071ns (active) 
+w1: Event waited at 72187ns (active) 
+w1: Event waited at 72320ns (inactive) 
+w1: Event waited at 72323ns (active) 
+w2: Event waited at 72463ns (active) 
+w1: Event waited at 72463ns (inactive) 
+w2: Event waited at 72612ns (inactive) 
+w2: Event waited at 72615ns (active) 
+w1: Event waited at 72719ns (active) 
+w2: Event waited at 72863ns (active) 
+w2: Event waited at 72991ns (active) 
+w2: Event waited at 73143ns (active) 
+w1: Event waited at 73143ns (inactive) 
+w2: Event waited at 73263ns (active) 
+w1: Event waited at 73263ns (inactive) 
+w1: Event waited at 73387ns (active) 
+w1: Event waited at 73519ns (active) 
+w1: Event waited at 73667ns (active) 
+w1: Event waited at 73787ns (active) 
+w2: Event waited at 73787ns (inactive) 
+w1: Event waited at 73916ns (inactive) 
+w1: Event waited at 73919ns (active) 
+w2: Event waited at 74072ns (inactive) 
+w2: Event waited at 74212ns (inactive) 
+w2: Event waited at 74319ns (active) 
+w1: Event waited at 74463ns (active) 
+w2: Event waited at 74587ns (active) 
+w1: Event waited at 74587ns (inactive) 
+w2: Event waited at 74739ns (active) 
+w1: Event waited at 74739ns (inactive) 
+w1: Event waited at 74847ns (active) 
+w2: Event waited at 74987ns (active) 
+w1: Event waited at 74987ns (inactive) 
+w1: Event waited at 75115ns (active) 
+w2: Event waited at 75271ns (active) 
+w2: Event waited at 75387ns (active) 
+w2: Event waited at 75516ns (inactive) 
+w2: Event waited at 75519ns (active) 
+w1: Event waited at 75663ns (active) 
+w1: Event waited at 75795ns (active) 
+w1: Event waited at 75912ns (inactive) 
+w2: Event waited at 75915ns (active) 
+w1: Event waited at 75915ns (inactive) 
+w1: Event waited at 76044ns (inactive) 
+w1: Event waited at 76047ns (active) 
+w2: Event waited at 76187ns (active) 
+w1: Event waited at 76187ns (inactive) 
+w2: Event waited at 76339ns (active) 
+w2: Event waited at 76447ns (active) 
+w2: Event waited at 76587ns (active) 
+w2: Event waited at 76715ns (active) 
+w1: Event waited at 76863ns (active) 
+w2: Event waited at 76987ns (active) 
+w1: Event waited at 76987ns (inactive) 
+w2: Event waited at 77115ns (active) 
+w1: Event waited at 77115ns (inactive) 
+w1: Event waited at 77243ns (active) 
+w1: Event waited at 77391ns (active) 
+w2: Event waited at 77512ns (inactive) 
+w1: Event waited at 77512ns (inactive) 
+w2: Event waited at 77515ns (active) 
+w1: Event waited at 77515ns (inactive) 
+w2: Event waited at 77644ns (inactive) 
+w2: Event waited at 77647ns (active) 
+w2: Event waited at 77796ns (inactive) 
+w2: Event waited at 77799ns (active) 
+w2: Event waited at 78043ns (active) 
+w1: Event waited at 78187ns (active) 
+w2: Event waited at 78312ns (inactive) 
+w1: Event waited at 78312ns (inactive) 
+w2: Event waited at 78315ns (active) 
+w1: Event waited at 78315ns (inactive) 
+w2: Event waited at 78463ns (active) 
+w1: Event waited at 78463ns (inactive) 
+w1: Event waited at 78571ns (active) 
+w2: Event waited at 78712ns (inactive) 
+w1: Event waited at 78712ns (inactive) 
+w2: Event waited at 78715ns (active) 
+w1: Event waited at 78715ns (inactive) 
+w1: Event waited at 78839ns (active) 
+w2: Event waited at 78995ns (active) 
+w2: Event waited at 79112ns (inactive) 
+w2: Event waited at 79115ns (active) 
+w2: Event waited at 79240ns (inactive) 
+w2: Event waited at 79243ns (active) 
+w2: Event waited at 79375ns (inactive) 
+w1: Event waited at 79387ns (active) 
+w1: Event waited at 79519ns (active) 
+w2: Event waited at 79639ns (active) 
+w1: Event waited at 79639ns (inactive) 
+w1: Event waited at 79768ns (inactive) 
+w1: Event waited at 79771ns (active) 
+w2: Event waited at 79912ns (inactive) 
+w1: Event waited at 79912ns (inactive) 
+w1: Event waited at 79915ns (active) 
+w2: Event waited at 80063ns (active) 
+w2: Event waited at 80171ns (active) 
+w2: Event waited at 80312ns (inactive) 
+w2: Event waited at 80323ns (active) 
+w2: Event waited at 80439ns (active) 
+w1: Event waited at 80587ns (active) 
+w2: Event waited at 80839ns (active) 
+w1: Event waited at 80839ns (inactive) 
+w1: Event waited at 80967ns (active) 
+w1: Event waited at 81115ns (active) 
+w2: Event waited at 81239ns (active) 
+w1: Event waited at 81239ns (inactive) 
+w2: Event waited at 81368ns (inactive) 
+w2: Event waited at 81371ns (active) 
+w2: Event waited at 81520ns (inactive) 
+w2: Event waited at 81523ns (active) 
+w2: Event waited at 81767ns (active) 
+w1: Event waited at 81912ns (inactive) 
+w1: Event waited at 81915ns (active) 
+w2: Event waited at 82039ns (active) 
+w1: Event waited at 82039ns (inactive) 
+w2: Event waited at 82187ns (active) 
+w1: Event waited at 82187ns (inactive) 
+w1: Event waited at 82295ns (active) 
+w2: Event waited at 82439ns (active) 
+w1: Event waited at 82439ns (inactive) 
+w2: Event waited at 82567ns (active) 
+w2: Event waited at 82719ns (active) 
+w2: Event waited at 82839ns (active) 
+w2: Event waited at 82964ns (inactive) 
+w2: Event waited at 82967ns (active) 
+w2: Event waited at 83099ns (active) 
+w1: Event waited at 83243ns (active) 
+w2: Event waited at 83363ns (active) 
+w1: Event waited at 83363ns (inactive) 
+w1: Event waited at 83492ns (inactive) 
+w1: Event waited at 83495ns (active) 
+w1: Event waited at 83639ns (active) 
+w2: Event waited at 83787ns (active) 
+w2: Event waited at 83895ns (active) 
+w2: Event waited at 84047ns (active) 
+w2: Event waited at 84163ns (active) 
+w1: Event waited at 84312ns (inactive) 
+w2: Event waited at 84315ns (active) 
+w1: Event waited at 84315ns (inactive) 
+w1: Event waited at 84423ns (active) 
+w2: Event waited at 84563ns (active) 
+w1: Event waited at 84563ns (inactive) 
+w1: Event waited at 84691ns (active) 
+w1: Event waited at 84839ns (active) 
+w2: Event waited at 84963ns (active) 
+w2: Event waited at 85092ns (inactive) 
+w2: Event waited at 85095ns (active) 
+w2: Event waited at 85244ns (inactive) 
+w2: Event waited at 85247ns (active) 
+w2: Event waited at 85491ns (active) 
+w1: Event waited at 85623ns (active) 
+w2: Event waited at 85763ns (active) 
+w1: Event waited at 85763ns (inactive) 
+w2: Event waited at 85912ns (inactive) 
+w1: Event waited at 85912ns (inactive) 
+w2: Event waited at 85915ns (active) 
+w1: Event waited at 85915ns (inactive) 
+w1: Event waited at 86019ns (active) 
+w2: Event waited at 86163ns (active) 
+w2: Event waited at 86291ns (active) 
+w2: Event waited at 86443ns (active) 
+w2: Event waited at 86563ns (active) 
+w2: Event waited at 86688ns (inactive) 
+w2: Event waited at 86691ns (active) 
+w2: Event waited at 86823ns (active) 
+w1: Event waited at 86823ns (inactive) 
+w1: Event waited at 86967ns (active) 
+w1: Event waited at 87087ns (active) 
+w2: Event waited at 87087ns (inactive) 
+w1: Event waited at 87216ns (inactive) 
+w1: Event waited at 87219ns (active) 
+w2: Event waited at 87372ns (inactive) 
+w2: Event waited at 87512ns (inactive) 
+w2: Event waited at 87619ns (active) 
+w2: Event waited at 87771ns (active) 
+w2: Event waited at 87887ns (active) 
+w2: Event waited at 88039ns (active) 
+w1: Event waited at 88039ns (inactive) 
+w1: Event waited at 88147ns (active) 
+w2: Event waited at 88287ns (active) 
+w1: Event waited at 88287ns (inactive) 
+w1: Event waited at 88415ns (active) 
+w2: Event waited at 88571ns (active) 
+w2: Event waited at 88687ns (active) 
+w2: Event waited at 88816ns (inactive) 
+w2: Event waited at 88819ns (active) 
+w2: Event waited at 88968ns (inactive) 
+w2: Event waited at 88971ns (active) 
+w2: Event waited at 89215ns (active) 
+w1: Event waited at 89344ns (inactive) 
+w1: Event waited at 89347ns (active) 
+w2: Event waited at 89487ns (active) 
+w1: Event waited at 89487ns (inactive) 
+w2: Event waited at 89639ns (active) 
+w1: Event waited at 89639ns (inactive) 
+w1: Event waited at 89743ns (active) 
+w2: Event waited at 89887ns (active) 
+w2: Event waited at 90015ns (active) 
+w2: Event waited at 90167ns (active) 
+w2: Event waited at 90287ns (active) 
+w2: Event waited at 90415ns (active) 
+w1: Event waited at 90543ns (active) 
+w1: Event waited at 90691ns (active) 
+w2: Event waited at 90812ns (inactive) 
+w1: Event waited at 90812ns (inactive) 
+w2: Event waited at 90815ns (active) 
+w1: Event waited at 90815ns (inactive) 
+w1: Event waited at 90940ns (inactive) 
+w1: Event waited at 90943ns (active) 
+w1: Event waited at 91075ns (inactive) 
+w2: Event waited at 91096ns (inactive) 
+w2: Event waited at 91099ns (active) 
+w2: Event waited at 91343ns (active) 
+w2: Event waited at 91495ns (active) 
+w2: Event waited at 91612ns (inactive) 
+w2: Event waited at 91615ns (active) 
+w2: Event waited at 91763ns (active) 
+w1: Event waited at 91763ns (inactive) 
+w1: Event waited at 91871ns (active) 
+w2: Event waited at 92012ns (inactive) 
+w1: Event waited at 92012ns (inactive) 
+w2: Event waited at 92015ns (active) 
+w1: Event waited at 92015ns (inactive) 
+w1: Event waited at 92139ns (active) 
+w2: Event waited at 92295ns (active) 
+w2: Event waited at 92412ns (inactive) 
+w2: Event waited at 92415ns (active) 
+w2: Event waited at 92540ns (inactive) 
+w2: Event waited at 92543ns (active) 
+w2: Event waited at 92675ns (inactive) 
+w2: Event waited at 92692ns (inactive) 
+w2: Event waited at 92695ns (active) 
+w1: Event waited at 92823ns (active) 
+w2: Event waited at 92939ns (active) 
+w1: Event waited at 93068ns (inactive) 
+w1: Event waited at 93071ns (active) 
+w2: Event waited at 93212ns (inactive) 
+w1: Event waited at 93212ns (inactive) 
+w1: Event waited at 93215ns (active) 
+w2: Event waited at 93363ns (active) 
+w1: Event waited at 93467ns (active) 
+w1: Event waited at 93600ns (inactive) 
+w2: Event waited at 93612ns (inactive) 
+w2: Event waited at 93623ns (active) 
+w2: Event waited at 93739ns (active) 
+w2: Event waited at 93891ns (active) 
+w2: Event waited at 94139ns (active) 
+w1: Event waited at 94267ns (active) 
+w1: Event waited at 94415ns (active) 
+w2: Event waited at 94539ns (active) 
+w1: Event waited at 94539ns (inactive) 
+w1: Event waited at 94664ns (inactive) 
+w1: Event waited at 94667ns (active) 
+w1: Event waited at 94799ns (active) 
+w2: Event waited at 95067ns (active) 
+w2: Event waited at 95219ns (active) 
+w2: Event waited at 95339ns (active) 
+w2: Event waited at 95487ns (active) 
+w1: Event waited at 95487ns (inactive) 
+w1: Event waited at 95595ns (active) 
+w2: Event waited at 95739ns (active) 
+w1: Event waited at 95739ns (inactive) 
+w1: Event waited at 95863ns (active) 
+w2: Event waited at 96019ns (active) 
+w2: Event waited at 96139ns (active) 
+w2: Event waited at 96264ns (inactive) 
+w2: Event waited at 96267ns (active) 
+w2: Event waited at 96399ns (active) 
+w1: Event waited at 96543ns (active) 
+w2: Event waited at 96663ns (active) 
+w1: Event waited at 96663ns (inactive) 
+w1: Event waited at 96792ns (inactive) 
+w1: Event waited at 96795ns (active) 
+w1: Event waited at 96939ns (active) 
+w1: Event waited at 97075ns (inactive) 
+w2: Event waited at 97087ns (active) 
+w1: Event waited at 97191ns (active) 
+w2: Event waited at 97347ns (active) 
+w2: Event waited at 97463ns (active) 
+w2: Event waited at 97615ns (active) 
+w2: Event waited at 97863ns (active) 
+w1: Event waited at 97863ns (inactive) 
+w1: Event waited at 97991ns (active) 
+w1: Event waited at 98139ns (active) 
+w2: Event waited at 98263ns (active) 
+w1: Event waited at 98263ns (inactive) 
+w1: Event waited at 98388ns (inactive) 
+w1: Event waited at 98391ns (active) 
+w2: Event waited at 98544ns (inactive) 
+w2: Event waited at 98547ns (active) 
+w2: Event waited at 98791ns (active) 
+w2: Event waited at 98924ns (inactive) 
+w2: Event waited at 98943ns (active) 
+w1: Event waited at 98943ns (inactive) 
+w2: Event waited at 99063ns (active) 
+w1: Event waited at 99063ns (inactive) 
+w2: Event waited at 99212ns (inactive) 
+w1: Event waited at 99212ns (inactive) 
+w2: Event waited at 99215ns (active) 
+w1: Event waited at 99215ns (inactive) 
+w1: Event waited at 99319ns (active) 
+w2: Event waited at 99463ns (active) 
+w1: Event waited at 99463ns (inactive) 
+w1: Event waited at 99587ns (active) 
+w2: Event waited at 99743ns (active) 
+w2: Event waited at 99863ns (active) 
+w2: Event waited at 99988ns (inactive) 
+w2: Event waited at 99991ns (active) 
