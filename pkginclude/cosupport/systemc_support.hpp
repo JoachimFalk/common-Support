@@ -241,6 +241,8 @@ namespace CoSupport { namespace SystemC {
     typedef T EventType;
   protected:
     typedef std::list<EventType *> EventList;
+    typedef typename EventList::iterator       ELIter;
+    typedef typename EventList::const_iterator ELCIter;
     EventList eventList;
 
     // this list is a listener for each contained event, so it gets
@@ -269,12 +271,17 @@ namespace CoSupport { namespace SystemC {
     }
 
     void eventDestroyed(EventWaiter *ew) {
-      // must be compatible with our list type
-      EventType *e = dynamic_cast<EventType *>(ew);
-      assert(e);
-
       //outDbg << "EventOrList::eventDestroyed(" << *e << ")" << std::endl; 
-      remove(*e);
+      for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
+        if(*i != ew) {
+          (*i)->delListener(this);
+        }
+      }
+      eventList.clear();
+      if(active) {
+        active = 0;
+        //signalResetListener();
+      }
     }
   public:
     typedef EventOrList this_type;
@@ -292,11 +299,10 @@ namespace CoSupport { namespace SystemC {
       { *this |= l; }
 
     void remove(EventType &e) {
-      typename EventList::iterator iter =
-        find(eventList.begin(), eventList.end(), &e);
-      
-      if(iter != eventList.end()) {
-        eventList.erase(iter);
+      ELIter i = find(eventList.begin(), eventList.end(), &e);
+
+      if(i != eventList.end()) {
+        eventList.erase(i);
         e.delListener(this);
 
         if(e.isActive()) {
@@ -330,22 +336,16 @@ namespace CoSupport { namespace SystemC {
 
     // or´ing this list with list l
     this_type& operator|=(const this_type& l) {
-      for(typename EventList::const_iterator iter = l.eventList.begin();
-	  iter != l.eventList.end();
-          iter++)
-      {
-        *this |= **iter;
+      for(ELCIter i = l.eventList.begin(); i != l.eventList.end(); ++i) {
+        *this |= **i;
       }
       return *this;
     }
 
     EventType &getEventTrigger() {
-      for(typename EventList::iterator iter = eventList.begin();
-          iter != eventList.end();
-          ++iter)
-      {
-        if((*iter)->isActive())
-          return **iter;
+      for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
+        if((*i)->isActive())
+          return **i;
       }
       assert(0);
     }
@@ -364,16 +364,13 @@ namespace CoSupport { namespace SystemC {
     }
 
     void clear() {
-      for(typename EventList::iterator iter = eventList.begin();
-          iter != eventList.end();
-          ++iter)
-      {
-        (*iter)->delListener(this);
+      for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
+        (*i)->delListener(this);
       }
       eventList.clear();
       if(active) {
         active = 0;
-        signalResetListener();
+        //signalResetListener();
       }
     }
     
@@ -392,11 +389,8 @@ namespace CoSupport { namespace SystemC {
 #ifndef NDEBUG
     virtual void dump(std::ostream &out) const {
       out << "EventOrList([";
-      for(typename EventList::const_iterator iter = eventList.begin();
-          iter != eventList.end();
-          ++iter)
-      {
-        out << (iter != eventList.begin() ? ", " : "") << **iter;
+      for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
+        out << (i != eventList.begin() ? ", " : "") << **i;
       }
       out << "], active: " << active << ")";
     }
@@ -415,6 +409,8 @@ namespace CoSupport { namespace SystemC {
     typedef T EventType;
   protected:
     typedef std::list<EventType *> EventList;
+    typedef typename EventList::iterator       ELIter;
+    typedef typename EventList::const_iterator ELCIter;
     EventList eventList;
     
     void signaled(EventWaiter *ew) {
@@ -440,12 +436,16 @@ namespace CoSupport { namespace SystemC {
     }
 
     void eventDestroyed(EventWaiter *ew) {
-      // must be compatible with our list type
-      EventType *e = dynamic_cast<EventType *>(ew);
-      assert(e);
-
-      //outDbg << "EventAndList::eventDestroyed(" << *e << ")" << std::endl; 
-      remove(*e);
+      //outDbg << "EventAndList::eventDestroyed(" << *ew << ")" << std::endl; 
+      for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
+        if(*i != ew)
+          (*i)->delListener(this);
+      }
+      eventList.clear();
+      if(missing) {
+        missing = 0;
+        //signalNotifyListener();
+      }
     }
 
   public:
@@ -464,11 +464,10 @@ namespace CoSupport { namespace SystemC {
       { *this &= l; }
 
     void remove(EventType &e) {
-      typename EventList::iterator iter =
-        find(eventList.begin(), eventList.end(), &e);
+      ELIter i = find(eventList.begin(), eventList.end(), &e);
       
-      if(iter != eventList.end()) {
-        eventList.erase(iter);
+      if(i != eventList.end()) {
+        eventList.erase(i);
         e.delListener(this);
 
         if(!e.isActive()) {
@@ -502,11 +501,8 @@ namespace CoSupport { namespace SystemC {
 
     // and´ing this list with list l
     this_type& operator&=(const this_type& l) {
-      for(typename EventList::const_iterator iter = l.eventList.begin();
-	  iter != l.eventList.end();
-          iter++)
-      {
-        *this &= **iter;
+      for(ELCIter i = l.eventList.begin(); i != l.eventList.end(); ++i) {
+        *this &= **i;
       }
       return *this;
     }
@@ -514,34 +510,26 @@ namespace CoSupport { namespace SystemC {
     EventType *reset(EventListener *el = NULL) {
       EventWaiter *ret = NULL;
       if(!missing) {
-        for(typename EventList::iterator iter = eventList.begin();
-            iter != eventList.end();
-            ++iter)
-        {
-          (*iter)->reset(this);
-          if(!(*iter)->isActive())
+        for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
+          (*i)->reset(this);
+          if(!(*i)->isActive())
             ++missing;
-        }
-      
+        } 
         if(missing)
           signalResetListener(el);
-
         ret = this;
       }
       return ret;
     }
 
     void clear() {
-      for(typename EventList::iterator iter = eventList.begin();
-          iter != eventList.end();
-          ++iter)
-      {
-        (*iter)->delListener(this);
+      for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
+        (*i)->delListener(this);
       }
       eventList.clear();
       if(missing) {
         missing = 0;
-        signalNotifyListener();
+        //signalNotifyListener();
       }
     }
     
@@ -560,11 +548,8 @@ namespace CoSupport { namespace SystemC {
 #ifndef NDEBUG
     virtual void dump(std::ostream &out) const {
       out << "EventAndList([";
-      for(typename EventList::const_iterator iter = eventList.begin();
-          iter != eventList.end();
-          ++iter)
-      {
-        out << (iter != eventList.begin() ? ", " : "") << **iter;
+      for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
+        out << (i != eventList.begin() ? ", " : "") << **i;
       }
       out << "], missing: " << missing << ")";
     }
