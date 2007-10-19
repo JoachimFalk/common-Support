@@ -104,13 +104,8 @@ namespace CoSupport { namespace SystemC {
     typedef EventWaiter this_type;
     typedef void (this_type::*unspecified_bool_type)(EventListener *);
   protected:
-
-    // set status to inactive; forward event notifications to all
-    // listeners
+    // forward event notifications to all listeners
     void signalNotifyListener() {
-      assert(!active);
-      active = true;
-
       ell_ty::iterator iter, niter;
       for(iter = ell.begin();
           iter != ell.end();
@@ -121,12 +116,8 @@ namespace CoSupport { namespace SystemC {
       }
     }
 
-    // set status to active; forward event resets to all listeners
-    // except the specified one
+    // forward event resets to all listeners except the specified one
     void signalResetListener(EventListener *el = NULL) {
-      assert(active);
-      active = false;
-
       ell_ty::iterator iter, niter;
       for(iter = ell.begin();
           iter != ell.end();
@@ -139,18 +130,16 @@ namespace CoSupport { namespace SystemC {
     }
 
   public:
-    // user must specify if derived EventWaiter is initially active
-    EventWaiter(bool active = false) :
-      active(active)
+    // default constructor
+    EventWaiter()
       {}
 
     // determines if this instance is active
-    bool isActive() const
-      { return active; }
+    virtual bool isActive() const = 0;
     
     // determines if this instance is active
     operator unspecified_bool_type() const
-      { return active ? &this_type::addListener : NULL; }
+      { return isActive() ? &this_type::addListener : NULL; }
 
     virtual EventWaiter *reset(EventListener *el = NULL) = 0;
 
@@ -164,10 +153,12 @@ namespace CoSupport { namespace SystemC {
 
     // notify listeners that this event is destroyed
     virtual ~EventWaiter() {
-      for(ell_ty::iterator iter = ell.begin();
+      ell_ty::iterator iter, niter;
+      for(iter = ell.begin();
           iter != ell.end();
-          ++iter)
+          iter = niter)
       {
+        ++(niter = iter);
         (*iter)->eventDestroyed(this);
       }
     }
@@ -183,9 +174,6 @@ namespace CoSupport { namespace SystemC {
     // registered listeners
     typedef std::set<EventListener *> ell_ty;
     ell_ty ell;
-    
-    // flag if event is currently active
-    bool active;
     
     // unimplemented
     EventWaiter(const this_type &);
@@ -205,14 +193,20 @@ namespace CoSupport { namespace SystemC {
     typedef Event this_type;
   public:
     Event(bool active = false) :
-      EventWaiter(active)
+      active(active)
       {}
+
+    // see EventWaiter
+    bool isActive() const
+      { return active; }
 
     // set event to active; first time activation will notify
     // listeners
     void notify() {
-      if(!isActive())
+      if(!active) {
+        active = true;
         signalNotifyListener();
+      }
     }
 
     // set event to inactive; first time deactivation will notify
@@ -220,6 +214,7 @@ namespace CoSupport { namespace SystemC {
     EventWaiter *reset(EventListener *el = NULL) {
       EventWaiter *ret = NULL;
       if(isActive()) {
+        active = false;
         signalResetListener(el);
         ret = this;
       }
@@ -230,6 +225,9 @@ namespace CoSupport { namespace SystemC {
     virtual void dump(std::ostream &out) const
       { out << "Event(" << this << ", active: " << isActive() << ")"; }
 #endif
+  private:
+    // true if event is active, false otherwise
+    bool active;
   };
   
   /**
@@ -286,25 +284,20 @@ namespace CoSupport { namespace SystemC {
   public:
     typedef EventOrList this_type;
     
-    EventOrList() : 
-      EventWaiter(false), active(0)
-      {}
+    // constructors
+    EventOrList() : active(0) {}
+    EventOrList(EventType &e) : active(0) { *this |= e; }
+    EventOrList(const EventOrList &l) : active(0) { *this |= l; }
 
-    EventOrList(EventType &e) :
-      EventWaiter(false), active(0)
-      { *this |= e; }
-    
-    EventOrList(const EventOrList &l) :
-      EventWaiter(false), active(0)
-      { *this |= l; }
+    // see EventWaiter
+    bool isActive() const
+      { return active; }
 
     void remove(EventType &e) {
       ELIter i = find(eventList.begin(), eventList.end(), &e);
-
       if(i != eventList.end()) {
         eventList.erase(i);
         e.delListener(this);
-
         if(e.isActive()) {
           assert(active);
           if(!--active)
@@ -321,12 +314,10 @@ namespace CoSupport { namespace SystemC {
     this_type& operator|=(EventType &e) {
       eventList.push_back(&e);
       e.addListener(this);
-      
       if(e.isActive()) {
         if(!active++)
           signalNotifyListener();
       }
-      
       return *this;
     }
 
@@ -355,8 +346,7 @@ namespace CoSupport { namespace SystemC {
       if(active) {
         ret = getEventTrigger().reset(this);
         if(!ret->isActive()) {
-          active--;
-          if(!active)
+          if(!--active)
             signalResetListener(el);
         }
       }
@@ -451,25 +441,20 @@ namespace CoSupport { namespace SystemC {
   public:
     typedef EventAndList this_type;
     
-    EventAndList() :
-      EventWaiter(true), missing(0)
-      {}
+    // constructors
+    EventAndList() : missing(0) {}
+    EventAndList(EventType &e) : missing(0) { *this &= e; }
+    EventAndList(const EventAndList &l) : missing(0) { *this &= l; }
 
-    EventAndList(EventType &e) :
-      EventWaiter(true), missing(0)
-      { *this &= e; }
-    
-    EventAndList(const EventAndList &l) :
-      EventWaiter(true), missing(0)
-      { *this &= l; }
+    // see EventWaiter
+    bool isActive() const
+      { return !missing; }
 
     void remove(EventType &e) {
       ELIter i = find(eventList.begin(), eventList.end(), &e);
-      
       if(i != eventList.end()) {
         eventList.erase(i);
         e.delListener(this);
-
         if(!e.isActive()) {
           assert(missing);
           if(!--missing)
@@ -486,12 +471,10 @@ namespace CoSupport { namespace SystemC {
     this_type& operator&=(EventType &e) {
       eventList.push_back(&e);
       e.addListener(this);
-      
       if(!e.isActive()) {
         if(!missing++)
           signalResetListener();
       }
-
       return *this;
     }
     
