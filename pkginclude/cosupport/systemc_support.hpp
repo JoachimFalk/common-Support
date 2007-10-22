@@ -58,7 +58,7 @@ namespace Detail {
   };
 }
 
-static Detail::DebugOstream outDbg(outDbg);*/
+static Detail::DebugOstream outDbg(std::cout);*/
 #define outDbg std::cout
 
 namespace CoSupport { namespace SystemC {
@@ -579,5 +579,7 @@ namespace CoSupport { namespace SystemC {
   }
 
 } } // CoSupport::SystemC
+
+#undef outDbg
 
 #endif // _INCLUDED_SYSTEMC_SUPPORT_HPP
