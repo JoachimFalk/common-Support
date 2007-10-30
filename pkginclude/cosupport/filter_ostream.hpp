@@ -372,6 +372,22 @@ public:
 std::ostream& operator<<(std::ostream &os, const Indent &i);
 
 /**
+ * indents specified stream at the point of instantiation;
+ * reverses indentation if it goes out of scope
+ */
+class ScopedIndent {
+private:
+  std::ostream& out;
+  int delta;
+public:
+  // constructs a new object wich indents the specified stream
+  ScopedIndent(std::ostream& out, const Indent& indent = Indent::Up);
+  
+  // destructor reverses indentation
+  ~ScopedIndent();
+};
+
+/**
  * stream manipulator for the DebugStreambuf custom
  * streambuffer
  */

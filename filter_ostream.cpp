@@ -328,6 +328,12 @@ std::ostream& operator<<(std::ostream &os, const Indent &i)
   return os;
 }
 
+ScopedIndent::ScopedIndent(std::ostream& out, const Indent& indent) :
+  out(out << indent), delta(indent.delta_level)
+{}
+  
+ScopedIndent::~ScopedIndent()
+{ out << Indent(-delta); }
 
 Debug::Debug(size_t level) :
   level(level)
