@@ -141,6 +141,7 @@ namespace CoSupport { namespace SystemC {
     operator unspecified_bool_type() const
       { return isActive() ? &this_type::addListener : NULL; }
 
+    // identify active element; reset it if found; return it 
     virtual EventWaiter *reset(EventListener *el = NULL) = 0;
 
     // el must NOT be in set previously
@@ -540,6 +541,79 @@ namespace CoSupport { namespace SystemC {
 
   private:
     size_t missing;
+  };
+
+  /**
+   * contains any EventWaiter which can be exchanged
+   * (trimmed down EventOrList)
+   */
+  struct VariantEventWaiter : public EventWaiter, protected EventListener {
+  public:
+    // construct object with no EventWaiter
+    VariantEventWaiter() : ew(0), active(false)
+    {}
+
+    // exchange EventWaiter
+    void set(EventWaiter* e) {
+      if(ew) ew->delListener(this);
+      ew = e;
+      if(ew) ew->addListener(this);
+      update();
+    }
+
+    // destructor
+    ~VariantEventWaiter()
+    { if(ew) ew->delListener(this); }
+
+#ifndef NDEBUG
+    virtual void dump(std::ostream &out) const
+    { out << "VariantEventWaiter([" << ew << "], active: " << active << ")"; }
+#endif
+
+  protected:
+    // see EventWaiter
+    bool isActive() const
+    { return active; }
+
+    // see EventWaiter
+    EventWaiter* reset(EventListener* el = 0) {
+      EventWaiter* ret = 0;
+      if(active) {
+        ret = ew->reset(this);
+        if(!ew->isActive()) {
+          active = false;
+          signalResetListener(el);
+        }
+      }
+      return ret;
+    }
+
+    // see EventListener
+    void signaled(EventWaiter *e)
+    { assert(e == ew); update(); }
+
+    // see EventListener
+    void eventDestroyed(EventWaiter *e)
+    { assert(e == ew); ew = 0; active = false; }
+
+  private:
+    EventWaiter* ew;
+    bool active;
+
+    void update() {
+      if(ew && ew->isActive()) {
+        if(!active) {
+          active = true;
+          signalNotifyListener();
+        }
+      }
+      else {
+        if(active) {
+          active = false;
+          signalResetListener();
+        }
+      }
+    }
   };
 
   inline
