@@ -41,8 +41,10 @@ namespace CoSupport {
   /// Calculates the greatest common divisor.
   template<typename T>
   T fast_ggt(T u, T v){
-    u = abs(u);
-    v = abs(v);
+    //u = abs(u);
+    u = u < 0 ? -u : u;
+    //v = abs(v);
+    v = v < 0 ? -v : v;    
     T helper;
     while(u>0){
       helper=u;
