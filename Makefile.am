@@ -73,6 +73,7 @@ pkginclude_HEADERS =						\
 	pkginclude/cosupport/facade.hpp				\
 	pkginclude/cosupport/list_facade.hpp			\
 	pkginclude/cosupport/container_insert.hpp		\
+	pkginclude/cosupport/AlternateStream.hpp		\
 								\
 	pkginclude/cosupport/commondefs.h			\
 	pkginclude/cosupport/integertypes.h			\
