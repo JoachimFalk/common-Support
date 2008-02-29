@@ -44,7 +44,6 @@ class par_manager
 {
 private:
   std::map<std::string, int> config;
-  static std::auto_ptr<par_manager> inst;
   
 public:
   static const par_manager& instance();

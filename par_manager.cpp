@@ -37,10 +37,11 @@
 #include <fstream>
 #include <cosupport/par_manager.hpp>
 
-std::auto_ptr<par_manager> par_manager::inst(new par_manager());
-
 const par_manager& par_manager::instance()
-{ return *inst; }
+{ 
+  static par_manager instance;
+  return instance;
+}
 
 par_manager::par_manager()
 {
