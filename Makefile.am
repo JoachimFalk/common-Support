@@ -117,8 +117,7 @@ libcosupport_la_SOURCES =		\
 	filter_ostream.cpp 		\
 	PerformanceEvaluation.cpp
 libcosupport_la_LDFLAGS =		\
-	-lboost_thread@BOOST_LIBPOSTFIX@-mt
-
+	-lboost_thread@BOOST_LIBMTPOSTFIX@
 
 test_arrayfifo_SOURCES      = test_arrayfifo.cpp
 
