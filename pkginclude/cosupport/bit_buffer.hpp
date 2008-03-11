@@ -39,6 +39,7 @@
 #include <cassert>
 #include <string>
 #include <iostream>
+#include <map>
 
 #include <limits.h>
 
