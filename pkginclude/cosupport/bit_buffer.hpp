@@ -58,13 +58,18 @@ private:
   /// size of storage primitive in bits
   static const size_t primitive_bits =
     sizeof(primitive_type) * CHAR_BIT;
-  
+
 public:
   /// storage for octet stream
   storage_type buffer;
+
 public:
     /// read string from buffer
-    std::string get_string()
+    const std::string& get_string() const
+    { return buffer; }
+
+    /// read string from buffer
+    std::string& get_string()
     { return buffer; }
 
     /// get length of buffer
@@ -80,13 +85,14 @@ public:
     bit_buffer(std::string data) :
       buffer(data)
     {}
-    
+   
+private: 
     /// generate bit mask (mask(3) --> 00000111)
     static size_t mask(size_t n)
     { return (1 << n) - 1; }
     
     /// get some bits out of x
-    static primitive_type get_range(primitive_type x, size_t start, size_t length)
+    static primitive_type get_bits(primitive_type x, size_t start, size_t length)
     { return (x >> start) & mask(length); }
     
     /// get least significant bits out of x
@@ -97,6 +103,7 @@ public:
     static primitive_type get_msb(primitive_type x, size_t length)
     { return x >> (primitive_bits - length); }
     
+public:
     /// read specified bits out of the buffer
     template<class T>
     T get_range(const size_t start, const size_t length) const {
@@ -131,7 +138,7 @@ public:
                 << std::endl;*/
       
       if(start_byte == end_byte)
-        return T(get_range(buffer[start_byte], 8 - postfix_bits, length));
+        return T(get_bits(buffer[start_byte], 8 - postfix_bits, length));
       
       // get the character which contains the prefix bits
       // and copy those into the return value
@@ -232,32 +239,32 @@ public:
  */
 template<typename T> class bit_field
 {
-public:
-  bit_buffer &bb;
+private:
+  bit_buffer& bb;
   size_t bo;
   size_t bl;
 
 public:
   /// constructor
-  bit_field(bit_buffer &bb, size_t bo, size_t bl) :
+  bit_field(bit_buffer& bb, size_t bo, size_t bl) :
     bb(bb), bo(bo), bl(bl)
   {}
   
-  /// write bit_field with value x
+  /// write bitfield with value x
   void set(T x)
-  { bb.template set_range<T>(x, bo, bl); }
+  { bb.set_range(x, bo, bl); }
   
   /// convenience method for setting this
-  /// bit_field to specified value
-  bit_field<T> &operator=(T x)
+  /// bitfield to specified value
+  bit_field& operator=(T x)
   { set(x); return *this; }
       
-  /// read value from bit_field
+  /// read value from bitfield
   T get() const
-  { return bb.template get_range<T>(bo, bl); }
+  { return bb.get_range<T>(bo, bl); }
   
   /// convenience method for reading the
-  /// appropriate value out of this bit_field
+  /// appropriate value out of this bitfield
   operator T() const
   { return get(); }
 };
@@ -271,32 +278,91 @@ public:
  */
 template<typename T> class bit_field_enum
 {
-public:
-  bit_buffer &bb;
+private:
+  bit_buffer& bb;
   size_t bo;
   size_t bl;
 
 public:
   /// constructor
-  bit_field_enum(bit_buffer &bb, size_t bo, size_t bl) :
+  bit_field_enum(bit_buffer& bb, size_t bo, size_t bl) :
     bb(bb), bo(bo), bl(bl)
   {}
   
   /// write bit_field with value x
   void set(T x)
-  { bb.template set_range<unsigned int>(static_cast<unsigned int>(x), bo, bl); }
+  { bb.set_range(static_cast<unsigned int>(x), bo, bl); }
   
   /// convenience method for setting this
-  /// bit_field to specified value
-  bit_field_enum<T> &operator=(T x)
+  /// bitfield to specified value
+  bit_field_enum& operator=(T x)
   { set(x); return *this; }
       
-  /// read value from bit_field
+  /// read value from bitfield
   T get() const
-  { return static_cast<T>(bb.template get_range<unsigned int>(bo, bl)); }
+  { return static_cast<T>(bb.get_range<unsigned int>(bo, bl)); }
   
   /// convenience method for reading the
-  /// appropriate value out of this bit_field
+  /// appropriate value out of this bitfield
+  operator T() const
+  { return get(); }
+};
+
+
+/**
+ * \brief bitfield with scattered, non-overlapping
+ * regions
+ */
+template<class T> class bit_field_scatter
+{
+private:
+  bit_buffer& bb;
+  typedef std::map<size_t,size_t> ScatterMap;
+  ScatterMap sm;
+  
+public:
+  /// constructor
+  bit_field_scatter(bit_buffer& bb) : bb(bb)
+  {}
+
+  /// add region (assumed not overlapping)
+  bit_field_scatter& add(size_t bo, size_t bl)
+  { sm[bo] = bl; return *this; }
+
+  /// write bitfield with value x
+  void set(T x) {
+    for(ScatterMap::reverse_iterator i = sm.rbegin();
+        i != sm.rend();
+        ++i)
+    {
+      // set low order bits
+      bb.set_range(x, i->first, i->second);
+      // remove low order bits
+      x >>= i->second;
+    }
+  }
+  
+  /// convenience method for setting this
+  /// bitfield to specified value
+  bit_field_scatter& operator=(T x)
+  { set(x); return *this; }
+  
+  /// read value from bitfield
+  T get() const {
+    T t(0);
+    size_t shift = 0;
+    for(ScatterMap::const_iterator i = sm.begin();
+        i != sm.end();
+        ++i)
+    {
+      t <<= i->second;
+      t |= bb.get_range<T>(i->first, i->second);
+    }
+    return t;  
+  }
+
+  /// convenience method for reading the
+  /// appropriate value out of this bitfield
   operator T() const
   { return get(); }
 };
