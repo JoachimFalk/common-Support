@@ -270,6 +270,39 @@ public:
   { return get(); }
 };
 
+/**
+ * \brief Const Bit Field
+ *
+ * a const bit field represents a bit range within a
+ * bit_buffer. this range can be only be read.
+ *
+ * a bit_field is initialized with a const reference
+ * to the buffer, a bit offset and a bit range
+ * of the field
+ */
+template<typename T> class const_bit_field
+{
+private:
+  const bit_buffer& bb;
+  size_t bo;
+  size_t bl;
+
+public:
+  /// constructor
+  const_bit_field(const bit_buffer& bb, size_t bo, size_t bl) :
+    bb(bb), bo(bo), bl(bl)
+  {}
+  
+  /// read value from bitfield
+  T get() const
+  { return bb.get_range<T>(bo, bl); }
+  
+  /// convenience method for reading the
+  /// appropriate value out of this bitfield
+  operator T() const
+  { return get(); }
+};
+
 
 /**
  * \brief Bit Field (for enums)
@@ -309,10 +342,39 @@ public:
   { return get(); }
 };
 
+/**
+ * \brief Const Bit Field (for enums)
+ *
+ * this class can be used to read enum values
+ * (via static_cast)
+ */
+template<typename T> class const_bit_field_enum
+{
+private:
+  const bit_buffer& bb;
+  size_t bo;
+  size_t bl;
+
+public:
+  /// constructor
+  const_bit_field_enum(const bit_buffer& bb, size_t bo, size_t bl) :
+    bb(bb), bo(bo), bl(bl)
+  {}
+  
+  /// read value from bitfield
+  T get() const
+  { return static_cast<T>(bb.get_range<unsigned int>(bo, bl)); }
+  
+  /// convenience method for reading the
+  /// appropriate value out of this bitfield
+  operator T() const
+  { return get(); }
+};
+
 
 /**
- * \brief bitfield with scattered, non-overlapping
- * regions
+ * \brief Bit Field with scattered, non-overlapping
+ *        regions
  */
 template<class T> class bit_field_scatter
 {
@@ -351,7 +413,45 @@ public:
   /// read value from bitfield
   T get() const {
     T t(0);
-    size_t shift = 0;
+    for(ScatterMap::const_iterator i = sm.begin();
+        i != sm.end();
+        ++i)
+    {
+      t <<= i->second;
+      t |= bb.get_range<T>(i->first, i->second);
+    }
+    return t;  
+  }
+
+  /// convenience method for reading the
+  /// appropriate value out of this bitfield
+  operator T() const
+  { return get(); }
+};
+
+/**
+ * \brief Const Bit Field with scattered, non-overlapping
+ *        regions
+ */
+template<class T> class const_bit_field_scatter
+{
+private:
+  const bit_buffer& bb;
+  typedef std::map<size_t,size_t> ScatterMap;
+  ScatterMap sm;
+  
+public:
+  /// constructor
+  const_bit_field_scatter(const bit_buffer& bb) : bb(bb)
+  {}
+
+  /// add region (assumed not overlapping)
+  const_bit_field_scatter& add(size_t bo, size_t bl)
+  { sm[bo] = bl; return *this; }
+
+  /// read value from bitfield
+  T get() const {
+    T t(0);
     for(ScatterMap::const_iterator i = sm.begin();
         i != sm.end();
         ++i)
