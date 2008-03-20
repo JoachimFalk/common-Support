@@ -229,6 +229,14 @@ private:
   FacadeFoundation &operator =(const FacadeFoundation &);
 };
 
+template <class T>
+struct FacadeTraits {
+  typedef const FacadeRef<T, Type::Const> ConstRef;
+  typedef FacadeRef<T, Type::Mutable>     Ref;
+  typedef FacadePtr<T, Type::Const>       ConstPtr;
+  typedef FacadePtr<T, Type::Mutable>     Ptr;
+};
+
 template <class TT, class T, template <class> class C>
 const CoSupport::FacadePtr<TT,C> dynamic_pointer_cast(const CoSupport::FacadePtr<T,C> &ptr)
   { return TT::upcast(*ptr); }
