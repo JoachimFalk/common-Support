@@ -35,8 +35,6 @@
 #ifndef _INCLUDED_COSUPPORT_TYPETRANSFORM_HPP
 #define _INCLUDED_COSUPPORT_TYPETRANSFORM_HPP
 
-#include <string>
-
 namespace CoSupport { namespace Type {
 
   template <typename T>
