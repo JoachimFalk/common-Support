@@ -66,6 +66,7 @@ pkginclude_HEADERS =						\
 	pkginclude/cosupport/functor.hpp			\
 	pkginclude/cosupport/checked_vector.hpp			\
 	pkginclude/cosupport/string_convert.hpp			\
+	pkginclude/cosupport/string_hash.hpp			\
 	pkginclude/cosupport/iterator_dump.hpp			\
 	pkginclude/cosupport/bit_buffer.hpp			\
 	pkginclude/cosupport/filter_ostream.hpp			\

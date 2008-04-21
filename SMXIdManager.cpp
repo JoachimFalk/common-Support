@@ -89,6 +89,8 @@ void SMXIdManager::addNRef(Xerces::XN::DOMAttr* n, SMXId id) {
 
 void SMXIdManager::analyze(Xerces::XN::DOMNode *n) {
   
+  if(!n) return;
+
   if(XXN::DOMNamedNodeMap* attrs = n->getAttributes()) {
     for(size_t i = 0; i < attrs->getLength(); ++i) {
       

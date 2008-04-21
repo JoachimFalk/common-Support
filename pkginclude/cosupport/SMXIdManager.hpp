@@ -10,7 +10,7 @@
 namespace CoSupport {
 
 /// @brief Identifier for elements
-typedef uint64_t SMXId;
+typedef uint32_t SMXId;
 
 /**
  * @brief Helper struct for (de)serializing Ids
