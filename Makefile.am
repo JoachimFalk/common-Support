@@ -90,7 +90,8 @@ pkginclude_HEADERS =						\
 								\
 	pkginclude/cosupport/basic_initializer.hpp		\
 	pkginclude/cosupport/xerces_support.hpp			\
-	pkginclude/cosupport/xalan_support.hpp
+	pkginclude/cosupport/xalan_support.hpp			\
+	pkginclude/cosupport/SMXIdManager.hpp
 
 
 #noinst_HEADERS=	oneof.hpp
@@ -115,7 +116,8 @@ libcosupport_la_SOURCES =		\
 	smoc_debug_out.cpp 		\
 	basic_initializer.cpp           \
 	filter_ostream.cpp 		\
-	PerformanceEvaluation.cpp
+	PerformanceEvaluation.cpp	\
+	SMXIdManager.cpp
 libcosupport_la_LDFLAGS =		\
 	-lboost_thread@BOOST_LIBMTPOSTFIX@
 

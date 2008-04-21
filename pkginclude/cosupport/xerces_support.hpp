@@ -117,6 +117,12 @@ namespace Xerces {
   std::ostream &operator << (std::ostream &out, const XMLCh *const str)
     { out << NStr(str); return out; }
 
+  struct AttrNotFoundError : public std::runtime_error {
+    AttrNotFoundError(const std::string& what) :
+      std::runtime_error(what)
+    {}
+  };
+
   inline
   XN::DOMAttr *getAttrNode(const XN::DOMNode *node, const XMLCh *const attr) {
     XN::DOMAttr               *retval = NULL;
@@ -129,7 +135,7 @@ namespace Xerces {
       
       msg << "Tag \"" << node->getNodeName() << "\""
               " has no attribute \"" << attr << "\" !";
-      throw std::runtime_error(msg.str());
+      throw AttrNotFoundError(msg.str());
     }
     return retval;
   }
