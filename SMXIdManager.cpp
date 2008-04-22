@@ -39,8 +39,9 @@ SMXIdSer strAs<SMXIdSer>(const std::string &s) {
   return ret;
 }
 
-SMXIdManager::IdMapEntry::IdMapEntry(XXN::DOMNode* node) :
-  node(node)
+SMXIdManager::IdMapEntry::IdMapEntry() :
+  node(0),
+  obj(0)
 {}
 
 SMXIdManager::SMXIdManager()
@@ -51,45 +52,35 @@ SMXIdManager& SMXIdManager::getInstance() {
   return instance;
 }
 
-void SMXIdManager::addNode(XXN::DOMNode *n) {
+SMXId SMXIdManager::addNode(XXN::DOMNode *n) {
   SMXId id = getUnusedId();
   X::setAttrValueFrom(n, "id", CoSupport::asStr<SMXIdSer>(id));
   addNode(n, id);
+  return id;
 }
 
 void SMXIdManager::addNode(XXN::DOMNode *n, SMXId id) {
-  
   assert(n->getNodeType() == XXN::DOMNode::ELEMENT_NODE);
-
-  std::pair<IdMap::iterator,bool> inserted =
-    idMap.insert(IdMap::value_type(id, n));
   
-  assert(inserted.first != idMap.end());
-  IdMapEntry& entry = inserted.first->second;
-
-  // if already inserted -> must be same node
-  if(!inserted.second)
-    assert(entry.node = n);
+  IdMapEntry& entry = idMap[id];
+  if(entry.node)
+    assert(entry.node == n);
+  else
+    entry.node = n;
 }
 
-void SMXIdManager::addNRef(Xerces::XN::DOMAttr* n)
-{ addNRef(n, X::getNodeValueAs<SMXIdSer>(n)); }
+SMXId SMXIdManager::addNRef(Xerces::XN::DOMAttr* n) {
+  SMXId id = X::getNodeValueAs<SMXIdSer>(n);
+  addNRef(n, id);
+  return id;
+}
 
 void SMXIdManager::addNRef(Xerces::XN::DOMAttr* n, SMXId id) {
-
-  std::pair<IdMap::iterator,bool> inserted =
-    idMap.insert(IdMap::value_type(id, 0));
-
-  assert(inserted.first != idMap.end());
-  IdMapEntry& entry = inserted.first->second;
-
-  // add the reference to the entry
+  IdMapEntry& entry = idMap[id];
   entry.nref.insert(n);
 }
 
 void SMXIdManager::analyze(Xerces::XN::DOMNode *n) {
-  
-  if(!n) return;
 
   if(XXN::DOMNamedNodeMap* attrs = n->getAttributes()) {
     for(size_t i = 0; i < attrs->getLength(); ++i) {
@@ -153,8 +144,9 @@ void SMXIdManager::delNode(XXN::DOMNode* n)
 
 void SMXIdManager::delNode(XXN::DOMNode* n, SMXId id) {
   IdMap::iterator iter = idMap.find(id);
-  assert(iter != idMap.end() && iter->second.node == n);
+  if(iter == idMap.end()) return;
 
+  assert(iter->second.node == n);
   IdMapEntry& entry = iter->second;
 
   for(NRef::const_iterator iter = entry.nref.begin();
@@ -179,8 +171,8 @@ void SMXIdManager::delNRef(XXN::DOMAttr* n)
 
 void SMXIdManager::delNRef(XXN::DOMAttr* n, SMXId id) {
   IdMap::iterator iter = idMap.find(id);
-  assert(iter != idMap.end());
-    
+  if(iter == idMap.end()) return;
+
   IdMapEntry& entry = iter->second;
 
   // remove the reference from the referencing nodes
@@ -204,5 +196,39 @@ SMXId SMXIdManager::getUnusedId() const {
   return id;
 }
 
+SMXId SMXIdManager::addObj(SCObj* obj, size_t index) {
+  if(!obj) return -1;
+  // determine free id
+  SMXId id = hashNam(obj->name());
+  while(!setNam.insert(id).second) {
+    id++;
+  }
+  id += offNam;
+  addObj(obj, id, index);
+  return id;
+}
+
+void SMXIdManager::addObj(SCObj* obj, SMXId id, size_t index) {
+  if(!obj) return;
+
+  objMap[obj][index] = id;
+  
+  IdMapEntry& entry = idMap[id];
+  if(entry.obj)
+    assert(entry.obj == obj);
+  else
+    entry.obj = obj;
+}
+
+void SMXIdManager::delObj(const SCObj* obj) {
+  if(!obj) return;
+
+  //ObjMap::iterator iter = objMap.find(obj);
+  //if(iter == objMap.end()) return;
+
+  
+
+
+}
 
 } // namespace CoSupport
