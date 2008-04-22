@@ -55,10 +55,13 @@ public:
   void delNode(Xerces::XN::DOMNode* n);
 
   /// @brief Delete node with the specified id
-  void delNode(Xerces::XN::DOMNode* n, SMXId id);
+  void delNode(SMXId id);
   
   /// @brief Lookup node by Id
   Xerces::XN::DOMNode* getNode(SMXId id) const;
+
+  /// @brief Lookup Id by node
+  SMXId getId(Xerces::XN::DOMNode* n) const;
 
   /// @brief Add reference to Id
   SMXId addNRef(Xerces::XN::DOMAttr* n);
@@ -69,8 +72,8 @@ public:
   /// @brief Delete reference
   void delNRef(Xerces::XN::DOMAttr* n);
 
-  /// @brief Delete reference with the specified id
-  void delNRef(Xerces::XN::DOMAttr* n, SMXId id);
+  /// @brief Delete reference of the specified Id
+  void delNRef(SMXId id, Xerces::XN::DOMAttr* n);
   
   /// @brief Nodes which reference an Id
   typedef std::set<Xerces::XN::DOMAttr*> NRef;
@@ -90,8 +93,23 @@ public:
   /// @brief Add object with Id
   void addObj(SCObj* obj, SMXId id, size_t index);
 
+  /// @brief Delete object
   void delObj(const SCObj* obj);
 
+  /// @brief Delete object with the Id of the specified index
+  void delObj(const SCObj* obj, size_t index);
+
+  /// @brief Delete object with the specified Id
+  void delObj(SMXId id);
+
+  /// @brief Lookup object by Id
+  SCObj* getObj(SMXId id) const;
+
+  /// @brief Lookup Id by object
+  SMXId getId(const SCObj* obj, size_t index = 0) const;
+
+  /// @brief Add anonymous object
+  SMXId addAnon();
 
 private:
   
@@ -104,41 +122,20 @@ private:
   /// @brief Disabled assign operator
   SMXIdManager& operator=(const SMXIdManager&);
   
-  /// @brief Number of bits in Id type (>= 3)
+  /// @brief Number of bits in Id type (>= 2)
   static const size_t bits = std::numeric_limits<SMXId>::digits;
 
-  /// @brief Offset for generated Ids
-  static const SMXId offGen = 0 << (bits - 2);
-  
+  /// @brief Offset for anonynmous Ids
+  static const SMXId offAnon = 0 << (bits - 1);
+
   /// @brief Offset for named Ids
-  static const SMXId offNam = 1 << (bits - 2);
-
-  /// @brief Offset for anonymous Ids
-  static const SMXId offAno = 2 << (bits - 2);
+  static const SMXId offName = 1 << (bits - 1);
   
-  /// @brief Offset for reserved index range
-  static const SMXId offRes = 3 << (bits - 2);
-  
-  /// @brief Top Id for generated objects
-  SMXId topGen;
-  
-  /// @brief Top Id for anonymous objects
-  SMXId topAno;
-
   /// @brief Ids for named objects
-  std::set<SMXId> setNam;
-  
-  /// @brief Hash function used for generating Ids for named objects
-  FNV<bits - 2> hashNam;
+  std::set<SMXId> setName;
 
-  /// @brief Value type of ObjMap
-  typedef std::map<size_t, SMXId> ObjMapEntry;
-  
-  /// @brief Maps a SystemC object to its Ids
-  typedef std::map<SCObj*, ObjMapEntry> ObjMap;
-  
-  /// @brief Object -> Id lookup map
-  ObjMap objMap;
+  /// @brief Hash function used for generating Ids for named objects
+  FNV<bits - 2> hashName;
 
   /// @brief Value type of IdMap
   struct IdMapEntry {
@@ -151,6 +148,8 @@ private:
     /// @brief Corresponding SystemC object
     SCObj* obj;
 
+    size_t index;
+
     /// @brief Default constructor
     IdMapEntry();
   };
@@ -161,12 +160,6 @@ private:
 
   /// @brief Id -> object lookup map
   IdMap idMap;
-
-
-  
-  
-  
-  SMXId getUnusedId() const;
 };
 
 } // namespace CoSupport
