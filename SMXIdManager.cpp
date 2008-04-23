@@ -129,13 +129,16 @@ XXN::DOMNode* SMXIdManager::getNode(SMXId id) const {
 }
 
 SMXId SMXIdManager::getId(XXN::DOMNode* n) const {
-  for(IdMap::const_iterator i = idMap.begin();
-      i != idMap.end();
-      ++i)
+  
+  for(IdMap::const_iterator idIter = idMap.begin();
+      idIter != idMap.end();
+      ++idIter)
   {
-    if(i->second.node == n) return i->first;
+    if(idIter->second.node == n)
+      return idIter->first;
   }
-  return -1;
+  
+  return 0;
 }
 
 const SMXIdManager::NRef* SMXIdManager::getNRef(SMXId id) const {
@@ -189,38 +192,73 @@ void SMXIdManager::delNRef(SMXId id, XXN::DOMAttr* n) {
   entry.nref.erase(n);
 }
 
-SMXId SMXIdManager::addAnon() {
-  // search for free id
-  SMXId id = offAnon - 1;
-  for(IdMap::const_iterator i = idMap.begin();
+SMXId SMXIdManager::calcAnonId() const {
+  SMXId id = 1;
+
+  for(IdMap::const_iterator i = idMap.lower_bound(id);
       i != idMap.end();
       ++i)
   {
-    if(i->first > id + 1)
+    // we can stop searching if gap in Id sequence
+    if(i->first > id)
       break;
-    id = i->first;
+    id = i->first + 1;
   }
-  id++;
-  // we should not get into NAMED region
-  assert(id < offName);
-
-  idMap[id];
 
   return id;
 }
 
-SMXId SMXIdManager::addObj(SCObj* obj, size_t index) {
-  if(!obj) return -1;
+SMXId SMXIdManager::calcNameIdObj(const char* name) const {
+  SMXId id = hashName(name) + offName;
 
-  // determine free id
-  SMXId id = hashName(obj->name());
-  while(!setName.insert(id).second) {
-    id++;
+  for(IdMap::const_iterator i = idMap.lower_bound(id);
+      i != idMap.end();
+      ++i)
+  {
+    // we can stop searching if either a) entry has
+    // no object or b) if gap in Id sequence
+    if(!i->second.obj || i->first > id)
+      break;
+    id = i->first + 1;
   }
-  id += offName;
-  
+
+  return id;
+}
+
+SMXId SMXIdManager::calcNameIdNode(const XMLCh* name) const {
+  SMXId id = hashName(name) + offName;
+
+  for(IdMap::const_iterator i = idMap.lower_bound(id);
+      i != idMap.end();
+      ++i)
+  {
+    // we can stop searching if either a) entry has
+    // no node or b) if gap in Id sequence
+    if(!i->second.node || i->first > id)
+      break;
+    id = i->first + 1;
+  }
+
+  return id;
+}
+
+SMXId SMXIdManager::addAnon() {
+  SMXId id = calcAnonId();
+  idMap[id];
+  return id;
+}
+
+SMXId SMXIdManager::addObj(SCObj* obj, size_t index) {
+  if(!obj) return 0;
+
+  // if user tries to add same object more than once...
+  SMXId id = getId(obj, index);
+  if(id) return id;
+
+  // calculate new named id and add object
+  id = calcNameIdObj(obj->name());
   addObj(obj, id, index);
-  
+
   return id;
 }
 
@@ -245,7 +283,7 @@ void SMXIdManager::delObj(const SCObj* obj) {
   // could try to hash name and lookup entry and compare obj's
   // before searching...
 
-  for(IdMap::iterator idIter = idMap.begin();
+  for(IdMap::iterator idIter = idMap.lower_bound(offName);
       idIter != idMap.end();
       ++idIter)
   {
@@ -264,7 +302,7 @@ void SMXIdManager::delObj(const SCObj* obj, size_t index) {
   // could try to hash name and lookup entry and compare obj's
   // before searching...
 
-  for(IdMap::iterator idIter = idMap.begin();
+  for(IdMap::iterator idIter = idMap.lower_bound(offName);
       idIter != idMap.end();
       ++idIter)
   {
@@ -299,7 +337,8 @@ SMXIdManager::SCObj* SMXIdManager::getObj(SMXId id) const {
 }
 
 SMXId SMXIdManager::getId(const SCObj* obj, size_t index) const {
-  for(IdMap::const_iterator idIter = idMap.begin();
+
+  for(IdMap::const_iterator idIter = idMap.lower_bound(offName);
       idIter != idMap.end();
       ++idIter)
   {
@@ -308,8 +347,63 @@ SMXId SMXIdManager::getId(const SCObj* obj, size_t index) const {
     if(entry.obj == obj && entry.index == index)
       return idIter->first;
   }
-  return -1;
+
+  return 0;
 }
 
+void SMXIdManager::anonToNamed() {
+
+  IdMap::iterator idIter, idNext;
+
+  for(idIter = idMap.begin();
+      idIter != idMap.upper_bound(offName);
+      idIter = idNext)
+  {
+    ++(idNext = idIter);
+
+    IdMapEntry& entry = idIter->second;
+      
+    assert(!entry.obj);
+    assert(entry.node);
+
+    XXN::DOMNamedNodeMap* attrs = entry.node->getAttributes();
+    assert(attrs);
+    
+    XXN::DOMNode* name = attrs->getNamedItem(X::XStr("name"));
+    if(!name) continue;
+
+    XXN::DOMNode* id = attrs->getNamedItem(X::XStr("id"));
+    assert(id);
+
+    std::cerr << "node " << X::XStr(entry.node->getNodeName()) << " ("
+              << X::XStr(id->getNodeValue()) << ") has name: "
+              << X::XStr(name->getNodeValue()) << std::endl;
+
+    SMXId idNew = calcNameIdNode(name->getNodeValue());
+    std::cerr << "will get Id: " << idNew << std::endl;
+
+    // update node
+    X::setNodeValueFrom<SMXIdSer>(id, idNew);
+
+    // update references
+    for(NRef::iterator rIter = entry.nref.begin();
+        rIter != entry.nref.end();
+        ++rIter)
+    {
+      X::setNodeValueFrom<SMXIdSer>(*rIter, idNew);
+    }
+
+    // create new entry
+    IdMapEntry& entryNew = idMap[idNew];
+    entryNew.node = entry.node;
+    entryNew.nref = entry.nref;
+
+    // delete old entry
+    idMap.erase(idIter);
+  }
+}
+
+const SMXId SMXIdManager::offAnon;
+const SMXId SMXIdManager::offName;
 
 } // namespace CoSupport

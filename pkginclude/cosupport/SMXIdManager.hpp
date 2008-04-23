@@ -81,9 +81,6 @@ public:
   /// @brief Lookup referencing nodes by Id
   const NRef* getNRef(SMXId id) const;
   
-  /// @brief Analyze node (recursive)
-  void analyze(Xerces::XN::DOMNode *n);
-
   /// @brief Convenience typedef
   typedef sc_core::sc_object SCObj;
 
@@ -110,6 +107,11 @@ public:
 
   /// @brief Add anonymous object
   SMXId addAnon();
+  
+  /// @brief Analyze node (recursive)
+  void analyze(Xerces::XN::DOMNode *n);
+
+  void anonToNamed();
 
 private:
   
@@ -131,11 +133,8 @@ private:
   /// @brief Offset for named Ids
   static const SMXId offName = 1 << (bits - 1);
   
-  /// @brief Ids for named objects
-  std::set<SMXId> setName;
-
   /// @brief Hash function used for generating Ids for named objects
-  FNV<bits - 2> hashName;
+  FNV<bits - 1> hashName;
 
   /// @brief Value type of IdMap
   struct IdMapEntry {
@@ -148,18 +147,27 @@ private:
     /// @brief Corresponding SystemC object
     SCObj* obj;
 
+    /// @brief Supports multiple Ids for same object
     size_t index;
 
     /// @brief Default constructor
     IdMapEntry();
   };
 
-
   /// @brief Maps a specific Id to its node
   typedef std::map<SMXId, IdMapEntry> IdMap;
 
   /// @brief Id -> object lookup map
   IdMap idMap;
+
+  /// @brief Calculates a new anonymous Id
+  SMXId calcAnonId() const;
+
+  /// @brief Calculates a new named Id for object
+  SMXId calcNameIdObj(const char* name) const;
+  
+  /// @brief Calculates a new named Id for node
+  SMXId calcNameIdNode(const XMLCh* name) const;
 };
 
 } // namespace CoSupport

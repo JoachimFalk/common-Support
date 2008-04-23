@@ -21,10 +21,10 @@ struct NextPower2<0, S>
 template<size_t BITS>
 class FNV {
 public:
-  typedef const char* argument_type;
-  typedef uint64_t    result_type;
+  typedef uint64_t result_type;
 
-  result_type operator()(argument_type n)
+  template<class N>
+  result_type operator()(N n) const
   { return xorFold(fnv(n)); }
 
 private:
@@ -32,7 +32,7 @@ private:
 
   FNV<Detail::NextPower2<BITS>::value> fnv;
 
-  result_type xorFold(result_type h)
+  result_type xorFold(result_type h) const
   { return (h >> BITS) ^ (h & MASK); }
 };
 
@@ -40,10 +40,10 @@ private:
 template<class T, T INIT, T PRIME>
 class FNVBase {
 public:
-  typedef const char* argument_type;
-  typedef T           result_type;
+  typedef T result_type;
 
-  result_type operator()(argument_type n) {
+  template<class N>
+  result_type operator()(N n) const {
     result_type h = INIT;
     while(*n) {
       h *= PRIME;
