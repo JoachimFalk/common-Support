@@ -51,6 +51,7 @@ public:
                                  ChannelId id,
                                  std::string name ) const = 0;
   virtual void modified(ChannelId id) const = 0 ;
+  virtual ~ChannelModificationListener() {}      
 private:
   size_t readCount;
 
