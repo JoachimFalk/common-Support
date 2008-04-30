@@ -133,8 +133,8 @@ namespace Xerces {
     if (retval == NULL) {
       std::stringstream msg;
       
-      msg << "Tag \"" << node->getNodeName() << "\""
-              " has no attribute \"" << attr << "\" !";
+      msg << "Tag \"" <<  NStr(node->getNodeName()) << "\""
+             " has no attribute \"" << NStr(attr) << "\" !";
       throw AttrNotFoundError(msg.str());
     }
     return retval;
