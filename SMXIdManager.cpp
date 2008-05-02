@@ -17,11 +17,8 @@ SMXIdSer::operator SMXId() const
 { return id; }
 
 template<>
-std::string asStr<SMXIdSer>(const SMXIdSer& id) {
-  std::ostringstream out;
-  out << "id" << id;
-  return out.str();
-}
+std::string asStr<SMXIdSer>(const SMXIdSer& id)
+{ std::ostringstream out; out << id; return out.str(); }
 
 template<>
 SMXIdSer strAs<SMXIdSer>(const std::string &s) {
@@ -38,6 +35,9 @@ SMXIdSer strAs<SMXIdSer>(const std::string &s) {
 
   return ret;
 }
+
+std::ostream& operator<<(std::ostream& out, const SMXIdSer& id)
+{ return out << "id" << id.id; }
 
 SMXIdManager::IdMapEntry::IdMapEntry() :
   node(0),

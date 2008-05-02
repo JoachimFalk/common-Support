@@ -39,6 +39,8 @@ std::string asStr<SMXIdSer>(const SMXIdSer& id);
 template<>
 SMXIdSer strAs<SMXIdSer>(const std::string &s);
 
+/// @brief Output operator for SMXIdSer
+std::ostream& operator<<(std::ostream& out, const SMXIdSer& id);
 
 class SMXIdManager {
 public:
