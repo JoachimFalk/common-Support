@@ -67,6 +67,12 @@
 # define SHRINKALGO(x)  ( (x) / 3 * 2 )
 #endif
 
+#if __GNUC__ > 3 || (__GNUC__ == 3 && (__GNUC_MINOR__ > 3 || (__GNUC_MINOR__ == 3 && __GNUC_PATCHLEVEL__ > 5)))
+# define COSUPPORT_ATTRIBUTE_DEPRECATED __attribute__ ((deprecated))
+#else
+# define COSUPPORT_ATTRIBUTE_DEPRECATED
+#endif
+
 /*
  * macros for getting the type and its respective min,max values
  */
