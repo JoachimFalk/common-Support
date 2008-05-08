@@ -616,6 +616,58 @@ namespace CoSupport { namespace SystemC {
     }
   };
 
+  /**
+   * @brief Wrapper EventWaiter -> sc_event
+   */
+  class SCEventWrapper: protected EventListener {
+  public:
+    /// @brief Constructor
+    SCEventWrapper(EventWaiter& e) : _e(e) {
+      _e.addListener(this);
+      // if a was already active _before_ we added us as listener,
+      // we won't receive a "signaled" event. Defect???
+      update();
+    }
+
+    /// @brief Virtual Destructor for derived classes
+    virtual ~SCEventWrapper()
+    { _e.delListener(this); }
+
+    /// @brief Returns sc_event (use "wait(x.getSCEvent())" !!!)
+    sc_event& getSCEvent()
+    { update(); return scev; }
+
+    /// @brief Returns sc_event (use "wait(x.getSCEvent())" !!!)
+    const sc_event& getSCEvent() const
+    { update(); return scev; }
+
+  protected:
+    /// @brief see EventListener
+    void signaled(EventWaiter* e) {
+      assert(e == &_e);
+      update();
+    }
+
+    /// @brief see EventListener
+    void eventDestroyed(EventWaiter* e)
+    {}
+
+  private:
+    void update() const {
+      // we won't get notified if already notifed, but sc_event
+      // resets in next delta cycle. so we have a problem...
+      // Also, we can't use immediate notification (because
+      // wait() will not return)
+      if(_e.isActive())
+        scev.notify(SC_ZERO_TIME);
+      else
+        scev.cancel(); // allowed but should not happen??
+    }
+
+    EventWaiter& _e;
+    mutable sc_event scev;
+  };
+
   inline
   EventOrList<EventWaiter> operator|(EventWaiter &a, EventWaiter &b)
     { return EventOrList<EventWaiter>(a) |= b; }
