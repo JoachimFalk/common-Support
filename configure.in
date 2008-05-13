@@ -23,7 +23,7 @@ AC_INIT([Support], 0.2, [joachim.falk@gmx.de])
 AC_PREREQ(2.57)
 ACJF_INIT
 
-AC_CONFIG_SRCDIR([refcount_object.cpp])
+AC_CONFIG_SRCDIR([RefCountObject.cpp])
 
 AC_CONFIG_AUX_DIR([../BuildSystem])
 AC_CANONICAL_BUILD
