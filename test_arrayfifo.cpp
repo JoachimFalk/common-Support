@@ -36,9 +36,9 @@
 #include <assert.h>
 #include <iostream>
 
-#include <cosupport/arrayfifo.hpp>
+#include <CoSupport/DataTypes/ArrayFifo.hpp>
 
-using namespace CoSupport;
+using namespace CoSupport::DataTypes;
 
 template <typename T, size_t N>
 std::ostream &operator << (std::ostream &out, const ArrayFifo<T,N> &fifo) {

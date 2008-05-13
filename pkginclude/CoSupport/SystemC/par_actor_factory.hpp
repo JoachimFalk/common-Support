@@ -1,3 +1,4 @@
+// vim: set sw=2 ts=8:
 /*
  * Copyright (c) 2004-2006 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
@@ -32,65 +33,42 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#include <stdlib.h>
-#include <iostream>
-#include <fstream>
-#include <CoSupport/SystemC/par_manager.hpp>
+#ifndef _INCLUDED_COSUPPORT_SYSTEMC_PAR_ACTOR_FACTORY_HPP
+#define _INCLUDED_COSUPPORT_SYSTEMC_PAR_ACTOR_FACTORY_HPP
+
+#include "../String/convert.hpp"
 
 namespace CoSupport { namespace SystemC {
-
-const par_manager& par_manager::instance()
-{ 
-  static par_manager instance;
-  return instance;
-}
-
-par_manager::par_manager()
-{
-  const char* file = getenv("PARCONFIGURATION");
   
-  if(!file)
-    std::cout << "par_manager> Warning: no config file!" << std::endl;
-  else {
-    std::ifstream fin(file);
-
-    if(!fin)
-      std::cout << "par_manager> Warning: could not open file!" << std::endl;
-    else {
-      while(!fin.eof()) {
-	std::string name;
-	fin >> name;
-	
-	if(name == "")
-	  continue;
-
-	int count;
-	fin >> count;
-	
-	if(count < 1) {
-	  std::cout << "par_manager> Warning: invalid count for " << name << std::endl;
-	  continue;
-	}
-
-	if(config.find(name) == config.end()) {
-	  std::cout << "par_manager> " << name << ": " << count << std::endl;
-	  config.insert(std::make_pair(name, count));
-	} else {
-	  std::cout << "par_manager> Warning: " << name << " already defined!" << std::endl;
-	  continue;
-	}
-      }
-    }
-  }
-}
-
-int par_manager::count(const std::string& name) const
+/**
+ * simple helper class that converts the instance index into a unique
+ * name, prefixed with a user-defined string (construct_helper must
+ * be implemented by the user). This class is indented to be used as
+ * a factory by checked_vector
+ */
+template<class T>
+class par_actor_factory
 {
-  std::map<std::string, int>::const_iterator i = config.find(name);
-  if(i == config.end())
-    return 1;
-  else
-    return i->second;
-}
+private:
+  std::string _prefix;
+
+public:
+  par_actor_factory(const std::string &prefix) :
+    _prefix(prefix)
+    {}
+
+  void construct(T* p, size_t instance)
+    { construct_helper(p, _prefix + String::asStr(instance)); }
+
+  virtual void construct_helper(T* p, const std::string& name) = 0;
+
+  virtual ~par_actor_factory()
+    {}
+
+  const std::string& prefix() const
+  { return _prefix; }
+};
 
 } } // namespace CoSupport::SystemC
+
+#endif // _INCLUDED_COSUPPORT_SYSTEMC_PAR_ACTOR_FACTORY_HPP

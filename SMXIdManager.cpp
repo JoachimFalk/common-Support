@@ -1,11 +1,14 @@
-#include <cosupport/SMXIdManager.hpp>
+#include <CoSupport/SMXIdManager.hpp>
 #include <cassert>
 #include <sstream>
 
 namespace CoSupport {
 
-namespace X = Xerces;
-namespace XXN = Xerces::XN;
+namespace X = XML::Xerces;
+namespace XXN = XML::Xerces::XN;
+
+using String::asStr;
+using String::strAs;
 
 struct InvalidConversion {};
 
@@ -74,20 +77,20 @@ void SMXIdManager::addNode(XXN::DOMNode *n, SMXId id) {
   }
 }
 
-SMXId SMXIdManager::addNRef(Xerces::XN::DOMAttr* n) {
+SMXId SMXIdManager::addNRef(XXN::DOMAttr* n) {
   SMXId id = X::getNodeValueAs<SMXIdSer>(n);
   addNRef(n, id);
   return id;
 }
 
-void SMXIdManager::addNRef(Xerces::XN::DOMAttr* n, SMXId id) {
+void SMXIdManager::addNRef(XXN::DOMAttr* n, SMXId id) {
   IdMapEntry& entry = idMap[id];
 
   //assert(entry.node); <- may not yet exist...
   entry.nref.insert(n);
 }
 
-void SMXIdManager::analyze(Xerces::XN::DOMNode *n) {
+void SMXIdManager::analyze(XXN::DOMNode *n) {
 
   if(XXN::DOMNamedNodeMap* attrs = n->getAttributes()) {
     for(size_t i = 0; i < attrs->getLength(); ++i) {

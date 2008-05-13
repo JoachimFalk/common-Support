@@ -34,7 +34,7 @@
 
 #include <iostream>
 
-#include <cosupport/systemc_support.hpp>
+#include <CoSupport/SystemC/systemc_support.hpp>
 
 using namespace CoSupport::SystemC;
 

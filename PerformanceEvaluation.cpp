@@ -34,9 +34,10 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#include <cosupport/PerformanceEvaluation.hpp>
+#include <CoSupport/SystemC/PerformanceEvaluation.hpp>
 #include <fstream>
 
+namespace CoSupport { namespace SystemC {
 
 /**
  *
@@ -123,3 +124,5 @@ PerformanceEvaluation::~PerformanceEvaluation(){
     thr.close();
   }
 }
+
+} } // namespace CoSupport::SystemC

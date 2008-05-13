@@ -1,5 +1,6 @@
+/* vim: set sw=2 ts=8: */
 /*
- * Copyright (c) 2004-2006 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2008 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -32,65 +33,53 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#include <stdlib.h>
+#ifndef _INCLUDED_COSUPPORT_STREAMS_ITERATOR_DUMP_HPP
+#define _INCLUDED_COSUPPORT_STREAMS_ITERATOR_DUMP_HPP
+
 #include <iostream>
-#include <fstream>
-#include <CoSupport/SystemC/par_manager.hpp>
+#include <list>
 
-namespace CoSupport { namespace SystemC {
+namespace CoSupport { namespace Streams {
 
-const par_manager& par_manager::instance()
-{ 
-  static par_manager instance;
-  return instance;
-}
-
-par_manager::par_manager()
+/**
+ * dumps elements from iterator b to iterator e
+ * format is "<Prefix><Element><Suffix>"
+ * first prefix can be omitted with skip_first, last suffix can be omitted with skip_last
+ */
+template<class ITER, class OUT, class PRE, class SUF>
+OUT& dump(ITER b, ITER e, OUT &o, const PRE &p, bool skip_first, const SUF &s, bool skip_last)
 {
-  const char* file = getenv("PARCONFIGURATION");
-  
-  if(!file)
-    std::cout << "par_manager> Warning: no config file!" << std::endl;
-  else {
-    std::ifstream fin(file);
-
-    if(!fin)
-      std::cout << "par_manager> Warning: could not open file!" << std::endl;
-    else {
-      while(!fin.eof()) {
-	std::string name;
-	fin >> name;
-	
-	if(name == "")
-	  continue;
-
-	int count;
-	fin >> count;
-	
-	if(count < 1) {
-	  std::cout << "par_manager> Warning: invalid count for " << name << std::endl;
-	  continue;
-	}
-
-	if(config.find(name) == config.end()) {
-	  std::cout << "par_manager> " << name << ": " << count << std::endl;
-	  config.insert(std::make_pair(name, count));
-	} else {
-	  std::cout << "par_manager> Warning: " << name << " already defined!" << std::endl;
-	  continue;
-	}
-      }
-    }
+  bool first = true;
+  for(; b != e; ++b) {
+    if(!first)
+      o << s;
+    if(!first || !skip_first)
+      o << p;
+    o << *b;
+    first = false;
   }
+  if(!skip_last)
+    o << s;
+  return o;
 }
 
-int par_manager::count(const std::string& name) const
+/**
+ * dumps elements from iterator b to iterator e
+ * format is "<Element>[<Seperator><Element>...]"
+ */
+template<class ITER, class OUT, class SEP>
+OUT& dump(ITER b, ITER e, OUT &o, const SEP &s)
 {
-  std::map<std::string, int>::const_iterator i = config.find(name);
-  if(i == config.end())
-    return 1;
-  else
-    return i->second;
+  bool first = true;
+  for(; b != e; ++b) {
+    if(!first)
+      o << s;
+    o << *b;
+    first = false;
+  }
+  return o;
 }
 
-} } // namespace CoSupport::SystemC
+} } // namespace CoSupport::Streams
+
+#endif // _INCLUDED_COSUPPORT_STREAMS_ITERATOR_DUMP_HPP

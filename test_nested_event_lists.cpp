@@ -34,14 +34,16 @@
 
 #include <iostream>
 
-#include <cosupport/systemc_support.hpp>
-#include <cosupport/smoc_debug_out.hpp>
+#include <CoSupport/SystemC/systemc_support.hpp>
+#include <CoSupport/Streams/DebugOStream.hpp>
 
 using namespace CoSupport::SystemC;
 using namespace CoSupport;
 
+using CoSupport::Streams::Color;
+
 int sc_main(int argc, char *argv[]) {
-  CoSupport::DebugOstream out(cout);
+  CoSupport::Streams::DebugOStream out(cout);
 
   {
     Event e0, e1;
