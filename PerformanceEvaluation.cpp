@@ -83,41 +83,43 @@ void PerformanceEvaluation::startSimulation(){
  */
 PerformanceEvaluation::~PerformanceEvaluation(){
   assert(startTimes.size() == stopTimes.size());
-
-  // store number of samples
-  size_t sampleCount = startTimes.size();
-  sc_time averageLatency;
-
-  // calculate inverse throughput
-  sc_time lastSample = stopTimes.back();
-  sc_time averageInverseThroughput = (lastSample - measureStart)/sampleCount;
-
-  // sum up latencies
-  while( startTimes.size() ){
-    const sc_time& start = startTimes.front();
-    const sc_time& stop  = stopTimes.front();
-
-    //std::cerr << "sample: " << start << " -> " << stop << std::endl;
-    averageLatency  += stop-start;
-    
-    startTimes.pop_front();
-    stopTimes.pop_front();
-  }
   
-  // compute avarage latency
-  averageLatency = averageLatency / sampleCount;
-
-  // write latency
-  std::ofstream lat("result.latency");
-  if( lat.is_open() ){
-    lat << averageLatency.to_default_time_units() << std::endl;
+  if (!startTimes.empty()) {
+    // store number of samples
+    size_t sampleCount = startTimes.size();
+    sc_time averageLatency;
+    
+    // calculate inverse throughput
+    sc_time lastSample = stopTimes.back();
+    sc_time averageInverseThroughput = (lastSample - measureStart)/sampleCount;
+    
+    // sum up latencies
+    while( startTimes.size() ){
+      const sc_time& start = startTimes.front();
+      const sc_time& stop  = stopTimes.front();
+      
+      //std::cerr << "sample: " << start << " -> " << stop << std::endl;
+      averageLatency  += stop-start;
+      
+      startTimes.pop_front();
+      stopTimes.pop_front();
+    }
+    
+    // compute avarage latency
+    averageLatency = averageLatency / sampleCount;
+    
+    // write latency
+    std::ofstream lat("result.latency");
+    if( lat.is_open() ){
+      lat << averageLatency.to_default_time_units() << std::endl;
+    }
+    lat.close();
+    
+    //write inverse throughput
+    std::ofstream thr("result.inversethroughput");
+    if( thr.is_open() ){
+      thr << averageInverseThroughput.to_default_time_units() << std::endl;
+    }
+    thr.close();
   }
-  lat.close();
-
-  //write inverse throughput
-  std::ofstream thr("result.inversethroughput");
-  if( thr.is_open() ){
-    thr << averageInverseThroughput.to_default_time_units() << std::endl;
-  }
-  thr.close();
 }
