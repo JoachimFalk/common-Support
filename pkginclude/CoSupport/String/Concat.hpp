@@ -76,10 +76,10 @@ public:
     return *this;
   }
 
-  const std::string &get() const
+  std::string get() const
     { return ret.str(); }
 
-  operator const std::string &() const
+  operator std::string () const
     { return ret.str(); }
 };
   

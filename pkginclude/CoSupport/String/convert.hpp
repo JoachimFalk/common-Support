@@ -74,48 +74,6 @@ std::string asStr(const T &value) {
   str << value;
   return str.str();
 }
-
-/**
- * convenience class that can be used to concatenate
- * some values (instead of using asStr and operator+,
- * this class is much more efficient, and allows stream
- * manipulators)
- */
-class Concat {
-private:
-  std::ostringstream ret;
-public:
-  template<class T>
-  explicit Concat(const T &t)
-    { ret << t; }
-  
-  template<class T>
-  Concat &operator()(const T &t)  {
-    ret << t;
-    return *this;
-  }
- 
-  Concat &operator()(std::ostream &(*manip)(std::ostream &)) {
-    ret << manip;
-    return *this;
-  }
-
-  Concat &operator()(std::ios &(*manip)(std::ios &)) {
-    ret << manip;
-    return *this;
-  }
-
-  Concat &operator()(std::ios_base &(*manip)(std::ios_base &)) {
-    ret << manip;
-    return *this;
-  }
-
-  std::string get() const
-    { return ret.str(); }
-
-  operator std::string() const
-    { return ret.str(); }
-};
   
 } } // namespace CoSupport::String
 
