@@ -25,12 +25,10 @@ root_builddir := $(shell cd $(top_builddir)/.. && pwd)
 include $(auxdir)/jfrules.mk
 include ../BuildSystem/doxygen.am
 
-SUBDIRS=
+SUBDIRS=pkginclude
 
 # This is only needed if there is a configure.in in this directory
 ACLOCAL_AMFLAGS=-I ../BuildSystem/m4
-
-pkgincludedir=$(includedir)/cosupport
 
 AM_CPPFLAGS=				\
 	@AM_CPPFLAGS@			\
@@ -49,56 +47,6 @@ AM_LDFLAGS=				\
 	@XERCES_LDFLAGS@
 
 EXTRA_DIST	=
-
-pkginclude_HEADERS = \
-	pkginclude/CoSupport/Streams/HexOutput.hpp \
-	pkginclude/CoSupport/Streams/AlternateStream.hpp \
-	pkginclude/CoSupport/Streams/stl_output_for_list.hpp \
-	pkginclude/CoSupport/Streams/DebugOStream.hpp \
-	pkginclude/CoSupport/Streams/stl_output_for_pair.hpp \
-	pkginclude/CoSupport/Streams/stl_output_for_vector.hpp \
-	pkginclude/CoSupport/Streams/iterator_dump.hpp \
-	pkginclude/CoSupport/Streams/FilterStreambuf.hpp \
-	pkginclude/CoSupport/Streams/LineNumberStreambuf.hpp \
-	pkginclude/CoSupport/Streams/HeaderFooterStreambuf.hpp \
-	pkginclude/CoSupport/Streams/ColorStreambuf.hpp \
-	pkginclude/CoSupport/Streams/IndentStreambuf.hpp \
-	pkginclude/CoSupport/Streams/DebugStreambuf.hpp \
-	pkginclude/CoSupport/Streams/NullStreambuf.hpp \
-	pkginclude/CoSupport/Streams/FilterOStream.hpp \
-	pkginclude/CoSupport/Initializer/BasicInitializer.hpp \
-	pkginclude/CoSupport/String/convert.hpp \
-	pkginclude/CoSupport/String/TypeName.hpp \
-	pkginclude/CoSupport/String/Concat.hpp \
-	pkginclude/CoSupport/XML/xalan_support.hpp \
-	pkginclude/CoSupport/XML/xerces_support.hpp \
-	pkginclude/CoSupport/SMXIdManager.hpp \
-	pkginclude/CoSupport/SmartPtr/shared_copyonwrite_ptr.hpp \
-	pkginclude/CoSupport/SmartPtr/intrusive_copyonwrite_ptr.hpp \
-	pkginclude/CoSupport/SmartPtr/intrusive_refcount_ptr.hpp \
-	pkginclude/CoSupport/SmartPtr/RefCount.hpp \
-	pkginclude/CoSupport/SmartPtr/RefCountObject.hpp \
-	pkginclude/CoSupport/SystemC/systemc_support.hpp \
-	pkginclude/CoSupport/SystemC/par_actor_factory.hpp \
-	pkginclude/CoSupport/SystemC/par_actor.hpp \
-	pkginclude/CoSupport/SystemC/par_manager.hpp \
-	pkginclude/CoSupport/SystemC/par_port.hpp \
-	pkginclude/CoSupport/SystemC/PerformanceEvaluation.hpp \
-	pkginclude/CoSupport/SystemC/ChannelModificationListener.hpp \
-	pkginclude/CoSupport/DataTypes/ValidWrapper.hpp \
-	pkginclude/CoSupport/DataTypes/checked_vector.hpp \
-	pkginclude/CoSupport/DataTypes/bit_buffer.hpp \
-	pkginclude/CoSupport/DataTypes/container_insert.hpp \
-	pkginclude/CoSupport/DataTypes/ListFacade.hpp \
-	pkginclude/CoSupport/DataTypes/oneof.hpp \
-	pkginclude/CoSupport/DataTypes/ArrayFifo.hpp \
-	pkginclude/CoSupport/DataTypes/Facade.hpp \
-	pkginclude/CoSupport/Math/modulo_arith.hpp \
-	pkginclude/CoSupport/Math/smoc_math.hpp \
-	pkginclude/CoSupport/Math/string_hash.hpp \
-	pkginclude/CoSupport/Type/transform.hpp \
-	pkginclude/CoSupport/Lambda/functor.hpp \
-	pkginclude/CoSupport/Lambda/function_objects.hpp
 
 #noinst_HEADERS=	oneof.hpp
 
