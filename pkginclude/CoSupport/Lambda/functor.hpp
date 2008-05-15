@@ -33,12 +33,12 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_MPL_FUNCTOR_HPP
-#define _INCLUDED_COSUPPORT_MPL_FUNCTOR_HPP
+#ifndef _INCLUDED_COSUPPORT_LAMBDA_FUNCTOR_HPP
+#define _INCLUDED_COSUPPORT_LAMBDA_FUNCTOR_HPP
 
 #include <cassert>
 
-namespace CoSupport { namespace MPL {
+namespace CoSupport { namespace Lambda {
 
 namespace Detail {
   //
@@ -92,42 +92,42 @@ namespace Detail {
   {
     typedef PL					      ParamList;
   };
-
-  //
-  // ParamAccumulator: binds parameter via operator()
-  // 
-  template<template <class,class> class A, class F, class ML, class PL>
-  struct ParamAccumulator;
-
-  template<template <class,class> class A, class F, class ML = typename F::MissingList, class PL = ParamNode<void> >
-  struct ParamAccumulator
-  {
-    typedef ParamAccumulator<A, F, ML, PL>    this_type;
-    typedef this_type                         accumulated_type;
-    
-    typedef ParamAccumulator<A, F,
-      typename ML::ListTail,
-      ParamNode<typename ML::ListHead, PL> >  accumulated_next_type;
-    
-    typedef typename accumulated_next_type::accumulated_type  return_type;
-    
-    F  f;
-    PL pl;
-    
-    ParamAccumulator(const F& _f, const PL &_pl = PL()) : f(_f), pl(_pl) {}
-    
-    return_type operator()(typename ML::ListHead p) {
-      return return_type(f, ParamNode<typename ML::ListHead, PL>(p, pl));
-    }
-  };
-
-  template<template <class,class> class A, class F, class PL>
-  struct ParamAccumulator<A, F, MissingNode<void>, PL>
-  {
-    typedef ParamAccumulator<A, F, MissingNode<void>, PL> this_type;
-    typedef typename A<F,PL>::type			accumulated_type;
-  };
 } // namespace Detail
+
+//
+// ParamAccumulator: binds parameter via operator()
+// 
+template<template <class,class> class A, class F, class ML, class PL>
+struct ParamAccumulator;
+
+template<template <class,class> class A, class F, class ML = typename F::MissingList, class PL = Detail::ParamNode<void> >
+struct ParamAccumulator
+{
+  typedef ParamAccumulator<A, F, ML, PL>    this_type;
+  typedef this_type                         accumulated_type;
+  
+  typedef ParamAccumulator<A, F,
+    typename ML::ListTail,
+    Detail::ParamNode<typename ML::ListHead, PL> >  accumulated_next_type;
+  
+  typedef typename accumulated_next_type::accumulated_type  return_type;
+  
+  F  f;
+  PL pl;
+  
+  ParamAccumulator(const F& _f, const PL &_pl = PL()) : f(_f), pl(_pl) {}
+  
+  return_type operator()(typename ML::ListHead p) {
+    return return_type(f, Detail::ParamNode<typename ML::ListHead, PL>(p, pl));
+  }
+};
+
+template<template <class,class> class A, class F, class PL>
+struct ParamAccumulator<A, F, Detail::MissingNode<void>, PL>
+{
+  typedef ParamAccumulator<A, F, Detail::MissingNode<void>, PL> this_type;
+  typedef typename A<F,PL>::type			        accumulated_type;
+};
 
 //
 // FUNCTOR-macro: Creates Function-Objects
@@ -228,6 +228,6 @@ CONSTRUCT(ConstFunctor, TEMPLATELIST_4, PARAMLIST_4, const, PARAMCALL_4, MISSING
 #undef PARAMCALL_3
 #undef PARAMCALL_4
   
-} } // namespace CoSupport::MPL
+} } // namespace CoSupport::Lambda
 
-#endif // _INCLUDED_COSUPPORT_MPL_FUNCTOR_HPP
+#endif // _INCLUDED_COSUPPORT_LAMBDA_FUNCTOR_HPP
