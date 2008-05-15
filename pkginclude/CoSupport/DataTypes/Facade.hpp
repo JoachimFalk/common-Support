@@ -107,7 +107,7 @@ public:
 public:
   FacadePtr(const SmartPtr &p)
     : ref(p) {}
-  FacadePtr(const FacadePtr<T, CoSupport::Type::Mutable> &t)
+  FacadePtr(const FacadePtr<T, Type::Mutable> &t)
     : ref(t.ref) {}
   FacadePtr(typename C<T>::type *t)
     : ref(SmartPtr()) { if (t) ref.assign(*t); }
@@ -195,10 +195,10 @@ public:
   typedef Impl                                              ImplType;
   typedef SPtr                                              SmartPtr;
 
-  typedef const FacadeRef<Derived, CoSupport::Type::Const>  ConstRef;
-  typedef FacadeRef<Derived, CoSupport::Type::Mutable>      Ref;
-  typedef FacadePtr<Derived, CoSupport::Type::Const>        ConstPtr;
-  typedef FacadePtr<Derived, CoSupport::Type::Mutable>      Ptr;
+  typedef const FacadeRef<Derived, Type::Const>  ConstRef;
+  typedef FacadeRef<Derived, Type::Mutable>      Ref;
+  typedef FacadePtr<Derived, Type::Const>        ConstPtr;
+  typedef FacadePtr<Derived, Type::Mutable>      Ptr;
 private:
   // hack for type downward traversal
   typedef FFType                                            _H;
@@ -240,11 +240,11 @@ struct FacadeTraits {
 };
 
 template <class TT, class T, template <class> class C>
-const CoSupport::FacadePtr<TT,C> dynamic_pointer_cast(const CoSupport::FacadePtr<T,C> &ptr)
+const FacadePtr<TT,C> dynamic_pointer_cast(const FacadePtr<T,C> &ptr)
   { return TT::upcast(*ptr); }
 
 template <class TT, class T, template <class> class C>
-const CoSupport::FacadePtr<TT,C> static_pointer_cast(const CoSupport::FacadePtr<T,C> &ptr)
+const FacadePtr<TT,C> static_pointer_cast(const FacadePtr<T,C> &ptr)
   { return &static_cast<typename C<TT>::type &>(*ptr); }
 
 } // namespace DataTypes
@@ -252,31 +252,31 @@ const CoSupport::FacadePtr<TT,C> static_pointer_cast(const CoSupport::FacadePtr<
 namespace Type {
 
   template <typename T>
-  struct Const<FacadeRef<T, Mutable> >
-    { typedef const FacadeRef<T, Type::Const> type; };
+  struct Const<DataTypes::FacadeRef<T, Mutable> >
+    { typedef const DataTypes::FacadeRef<T, Type::Const> type; };
   template <typename T>
-  struct Const<FacadePtr<T, Mutable> >
-    { typedef const FacadePtr<T, Type::Const> type; };
+  struct Const<DataTypes::FacadePtr<T, Mutable> >
+    { typedef const DataTypes::FacadePtr<T, Type::Const> type; };
 
   template <typename T>
-  struct Mutable<const FacadeRef<T, Const> >
-    { typedef FacadeRef<T, Type::Mutable> type; };
+  struct Mutable<const DataTypes::FacadeRef<T, Const> >
+    { typedef DataTypes::FacadeRef<T, Type::Mutable> type; };
   template <typename T>
-  struct Mutable<const FacadePtr<T, Const> >
-    { typedef FacadePtr<T, Type::Mutable> type; };
+  struct Mutable<const DataTypes::FacadePtr<T, Const> >
+    { typedef DataTypes::FacadePtr<T, Type::Mutable> type; };
 
   template <typename T>
-  struct ToggleConst<const FacadeRef<T, Const> >
-    { typedef FacadeRef<T, Type::Mutable> type; };
+  struct ToggleConst<const DataTypes::FacadeRef<T, Const> >
+    { typedef DataTypes::FacadeRef<T, Mutable> type; };
   template <typename T>
-  struct ToggleConst<FacadeRef<T, Mutable> >
-    { typedef const FacadeRef<T, Type::Const> type; };
+  struct ToggleConst<DataTypes::FacadeRef<T, Mutable> >
+    { typedef const DataTypes::FacadeRef<T, Const> type; };
   template <typename T>
-  struct ToggleConst<const FacadePtr<T, Const> >
-    { typedef FacadePtr<T, Type::Mutable> type; };
+  struct ToggleConst<const DataTypes::FacadePtr<T, Const> >
+    { typedef DataTypes::FacadePtr<T, Mutable> type; };
   template <typename T>
-  struct ToggleConst<FacadePtr<T, Mutable> >
-    { typedef const FacadePtr<T, Type::Const> type; };
+  struct ToggleConst<DataTypes::FacadePtr<T, Mutable> >
+    { typedef const DataTypes::FacadePtr<T, Const> type; };
 
 } // namespace Type
 
