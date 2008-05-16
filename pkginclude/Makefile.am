@@ -47,6 +47,8 @@ nobase_include_HEADERS = \
 	CoSupport/XML/xalan_support.hpp \
 	CoSupport/XML/xerces_support.hpp \
 	CoSupport/SMXIdManager.hpp \
+	CoSupport/sassert.h \
+	CoSupport/commondefs.h \
 	CoSupport/SmartPtr/shared_copyonwrite_ptr.hpp \
 	CoSupport/SmartPtr/intrusive_copyonwrite_ptr.hpp \
 	CoSupport/SmartPtr/intrusive_refcount_ptr.hpp \
