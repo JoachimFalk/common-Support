@@ -42,11 +42,11 @@
 namespace CoSupport { namespace DataTypes {
 
 /**
- * the checked_vector class allows creating of arrays of objects that 
+ * the CheckedVector class allows creating of arrays of objects that 
  * (can) have only non-default constructors and are not copy-constructable
  */
 template<class T, class A = std::allocator<T> >
-class checked_vector {
+class CheckedVector {
 public:
   typedef A allocator_type;
   typedef typename A::size_type size_type;
@@ -60,7 +60,7 @@ private:
 public:
 
   // creates array by calling default-constructor
-  checked_vector(size_type count, A alloc = A()) :
+  CheckedVector(size_type count, A alloc = A()) :
     count(count),
     alloc(alloc),
     first(alloc.allocate(count))
@@ -71,7 +71,7 @@ public:
   }
   
   // creates array by calling copy-constructor
-  checked_vector(size_type count, const_reference t, A alloc = A()) :
+  CheckedVector(size_type count, const_reference t, A alloc = A()) :
     count(count),
     alloc(alloc),
     first(alloc.allocate(count))
@@ -85,7 +85,7 @@ public:
   // factory object (memory is already allocated, so placement new must be
   // used)
   template<class F>  
-  checked_vector(size_type count, F factory = F(), A alloc = A()) :
+  CheckedVector(size_type count, F factory = F(), A alloc = A()) :
     count(count),
     alloc(alloc),
     first(alloc.allocate(count))
@@ -95,7 +95,7 @@ public:
     }
   }
   
-  ~checked_vector()
+  ~CheckedVector()
   {
     for(size_type i=0; i<count; ++i) {
       alloc.destroy(first + i);
@@ -123,7 +123,6 @@ public:
 
 /*
 #include <iostream>
-#include "par_actor_factory.hpp"
 
 using namespace CoSupport;
 
@@ -136,27 +135,28 @@ struct test
   ~test() { std::cout << "des" << std::endl; }
   test(const test& t) : x(t.x) { std::cout << "cc" << std::endl; }
   
-  struct factory : public par_actor_factory<test> {
+  struct factory {
+    std::string prefix;
     int x;
     
     factory(const std::string& prefix, int x) :
-      par_actor_factory<test>(prefix), x(x)
+      prefix(prefix), x(x)
     {}
     
-    void construct_helper(test* p, const std::string& name)
-    { new (p) test(name, x); }
+    void construct(test* p, size_t instance)
+    { new (p) test(Concat(prefix)(".")(instance), x); }
   };
 };
 
 int main() {
 
-  checked_vector<test> v1(2);
+  CheckedVector<test> v1(2);
   std::cout << v1[1].x << std::endl;
   
-  checked_vector<test> v2(3, test("blub", 99));
+  CheckedVector<test> v2(3, test("blub", 99));
   std::cout << v2[2].x << std::endl;
   
-  checked_vector<test> v3(4, test::factory("blub", 3));
+  CheckedVector<test> v3(4, test::factory("blub", 3));
   std::cout << v3[3].x << std::endl;
 
   return 0;

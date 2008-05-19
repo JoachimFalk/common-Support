@@ -55,14 +55,11 @@ nobase_include_HEADERS = \
 	CoSupport/SmartPtr/RefCount.hpp \
 	CoSupport/SmartPtr/RefCountObject.hpp \
 	CoSupport/SystemC/systemc_support.hpp \
-	CoSupport/SystemC/par_actor_factory.hpp \
-	CoSupport/SystemC/par_actor.hpp \
 	CoSupport/SystemC/par_manager.hpp \
-	CoSupport/SystemC/par_port.hpp \
 	CoSupport/SystemC/PerformanceEvaluation.hpp \
 	CoSupport/SystemC/ChannelModificationListener.hpp \
 	CoSupport/DataTypes/ValidWrapper.hpp \
-	CoSupport/DataTypes/checked_vector.hpp \
+	CoSupport/DataTypes/CheckedVector.hpp \
 	CoSupport/DataTypes/bit_buffer.hpp \
 	CoSupport/DataTypes/container_insert.hpp \
 	CoSupport/DataTypes/ListFacade.hpp \
