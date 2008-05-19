@@ -43,8 +43,8 @@
 #include <iostream>
 #include <string>
 
-#include "sassert.h"
-#include "string_convert.hpp"
+#include "../sassert.h"
+#include "../String/convert.hpp"
 #include "../Initializer/BasicInitializer.hpp"
 
 //#include <xalanc/Include/PlatformDefinitions.hpp>
@@ -65,12 +65,12 @@ namespace XML { namespace Xerces {
 namespace Initializer {
 
   template <>
-  struct BasicInitializerTraits<Xerces::XN::XalanTransformer> {
+  struct BasicInitializerTraits<XML::Xerces::XN::XalanTransformer> {
     static void initialize()
-      { Xerces::XN::XalanTransformer::initialize(); }
+      { XML::Xerces::XN::XalanTransformer::initialize(); }
     static void terminate() {
-      Xerces::XN::XalanTransformer::terminate();
-      Xerces::XN::XalanTransformer::ICUCleanUp();
+      XML::Xerces::XN::XalanTransformer::terminate();
+      XML::Xerces::XN::XalanTransformer::ICUCleanUp();
     }
   };
 
@@ -85,7 +85,7 @@ namespace CoSupport { namespace XML { namespace Xalan {
   using namespace Xerces;
 
   class XalanInitializer : public XercesInitializer {
-    BasicInitializer<Xalan::XN::XalanTransformer> m_initializer;
+    Initializer::BasicInitializer<XN::XalanTransformer> m_initializer;
   };
 
   inline
@@ -109,7 +109,7 @@ namespace CoSupport { namespace XML { namespace Xalan {
   /// This throws an exception if the conversion is invalid.
   template <typename T>
   T getNodeValueAs(const XN::XalanNode *node)
-    { return strAs<T>(getNodeValueAs<std::string>(node)); }
+    { return String::strAs<T>(getNodeValueAs<std::string>(node)); }
   template <>
   inline
   XN::XalanDOMString getNodeValueAs<XN::XalanDOMString>(const XN::XalanNode *node)
