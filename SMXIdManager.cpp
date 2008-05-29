@@ -10,7 +10,7 @@ namespace XXN = XML::Xerces::XN;
 using String::asStr;
 using String::strAs;
 
-struct InvalidConversion {};
+using String::InvalidConversion;
 
 SMXIdSer::SMXIdSer(SMXId id) :
   id(id)
@@ -26,16 +26,16 @@ std::string asStr<SMXIdSer>(const SMXIdSer& id)
 template<>
 SMXIdSer strAs<SMXIdSer>(const std::string &s) {
   if(s.size() < 3 || s[0] != 'i' || s[1] != 'd')
-    throw InvalidConversion();
-
+    throw InvalidConversionTo<SMXIdSer>();
+  
   SMXId ret = 0;
   
   for(size_t i = 2; i < s.size(); ++i) {
     if(s[i] < '0' || s[i] > '9')
-      throw InvalidConversion();
+      throw InvalidConversionTo<SMXIdSer>();
     ret = ret * 10 + (s[i] - '0');
   }
-
+  
   return ret;
 }
 

@@ -38,11 +38,18 @@
 
 #include <sstream>
 #include <string>
-#include <stdexcept>
+#include <exception>
 
 #include "TypeName.hpp"
 
 namespace CoSupport { namespace String {
+
+struct InvalidConversion: public std::exception {
+};
+
+template <typename T>
+struct InvalidConversionTo: public InvalidConversion {
+};
 
 template <typename T>
 T strAs(const std::string &str) {
@@ -60,10 +67,10 @@ T strAs(const std::string &str) {
       in.clear(std::ios::eofbit);
   }
   if (in.fail() || !in.eof()) {
-    std::ostringstream msg;
-    
-    msg << "Invalid conversion from '" << str << "' to " << TypeName<T>::name() << " !";
-    throw std::runtime_error(msg.str());
+    throw InvalidConversionTo<T>();
+//  std::ostringstream msg;
+//  msg << "Invalid conversion from '" << str << "' to " << TypeName<T>::name() << " !";
+//  throw std::runtime_error(msg.str());
   }
   return retval;
 }
