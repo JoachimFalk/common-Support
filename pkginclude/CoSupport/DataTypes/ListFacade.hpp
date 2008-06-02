@@ -152,7 +152,7 @@ namespace CoSupport { namespace DataTypes {
         ++retval;
       return retval;
     }
-    
+/*
     template<class Predicate>
     const_iterator find_if(Predicate pred) const
       { return std::find_if(begin(), end(), pred); }
@@ -187,6 +187,7 @@ namespace CoSupport { namespace DataTypes {
       Reference ref = *i;
       return &ref;
     }
+ */
   };
 
 } } // namespace CoSupport::DataTypes
