@@ -25,6 +25,7 @@ include $(auxdir)/jfrules.mk
 SUBDIRS=
 
 nobase_include_HEADERS = \
+	CoSupport/Allocators/IdPool.hpp \
 	CoSupport/Streams/HexOutput.hpp \
 	CoSupport/Streams/AlternateStream.hpp \
 	CoSupport/Streams/stl_output_for_list.hpp \
