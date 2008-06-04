@@ -109,7 +109,7 @@ public:
     : ref(p) {}
   FacadePtr(const FacadePtr<T, Type::Mutable> &t)
     : ref(t.ref) {}
-  FacadePtr(typename C<T>::type *t)
+  FacadePtr(typename C<T>::type *t = NULL)
     : ref(SmartPtr()) { if (t) ref.assign(*t); }
 
   value_type &operator *() const {
