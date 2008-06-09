@@ -86,7 +86,7 @@ namespace CoSupport { namespace SmartPtr {
   };
 
 #define DECL_INTRUSIVE_COPYONWRITE_PTR(T,PST)	                  \
-  typedef ::CoSupport::intrusive_copyonwrite_ptr<T> PST;	  \
+  typedef ::CoSupport::SmartPtr::intrusive_copyonwrite_ptr<T> PST;\
   void intrusive_ptr_add_ref(T *);		                  \
   void intrusive_ptr_release(T *);		                  \
   void intrusive_ptr_mkunique(PST &)
@@ -100,8 +100,9 @@ namespace CoSupport { namespace SmartPtr {
       delete p;					                  \
   }                                                               \
   void intrusive_ptr_mkunique                                     \
-    ( ::CoSupport::intrusive_copyonwrite_ptr<T> &lptr ) {         \
-    const ::CoSupport::intrusive_copyonwrite_ptr<T> &rptr = lptr; \
+    (::CoSupport::SmartPtr::intrusive_copyonwrite_ptr<T> &lptr) { \
+    const ::CoSupport::SmartPtr::intrusive_copyonwrite_ptr<T>     \
+      &rptr = lptr;                                               \
     if ( !rptr->unique_ref() )                                    \
       lptr = new T(*rptr);                                        \
   }
