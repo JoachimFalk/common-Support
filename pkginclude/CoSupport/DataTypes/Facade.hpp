@@ -256,13 +256,16 @@ namespace Type {
     { typedef const DataTypes::FacadeRef<T, Type::Const> type; };
   template <typename T>
   struct Const<DataTypes::FacadePtr<T, Mutable> >
-    { typedef const DataTypes::FacadePtr<T, Type::Const> type; };
+    { typedef DataTypes::FacadePtr<T, Type::Const> type; };
+  template <typename T>
+  struct Const<DataTypes::FacadePtr<T, Type::Const> >
+    { typedef DataTypes::FacadePtr<T, Type::Const> type; };
 
   template <typename T>
   struct Mutable<const DataTypes::FacadeRef<T, Const> >
     { typedef DataTypes::FacadeRef<T, Type::Mutable> type; };
   template <typename T>
-  struct Mutable<const DataTypes::FacadePtr<T, Const> >
+  struct Mutable<DataTypes::FacadePtr<T, Const> >
     { typedef DataTypes::FacadePtr<T, Type::Mutable> type; };
 
   template <typename T>
@@ -272,11 +275,11 @@ namespace Type {
   struct ToggleConst<DataTypes::FacadeRef<T, Mutable> >
     { typedef const DataTypes::FacadeRef<T, Const> type; };
   template <typename T>
-  struct ToggleConst<const DataTypes::FacadePtr<T, Const> >
+  struct ToggleConst<DataTypes::FacadePtr<T, Const> >
     { typedef DataTypes::FacadePtr<T, Mutable> type; };
   template <typename T>
   struct ToggleConst<DataTypes::FacadePtr<T, Mutable> >
-    { typedef const DataTypes::FacadePtr<T, Const> type; };
+    { typedef DataTypes::FacadePtr<T, Const> type; };
 
 } // namespace Type
 
