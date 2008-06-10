@@ -192,4 +192,35 @@ namespace CoSupport { namespace DataTypes {
 
 } } // namespace CoSupport::DataTypes
 
+namespace CoSupport { namespace Type {
+
+  template <class Derived, class Iter, class Value, class Reference, class Ptr>
+  struct Const<typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::iterator> {
+    typedef typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::const_iterator type;
+  };
+  template <class Derived, class Iter, class Value, class Reference, class Ptr>
+  struct Const<typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::const_iterator> {
+    typedef typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::const_iterator type;
+  };
+
+  template <class Derived, class Iter, class Value, class Reference, class Ptr>
+  struct Mutable<typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::iterator> {
+    typedef typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::iterator type;
+  };
+  template <class Derived, class Iter, class Value, class Reference, class Ptr>
+  struct Mutable<typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::const_iterator> {
+    typedef typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::iterator type;
+  };
+
+  template <class Derived, class Iter, class Value, class Reference, class Ptr>
+  struct ToggleConst<typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::iterator> {
+    typedef typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::const_iterator type;
+  };
+  template <class Derived, class Iter, class Value, class Reference, class Ptr>
+  struct ToggleConst<typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::const_iterator> {
+    typedef typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::iterator type;
+  };
+
+} } // namespace CoSupport::Type
+
 #endif // _INCLUDED_COSUPPORT_DATATYPES_LISTFACADE_HPP
