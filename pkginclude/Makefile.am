@@ -67,6 +67,7 @@ nobase_include_HEADERS = \
 	CoSupport/DataTypes/oneof.hpp \
 	CoSupport/DataTypes/ArrayFifo.hpp \
 	CoSupport/DataTypes/Facade.hpp \
+	CoSupport/DataTypes/SerializeHelper.hpp \
 	CoSupport/Math/modulo_arith.hpp \
 	CoSupport/Math/smoc_math.hpp \
 	CoSupport/Math/string_hash.hpp \
