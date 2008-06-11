@@ -9,9 +9,15 @@ namespace CoSupport { namespace DataTypes {
    */
   template<class T>
   struct SerializeHelper {
+
+    typedef SerializeHelper<T> this_type;
+    
     /// @brief Constructor
     SerializeHelper(const T& val)
       : val(val)
+    {}
+
+    SerializeHelper()
     {}
 
     operator const T&() const{
@@ -22,22 +28,35 @@ namespace CoSupport { namespace DataTypes {
       return val;
     }
 
+#if 0
+    bool operator!=(const T& val) const {
+      return val != this->val;
+    }
+
+    bool operator!=(const this_type& a) const {
+      return a.val != this->val;
+    }
+#endif
+
     /// @brief The Id
     T val;
   };
 
   template<class T>
   class SerializeHelperPrintTraits{
+  public:
     typedef T type;  
   };
 
   template<>
   class SerializeHelperPrintTraits<unsigned char>{
+  public:
     typedef unsigned int type;  
   };
 
   template<>
   class SerializeHelperPrintTraits<signed char>{
+  public:
     typedef unsigned int type;  
   };
 
