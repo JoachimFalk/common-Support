@@ -55,6 +55,11 @@ public:
   }
 
   iterator idAllocNext(key_type searchFrom, const mapped_type &obj) {
+//  std::cerr << "IdAllocator<...>::idAllocNext" << std::endl;
+//  std::cerr << "IdRange::min " << IdRange::min << std::endl;
+//  std::cerr << "IdRange::max " << IdRange::min << std::endl;
+//  std::cerr << "nextId:      " << nextId << std::endl;
+    
     if (nextId > IdRange::max) {
       assert(!"UGH: No more IDS!!!");
       exit(-1);
