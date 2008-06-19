@@ -45,6 +45,7 @@
 #include <CoSupport/Streams/NullStreambuf.hpp>
 
 #include <cassert>
+#include <iostream>
 
 namespace CoSupport { namespace Streams {
 
@@ -53,7 +54,10 @@ using String::strAs;
   
 FilterStreambuf::FilterStreambuf(std::streambuf *next) :
   next(next)
-{}
+{
+  //std::cerr << "Enter FilterStreambuf::FilterStreambuf" << std::endl;
+  //std::cerr << "Leave FilterStreambuf::FilterStreambuf" << std::endl;
+}
 
 bool FilterStreambuf::hasManip() const
 { return false; }
@@ -124,7 +128,10 @@ HeaderFooterStreambuf::HeaderFooterStreambuf(
   add_header(add_header),
   add_footer(add_footer),
   newline(true)
-{}
+{
+  //std::cerr << "Enter HeaderFooterStreambuf::HeaderFooterStreambuf" << std::endl;
+  //std::cerr << "Leave HeaderFooterStreambuf::HeaderFooterStreambuf" << std::endl;
+}
 
 const std::string& HeaderFooterStreambuf::getHeader() const
 { return header; }
@@ -207,28 +214,23 @@ std::ostream& operator<<(std::ostream &os, const Footer &p)
 
 Color::Color(size_t color, size_t attr) :
   escape("\e[" + asStr(attr) + ";" + asStr(color) + "m")
-{}
+{
+  // std::cerr << "Enter Color::Color(size_t color, size_t attr)" << std::endl;
+  // std::cerr << "this = " << this << std::endl;
+  // std::cerr << escape << std::endl;
+  // std::cerr << "Leave Color::Color(size_t color, size_t attr)" << std::endl;
+  // std::cerr.flush();
+}
 
 Color::Color(size_t attr) :
   escape("\e[" + asStr(attr) + "m")
-{}
-  
-const Color Color::Auto         (0);
-const Color Color::Black        (30, 0);
-const Color Color::Red          (31, 0);
-const Color Color::BrightRed    (31, 1);
-const Color Color::Green        (32, 0);
-const Color Color::BrightGreen  (32, 1);
-const Color Color::Brown        (33, 0);
-const Color Color::BrightBrown  (33, 1);
-const Color Color::Blue         (34, 0);
-const Color Color::BrightBlue   (34, 1);
-const Color Color::Purple       (35, 0);
-const Color Color::BrightPurple (35, 1);
-const Color Color::Cyan         (36, 0);
-const Color Color::BrightCyan   (36, 1);
-const Color Color::Gray         (37, 0);
-const Color Color::BrightGray   (37, 1);
+{  
+  // std::cerr << "Enter Color::Color(size_t attr)" << std::endl;
+  // std::cerr << "this = " << this << std::endl;
+  // std::cerr << escape << std::endl;
+  // std::cerr << "Leave Color::Color(size_t attr)" << std::endl;
+  // std::cerr.flush();
+}
 
 ColorStreambuf::ColorStreambuf(
     const Color &color,
@@ -238,7 +240,10 @@ ColorStreambuf::ColorStreambuf(
   color(color),
   reset(reset),
   newline(true)
-{}
+{
+  //std::cerr << "Enter ColorStreambuf::ColorStreambuf" << std::endl;
+  //std::cerr << "Leave ColorStreambuf::ColorStreambuf" << std::endl;
+}
 
 void ColorStreambuf::setColor(const Color &c)
 { color = c; }
@@ -291,7 +296,10 @@ IndentStreambuf::IndentStreambuf(
   delta(delta),
   indent(indent),
   newline(true)
-{}
+{
+  // std::cerr << "Enter IndentStreambuf::IndentStreambuf" << std::endl;
+  // std::cerr << "Leave IndentStreambuf::IndentStreambuf" << std::endl;
+}
 
 void IndentStreambuf::setIndentation(int value)
 {

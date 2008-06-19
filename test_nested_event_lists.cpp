@@ -518,7 +518,7 @@ int sc_main(int argc, char *argv[]) {
   }
 
 
-  out << Color::Green << "OK: Passed all tests!" << Color::Auto << std::endl;
+  out << Color::Green() << "OK: Passed all tests!" << Color::Auto() << std::endl;
 
   return 0;
 }

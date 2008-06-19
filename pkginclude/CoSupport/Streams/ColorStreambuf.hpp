@@ -37,6 +37,7 @@
 #define _INCLUDED_COSUPPORT_STREAMS_COLORSTREAMBUF_HPP
 
 #include <ostream>
+#include <iostream>
 
 #include "FilterStreambuf.hpp"
 
@@ -57,24 +58,40 @@ struct Color {
   /// constructs a new object whith the specified attribute
   /// (no change to the foreground color)
   Color(size_t attr);
-  
+
+  // Color(const Color& c)
+  // {
+  //   std::cerr << "Enter Color(const Color& c)" << std::endl;
+  //   std::cerr << escape << std::endl;
+  //   std::cerr.flush();
+  //   std::cerr << "&c = " << &c << std::endl;
+  //   std::cerr.flush();
+  //   escape = c.escape;
+  //   std::cerr << escape << std::endl;
+  //   std::cerr.flush();
+  //   std::cerr << "Leave Color(const Color& c)" << std::endl;
+  // }
+
+
   /// predefined colors 
-  static const Color Auto;
-  static const Color Black;
-  static const Color Red;
-  static const Color BrightRed;
-  static const Color Green;
-  static const Color BrightGreen;
-  static const Color Brown;
-  static const Color BrightBrown;
-  static const Color Blue;
-  static const Color BrightBlue;
-  static const Color Purple;
-  static const Color BrightPurple;
-  static const Color Cyan;
-  static const Color BrightCyan;
-  static const Color Gray;
-  static const Color BrightGray;
+  /// We do not use static variables in order to avoid racing conditions
+  /// when initializing global variables.
+  static const Color& Auto()         { static Color c(0)    ; return c; }
+  static const Color& Black()        { static Color c(30, 0); return c; }
+  static const Color& Red()          { static Color c(31, 0); return c; }
+  static const Color& BrightRed()    { static Color c(31, 1); return c; }
+  static const Color& Green()        { static Color c(32, 0); return c; }
+  static const Color& BrightGreen()  { static Color c(32, 1); return c; }
+  static const Color& Brown()        { static Color c(33, 0); return c; }
+  static const Color& BrightBrown()  { static Color c(33, 1); return c; }
+  static const Color& Blue()         { static Color c(34, 0); return c; }
+  static const Color& BrightBlue()   { static Color c(34, 1); return c; }
+  static const Color& Purple()       { static Color c(35, 0); return c; }
+  static const Color& BrightPurple() { static Color c(35, 1); return c; }
+  static const Color& Cyan()         { static Color c(36, 0); return c; }
+  static const Color& BrightCyan()   { static Color c(36, 1); return c; }
+  static const Color& Gray()         { static Color c(37, 0); return c; }
+  static const Color& BrightGray()   { static Color c(37, 1); return c; }
 };
 
 /**
@@ -96,9 +113,9 @@ public:
   /// constructs a new object with the specified
   /// colors
   ColorStreambuf(
-      const Color &color = Color::Auto,
-      const Color &reset = Color::Auto,
-      std::streambuf *next = 0);
+                 const Color &color = Color::Auto(),
+                 const Color &reset = Color::Auto(),
+                 std::streambuf *next = 0);
   
   /// set a new line color
   void setColor(const Color &c);

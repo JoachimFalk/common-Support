@@ -41,6 +41,7 @@
 #include "HeaderFooterStreambuf.hpp"
 #include "ColorStreambuf.hpp"
 #include "DebugStreambuf.hpp"
+#include <iostream>
 
 namespace CoSupport { namespace Streams {
 
@@ -57,10 +58,12 @@ public:
     : FilterOStream(os),
       debuglevel(dbg)
   {
+    //std::cerr << "Enter DebugOStream(std::ostream &os, const Debug &dbg)" << std::endl;
     insert(indenter);
     insert(headerFooter);
     insert(colorer);
     insert(debuglevel);
+    //std::cerr << "Leave DebugOStream(std::ostream &os, const Debug &dbg)" << std::endl;
   }
 
   /// set a new debug level
