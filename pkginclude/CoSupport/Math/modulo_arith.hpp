@@ -49,11 +49,9 @@ class ModuloInt
   typedef ModuloInt<N>                      this_type;
   typedef Math::Detail::ModuloGroupImpl<
     Math::CTModulus<size_t, N>, this_type>  base_type;
-
+public:
   typedef typename this_type::value_type value_type;
   typedef typename this_type::M          M;
-public:
-  typedef size_t (this_type::*unspecified_bool_type)() const;
 public:
   ModuloInt(size_t v = 0, const M &m = M())
     : base_type(v + N < N ? v + N : v, m) {}

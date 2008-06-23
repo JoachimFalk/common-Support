@@ -85,9 +85,7 @@ namespace Detail {
       { return *static_cast<DERIVED const *>(this); }
   public:
     ModuloGroupImpl(value_type e = value_type(0), const M &m_ = M())
-      : e(e) {
-      assert(e < m());
-    }
+      : M(m_), e(e) { assert(e < m()); }
 
     template <class MM, class MD>
     DERIVED &operator += (const ModuloGroupImpl<MM, MD> &n) {
@@ -147,7 +145,7 @@ namespace Detail {
     bool between(const ModuloGroupImpl<AM, AD> &a_, const ModuloGroupImpl<BM, BD> &b_) const {
       assert(a_.m() == m()); assert(b_.m() == m());
       const value_type &a = a_.getValue();
-      const value_type &b = a_.getValue();
+      const value_type &b = b_.getValue();
       
       // a <= e <= b in modulo arith:
       //   a == b   implies a == b == e
@@ -173,12 +171,12 @@ namespace Detail {
     }
     template <class AM, class AD>
     bool between(const ModuloGroupImpl<AM, AD> &a, const value_type &b) const
-      { return between(a, DERIVED(b, m())); }
+      { return between(a, DERIVED(b, *this)); }
     template <class BM, class BD>
     bool between(const value_type &a, const ModuloGroupImpl<BM, BD> &b) const
-      { return between(DERIVED(a, m()), b); }
+      { return between(DERIVED(a, *this), b); }
     bool between(const value_type &a, const value_type &b)
-      { return between(DERIVED(a, m()), DERIVED(b, m())); }
+      { return between(DERIVED(a, *this), DERIVED(b, *this)); }
 
     operator unspecified_bool_type() const // never throws
       { return e ? &this_type::getValue : NULL; }
@@ -213,6 +211,8 @@ public:
 public:
   ModuloGroup(value_type e = value_type(0), const M &m = M())
     : base_type(e, m) {}
+  ModuloGroup(const M &m)
+    : base_type(value_type(0), m) {}
 };
 
 } } // namespace CoSupport::Math
