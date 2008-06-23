@@ -36,72 +36,27 @@
 #ifndef _INCLUDED_MODULO_ARITH_HPP
 #define _INCLUDED_MODULO_ARITH_HPP
 
-#include "../sassert.h"
+// Obsolete header please use ModuloGroup.hpp
+
+#include "ModuloGroup.hpp"
 
 namespace CoSupport {
 
 template <size_t N>
-class ModuloInt {
+class ModuloInt
+: public Math::Detail::ModuloGroupImpl<
+    Math::CTModulus<size_t, N>, ModuloInt<N> > {
+  typedef ModuloInt<N>                      this_type;
+  typedef Math::Detail::ModuloGroupImpl<
+    Math::CTModulus<size_t, N>, this_type>  base_type;
+
+  typedef typename this_type::value_type value_type;
+  typedef typename this_type::M          M;
 public:
-  typedef ModuloInt this_type;
-  
   typedef size_t (this_type::*unspecified_bool_type)() const;
-protected:
-  size_t v;
 public:
-  ModuloInt( size_t v = 0 )
-    : v(v) {
-    assert( v < N );
-  }
-  ModuloInt( int _v )
-    : v(_v >= 0 ? _v : N + _v) {
-    assert( v >= 0 && v < N );
-  }
-  
-  this_type &operator += (this_type n) {
-    if ( (v += n.v) >= N )
-      v -= N;
-    assert( v >= 0 && v < N );
-    return *this;
-  }
-  this_type &operator -= (this_type n) {
-    if ( (v -= n.v) >= N )
-      v += N;
-    assert( v >= 0 && v < N );
-    return *this;
-  }
-  
-  this_type operator + (this_type rhs) const
-    { return this_type(*this) += rhs; }
-  this_type operator - (this_type rhs) const
-    { return this_type(*this) -= rhs; }
-  bool operator == (this_type rhs) const
-    { return v == rhs.v; }
-  bool operator != (this_type rhs) const
-    { return !(*this == rhs); }
-  
-  size_t getValue() const
-    { return v; }
-  
-  operator unspecified_bool_type() const // never throws
-    { return v ? &this_type::getValue : NULL; }
-  
-  this_type &operator ++() {
-    return *this += 1;
-  }
-  this_type  operator ++(int) {
-    this_type retval(*this);
-    *this += 1;
-    return retval;
-  }
-  this_type &operator --() {
-    return *this -= 1;
-  }
-  this_type  operator --(int) {
-    this_type retval(*this);
-    *this -= 1;
-    return retval;
-  }
+  ModuloInt(size_t v = 0, const M &m = M())
+    : base_type(v + N < N ? v + N : v, m) {}
 };
 
 } // namespace CoSupport
