@@ -61,6 +61,17 @@ namespace Detail {
   };
 } // namespace Detail
 
+template <class T, template <class> class C> class FacadeRef;
+template <class T, template <class> class C> class FacadePtr;
+
+template <class T>
+struct FacadeTraits {
+  typedef const FacadeRef<T, Type::Const> ConstRef;
+  typedef FacadeRef<T, Type::Mutable>     Ref;
+  typedef FacadePtr<T, Type::Const>       ConstPtr;
+  typedef FacadePtr<T, Type::Mutable>     Ptr;
+};
+
 template <class T, template <class> class C>
 class FacadeRef: public T {
   typedef FacadeRef<T, C> this_type;
@@ -92,10 +103,10 @@ public:
   typedef typename T::_H::ImplType  ImplType;
   typedef typename T::_H::SmartPtr  SmartPtr;
 
-  typedef typename T::_H::ConstRef  ConstRef;
-  typedef typename T::_H::Ref       Ref;
-  typedef typename T::_H::ConstPtr  ConstPtr;
-  typedef typename T::_H::Ptr       Ptr;
+  typedef typename FacadeTraits<T>::ConstRef  ConstRef;
+  typedef typename FacadeTraits<T>::Ref       Ref;
+  typedef typename FacadeTraits<T>::ConstPtr  ConstPtr;
+  typedef typename FacadeTraits<T>::Ptr       Ptr;
 
   typedef value_type &(this_type::*unspecified_bool_type)() const;
 private:
@@ -129,58 +140,54 @@ public:
   // is not defined, (a != b) results always [assuming pImpl
   // is valid] in (true != true), which is WRONG!!!)
   // -> define all comparison operators
-    operator unspecified_bool_type() const {
+  operator unspecified_bool_type() const {
     return ref.pImpl != NULL
       ? static_cast<unspecified_bool_type>(&this_type::operator *)
       : NULL;
   }
-  bool operator ==(const FacadePtr<T,Type::Const> &x) const
+
+  bool operator ==(const Ptr &x) const
+    { return ref.pImpl.get() == x.ref.pImpl.get(); }
+  bool operator ==(const ConstPtr &x) const
     { return ref.pImpl.get() == x.ref.pImpl.get(); }
   bool operator ==(const T *x) const
     { return ref.pImpl.get() == (x ? x->pImpl.get() : NULL); }
 
-  bool operator !=(const FacadePtr<T,Type::Const> &x) const
+  bool operator !=(const Ptr &x) const
+    { return ref.pImpl.get() != x.ref.pImpl.get(); }
+  bool operator !=(const ConstPtr &x) const
     { return ref.pImpl.get() != x.ref.pImpl.get(); }
   bool operator !=(const T *x) const
     { return ref.pImpl.get() != (x ? x->pImpl.get() : NULL); }
 
-  bool operator <(const FacadePtr<T,Type::Const> &x) const
+  bool operator <(const Ptr &x) const
+    { return ref.pImpl.get() < x.ref.pImpl.get(); }
+  bool operator <(const ConstPtr &x) const
     { return ref.pImpl.get() < x.ref.pImpl.get(); }
   bool operator <(const T *x) const
     { return ref.pImpl.get() < (x ? x->pImpl.get() : NULL); }
 
-  bool operator <=(const FacadePtr<T,Type::Const> &x) const
+  bool operator <=(const Ptr &x) const
+    { return ref.pImpl.get() <= x.ref.pImpl.get(); }
+  bool operator <=(const ConstPtr &x) const
     { return ref.pImpl.get() <= x.ref.pImpl.get(); }
   bool operator <=(const T *x) const
     { return ref.pImpl.get() <= (x ? x->pImpl.get() : NULL); }
 
-  bool operator >(const FacadePtr<T,Type::Const> &x) const
+  bool operator >(const Ptr &x) const
+    { return ref.pImpl.get() > x.ref.pImpl.get(); }
+  bool operator >(const ConstPtr &x) const
     { return ref.pImpl.get() > x.ref.pImpl.get(); }
   bool operator >(const T *x) const
     { return ref.pImpl.get() > (x ? x->pImpl.get() : NULL); }
 
-  bool operator >=(const FacadePtr<T,Type::Const> &x) const
+  bool operator >=(const Ptr &x) const
+    { return ref.pImpl.get() >= x.ref.pImpl.get(); }
+  bool operator >=(const ConstPtr &x) const
     { return ref.pImpl.get() >= x.ref.pImpl.get(); }
   bool operator >=(const T *x) const
     { return ref.pImpl.get() >= (x ? x->pImpl.get() : NULL); }
-  
-  bool operator ==(const FacadePtr<T,Type::Mutable> &x) const
-    { return ref.pImpl.get() == x.ref.pImpl.get(); }
 
-  bool operator !=(const FacadePtr<T,Type::Mutable> &x) const
-    { return ref.pImpl.get() != x.ref.pImpl.get(); }
-
-  bool operator <(const FacadePtr<T,Type::Mutable> &x) const
-    { return ref.pImpl.get() < x.ref.pImpl.get(); }
-
-  bool operator <=(const FacadePtr<T,Type::Mutable> &x) const
-    { return ref.pImpl.get() <= x.ref.pImpl.get(); }
-
-  bool operator >(const FacadePtr<T,Type::Mutable> &x) const
-    { return ref.pImpl.get() > x.ref.pImpl.get(); }
-
-  bool operator >=(const FacadePtr<T,Type::Mutable> &x) const
-    { return ref.pImpl.get() >= x.ref.pImpl.get(); }
 };
 
 template <class Derived, class Impl, class Base = Detail::Storage<Impl>, class SPtr = typename Base::SmartPtr>
@@ -190,18 +197,18 @@ class FacadeFoundation: public Base {
   template <class TT, template <class> class CC> friend class FacadeRef;
   template <class TT, template <class> class CC> friend class FacadePtr;
 protected:
-  typedef this_type                                         FFType;
+  typedef this_type FFType;
 public:
-  typedef Impl                                              ImplType;
-  typedef SPtr                                              SmartPtr;
+  typedef Impl      ImplType;
+  typedef SPtr      SmartPtr;
 
-  typedef const FacadeRef<Derived, Type::Const>  ConstRef;
-  typedef FacadeRef<Derived, Type::Mutable>      Ref;
-  typedef FacadePtr<Derived, Type::Const>        ConstPtr;
-  typedef FacadePtr<Derived, Type::Mutable>      Ptr;
+  typedef typename FacadeTraits<Derived>::ConstRef  ConstRef;
+  typedef typename FacadeTraits<Derived>::Ref       Ref;
+  typedef typename FacadeTraits<Derived>::ConstPtr  ConstPtr;
+  typedef typename FacadeTraits<Derived>::Ptr       Ptr;
 private:
-  // hack for type downward traversal
-  typedef FFType                                            _H;
+  // Hack for type downward traversal as FFType may be redefined in Derived!
+  typedef this_type _H;
   //
   // Curiously Recurring Template interface.
   //
@@ -229,14 +236,6 @@ private:
   // default no copy no assign
   FacadeFoundation(const FacadeFoundation &);
   FacadeFoundation &operator =(const FacadeFoundation &);
-};
-
-template <class T>
-struct FacadeTraits {
-  typedef const FacadeRef<T, Type::Const> ConstRef;
-  typedef FacadeRef<T, Type::Mutable>     Ref;
-  typedef FacadePtr<T, Type::Const>       ConstPtr;
-  typedef FacadePtr<T, Type::Mutable>     Ptr;
 };
 
 template <class TT, class T, template <class> class C>
