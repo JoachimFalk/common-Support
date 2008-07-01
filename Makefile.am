@@ -59,6 +59,7 @@ lib_LTLIBRARIES=			\
 	libcosupport-xerces.la		\
 	libcosupport-systemc.la		\
 	libcosupport-streams.la		\
+	libcosupport-string.la		\
 	libcosupport-allocators.la
 noinst_PROGRAMS=			\
 	test_arrayfifo			\
@@ -74,6 +75,7 @@ libcosupport_la_LIBADD =			\
 	libcosupport-xerces.la			\
 	libcosupport-systemc.la			\
 	libcosupport-streams.la			\
+	libcosupport-string.la			\
 	libcosupport-allocators.la
 
 libcosupport_initializer_la_LDFLAGS =		\
@@ -113,6 +115,11 @@ libcosupport_streams_la_LDFLAGS =		\
 libcosupport_streams_la_SOURCES =		\
 	DebugOStream.cpp			\
 	FilterOStream.cpp
+
+libcosupport_string_la_LDFLAGS =		\
+	$(AM_LDFLAGS)
+libcosupport_string_la_SOURCES =		\
+	TemplateProcessor.cpp
 
 libcosupport_allocators_la_LDFLAGS =		\
 	$(AM_LDFLAGS)
