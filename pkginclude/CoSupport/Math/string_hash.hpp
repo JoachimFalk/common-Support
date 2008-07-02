@@ -5,14 +5,14 @@ namespace CoSupport {
 
 namespace Detail {
 
-// calculates smallest x = 2^k; x > N  (e.g. 29 -> 32, 32 -> 64)
-template<uint64_t N, uint64_t S = 1>
-struct NextPower2
-{ static const size_t value = NextPower2<N >> 1, S << 1>::value; };
+  // calculates smallest x = 2^k; x > N  (e.g. 29 -> 32, 32 -> 64)
+  template<uint64_t N, uint64_t S = 1>
+  struct NextPower2
+    { static const size_t value = NextPower2<(N >> 1), (S << 1)>::value; };
 
-template<uint64_t S>
-struct NextPower2<0, S>
-{ static const uint64_t value = S; };
+  template<uint64_t S>
+  struct NextPower2<0, S>
+    { static const uint64_t value = S; };
 
 } // namespace Detail
 
@@ -25,7 +25,7 @@ public:
 
   template<class N>
   result_type operator()(N n) const
-  { return xorFold(fnv(n)); }
+    { return xorFold(fnv(n)); }
 
 private:
   static const result_type MASK = (1ull << BITS) - 1ull;
@@ -33,7 +33,7 @@ private:
   FNV<Detail::NextPower2<BITS>::value> fnv;
 
   result_type xorFold(result_type h) const
-  { return (h >> BITS) ^ (h & MASK); }
+    { return (h >> BITS) ^ (h & MASK); }
 };
 
 // http://isthe.com/chongo/tech/comp/fnv/
