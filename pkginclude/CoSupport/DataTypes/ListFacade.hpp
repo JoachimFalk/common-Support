@@ -37,76 +37,120 @@
 
 #include <boost/iterator/iterator_facade.hpp>
 
+#include "../Type/transform.hpp"
+
 namespace CoSupport { namespace DataTypes {
+
+  namespace Detail {
+
+    struct IterTemplateAccess;
+
+    template <template <class> class M, class LISTFACADE>
+    class IterTemplate
+    : public boost::iterator_facade<
+        IterTemplate<M, LISTFACADE>,
+        typename M<typename LISTFACADE::value_type>::type,
+        boost::bidirectional_traversal_tag,
+        typename M<typename LISTFACADE::reference_type>::type> {
+      friend class IterTemplate<Type::Mutable, LISTFACADE>;
+      friend class IterTemplate<Type::Const, LISTFACADE>;
+      friend class boost::iterator_core_access;
+      friend class IterTemplateAccess;
+    private:
+      typedef typename LISTFACADE::Iter Iter;
+    public:
+//  private:
+      Iter iter;
+//  private:
+      IterTemplate(const typename LISTFACADE::Iter &iter)
+        : iter(iter) {}
+    public:
+      IterTemplate() {}
+
+      IterTemplate(const IterTemplate<Type::Mutable, LISTFACADE> &iter)
+        : iter(iter.iter) {}
+
+      // overwrite operator -> from boost which thinks it knows best
+      typename M<typename LISTFACADE::Ptr>::type operator->() const {
+        typename M<typename LISTFACADE::reference_type>::type ref = dereference();
+        return &ref;
+      }
+    protected:
+      template <template <class> class MM>
+      bool equal(const IterTemplate<MM, LISTFACADE> &n) const
+        { return iter.equal(n.iter); }
+      void increment()
+        { iter.next(); }
+      void decrement()
+        { iter.prev(); }
+      typename LISTFACADE::reference_type dereference() const
+        { return iter.deref(); }
+    };
+
+/*  struct IterTemplateAccess {
+      template <class ITERTEMPLATE>
+      static
+      ITERTEMPLATE construct(const typename ITERTEMPLATE::Iter &iter)
+        { return ITERTEMPLATE(iter); }
+      template <class ITERTEMPLATE>
+      static
+      typename ITERTEMPLATE::Iter &retrieve(ITERTEMPLATE &iter)
+        { return iter.iter; }
+      template <class ITERTEMPLATE>
+      static
+      const typename ITERTEMPLATE::Iter &retrieve(const ITERTEMPLATE &iter)
+        { return iter.iter; }
+    };
+ */
+
+  } // namespace Detail
 
   //
   // ListFacade - use as a public base class for defining new
   // [standard-conforming: not just yet] list containers.
   //
   template <
-    class Derived,            // The derived list container being constructed
-    class Iter,
-    class Value,
-    class Reference = Value &,
-    class Ptr       = Value *
+    class DERIVED,            // The derived list container being constructed
+    class ITER,
+    class VALUE,
+    class REFERENCE = VALUE &,
+    class PTR_       = VALUE *
   >
-  class ListFacade {
+  class ListFacade /*: protected Detail::IterTemplateAccess*/ {
+    typedef ListFacade<DERIVED, ITER, VALUE, REFERENCE, PTR_>  this_type;
+//  typedef Detail::IterTemplateAccess                        base_type;
+
+    friend class Detail::IterTemplate<Type::Mutable, this_type>;
+    friend class Detail::IterTemplate<Type::Const,   this_type>;
   private:
-    typedef ListFacade<Derived, Iter, Value, Reference, Ptr> this_type;
-
-    template <template <class> class M>
-    class IterTemplate
-    : public boost::iterator_facade<
-        IterTemplate<M>,
-        typename M<Value>::type,
-        boost::bidirectional_traversal_tag,
-        typename M<Reference>::type> {
-      friend class IterTemplate<CoSupport::Type::Mutable>;
-      friend class IterTemplate<CoSupport::Type::Const>;
-      friend class boost::iterator_core_access;
-      friend class ListFacade<Derived, Iter, Value, Reference, Ptr>;
-    private:
-      Iter iter;
-    public:
-      IterTemplate() {}
-
-      IterTemplate(const IterTemplate<CoSupport::Type::Mutable> &iter)
-        : iter(iter.iter) {}
-
-      // overwrite operator -> from boost which thinks he knows best
-      typename M<Ptr>::type operator->() const {
-        typename M<Reference>::type ref = dereference();
-        return &ref;
-      }
-    protected:
-      IterTemplate(const Iter &iter)
-        : iter(iter) {}
-
-      template <template <class> class MM>
-      bool equal(const IterTemplate<MM> &n) const
-        { return iter.equal(n.iter); }
-      void increment()
-        { iter.next(); }
-      void decrement()
-        { iter.prev(); }
-      Reference dereference() const
-        { return iter.deref(); }
-    };
-
+    // This is not a standard container type definition => hide it!
+    typedef PTR_  Ptr;  // for usage by Detail::IterTemplate
+    typedef ITER Iter; // for usage by Detail::IterTemplate
     //
     // Curiously Recurring Template interface.
     //
-    Derived& derived()
-      { return *static_cast<Derived*>(this); }
+    DERIVED &derived()
+      { return *static_cast<DERIVED *>(this); }
 
-    Derived const& derived() const
-      { return *static_cast<Derived const*>(this); }
+    DERIVED const &derived() const
+      { return *static_cast<DERIVED const *>(this); }
   public:
-    typedef Value                                  value_type;
+    typedef VALUE     value_type;
+    typedef REFERENCE reference_type;
 
-    typedef IterTemplate<CoSupport::Type::Mutable> iterator;
-    typedef IterTemplate<CoSupport::Type::Const>   const_iterator;
+    typedef Detail::IterTemplate<Type::Mutable,this_type> iterator;
+    typedef Detail::IterTemplate<Type::Const,this_type>   const_iterator;
 
+/*  iterator begin()
+      { return base_type::construct<iterator>(derived().first()); }
+    const_iterator begin() const
+      { return base_type::construct<const_iterator>(derived().first()); }
+
+    iterator end()
+      { return base_type::construct<iterator>(derived().last()); }
+    const_iterator end() const
+      { return base_type::construct<const_iterator>(derived().last()); }
+ */
     iterator begin()
       { return iterator(derived().first()); }
     const_iterator begin() const
@@ -117,23 +161,36 @@ namespace CoSupport { namespace DataTypes {
     const_iterator end() const
       { return const_iterator(derived().last()); }
 
-     bool empty() const
+    bool empty() const
       { return begin() == end(); }
 
-    Reference front()
+    reference_type front()
       { return *begin(); }
-    typename CoSupport::Type::Const<Reference>::type front() const
+    typename Type::Const<reference_type>::type front() const
       { return *begin(); }
 
-    Reference back()
+    reference_type back()
       { return *--end(); }
-    typename CoSupport::Type::Const<Reference>::type back() const
+    typename Type::Const<reference_type>::type back() const
       { return *--end(); }
 
-    iterator erase(const iterator &iter)
-      { return iterator(derived().del(iter.iter)); }
-    iterator insert(const iterator &iter, const value_type &value)
-      { return iterator(derived().add(iter.iter, value)); }
+/*  iterator erase(const iterator &iter) {
+      return base_type::construct<iterator>
+        (derived().del(base_type::retrieve(iter)));
+    }
+    iterator insert(const iterator &iter, const value_type &value) {
+      return base_type::construct<iterator>
+        (derived().add(base_type::retrieve(iter), value));
+    }
+ */
+    iterator erase(const iterator &iter) {
+      return iterator
+        (derived().del(iter.iter));
+    }
+    iterator insert(const iterator &iter, const value_type &value) {
+      return iterator
+        (derived().add(iter.iter, value));
+    }
 
     void push_back(const value_type &v)
       { insert(end(), v); }
@@ -171,11 +228,11 @@ namespace CoSupport { namespace DataTypes {
     }
     
     template<class Predicate>
-    typename CoSupport::Type::Const<Ptr>::type lookup(Predicate pred) const {
+    typename Type::Const<Ptr>::type lookup(Predicate pred) const {
       const_iterator i = find_if(pred);
       if(i == end())
         return NULL;
-      typename CoSupport::Type::Const<Reference>::type ref = *i;
+      typename Type::Const<reference_type>::type ref = *i;
       return &ref;
     }
     
@@ -184,7 +241,7 @@ namespace CoSupport { namespace DataTypes {
       iterator i = find_if(pred);
       if(i == end())
         return NULL;
-      Reference ref = *i;
+      reference_type ref = *i;
       return &ref;
     }
  */
@@ -194,31 +251,23 @@ namespace CoSupport { namespace DataTypes {
 
 namespace CoSupport { namespace Type {
 
-  template <class Derived, class Iter, class Value, class Reference, class Ptr>
-  struct Const<typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::iterator> {
-    typedef typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::const_iterator type;
-  };
-  template <class Derived, class Iter, class Value, class Reference, class Ptr>
-  struct Const<typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::const_iterator> {
-    typedef typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::const_iterator type;
+  template <template <class> class M, class ListFacade>
+  struct Const<DataTypes::Detail::IterTemplate<M, ListFacade> > {
+    typedef DataTypes::Detail::IterTemplate<Type::Const, ListFacade> type;
   };
 
-  template <class Derived, class Iter, class Value, class Reference, class Ptr>
-  struct Mutable<typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::iterator> {
-    typedef typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::iterator type;
-  };
-  template <class Derived, class Iter, class Value, class Reference, class Ptr>
-  struct Mutable<typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::const_iterator> {
-    typedef typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::iterator type;
+  template <template <class> class M, class ListFacade>
+  struct Mutable<DataTypes::Detail::IterTemplate<M, ListFacade> > {
+    typedef DataTypes::Detail::IterTemplate<Type::Mutable, ListFacade> type;
   };
 
-  template <class Derived, class Iter, class Value, class Reference, class Ptr>
-  struct ToggleConst<typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::iterator> {
-    typedef typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::const_iterator type;
+  template <class ListFacade>
+  struct ToggleConst<DataTypes::Detail::IterTemplate<Mutable, ListFacade> > {
+    typedef DataTypes::Detail::IterTemplate<Const, ListFacade> type;
   };
-  template <class Derived, class Iter, class Value, class Reference, class Ptr>
-  struct ToggleConst<typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::const_iterator> {
-    typedef typename DataTypes::ListFacade<Derived,Iter,Value,Reference,Ptr>::iterator type;
+  template <class ListFacade>
+  struct ToggleConst<DataTypes::Detail::IterTemplate<Const, ListFacade> > {
+    typedef DataTypes::Detail::IterTemplate<Mutable, ListFacade> type;
   };
 
 } } // namespace CoSupport::Type
