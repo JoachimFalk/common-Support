@@ -42,6 +42,7 @@
 
 #include <list>
 #include <set>
+#include <algorithm>
 
 #include "../sassert.h"
 
