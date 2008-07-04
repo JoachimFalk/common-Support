@@ -117,7 +117,7 @@ public:
   }
 protected:
   // FIXME: This is an ugly hack !!!
-  void assign(value_type &p) {
+  void assign(const value_type &p) {
     reinterpret_cast<Ref &>(*this).assign(p);
   }
 public:
