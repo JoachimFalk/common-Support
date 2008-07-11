@@ -119,7 +119,8 @@ libcosupport_streams_la_SOURCES =		\
 libcosupport_string_la_LDFLAGS =		\
 	$(AM_LDFLAGS)
 libcosupport_string_la_SOURCES =		\
-	TemplateProcessor.cpp
+	TemplateProcessor.cpp			\
+	UniquePool.cpp
 
 libcosupport_allocators_la_LDFLAGS =		\
 	$(AM_LDFLAGS)

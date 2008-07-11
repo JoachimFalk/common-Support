@@ -45,6 +45,7 @@ nobase_include_HEADERS = \
 	CoSupport/String/convert.hpp \
 	CoSupport/String/TypeName.hpp \
 	CoSupport/String/Concat.hpp \
+	CoSupport/String/UniquePool.hpp \
 	CoSupport/XML/xalan_support.hpp \
 	CoSupport/XML/xerces_support.hpp \
 	CoSupport/SMXIdManager.hpp \
