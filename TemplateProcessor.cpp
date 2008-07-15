@@ -87,7 +87,24 @@ void TemplateProcessor::fillIn(
       std::map<std::string, std::string>::const_iterator viter =
         fields.find((*iter)[1]);
       if (viter != fields.end()) {
-        templateStringLineNew.append(viter->second);
+        std::string subst      = viter->second;
+        size_t      column     = templateStringLineNew.length();
+        bool        needIndent = false;
+        
+        while (subst.length()) {
+          if (needIndent) {
+            templateStringLineNew.append("\n");
+            for (size_t many = column; many > 0; --many)
+              templateStringLineNew.append(" ");
+          } else
+            needIndent = true;
+          size_t nlpos = subst.find('\n');
+          templateStringLineNew.append(subst.substr(0, nlpos));
+          if (nlpos < std::string::npos)
+            subst = subst.substr(nlpos + 1); // the +1 skips the '\n'
+          else
+            subst = "";
+        }
       } else {
         templateStringLineNew
           .append("!!!")
