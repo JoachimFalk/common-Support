@@ -58,10 +58,9 @@ namespace CoSupport { namespace DataTypes {
       friend class IterTemplateAccess;
     private:
       typedef typename LISTFACADE::IterImpl IterImpl;
-    public:
-//  private:
+    private:
       IterImpl iter;
-//  private:
+
       IterTemplate(const IterImpl &iter)
         : iter(iter) {}
     public:
@@ -87,7 +86,7 @@ namespace CoSupport { namespace DataTypes {
         { return iter.deref(); }
     };
 
-/*  struct IterTemplateAccess {
+    struct IterTemplateAccess {
       template <class ITERTEMPLATE>
       static
       ITERTEMPLATE construct(const typename ITERTEMPLATE::IterImpl &iter)
@@ -101,7 +100,6 @@ namespace CoSupport { namespace DataTypes {
       const typename ITERTEMPLATE::IterImpl &retrieve(const ITERTEMPLATE &iter)
         { return iter.iter; }
     };
- */
 
   } // namespace Detail
 
@@ -116,9 +114,9 @@ namespace CoSupport { namespace DataTypes {
     class REFERENCE = VALUE &,
     class PTR_      = VALUE *
   >
-  class ListFacade /*: protected Detail::IterTemplateAccess*/ {
+  class ListFacade: protected Detail::IterTemplateAccess {
     typedef ListFacade<DERIVED, ITER_, VALUE, REFERENCE, PTR_>  this_type;
-//  typedef Detail::IterTemplateAccess                        base_type;
+    typedef Detail::IterTemplateAccess                          base_type;
 
     friend class Detail::IterTemplate<Type::Mutable, this_type>;
     friend class Detail::IterTemplate<Type::Const,   this_type>;
@@ -141,7 +139,7 @@ namespace CoSupport { namespace DataTypes {
     typedef Detail::IterTemplate<Type::Mutable,this_type> iterator;
     typedef Detail::IterTemplate<Type::Const,this_type>   const_iterator;
 
-/*  iterator begin()
+    iterator begin()
       { return base_type::construct<iterator>(derived().first()); }
     const_iterator begin() const
       { return base_type::construct<const_iterator>(derived().first()); }
@@ -150,16 +148,6 @@ namespace CoSupport { namespace DataTypes {
       { return base_type::construct<iterator>(derived().last()); }
     const_iterator end() const
       { return base_type::construct<const_iterator>(derived().last()); }
- */
-    iterator begin()
-      { return iterator(derived().first()); }
-    const_iterator begin() const
-      { return const_iterator(derived().first()); }
-
-    iterator end()
-      { return iterator(derived().last()); }
-    const_iterator end() const
-      { return const_iterator(derived().last()); }
 
     bool empty() const
       { return begin() == end(); }
@@ -174,22 +162,13 @@ namespace CoSupport { namespace DataTypes {
     typename Type::Const<reference_type>::type back() const
       { return *--end(); }
 
-/*  iterator erase(const iterator &iter) {
+    iterator erase(const iterator &iter) {
       return base_type::construct<iterator>
         (derived().del(base_type::retrieve(iter)));
     }
     iterator insert(const iterator &iter, const value_type &value) {
       return base_type::construct<iterator>
         (derived().add(base_type::retrieve(iter), value));
-    }
- */
-    iterator erase(const iterator &iter) {
-      return iterator
-        (derived().del(iter.iter));
-    }
-    iterator insert(const iterator &iter, const value_type &value) {
-      return iterator
-        (derived().add(iter.iter, value));
     }
 
     void push_back(const value_type &v)
