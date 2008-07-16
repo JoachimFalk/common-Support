@@ -132,7 +132,7 @@ struct ParamAccumulator<A, F, Detail::MissingNode<void>, PL>
 //
 // FUNCTOR-macro: Creates Function-Objects
 // 
-#define CONSTRUCT(NAME, TLIST, PLIST, CONST, PCALL, MISSING)			\
+#define CONSTRUCT(NAME, TLIST, PLIST, CONST, PCALL, PDUMP,MISSING)		\
 template<class R, class T TLIST>						\
 struct NAME<R, R (T::*)(PLIST) CONST> {						\
 	typedef NAME<R, R (T::*)(PLIST) CONST>			    this_type;	\
@@ -144,7 +144,7 @@ struct NAME<R, R (T::*)(PLIST) CONST> {						\
 	CONST T *obj;								\
 	R (T::*func)(PLIST) CONST;						\
 	const char *name;							\
-										\
+                                                                                \
 	template<class X>							\
 	NAME(CONST X *_obj, R (T::*_func)(PLIST) CONST, const char *_name)	\
 	  : obj(dynamic_cast<CONST T *>(_obj)), func(_func), name(_name)	\
@@ -152,7 +152,13 @@ struct NAME<R, R (T::*)(PLIST) CONST> {						\
 										\
 	R call(const ParamList &pl) const {					\
 		return (obj->*func)(PCALL);					\
-	}									\
+	}                                                                       \
+        template<class V>                                                       \
+        static void paramListVisit(const ParamList &pl, const V& v = V())       \
+          { PDUMP }                                                             \
+        template<class V>                                                       \
+        static void paramListVisit(const ParamList &pl, V& v)                   \
+          { PDUMP }                                                             \
 };
 
 #define MISSING_0 Detail::MissingNode<void>
@@ -175,32 +181,38 @@ struct NAME<R, R (T::*)(PLIST) CONST> {						\
 
 #define PARAMCALL_0
 #define PARAMCALL_1 pl.p
-#define PARAMCALL_2 pl.pn.p , PARAMCALL_1
-#define PARAMCALL_3 pl.pn.pn.p , PARAMCALL_2
+#define PARAMCALL_2 pl.pn.p ,       PARAMCALL_1
+#define PARAMCALL_3 pl.pn.pn.p ,    PARAMCALL_2
 #define PARAMCALL_4 pl.pn.pn.pn.p , PARAMCALL_3
+
+#define PARAMDUMP_0            
+#define PARAMDUMP_1 v(pl.p);          PARAMDUMP_0
+#define PARAMDUMP_2 v(pl.pn.p);       PARAMDUMP_1
+#define PARAMDUMP_3 v(pl.pn.pn.p);    PARAMDUMP_2
+#define PARAMDUMP_4 v(pl.pn.pn.pn.p); PARAMDUMP_3
 
 template<class R, class F>
 struct Functor;
 
-CONSTRUCT(     Functor, TEMPLATELIST_0, PARAMLIST_0,      , PARAMCALL_0, MISSING_0)
-CONSTRUCT(     Functor, TEMPLATELIST_1, PARAMLIST_1,      , PARAMCALL_1, MISSING_1)
-CONSTRUCT(     Functor, TEMPLATELIST_2, PARAMLIST_2,      , PARAMCALL_2, MISSING_2)
-CONSTRUCT(     Functor, TEMPLATELIST_3, PARAMLIST_3,      , PARAMCALL_3, MISSING_3)
-CONSTRUCT(     Functor, TEMPLATELIST_4, PARAMLIST_4,      , PARAMCALL_4, MISSING_4)
-CONSTRUCT(     Functor, TEMPLATELIST_0, PARAMLIST_0, const, PARAMCALL_0, MISSING_0)
-CONSTRUCT(     Functor, TEMPLATELIST_1, PARAMLIST_1, const, PARAMCALL_1, MISSING_1)
-CONSTRUCT(     Functor, TEMPLATELIST_2, PARAMLIST_2, const, PARAMCALL_2, MISSING_2)
-CONSTRUCT(     Functor, TEMPLATELIST_3, PARAMLIST_3, const, PARAMCALL_3, MISSING_3)
-CONSTRUCT(     Functor, TEMPLATELIST_4, PARAMLIST_4, const, PARAMCALL_4, MISSING_4)
+CONSTRUCT(     Functor, TEMPLATELIST_0, PARAMLIST_0,      , PARAMCALL_0, PARAMDUMP_0, MISSING_0)
+CONSTRUCT(     Functor, TEMPLATELIST_1, PARAMLIST_1,      , PARAMCALL_1, PARAMDUMP_1, MISSING_1)
+CONSTRUCT(     Functor, TEMPLATELIST_2, PARAMLIST_2,      , PARAMCALL_2, PARAMDUMP_2, MISSING_2)
+CONSTRUCT(     Functor, TEMPLATELIST_3, PARAMLIST_3,      , PARAMCALL_3, PARAMDUMP_3, MISSING_3)
+CONSTRUCT(     Functor, TEMPLATELIST_4, PARAMLIST_4,      , PARAMCALL_4, PARAMDUMP_4, MISSING_4)
+CONSTRUCT(     Functor, TEMPLATELIST_0, PARAMLIST_0, const, PARAMCALL_0, PARAMDUMP_0, MISSING_0)
+CONSTRUCT(     Functor, TEMPLATELIST_1, PARAMLIST_1, const, PARAMCALL_1, PARAMDUMP_1, MISSING_1)
+CONSTRUCT(     Functor, TEMPLATELIST_2, PARAMLIST_2, const, PARAMCALL_2, PARAMDUMP_2, MISSING_2)
+CONSTRUCT(     Functor, TEMPLATELIST_3, PARAMLIST_3, const, PARAMCALL_3, PARAMDUMP_3, MISSING_3)
+CONSTRUCT(     Functor, TEMPLATELIST_4, PARAMLIST_4, const, PARAMCALL_4, PARAMDUMP_4, MISSING_4)
   
 template<class R, class F>
 struct ConstFunctor;
 
-CONSTRUCT(ConstFunctor, TEMPLATELIST_0, PARAMLIST_0, const, PARAMCALL_0, MISSING_0)
-CONSTRUCT(ConstFunctor, TEMPLATELIST_1, PARAMLIST_1, const, PARAMCALL_1, MISSING_1)
-CONSTRUCT(ConstFunctor, TEMPLATELIST_2, PARAMLIST_2, const, PARAMCALL_2, MISSING_2)
-CONSTRUCT(ConstFunctor, TEMPLATELIST_3, PARAMLIST_3, const, PARAMCALL_3, MISSING_3)
-CONSTRUCT(ConstFunctor, TEMPLATELIST_4, PARAMLIST_4, const, PARAMCALL_4, MISSING_4)
+CONSTRUCT(ConstFunctor, TEMPLATELIST_0, PARAMLIST_0, const, PARAMCALL_0, PARAMDUMP_0, MISSING_0)
+CONSTRUCT(ConstFunctor, TEMPLATELIST_1, PARAMLIST_1, const, PARAMCALL_1, PARAMDUMP_1, MISSING_1)
+CONSTRUCT(ConstFunctor, TEMPLATELIST_2, PARAMLIST_2, const, PARAMCALL_2, PARAMDUMP_2, MISSING_2)
+CONSTRUCT(ConstFunctor, TEMPLATELIST_3, PARAMLIST_3, const, PARAMCALL_3, PARAMDUMP_3, MISSING_3)
+CONSTRUCT(ConstFunctor, TEMPLATELIST_4, PARAMLIST_4, const, PARAMCALL_4, PARAMDUMP_4, MISSING_4)
   
 #undef CONSTRUCT
 
@@ -227,7 +239,13 @@ CONSTRUCT(ConstFunctor, TEMPLATELIST_4, PARAMLIST_4, const, PARAMCALL_4, MISSING
 #undef PARAMCALL_2
 #undef PARAMCALL_3
 #undef PARAMCALL_4
-  
+ 
+#undef PARAMDUMP_0
+#undef PARAMDUMP_1
+#undef PARAMDUMP_2
+#undef PARAMDUMP_3
+#undef PARAMDUMP_4
+
 } } // namespace CoSupport::Lambda
 
 #endif // _INCLUDED_COSUPPORT_LAMBDA_FUNCTOR_HPP
