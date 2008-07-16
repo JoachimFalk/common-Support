@@ -57,12 +57,12 @@ namespace CoSupport { namespace DataTypes {
       friend class boost::iterator_core_access;
       friend class IterTemplateAccess;
     private:
-      typedef typename LISTFACADE::Iter Iter;
+      typedef typename LISTFACADE::IterImpl IterImpl;
     public:
 //  private:
-      Iter iter;
+      IterImpl iter;
 //  private:
-      IterTemplate(const typename LISTFACADE::Iter &iter)
+      IterTemplate(const IterImpl &iter)
         : iter(iter) {}
     public:
       IterTemplate() {}
@@ -71,7 +71,7 @@ namespace CoSupport { namespace DataTypes {
         : iter(iter.iter) {}
 
       // overwrite operator -> from boost which thinks it knows best
-      typename M<typename LISTFACADE::Ptr>::type operator->() const {
+      typename M<typename LISTFACADE::pointer_type>::type operator->() const {
         typename M<typename LISTFACADE::reference_type>::type ref = dereference();
         return &ref;
       }
@@ -90,15 +90,15 @@ namespace CoSupport { namespace DataTypes {
 /*  struct IterTemplateAccess {
       template <class ITERTEMPLATE>
       static
-      ITERTEMPLATE construct(const typename ITERTEMPLATE::Iter &iter)
+      ITERTEMPLATE construct(const typename ITERTEMPLATE::IterImpl &iter)
         { return ITERTEMPLATE(iter); }
       template <class ITERTEMPLATE>
       static
-      typename ITERTEMPLATE::Iter &retrieve(ITERTEMPLATE &iter)
+      typename ITERTEMPLATE::IterImpl &retrieve(ITERTEMPLATE &iter)
         { return iter.iter; }
       template <class ITERTEMPLATE>
       static
-      const typename ITERTEMPLATE::Iter &retrieve(const ITERTEMPLATE &iter)
+      const typename ITERTEMPLATE::IterImpl &retrieve(const ITERTEMPLATE &iter)
         { return iter.iter; }
     };
  */
@@ -111,21 +111,21 @@ namespace CoSupport { namespace DataTypes {
   //
   template <
     class DERIVED,            // The derived list container being constructed
-    class ITER,
+    class ITER_,
     class VALUE,
     class REFERENCE = VALUE &,
-    class PTR_       = VALUE *
+    class PTR_      = VALUE *
   >
   class ListFacade /*: protected Detail::IterTemplateAccess*/ {
-    typedef ListFacade<DERIVED, ITER, VALUE, REFERENCE, PTR_>  this_type;
+    typedef ListFacade<DERIVED, ITER_, VALUE, REFERENCE, PTR_>  this_type;
 //  typedef Detail::IterTemplateAccess                        base_type;
 
     friend class Detail::IterTemplate<Type::Mutable, this_type>;
     friend class Detail::IterTemplate<Type::Const,   this_type>;
   private:
     // This is not a standard container type definition => hide it!
-    typedef PTR_  Ptr;  // for usage by Detail::IterTemplate
-    typedef ITER Iter; // for usage by Detail::IterTemplate
+    typedef PTR_   pointer_type;  // for usage by Detail::IterTemplate
+    typedef ITER_  IterImpl;      // for usage by Detail::IterTemplate
     //
     // Curiously Recurring Template interface.
     //
@@ -228,7 +228,7 @@ namespace CoSupport { namespace DataTypes {
     }
     
     template<class Predicate>
-    typename Type::Const<Ptr>::type lookup(Predicate pred) const {
+    typename Type::Const<pointer_type>::type lookup(Predicate pred) const {
       const_iterator i = find_if(pred);
       if(i == end())
         return NULL;
@@ -237,7 +237,7 @@ namespace CoSupport { namespace DataTypes {
     }
     
     template<class Predicate>
-    Ptr lookup(Predicate pred) {
+    pointer_type lookup(Predicate pred) {
       iterator i = find_if(pred);
       if(i == end())
         return NULL;
