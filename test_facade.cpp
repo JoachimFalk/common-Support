@@ -14,20 +14,20 @@ int main(int argc, char *argv[]) {
   const C cc;
   
   A::Ref ra = a;
-  A::Ref rb = b;
-  A::Ref rc = c;
+  B::Ref rb = b;
+  C::Ref rc = c;
 
   A::Ptr pa;
-  A::Ptr pb;
-  A::Ptr pc;
+  B::Ptr pb;
+  C::Ptr pc;
   
   A::ConstRef cra = a;
-  A::ConstRef crb = b;
-  A::ConstRef crc = c;
+  B::ConstRef crb = b;
+  C::ConstRef crc = c;
   
   A::ConstPtr cpa;
-  A::ConstPtr cpb;
-  A::ConstPtr cpc;
+  B::ConstPtr cpb;
+  C::ConstPtr cpc;
   
   A::Ptr pa1 = pa;
   A::Ptr pa2 = pb;
@@ -214,6 +214,18 @@ int main(int argc, char *argv[]) {
   result = cpa <  R; \
   result = cpa >= R; \
   result = cpa >  R; \
+  result = R == pa;  \
+  result = R != pa;  \
+  result = R <= pa;  \
+  result = R <  pa;  \
+  result = R >= pa;  \
+  result = R >  pa;  \
+  result = R == cpa; \
+  result = R != cpa; \
+  result = R <= cpa; \
+  result = R <  cpa; \
+  result = R >= cpa; \
+  result = R >  cpa; \
   result = R != NULL; \
   result = R == NULL; \
   result = R;
@@ -253,5 +265,12 @@ int main(int argc, char *argv[]) {
   sassert(pa == cpa);
   pa = &a; cpa = &ca;
   sassert(pa != cpa);
-
+  pa = NULL;
+  sassert(pa == NULL);
+  cpa = NULL;
+  sassert(cpa == NULL);
+  pa = &a;
+  sassert(pa != NULL);
+  cpa = &a;
+  sassert(cpa != NULL);
 }
