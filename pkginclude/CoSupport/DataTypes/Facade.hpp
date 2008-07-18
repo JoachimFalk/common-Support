@@ -102,17 +102,15 @@ class FacadePtr: public FacadePtr<typename T::_B, C> {
 
   template <class TT, template <class> class CC> friend class FacadePtr;
 private:
-  typedef typename C<T>::type       value_type;
-protected:
-  typedef typename base_type::FPN FPN;
-public:
-  typedef typename T::_H::ImplType  ImplType;
-  typedef typename T::_H::SmartPtr  SmartPtr;
-
+  typedef typename C<T>::type                 value_type;
   typedef typename FacadeTraits<T>::ConstRef  ConstRef;
   typedef typename FacadeTraits<T>::Ref       Ref;
   typedef typename FacadeTraits<T>::ConstPtr  ConstPtr;
   typedef typename FacadeTraits<T>::Ptr       Ptr;
+  typedef typename T::_H::ImplType            ImplType;
+  typedef typename T::_H::SmartPtr            SmartPtr;
+protected:
+  typedef typename base_type::FPN             FPN;
 public:
 //FIXME: protected:
   // FIXME: This is an ugly hack !!!
@@ -154,7 +152,7 @@ class FacadePtr<Detail::Storage<Impl>, C>: public Detail::Storage<Impl> {
   typedef Detail::Storage<Impl>               base_type;
 
   template <typename II, template <class> class CC> friend class FacadePtr;
-protected:
+private:
   typedef FacadePtr<Detail::Storage<Impl>, Type::Mutable> Ptr;
   typedef FacadePtr<Detail::Storage<Impl>, Type::Const>   ConstPtr;
 protected:
