@@ -43,18 +43,24 @@ namespace CoSupport { namespace Type {
 
   template <typename T>
   struct Const          { typedef const T type; };
+#ifndef KASCPAR_PARSING
   template <typename T>
   struct Const<const T> { typedef const T type; };
+#endif // KASCPAR_PARSING
 
   template <typename T>
   struct Mutable          { typedef T type; };
+#ifndef KASCPAR_PARSING
   template <typename T>
   struct Mutable<const T> { typedef T type; };
+#endif // KASCPAR_PARSING
 
   template <typename T>
   struct ToggleConst          { typedef const T type; };
+#ifndef KASCPAR_PARSING
   template <typename T>
   struct ToggleConst<const T> { typedef T type; };
+#endif // KASCPAR_PARSING
 
 } } // namespace CoSupport::Type
 

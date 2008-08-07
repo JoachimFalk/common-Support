@@ -144,8 +144,10 @@ protected:
   int overflow(int c);
   
 public:
+#ifndef KASCPAR_PARSING
   /// index obtained with std::ostream::xalloc
   static const int index;
+#endif
    
   /// see Header and Footer
   bool hasManip() const;
