@@ -41,6 +41,7 @@ nobase_include_HEADERS = \
 	CoSupport/Streams/DebugStreambuf.hpp \
 	CoSupport/Streams/NullStreambuf.hpp \
 	CoSupport/Streams/FilterOStream.hpp \
+	CoSupport/Streams/SocketTCPClient.hpp \
 	CoSupport/Initializer/BasicInitializer.hpp \
 	CoSupport/String/convert.hpp \
 	CoSupport/String/TypeName.hpp \

@@ -115,7 +115,8 @@ libcosupport_streams_la_LDFLAGS =		\
 	-lboost_thread@BOOST_LIBMTPOSTFIX@
 libcosupport_streams_la_SOURCES =		\
 	DebugOStream.cpp			\
-	FilterOStream.cpp
+	FilterOStream.cpp			\
+	SocketTCPClient.cpp
 
 libcosupport_string_la_LDFLAGS =		\
 	$(AM_LDFLAGS)
