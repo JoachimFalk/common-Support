@@ -34,6 +34,7 @@
  */
 
 #include <CoSupport/Streams/SocketTCPClient.hpp>
+#include <CoSupport/String/convert.hpp>
 
 #include <sstream>
 #include <stdexcept>
@@ -47,7 +48,14 @@
 //#include <sys/select.h>
 #include <netdb.h>
 
+#include <boost/asio.hpp>
+
 namespace CoSupport { namespace Streams {
+
+using CoSupport::String::asStr;
+using CoSupport::String::strAs;
+
+//using boost::asio::ip::tcp;
 
 SocketTCPClient::SocketTCPClient(const char *host, uint16_t port)
   : sockClient(-1)
@@ -57,53 +65,44 @@ SocketTCPClient::SocketTCPClient(const char *host, uint16_t port)
   peerAddressStream << host << ":" << port;
   peerAddress = peerAddressStream.str();
   
-  if ((sockClient = socket(PF_INET, SOCK_STREAM, 0)) < 0)
-    throw std::runtime_error(std::string("socket: ") + strerror(errno));
+  boost::asio::io_service io_service;
   
-  addrinfo  hints;
-  addrinfo *res;
-  int err;
+  boost::asio::ip::tcp::resolver            resolver(io_service);
+  boost::asio::ip::tcp::resolver::query     query(host, asStr(port));
   
-  memset(&hints, 0, sizeof(hints));
-  hints.ai_family   = PF_INET;
-  hints.ai_socktype = SOCK_STREAM;
-  hints.ai_protocol = 0;
+  boost::asio::ip::tcp::resolver::iterator  eiter = resolver.resolve(query);
+  boost::asio::ip::tcp::resolver::iterator  eend;
   
-  if ((err = getaddrinfo(host, 0, &hints, &res)) != 0)
-    throw std::runtime_error(std::string("getaddrinfo: ") + gai_strerror(err));
-  
-  for (addrinfo *i = res; i; i = i->ai_next) {
-    //std::cerr << "Found address" << std::endl;
-    switch (i->ai_family) {
-      case PF_INET: {
-        //std::cerr << " Family: IPv4" << std::endl;
-        
-        // get address
-        sockaddr_in* sa = (sockaddr_in*)i->ai_addr;
-        assert(sa->sin_family == i->ai_family);
-        //std::cerr << " Address: " << inet_ntoa(sa->sin_addr) << std::endl;
-        
-        // fill in port
-        sa->sin_port = htons(port);
-        
-        // server (i.e. simulation) has to run prior to this call
-        if (connect(sockClient, i->ai_addr, sizeof(sockaddr_in)) < 0)
-          throw std::runtime_error(std::string("connect: ") + strerror(errno));
-        
+  for (sockClient = -1;
+       sockClient < 0 && eiter != eend;
+       ++eiter) {
+    boost::asio::ip::tcp::endpoint ep = *eiter;
+    boost::asio::ip::tcp::endpoint::protocol_type prot = ep.protocol();
+//  boost::asio::ip::address        addr = ep.address();
+//  unsigned short                  port = ep.port();
+    
+    if ((sockClient = socket(prot.family(), prot.type(), 0)) >= 0) {
+      if (connect(sockClient, ep.data(), ep.capacity()) >= 0) {
         break;
       }
-      default:
-//        std::cerr << " Unknown family: " << i->ai_family << std::endl;
-        break;
+//      throw std::runtime_error(std::string("connect: ") + strerror(errno));
+      close(sockClient);
+      sockClient = -1;
     }
+//    throw std::runtime_error(std::string("socket: ") + strerror(errno));
   }
-  
-  freeaddrinfo(res);
-  
-  if (sockClient == -1)
-    throw std::runtime_error("Could not connect to server");
+  if (sockClient < 0)
+    throw  boost::system::system_error(boost::asio::error::host_not_found);
   in.open(boost::iostreams::file_descriptor_source(sockClient));
   out.open(boost::iostreams::file_descriptor_sink(sockClient));
+}
+
+void SocketTCPClient::shutdownWrite() {
+  out.flush();
+  // No more output
+  shutdown(sockClient, SHUT_WR);
+  out.setstate(out.badbit);
+  // out.close(); danger this closes sockClient and therefore in too
 }
 
 SocketTCPClient::~SocketTCPClient() {

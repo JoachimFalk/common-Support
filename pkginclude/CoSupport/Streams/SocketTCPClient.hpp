@@ -54,8 +54,15 @@ namespace CoSupport { namespace Streams {
 
     boost::iostreams::stream<boost::iostreams::file_descriptor_source> in;
     boost::iostreams::stream<boost::iostreams::file_descriptor_sink>   out;
-  protected:
+  public:
     SocketTCPClient(const char *host, uint16_t port);
+
+    const std::string &name() const { return peerAddress; }
+
+    std::istream &getIn() { return in; }
+    std::ostream &getOut() { return out; }
+
+    void shutdownWrite();
 
     ~SocketTCPClient();
   };

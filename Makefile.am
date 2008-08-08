@@ -112,7 +112,8 @@ libcosupport_systemc_la_SOURCES =		\
 
 libcosupport_streams_la_LDFLAGS =		\
 	$(AM_LDFLAGS)				\
-	-lboost_thread@BOOST_LIBMTPOSTFIX@
+	-lboost_thread@BOOST_LIBMTPOSTFIX@	\
+	-lboost_system@BOOST_LIBMTPOSTFIX@
 libcosupport_streams_la_SOURCES =		\
 	DebugOStream.cpp			\
 	FilterOStream.cpp			\
