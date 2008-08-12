@@ -63,7 +63,10 @@ extern "C" {
 
 #ifndef HAVE_INT8_T
   /* Find uint8_t & int8_t */
-# if SIZEOF_CHAR == 1
+# if defined(_MSC_VER)
+typedef unsigned __int8		uint8_t;
+typedef signed   __int8		int8_t;
+# elif SIZEOF_CHAR == 1
 typedef unsigned char		uint8_t;
 typedef signed   char		int8_t;
 # elif SIZEOF_SHORT == 1
@@ -83,7 +86,10 @@ typedef signed   long long	int8_t;
 
 #ifndef HAVE_INT16_T
   /* Find uint16_t & int16_t */
-# if SIZEOF_SHORT == 2
+# if defined(_MSC_VER)
+typedef unsigned __int16	uint16_t;
+typedef signed   __int16	int16_t;
+# elif SIZEOF_SHORT == 2
 typedef unsigned short		uint16_t;
 typedef signed   short		int16_t;
 # elif SIZEOF_INT == 2
@@ -101,7 +107,10 @@ typedef signed   long long	int16_t;
 
 #ifndef HAVE_INT32_T
   /* Find uint32_t & int32_t */
-# if SIZEOF_SHORT == 4
+# if defined(_MSC_VER)
+typedef unsigned __int32	uint32_t;
+typedef signed   __int32	int32_t;
+# elif SIZEOF_SHORT == 4
 typedef unsigned short		uint32_t;
 typedef signed   short		int32_t;
 # elif SIZEOF_INT == 4
@@ -118,7 +127,10 @@ typedef signed   long long	int32_t;
 
 #ifndef HAVE_INT64_T
   /* Find uint64_t & int64_t */
-# if SIZEOF_SHORT == 8
+# if defined(_MSC_VER)
+typedef unsigned __int64	uint64_t;
+typedef signed   __int64	int64_t;
+# elif SIZEOF_SHORT == 8
 typedef unsigned short		uint64_t;
 typedef signed short		int64_t;
 # elif SIZEOF_INT == 8

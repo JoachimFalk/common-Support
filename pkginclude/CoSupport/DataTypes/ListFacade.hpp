@@ -55,7 +55,7 @@ namespace CoSupport { namespace DataTypes {
       friend class IterTemplate<Type::Mutable, LISTFACADE>;
       friend class IterTemplate<Type::Const, LISTFACADE>;
       friend class boost::iterator_core_access;
-      friend class IterTemplateAccess;
+      friend struct IterTemplateAccess;
     private:
       typedef typename LISTFACADE::IterImpl IterImpl;
     private:

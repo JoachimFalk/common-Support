@@ -36,6 +36,7 @@
 #ifndef _INCLUDED_COSUPPORT_STRING_CONVERT_HPP
 #define _INCLUDED_COSUPPORT_STRING_CONVERT_HPP
 
+#include <cctype>
 #include <sstream>
 #include <string>
 #include <exception>
