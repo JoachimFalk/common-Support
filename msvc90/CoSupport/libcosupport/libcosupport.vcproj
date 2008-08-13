@@ -60,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalLibraryDirectories="&quot;P:\codesign\projects\SysteMoC-Windows\systemoc-top--mainline--0.8\Support\msvc90\CoSupport\Debug&quot;"
+				AdditionalLibraryDirectories=""
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -145,27 +145,27 @@
 	</References>
 	<Files>
 		<File
-			RelativePath="..\Debug\libcosupport-initializer.lib"
+			RelativePath="$(OutDir)\libcosupport-initializer.lib"
 			>
 		</File>
 		<File
-			RelativePath="..\Debug\libcosupport-smartptr.lib"
+			RelativePath="$(OutDir)\libcosupport-smartptr.lib"
 			>
 		</File>
 		<File
-			RelativePath="..\Debug\libcosupport-streams.lib"
+			RelativePath="$(OutDir)\libcosupport-streams.lib"
 			>
 		</File>
 		<File
-			RelativePath="..\Debug\libcosupport-string.lib"
+			RelativePath="$(OutDir)\libcosupport-string.lib"
 			>
 		</File>
 		<File
-			RelativePath="..\Debug\libcosupport-systemc.lib"
+			RelativePath="$(OutDir)\libcosupport-systemc.lib"
 			>
 		</File>
 		<File
-			RelativePath="..\Debug\libcosupport-xerces.lib"
+			RelativePath="$(OutDir)\libcosupport-xerces.lib"
 			>
 		</File>
 	</Files>

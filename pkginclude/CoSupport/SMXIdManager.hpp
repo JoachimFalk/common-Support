@@ -133,10 +133,10 @@ private:
   static const size_t bits = std::numeric_limits<SMXId>::digits;
 
   /// @brief Offset for anonynmous Ids
-  static const SMXId offAnon = 0 << (bits - 1);
+  const SMXId offAnon;
 
   /// @brief Offset for named Ids
-  static const SMXId offName = 1 << (bits - 1);
+  const SMXId offName;
   
   /// @brief Hash function used for generating Ids for named objects
   FNV<bits - 1> hashName;

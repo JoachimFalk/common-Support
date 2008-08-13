@@ -41,11 +41,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\pkginclude;&quot;C:\Programme\xerces-c-2.8.0\src&quot;;&quot;C:\Programme\systemc-2.2.0\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				AdditionalIncludeDirectories="..\..\..\pkginclude"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;XML_LIBRARY"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="4"
@@ -61,6 +61,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				LinkLibraryDependencies="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -105,9 +106,9 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\..\pkginclude;&quot;C:\Programme\xerces-c-2.8.0\src&quot;;&quot;C:\Programme\systemc-2.2.0\include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
-				RuntimeLibrary="2"
+				AdditionalIncludeDirectories="..\..\..\pkginclude"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;XML_LIBRARY"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -124,6 +125,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				LinkLibraryDependencies="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -145,10 +147,6 @@
 	<References>
 	</References>
 	<Files>
-		<File
-			RelativePath="..\Debug\libcosupport-initializer.lib"
-			>
-		</File>
 		<File
 			RelativePath="..\..\..\SMXIdManager.cpp"
 			>

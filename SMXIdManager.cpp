@@ -48,7 +48,9 @@ SMXIdManager::IdMapEntry::IdMapEntry() :
   index(0)
 {}
 
-SMXIdManager::SMXIdManager()
+SMXIdManager::SMXIdManager() :
+  offAnon(0 << (bits - 1)),
+  offName(1 << (bits - 1))
 {}
 
 SMXIdManager& SMXIdManager::getInstance() {
@@ -405,8 +407,5 @@ void SMXIdManager::anonToNamed() {
     idMap.erase(idIter);
   }
 }
-
-const SMXId SMXIdManager::offAnon;
-const SMXId SMXIdManager::offName;
 
 } // namespace CoSupport
