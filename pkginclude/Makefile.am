@@ -57,6 +57,7 @@ nobase_include_HEADERS = \
 	CoSupport/SmartPtr/intrusive_refcount_ptr.hpp \
 	CoSupport/SmartPtr/RefCount.hpp \
 	CoSupport/SmartPtr/RefCountObject.hpp \
+  	CoSupport/SystemC/algorithm.hpp \
 	CoSupport/SystemC/systemc_support.hpp \
 	CoSupport/SystemC/par_manager.hpp \
 	CoSupport/SystemC/PerformanceEvaluation.hpp \
@@ -70,6 +71,7 @@ nobase_include_HEADERS = \
 	CoSupport/DataTypes/ArrayFifo.hpp \
 	CoSupport/DataTypes/Facade.hpp \
 	CoSupport/DataTypes/SerializeHelper.hpp \
+  	CoSupport/Math/ModuloGroup.hpp \
 	CoSupport/Math/modulo_arith.hpp \
 	CoSupport/Math/smoc_math.hpp \
 	CoSupport/Math/string_hash.hpp \
