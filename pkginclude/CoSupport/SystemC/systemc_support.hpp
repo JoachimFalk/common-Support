@@ -342,6 +342,7 @@ namespace CoSupport { namespace SystemC {
           return **i;
       }
       assert(0);
+      return *((EventType*)(NULL));
     }
 
     EventWaiter *reset(EventListener *el = NULL) {
