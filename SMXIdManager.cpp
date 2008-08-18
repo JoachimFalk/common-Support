@@ -288,10 +288,11 @@ void SMXIdManager::delObj(const SCObj* obj) {
   // could try to hash name and lookup entry and compare obj's
   // before searching...
 
-  for(IdMap::iterator idIter = idMap.lower_bound(offName);
+  for(IdMap::iterator idNext, idIter = idMap.lower_bound(offName);
       idIter != idMap.end();
-      ++idIter)
+      idIter = idNext)
   {
+    ++(idNext = idIter);
     IdMapEntry& entry = idIter->second;
 
     if(entry.obj == obj) {
