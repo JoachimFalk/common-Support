@@ -77,4 +77,7 @@ nobase_include_HEADERS = \
 	CoSupport/Math/string_hash.hpp \
 	CoSupport/Type/transform.hpp \
 	CoSupport/Lambda/functor.hpp \
-	CoSupport/Lambda/function_objects.hpp
+	CoSupport/Lambda/function_objects.hpp \
+	CoSupport/compatibility-glue/integertypes.h \
+	CoSupport/compatibility-glue/snprintf.h
+
