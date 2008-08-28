@@ -9,7 +9,10 @@ include_directories(${COSUPPORT_SOURCE_DIR}/pkginclude)
 link_directories(${COSUPPORT_BINARY_DIR})
 
 add_library(cosupport-xerces SHARED
-  SMXIdManager.cpp)
+  SMXIdManager.cpp
+  StdIstreamInputSource.cpp
+  StdIstreamInputStream.cpp
+  StdOstreamFormatTarget.cpp)
 target_link_libraries(cosupport-xerces
   cosupport-initializer
   xerces-c)
