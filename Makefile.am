@@ -77,7 +77,10 @@ libcosupport_smartptr_la_LIBADD =		\
 	-lboost_thread@BOOST_LIBMTPOSTFIX@
 
 libcosupport_xerces_la_SOURCES =		\
-	SMXIdManager.cpp
+	SMXIdManager.cpp			\
+	StdIstreamInputSource.cpp		\
+	StdIstreamInputStream.cpp		\
+	StdOstreamFormatTarget.cpp
 libcosupport_xerces_la_LIBADD =			\
 	-lboost_thread@BOOST_LIBMTPOSTFIX@	\
 	libcosupport-initializer.la		\

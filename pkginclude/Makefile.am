@@ -49,6 +49,9 @@ nobase_include_HEADERS = \
 	CoSupport/String/UniquePool.hpp \
 	CoSupport/XML/xalan_support.hpp \
 	CoSupport/XML/xerces_support.hpp \
+	CoSupport/XML/StdIstreamInputSource.hpp \
+	CoSupport/XML/StdIstreamInputStream.hpp \
+	CoSupport/XML/StdOstreamFormatTarget.hpp \
 	CoSupport/SMXIdManager.hpp \
 	CoSupport/sassert.h \
 	CoSupport/commondefs.h \
