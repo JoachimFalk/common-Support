@@ -90,9 +90,10 @@ public:
     : T(SmartPtr()) { this->assign(t); }
 
   // bounce assign to base class
-  template <typename TT>
-  this_type &operator =(const TT &obj)
-    { return static_cast<this_type &>(T::operator =(obj)); }
+  using T::operator =;
+//template <typename TT>
+//this_type &operator =(const TT &obj)
+//  { return static_cast<this_type &>(T::operator =(obj)); }
 };
 
 template <class T, template <class> class C>
@@ -271,10 +272,11 @@ public:
   typedef Impl      ImplType;
   typedef SPtr      SmartPtr;
 
-  typedef typename FacadeTraits<Derived>::ConstRef  ConstRef;
-  typedef typename FacadeTraits<Derived>::Ref       Ref;
-  typedef typename FacadeTraits<Derived>::ConstPtr  ConstPtr;
-  typedef typename FacadeTraits<Derived>::Ptr       Ptr;
+  // CoSupport::DataTypes:: is here to ameliorate doxygen C++ parsing results
+  typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::ConstRef  ConstRef;
+  typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::Ref       Ref;
+  typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::ConstPtr  ConstPtr;
+  typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::Ptr       Ptr;
 private:
   //
   // Curiously Recurring Template interface.
