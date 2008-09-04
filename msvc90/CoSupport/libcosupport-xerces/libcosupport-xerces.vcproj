@@ -151,6 +151,18 @@
 			RelativePath="..\..\..\SMXIdManager.cpp"
 			>
 		</File>
+		<File
+			RelativePath="..\..\..\StdIstreamInputSource.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\..\StdIstreamInputStream.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\..\StdOstreamFormatTarget.cpp"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
