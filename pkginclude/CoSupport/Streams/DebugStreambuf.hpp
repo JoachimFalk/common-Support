@@ -36,6 +36,8 @@
 #ifndef _INCLUDED_COSUPPORT_STREAMS_DEBUGSTREAMBUF_HPP
 #define _INCLUDED_COSUPPORT_STREAMS_DEBUGSTREAMBUF_HPP
 
+#include <stddef.h>
+
 #include <ostream>
 
 #include "FilterStreambuf.hpp"
