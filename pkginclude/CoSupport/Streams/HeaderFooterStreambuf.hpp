@@ -36,7 +36,7 @@
 #ifndef _INCLUDED_COSUPPORT_STREAMS_HEADERFOOTERSTREAMBUF_HPP
 #define _INCLUDED_COSUPPORT_STREAMS_HEADERFOOTERSTREAMBUF_HPP
 
-#include <ostream>
+#include <string>
 
 #include "FilterStreambuf.hpp"
 

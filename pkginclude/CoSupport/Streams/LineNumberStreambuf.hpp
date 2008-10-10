@@ -36,7 +36,7 @@
 #ifndef _INCLUDED_COSUPPORT_STREAMS_LINENUMBERSTREAMBUF_HPP
 #define _INCLUDED_COSUPPORT_STREAMS_LINENUMBERSTREAMBUF_HPP
 
-#include <ostream>
+#include <stddef.h>
 
 #include "FilterStreambuf.hpp"
 

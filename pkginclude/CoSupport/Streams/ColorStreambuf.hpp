@@ -37,9 +37,7 @@
 #define _INCLUDED_COSUPPORT_STREAMS_COLORSTREAMBUF_HPP
 
 #include <stddef.h>
-
-#include <ostream>
-#include <iostream>
+//#include <iostream>
 #include <string>
 
 #include "FilterStreambuf.hpp"

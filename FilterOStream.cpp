@@ -43,9 +43,11 @@
 #include <CoSupport/Streams/IndentStreambuf.hpp>
 #include <CoSupport/Streams/LineNumberStreambuf.hpp>
 #include <CoSupport/Streams/NullStreambuf.hpp>
+#include <CoSupport/Streams/TranslationStreambuf.hpp>
 
 #include <cassert>
 #include <iostream>
+#include <cstring>
 
 namespace CoSupport { namespace Streams {
 
@@ -421,6 +423,36 @@ void FilterOStream::insert(FilterStreambuf &head)
   rdbuf(&head);
   if(head.hasManip())
     pword(head.getIndex()) = &head;
+}
+
+TranslationStreambuf::TranslationStreambuf(const TranslationMap& tm)
+  : tm(tm) {}
+
+void TranslationStreambuf::setTranslationMap(const TranslationMap& value)
+  { tm = value; }
+
+int TranslationStreambuf::overflow(int c) {
+  if(const char* t = tm.get(c)) {
+    next->sputn(t, std::strlen(t));
+    return 1;
+  }
+  else {
+    return next->sputc(c);
+  }
+}
+
+bool TranslationStreambuf::hasManip() const
+{ return true; }
+  
+int TranslationStreambuf::getIndex() const
+{ return index; }
+
+const int TranslationStreambuf::index(std::ostream::xalloc());
+
+std::ostream &operator<<(std::ostream &os, const TranslationMap &t) {
+  TranslationStreambuf *buf = static_cast<TranslationStreambuf *>(os.pword(TranslationStreambuf::index));
+  if(buf) buf->setTranslationMap(t);
+  return os;
 }
 
 } } // namespace CoSupport::Streams

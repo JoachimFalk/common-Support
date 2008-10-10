@@ -33,62 +33,82 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_STREAMS_DEBUGSTREAMBUF_HPP
-#define _INCLUDED_COSUPPORT_STREAMS_DEBUGSTREAMBUF_HPP
+#ifndef _INCLUDED_COSUPPORT_STREAMS_TRANSLATIONSTREAMBUF_HPP
+#define _INCLUDED_COSUPPORT_STREAMS_TRANSLATIONSTREAMBUF_HPP
 
 #include <stddef.h>
+#include <map>
 
 #include "FilterStreambuf.hpp"
 
 namespace CoSupport { namespace Streams {
 
-/**
- * stream manipulator for the DebugStreambuf custom
- * streambuffer
- */
-struct Debug {
-  /// new debug level
-  size_t level;
-  
-  /// constructs a new object with the specified debug
-  /// level
-  Debug(size_t level);
-  
-  /// predefined debug levels
-  static const Debug Low;
-  static const Debug Medium;
-  static const Debug High;
-  static const Debug None;
+struct TranslationOp {
+  char from;
+  const char* to;
 };
 
 /**
- * prints or discards output according to the current
- * debug level
+ * stream manipulator for the TranslationStreambuf custom
+ * streambuffer
  */
-class DebugStreambuf
+struct TranslationMap {
+  /// @brief Translation map
+  std::map<char,const char*> tm;
+
+  /// @brief Default constructor (no translation)
+  TranslationMap() {}
+  
+  /// @brief Constructor (custom map)
+  TranslationMap(TranslationOp o[], size_t count) {
+    for(size_t i = 0; i < count; ++i) {
+      tm[o[i].from] = o[i].to;
+    }
+  }
+
+  /// @brief Lookup translation string
+  const char* get(char c) const {
+    std::map<char,const char*>::const_iterator i = tm.find(c);
+    if(i == tm.end()) return 0;
+    return i->second;
+  }
+
+  /// predefined translation maps
+  /// We do not use static variables in order to avoid racing conditions
+  /// when initializing global variables.
+  static const TranslationMap& XMLAttr() {
+    static TranslationOp o[] =
+      { {'&'  , "&amp;" },
+        {'<'  , "&lt;"  },
+        {'>'  , "&gt;"  },
+        {'\"' , "&quot;"},
+        {'\'' , "&apos;"} };
+    static TranslationMap t(o, sizeof(o));
+    return t;
+  }
+  static const TranslationMap& None() {
+    static TranslationMap t;
+    return t;
+  }
+};
+
+/**
+ * replaces characters according to translation map
+ */
+class TranslationStreambuf
 : public FilterStreambuf {
 private:
-  /// current debug level
-  size_t level;
+  /// current translation map
+  TranslationMap tm;
 
-  /// flag if output will be printend or not
-  bool visible;
-  
 public:
-  /// constructs a new object with the specified debug
-  /// level
-  DebugStreambuf(
-      const Debug &dbg = Debug::Low,
-      bool visible = true,
-      std::streambuf *next = 0);
-  
-  /// set a new debug level
-  void setLevel(const Debug &dbg);
-  
-  /// set the visibility based on the current debug
-  /// level
-  void setVisibility(const Debug &dbg);
-  
+  /// @brief Constructor
+  TranslationStreambuf(
+      const TranslationMap& tm = TranslationMap::None());
+
+  /// @brief Set new translation map
+  void setTranslationMap(const TranslationMap& value);
+
 protected:
   int overflow(int c);
   
@@ -98,16 +118,16 @@ public:
   static const int index;
 #endif
  
-  /// see Debug 
+  /// see TranslationMap
   bool hasManip() const;
   
   /// returns the (static) index
   int getIndex() const;
 };
 
-/// output operator for the Debug manipulator
-std::ostream &operator<<(std::ostream &os, const Debug &d);
+/// output operator for the TranslationMap manipulator
+std::ostream &operator<<(std::ostream &os, const TranslationMap &t);
 
 } } // namespace CoSupport::Streams
 
-#endif // _INCLUDED_COSUPPORT_STREAMS_DEBUGSTREAMBUF_HPP
+#endif // _INCLUDED_COSUPPORT_STREAMS_FILTER_OSTREAM_HPP

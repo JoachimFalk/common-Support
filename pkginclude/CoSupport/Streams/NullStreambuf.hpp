@@ -36,8 +36,6 @@
 #ifndef _INCLUDED_COSUPPORT_STREAMS_NULLSTREAMBUF_HPP
 #define _INCLUDED_COSUPPORT_STREAMS_NULLSTREAMBUF_HPP
 
-#include <ostream>
-
 #include "FilterStreambuf.hpp"
 
 namespace CoSupport { namespace Streams {
