@@ -45,22 +45,22 @@ namespace CoSupport { namespace String {
 
 class TemplateProcessor {
   typedef TemplateProcessor this_type;
+protected:
+  std::string           templateFileName;
+  mutable std::ifstream templateFile;
 public:
-  std::string   templateFileName;
-  std::ifstream templateFile;
-
   /// Construct TemplateProcessor from given template file
   TemplateProcessor(const std::string &templateFileName);
 
   /// File in template into outputFileName with given fields
   void fillIn(
       const std::string &outputFileName,
-      const std::map<std::string, std::string> &fields);
+      const std::map<std::string, std::string> &fields) const;
 
   /// File in template into outputFileName with given fields
   void fillIn(
       std::ostream &out,
-      const std::map<std::string, std::string> &fields);
+      const std::map<std::string, std::string> &fields) const;
 };
 
 } } // namespace CoSupport::String

@@ -31,7 +31,7 @@ TemplateProcessor::TemplateProcessor(const std::string &templateFileName)
 
 void TemplateProcessor::fillIn(
     const std::string &outputFileName,
-    const std::map<std::string, std::string> &fields) {
+    const std::map<std::string, std::string> &fields) const {
   std::ofstream out(outputFileName.c_str(), std::ios::out);
   if (!out.is_open()) {
     std::ostringstream msg;
@@ -54,7 +54,7 @@ void TemplateProcessor::fillIn(
 
 void TemplateProcessor::fillIn(
     std::ostream &out,
-    const std::map<std::string, std::string> &fields) {
+    const std::map<std::string, std::string> &fields) const {
   templateFile.clear();
   templateFile.seekg(0, std::ios::beg);
   
