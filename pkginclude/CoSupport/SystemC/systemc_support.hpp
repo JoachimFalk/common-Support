@@ -166,13 +166,8 @@ namespace CoSupport { namespace SystemC {
       }
     }
 
-#ifndef NDEBUG
     virtual void dump(std::ostream &out) const
       { out << "EventWaiter(" << this << ", active: " << isActive() << ")"; }
-#else
-    void dump(std::ostream &out) const {}
-#endif
-
   private:
     // registered listeners
     typedef std::set<EventListener *> ell_ty;
@@ -182,11 +177,9 @@ namespace CoSupport { namespace SystemC {
     EventWaiter(const this_type &);
   };
 
-#ifndef NDEBUG
   static inline
   std::ostream &operator << (std::ostream &out, const EventWaiter &se)
     { se.dump(out); return out; }
-#endif
 
   /**
    * simple implementation of the EventWaiter class
@@ -224,10 +217,8 @@ namespace CoSupport { namespace SystemC {
       return ret;
     }
 
-#ifndef NDEBUG
     virtual void dump(std::ostream &out) const
       { out << "Event(" << this << ", active: " << isActive() << ")"; }
-#endif
   private:
     // true if event is active, false otherwise
     bool active;
@@ -380,7 +371,6 @@ namespace CoSupport { namespace SystemC {
     ~EventOrList()
       { clear(); }
 
-#ifndef NDEBUG
     virtual void dump(std::ostream &out) const {
       out << "EventOrList([";
       for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
@@ -388,7 +378,6 @@ namespace CoSupport { namespace SystemC {
       }
       out << "], active: " << active << ")";
     }
-#endif
 
     private:
       size_t active;
@@ -532,7 +521,6 @@ namespace CoSupport { namespace SystemC {
     ~EventAndList()
       { clear(); }
     
-#ifndef NDEBUG
     virtual void dump(std::ostream &out) const {
       out << "EventAndList([";
       for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
@@ -540,8 +528,6 @@ namespace CoSupport { namespace SystemC {
       }
       out << "], missing: " << missing << ")";
     }
-#endif
-
   private:
     size_t missing;
   };
@@ -568,11 +554,8 @@ namespace CoSupport { namespace SystemC {
     ~VariantEventWaiter()
     { if(ew) ew->delListener(this); }
 
-#ifndef NDEBUG
     virtual void dump(std::ostream &out) const
-    { out << "VariantEventWaiter([" << ew << "], active: " << active << ")"; }
-#endif
-
+      { out << "VariantEventWaiter([" << ew << "], active: " << active << ")"; }
   protected:
     // see EventWaiter
     bool isActive() const
