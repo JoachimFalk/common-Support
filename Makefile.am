@@ -19,8 +19,6 @@
 # Boston, MA 02111-1307, USA.
 #
 # $Log$
-root_srcdir   := $(shell cd $(top_srcdir)/.. && pwd)
-root_builddir := $(shell cd $(top_builddir)/.. && pwd)
 
 include $(auxdir)/jfrules.mk
 include ../BuildSystem/doxygen.am
@@ -32,17 +30,17 @@ ACLOCAL_AMFLAGS=-I ../BuildSystem/m4
 
 AM_CPPFLAGS=				\
 	@AM_CPPFLAGS@			\
-	@BOOST_INCLUDE@			\
-	@SYSTEMC_INCLUDE@		\
-	@XERCES_INCLUDE@		\
+	$(BOOST_INCLUDE)		\
+	$(SYSTEMC_INCLUDE)		\
+	$(XERCES_INCLUDE)		\
 	-I$(srcdir)/pkginclude		\
 	-I$(srcdir)
 
 AM_LDFLAGS=				\
 	@AM_LDFLAGS@			\
-	@BOOST_LDFLAGS@			\
-	@SYSTEMC_LDFLAGS@		\
-	@XERCES_LDFLAGS@
+	$(BOOST_LDFLAGS)		\
+	$(SYSTEMC_LDFLAGS)		\
+	$(XERCES_LDFLAGS)
 
 lib_LTLIBRARIES=			\
 	libcosupport.la			\
@@ -67,14 +65,14 @@ libcosupport_la_LIBADD =			\
 libcosupport_initializer_la_SOURCES =		\
 	BasicInitializer.cpp
 libcosupport_initializer_la_LIBADD =		\
-	-lboost_thread@BOOST_LIBMTPOSTFIX@
+	-lboost_thread$(BOOST_LIBMTPOSTFIX)
 
 libcosupport_smartptr_la_SOURCES =		\
 	RefCountObject.cpp
 libcosupport_smartptr_la_LIBADD =		\
 	$(refcount_CH_LTOBJS)			\
 	$(refcount_object_CH_LTOBJS)		\
-	-lboost_thread@BOOST_LIBMTPOSTFIX@
+	-lboost_thread$(BOOST_LIBMTPOSTFIX)
 
 libcosupport_xerces_la_SOURCES =		\
 	SMXIdManager.cpp			\
@@ -82,7 +80,7 @@ libcosupport_xerces_la_SOURCES =		\
 	StdIstreamInputStream.cpp		\
 	StdOstreamFormatTarget.cpp
 libcosupport_xerces_la_LIBADD =			\
-	-lboost_thread@BOOST_LIBMTPOSTFIX@	\
+	-lboost_thread$(BOOST_LIBMTPOSTFIX)	\
 	libcosupport-initializer.la		\
 	-lxerces-c
 
@@ -90,7 +88,7 @@ libcosupport_systemc_la_SOURCES =		\
 	par_manager.cpp				\
 	PerformanceEvaluation.cpp
 libcosupport_systemc_la_LIBADD =		\
-	-lboost_thread@BOOST_LIBMTPOSTFIX@	\
+	-lboost_thread$(BOOST_LIBMTPOSTFIX)	\
 	-lsystemc
 
 libcosupport_streams_la_SOURCES =		\
@@ -98,8 +96,8 @@ libcosupport_streams_la_SOURCES =		\
 	FilterOStream.cpp			\
 	SocketTCPClient.cpp
 libcosupport_streams_la_LIBADD =		\
-	-lboost_iostreams@BOOST_LIBMTPOSTFIX@	\
-	-lboost_system@BOOST_LIBMTPOSTFIX@
+	-lboost_iostreams$(BOOST_LIBMTPOSTFIX)	\
+	-lboost_system$(BOOST_LIBMTPOSTFIX)
 
 libcosupport_string_la_SOURCES =		\
 	TemplateProcessor.cpp			\
