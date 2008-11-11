@@ -108,12 +108,16 @@ libcosupport_allocators_la_SOURCES =
 libcosupport_allocators_la_LIBADD =
 
 noinst_PROGRAMS=			\
+	test_maybevalue			\
 	test_arrayfifo			\
 	test_event_and_list		\
 	test_event_or_list		\
 	test_nested_event_lists		\
 	test_idpool			\
 	test_facade
+
+test_maybevalue_SOURCES		  = test_maybevalue.cpp
+test_maybevalue_LDADD		  =
 
 test_arrayfifo_SOURCES		  = test_arrayfifo.cpp
 test_arrayfifo_LDADD		  =
