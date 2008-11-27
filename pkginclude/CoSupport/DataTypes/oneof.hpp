@@ -41,14 +41,14 @@
 #include <iostream>
 #include <typeinfo>
 
+#include "NILTYPE.hpp"
+
 #define _ONEOFDEBUG(x) do {} while (0)
 //#define _ONEOFDEBUG(x) std::cerr << x << std::endl
 
 namespace CoSupport { namespace DataTypes {
 
 typedef unsigned char oneof_typeid;
-
-struct NILTYPE;
 
 namespace detail {
 
