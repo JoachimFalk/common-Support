@@ -17,6 +17,8 @@ bins="test_arrayfifo"
 bins="$bins test_nested_event_lists"
 bins="$bins test_event_and_list"
 bins="$bins test_event_or_list"
+bins="$bins test_facade"
+bins="$bins test_typename"
 
 for bin in $bins;
 do
