@@ -136,7 +136,7 @@ public:
 
   FacadePtr(const SmartPtr &p)
     : base_type(NULL) { this->assign(Ref(p)); }
-  FacadePtr(const FacadePtr<T, Type::Mutable> &t)
+  FacadePtr(const Ptr &t)
     : base_type(NULL) { this->assign(*t); }
   FacadePtr(FPN *null = NULL)
     : base_type(NULL) { assert(null == NULL); }
@@ -162,8 +162,8 @@ class FacadePtr<Detail::Storage<Impl>, C>: public Detail::Storage<Impl> {
 
   template <typename II, template <class> class CC> friend class FacadePtr;
 private:
-  typedef FacadePtr<Detail::Storage<Impl>, Type::Mutable> Ptr;
-  typedef FacadePtr<Detail::Storage<Impl>, Type::Const>   ConstPtr;
+  typedef typename FacadeTraits<Detail::Storage<Impl> >::ConstPtr ConstPtr;
+  typedef typename FacadeTraits<Detail::Storage<Impl> >::Ptr      Ptr;
 protected:
   typedef Detail::FacadePtrNullClass FPN;
 protected:
@@ -333,34 +333,34 @@ const FacadePtr<TT,C> static_pointer_cast(const FacadePtr<T,C> &ptr)
 namespace Type {
 
   template <typename T>
-  struct Const<DataTypes::FacadeRef<T, Mutable> >
-    { /*typedef const DataTypes::FacadeRef<T, Type::Const> type;*/ };
+  struct Const<DataTypes::FacadeRef<T, Type::Mutable> >
+    { /*typedef const DataTypes::FacadeTraits<T>::ConstRef type;*/ };
   template <typename T>
-  struct Const<DataTypes::FacadePtr<T, Mutable> >
-    { /*typedef DataTypes::FacadePtr<T, Type::Const> type;*/ };
+  struct Const<DataTypes::FacadePtr<T, Type::Mutable> >
+    { /*typedef DataTypes::FacadeTraits<T>::ConstPtr type;*/ };
   template <typename T>
   struct Const<DataTypes::FacadePtr<T, Type::Const> >
-    { /*typedef DataTypes::FacadePtr<T, Type::Const> type;*/ };
+    { /*typedef DataTypes::FacadeTraits<T>::ConstPtr type;*/ };
 
   template <typename T>
-  struct Mutable<const DataTypes::FacadeRef<T, Const> >
-    { /*typedef DataTypes::FacadeRef<T, Type::Mutable> type;*/ };
+  struct Mutable<DataTypes::FacadeRef<T, Type::Const> >
+    { /*typedef DataTypes::FacadeTraits<T>::Ref type;*/ };
   template <typename T>
-  struct Mutable<DataTypes::FacadePtr<T, Const> >
-    { /*typedef DataTypes::FacadePtr<T, Type::Mutable> type;*/ };
+  struct Mutable<DataTypes::FacadePtr<T, Type::Const> >
+    { /*typedef DataTypes::FacadeTraits<T>::Ptr type;*/ };
 
   template <typename T>
-  struct ToggleConst<const DataTypes::FacadeRef<T, Const> >
-    { /*typedef DataTypes::FacadeRef<T, Mutable> type;*/ };
+  struct ToggleConst<DataTypes::FacadeRef<T, Type::Const> >
+    { /*typedef DataTypes::FacadeTraits<T>::Ref type;*/ };
   template <typename T>
-  struct ToggleConst<DataTypes::FacadeRef<T, Mutable> >
-    { /*typedef const DataTypes::FacadeRef<T, Const> type;*/ };
+  struct ToggleConst<DataTypes::FacadeRef<T, Type::Mutable> >
+    { /*typedef DataTypes::FacadeTraits<T>::ConstRef type;*/ };
   template <typename T>
-  struct ToggleConst<DataTypes::FacadePtr<T, Const> >
-    { /*typedef DataTypes::FacadePtr<T, Mutable> type;*/ };
+  struct ToggleConst<DataTypes::FacadePtr<T, Type::Const> >
+    { /*typedef DataTypes::FacadeTraits<T>::Ptr type;*/ };
   template <typename T>
-  struct ToggleConst<DataTypes::FacadePtr<T, Mutable> >
-    { /*typedef DataTypes::FacadePtr<T, Const> type;*/ };
+  struct ToggleConst<DataTypes::FacadePtr<T, Type::Mutable> >
+    { /*typedef DataTypes::FacadeTraits<T>::ConstPtr type;*/ };
 
 } // namespace Type
 
