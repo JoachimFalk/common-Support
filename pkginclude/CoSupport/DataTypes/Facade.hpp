@@ -40,9 +40,7 @@
 #include <boost/type_traits/add_const.hpp>
 #include <boost/type_traits/remove_const.hpp>
 
-namespace CoSupport {
-  
-namespace DataTypes {
+namespace CoSupport { namespace DataTypes {
 
 namespace Detail {
   template <class Impl>
@@ -329,8 +327,40 @@ template <class TT, class T, template <class> class C>
 const FacadePtr<TT,C> static_pointer_cast(const FacadePtr<T,C> &ptr)
   { return &static_cast<typename C<TT>::type &>(*ptr); }
 
-} // namespace DataTypes
+} } // namespace CoSupport::DataTypes
 
-} // namespace CoSupport
+#include <boost/type_traits/add_reference.hpp>
+#include <boost/type_traits/remove_reference.hpp>
+
+#include <boost/type_traits/add_pointer.hpp>
+#include <boost/type_traits/remove_pointer.hpp>
+
+namespace boost {
+
+  template <class Derived, class Impl, class Base, class SPtr>
+  struct add_reference<CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base, SPtr> >
+    { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::Ref type; };
+
+  template <class Derived, class Impl, class Base, class SPtr>
+  struct add_reference<const CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base, SPtr> >
+    { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::ConstRef type; };
+
+  template <class Derived, template <class> class C>
+  struct remove_reference<CoSupport::DataTypes::FacadeRef<Derived, C> >
+    { typedef typename C<Derived>::type type; };
+
+  template <class Derived, class Impl, class Base, class SPtr>
+  struct add_pointer<CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base, SPtr> >
+    { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::Ptr type; };
+
+  template <class Derived, class Impl, class Base, class SPtr>
+  struct add_pointer<const CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base, SPtr> >
+    { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::ConstPtr type; };
+
+  template <class Derived, template <class> class C>
+  struct remove_pointer<CoSupport::DataTypes::FacadePtr<Derived, C> >
+    { typedef typename C<Derived>::type type; };
+
+} // namespace boost
 
 #endif // _INCLUDED_COSUPPORT_DATATYPES_FACADE_HPP
