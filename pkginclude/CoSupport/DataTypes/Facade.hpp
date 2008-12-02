@@ -74,6 +74,14 @@ struct FacadeTraits {
   typedef FacadePtr<T, Type::Mutable>     Ptr;
 };
 
+template <class T>
+struct FacadeTraits<const T> {
+  typedef typename FacadeTraits<T>::ConstRef   ConstRef;
+  typedef typename FacadeTraits<T>::ConstRef   Ref;
+  typedef typename FacadeTraits<T>::ConstPtr   ConstPtr;
+  typedef typename FacadeTraits<T>::ConstPtr   Ptr;
+};
+
 template <class T, template <class> class C>
 class FacadeRef: public T {
   typedef FacadeRef<T, C> this_type;
