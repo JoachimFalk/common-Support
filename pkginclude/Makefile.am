@@ -81,8 +81,11 @@ nobase_include_HEADERS = \
 	CoSupport/Math/smoc_math.hpp \
 	CoSupport/Math/string_hash.hpp \
 	CoSupport/Type/transform.hpp \
+	CoSupport/Type/STLIteratorSelector.hpp \
+	CoSupport/Type/STLPointerSelector.hpp \
+	CoSupport/Type/STLReferenceSelector.hpp \
+	CoSupport/Type/STLReverseIteratorSelector.hpp \
 	CoSupport/Lambda/functor.hpp \
 	CoSupport/Lambda/function_objects.hpp \
 	CoSupport/compatibility-glue/integertypes.h \
 	CoSupport/compatibility-glue/snprintf.h
-
