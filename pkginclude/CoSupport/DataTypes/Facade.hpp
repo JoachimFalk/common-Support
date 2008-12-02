@@ -37,7 +37,8 @@
 
 #include <boost/intrusive_ptr.hpp>
 
-#include "../Type/transform.hpp"
+#include <boost/type_traits/add_const.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
 namespace CoSupport {
   
@@ -68,10 +69,10 @@ template <class T, template <class> class C> class FacadePtr;
 
 template <class T>
 struct FacadeTraits {
-  typedef const FacadeRef<T, Type::Const> ConstRef;
-  typedef FacadeRef<T, Type::Mutable>     Ref;
-  typedef FacadePtr<T, Type::Const>       ConstPtr;
-  typedef FacadePtr<T, Type::Mutable>     Ptr;
+  typedef const FacadeRef<T, boost::add_const> ConstRef;
+  typedef FacadeRef<T, boost::remove_const>    Ref;
+  typedef FacadePtr<T, boost::add_const>       ConstPtr;
+  typedef FacadePtr<T, boost::remove_const>    Ptr;
 };
 
 template <class T>
@@ -329,40 +330,6 @@ const FacadePtr<TT,C> static_pointer_cast(const FacadePtr<T,C> &ptr)
   { return &static_cast<typename C<TT>::type &>(*ptr); }
 
 } // namespace DataTypes
-
-namespace Type {
-
-  template <typename T>
-  struct Const<DataTypes::FacadeRef<T, Type::Mutable> >
-    { /*typedef const DataTypes::FacadeTraits<T>::ConstRef type;*/ };
-  template <typename T>
-  struct Const<DataTypes::FacadePtr<T, Type::Mutable> >
-    { /*typedef DataTypes::FacadeTraits<T>::ConstPtr type;*/ };
-  template <typename T>
-  struct Const<DataTypes::FacadePtr<T, Type::Const> >
-    { /*typedef DataTypes::FacadeTraits<T>::ConstPtr type;*/ };
-
-  template <typename T>
-  struct Mutable<DataTypes::FacadeRef<T, Type::Const> >
-    { /*typedef DataTypes::FacadeTraits<T>::Ref type;*/ };
-  template <typename T>
-  struct Mutable<DataTypes::FacadePtr<T, Type::Const> >
-    { /*typedef DataTypes::FacadeTraits<T>::Ptr type;*/ };
-
-  template <typename T>
-  struct ToggleConst<DataTypes::FacadeRef<T, Type::Const> >
-    { /*typedef DataTypes::FacadeTraits<T>::Ref type;*/ };
-  template <typename T>
-  struct ToggleConst<DataTypes::FacadeRef<T, Type::Mutable> >
-    { /*typedef DataTypes::FacadeTraits<T>::ConstRef type;*/ };
-  template <typename T>
-  struct ToggleConst<DataTypes::FacadePtr<T, Type::Const> >
-    { /*typedef DataTypes::FacadeTraits<T>::Ptr type;*/ };
-  template <typename T>
-  struct ToggleConst<DataTypes::FacadePtr<T, Type::Mutable> >
-    { /*typedef DataTypes::FacadeTraits<T>::ConstPtr type;*/ };
-
-} // namespace Type
 
 } // namespace CoSupport
 
