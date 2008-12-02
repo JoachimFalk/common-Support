@@ -41,6 +41,8 @@
 #include <iostream>
 #include <typeinfo>
 
+#include "NILTYPE.hpp"
+
 #define _ONEOFDEBUG(x) do {} while (0)
 //#define _ONEOFDEBUG(x) std::cerr << x << std::endl
 
@@ -48,9 +50,7 @@ namespace CoSupport { namespace DataTypes {
 
 typedef unsigned char oneof_typeid;
 
-struct NILTYPE;
-
-namespace detail {
+namespace Detail {
 
   struct void2_st {};
   struct void3_st {};
@@ -126,10 +126,10 @@ namespace detail {
 
 template <
   typename T1,
-  typename T2 = detail::void2_st,
-  typename T3 = detail::void3_st,
-  typename T4 = detail::void4_st,
-  typename T5 = detail::void5_st >
+  typename T2 = Detail::void2_st,
+  typename T3 = Detail::void3_st,
+  typename T4 = Detail::void4_st,
+  typename T5 = Detail::void5_st >
 class oneof;
 
 
@@ -387,17 +387,17 @@ typename V::result_type applyVisitor(const oneof<T1,T2,T3,T4,T5> &of, V &v) {
   typedef oneof<T1,T2,T3,T4,T5> this_type;
   switch( of.type() ) {
     case oneofTypeid<this_type, T1>::type:
-      return detail::CallVisitor<T1>::apply(of, v);
+      return Detail::CallVisitor<T1>::apply(of, v);
     case oneofTypeid<this_type, T2>::type:
-      return detail::CallVisitor<T2>::apply(of, v);
+      return Detail::CallVisitor<T2>::apply(of, v);
     case oneofTypeid<this_type, T3>::type:
-      return detail::CallVisitor<T3>::apply(of, v);
+      return Detail::CallVisitor<T3>::apply(of, v);
     case oneofTypeid<this_type, T4>::type:
-      return detail::CallVisitor<T4>::apply(of, v);
+      return Detail::CallVisitor<T4>::apply(of, v);
     case oneofTypeid<this_type, T5>::type:
-      return detail::CallVisitor<T5>::apply(of, v);
+      return Detail::CallVisitor<T5>::apply(of, v);
     default:
-      return detail::CallVisitor<NILTYPE>::apply(v);
+      return Detail::CallVisitor<NILTYPE>::apply(v);
   }
 }
 
@@ -405,7 +405,7 @@ template <typename T1, typename T2, typename T3, typename T4, typename T5>
 static inline
 std::ostream &operator << (std::ostream &output, const oneof<T1,T2,T3,T4,T5> &of)
   {
-    detail::OutputVisitor ov(output);
+    Detail::OutputVisitor ov(output);
     applyVisitor(of, ov);
     return output;
   }

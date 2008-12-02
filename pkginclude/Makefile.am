@@ -65,6 +65,8 @@ nobase_include_HEADERS = \
 	CoSupport/SystemC/par_manager.hpp \
 	CoSupport/SystemC/PerformanceEvaluation.hpp \
 	CoSupport/SystemC/ChannelModificationListener.hpp \
+	CoSupport/DataTypes/NILTYPE.hpp \
+	CoSupport/DataTypes/EMPTY.hpp \
 	CoSupport/DataTypes/ValidWrapper.hpp \
 	CoSupport/DataTypes/CheckedVector.hpp \
 	CoSupport/DataTypes/bit_buffer.hpp \
