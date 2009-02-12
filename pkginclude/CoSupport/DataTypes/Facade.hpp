@@ -37,11 +37,10 @@
 
 #include <boost/intrusive_ptr.hpp>
 
-#include "../Type/transform.hpp"
+#include <boost/type_traits/add_const.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
-namespace CoSupport {
-  
-namespace DataTypes {
+namespace CoSupport { namespace DataTypes {
 
 namespace Detail {
   template <class Impl>
@@ -68,10 +67,10 @@ template <class T, template <class> class C> class FacadePtr;
 
 template <class T>
 struct FacadeTraits {
-  typedef const FacadeRef<T, Type::Const> ConstRef;
-  typedef FacadeRef<T, Type::Mutable>     Ref;
-  typedef FacadePtr<T, Type::Const>       ConstPtr;
-  typedef FacadePtr<T, Type::Mutable>     Ptr;
+  typedef const FacadeRef<T, boost::add_const> ConstRef;
+  typedef FacadeRef<T, boost::remove_const>    Ref;
+  typedef FacadePtr<T, boost::add_const>       ConstPtr;
+  typedef FacadePtr<T, boost::remove_const>    Ptr;
 };
 
 template <class T>
@@ -136,7 +135,7 @@ public:
 
   FacadePtr(const SmartPtr &p)
     : base_type(NULL) { this->assign(Ref(p)); }
-  FacadePtr(const FacadePtr<T, Type::Mutable> &t)
+  FacadePtr(const Ptr &t)
     : base_type(NULL) { this->assign(*t); }
   FacadePtr(FPN *null = NULL)
     : base_type(NULL) { assert(null == NULL); }
@@ -162,8 +161,8 @@ class FacadePtr<Detail::Storage<Impl>, C>: public Detail::Storage<Impl> {
 
   template <typename II, template <class> class CC> friend class FacadePtr;
 private:
-  typedef FacadePtr<Detail::Storage<Impl>, Type::Mutable> Ptr;
-  typedef FacadePtr<Detail::Storage<Impl>, Type::Const>   ConstPtr;
+  typedef typename FacadeTraits<Detail::Storage<Impl> >::ConstPtr ConstPtr;
+  typedef typename FacadeTraits<Detail::Storage<Impl> >::Ptr      Ptr;
 protected:
   typedef Detail::FacadePtrNullClass FPN;
 protected:
@@ -328,42 +327,40 @@ template <class TT, class T, template <class> class C>
 const FacadePtr<TT,C> static_pointer_cast(const FacadePtr<T,C> &ptr)
   { return &static_cast<typename C<TT>::type &>(*ptr); }
 
-} // namespace DataTypes
+} } // namespace CoSupport::DataTypes
 
-namespace Type {
+#include <boost/type_traits/add_reference.hpp>
+#include <boost/type_traits/remove_reference.hpp>
 
-  template <typename T>
-  struct Const<DataTypes::FacadeRef<T, Mutable> >
-    { typedef const DataTypes::FacadeRef<T, Type::Const> type; };
-  template <typename T>
-  struct Const<DataTypes::FacadePtr<T, Mutable> >
-    { typedef DataTypes::FacadePtr<T, Type::Const> type; };
-  template <typename T>
-  struct Const<DataTypes::FacadePtr<T, Type::Const> >
-    { typedef DataTypes::FacadePtr<T, Type::Const> type; };
+#include <boost/type_traits/add_pointer.hpp>
+#include <boost/type_traits/remove_pointer.hpp>
 
-  template <typename T>
-  struct Mutable<const DataTypes::FacadeRef<T, Const> >
-    { typedef DataTypes::FacadeRef<T, Type::Mutable> type; };
-  template <typename T>
-  struct Mutable<DataTypes::FacadePtr<T, Const> >
-    { typedef DataTypes::FacadePtr<T, Type::Mutable> type; };
+namespace boost {
 
-  template <typename T>
-  struct ToggleConst<const DataTypes::FacadeRef<T, Const> >
-    { typedef DataTypes::FacadeRef<T, Mutable> type; };
-  template <typename T>
-  struct ToggleConst<DataTypes::FacadeRef<T, Mutable> >
-    { typedef const DataTypes::FacadeRef<T, Const> type; };
-  template <typename T>
-  struct ToggleConst<DataTypes::FacadePtr<T, Const> >
-    { typedef DataTypes::FacadePtr<T, Mutable> type; };
-  template <typename T>
-  struct ToggleConst<DataTypes::FacadePtr<T, Mutable> >
-    { typedef DataTypes::FacadePtr<T, Const> type; };
+  template <class Derived, class Impl, class Base, class SPtr>
+  struct add_reference<CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base, SPtr> >
+    { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::Ref type; };
 
-} // namespace Type
+  template <class Derived, class Impl, class Base, class SPtr>
+  struct add_reference<const CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base, SPtr> >
+    { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::ConstRef type; };
 
-} // namespace CoSupport
+  template <class Derived, template <class> class C>
+  struct remove_reference<CoSupport::DataTypes::FacadeRef<Derived, C> >
+    { typedef typename C<Derived>::type type; };
+
+  template <class Derived, class Impl, class Base, class SPtr>
+  struct add_pointer<CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base, SPtr> >
+    { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::Ptr type; };
+
+  template <class Derived, class Impl, class Base, class SPtr>
+  struct add_pointer<const CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base, SPtr> >
+    { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::ConstPtr type; };
+
+  template <class Derived, template <class> class C>
+  struct remove_pointer<CoSupport::DataTypes::FacadePtr<Derived, C> >
+    { typedef typename C<Derived>::type type; };
+
+} // namespace boost
 
 #endif // _INCLUDED_COSUPPORT_DATATYPES_FACADE_HPP
