@@ -50,6 +50,7 @@ lib_LTLIBRARIES=			\
 	libcosupport-systemc.la		\
 	libcosupport-streams.la		\
 	libcosupport-string.la		\
+	libcosupport-math.la		\
 	libcosupport-allocators.la
 
 libcosupport_la_SOURCES =
@@ -104,6 +105,10 @@ libcosupport_string_la_SOURCES =		\
 	UniquePool.cpp
 libcosupport_string_la_LIBADD =			\
 	-lboost_regex$(BOOST_LIBMTPOSTFIX)
+
+libcosupport_math_la_SOURCES =			\
+	flog2.cpp
+libcosupport_math_la_LIBADD =
 
 libcosupport_allocators_la_SOURCES =
 libcosupport_allocators_la_LIBADD =
