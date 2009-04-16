@@ -4,6 +4,30 @@
 
 namespace CoSupport {
 
+namespace String {
+
+  template<>
+  std::string asStr<SMXIdSer>(const SMXIdSer& id)
+    { std::ostringstream out; out << id; return out.str(); }
+
+  template<>
+  SMXIdSer strAs<SMXIdSer>(const std::string &s) {
+    if (s.size() < 3 || s[0] != 'i' || s[1] != 'd')
+      throw InvalidConversionTo<SMXIdSer>();
+    
+    SMXId ret = 0;
+    
+    for (size_t i = 2; i < s.size(); ++i) {
+      if (s[i] < '0' || s[i] > '9')
+        throw InvalidConversionTo<SMXIdSer>();
+      ret = ret * 10 + (s[i] - '0');
+    }
+    
+    return ret;
+  }
+
+} // namespace String
+
 namespace X = XML::Xerces;
 namespace XXN = XML::Xerces::XN;
 
@@ -18,26 +42,6 @@ SMXIdSer::SMXIdSer(SMXId id) :
 
 SMXIdSer::operator SMXId() const
   { return id; }
-
-template<>
-std::string asStr<SMXIdSer>(const SMXIdSer& id)
-  { std::ostringstream out; out << id; return out.str(); }
-
-template<>
-SMXIdSer strAs<SMXIdSer>(const std::string &s) {
-  if (s.size() < 3 || s[0] != 'i' || s[1] != 'd')
-    throw InvalidConversionTo<SMXIdSer>();
-  
-  SMXId ret = 0;
-  
-  for (size_t i = 2; i < s.size(); ++i) {
-    if (s[i] < '0' || s[i] > '9')
-      throw InvalidConversionTo<SMXIdSer>();
-    ret = ret * 10 + (s[i] - '0');
-  }
-  
-  return ret;
-}
 
 std::ostream& operator<<(std::ostream& out, const SMXIdSer& id)
   { return out << "id" << id.id; }
