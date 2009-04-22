@@ -57,39 +57,19 @@ struct TranslationMap {
   std::map<char,const char*> tm;
 
   /// @brief Default constructor (no translation)
-  TranslationMap() {}
+  TranslationMap();
   
   /// @brief Constructor (custom map)
-  TranslationMap(TranslationOp o[], size_t count) {
-    for(size_t i = 0; i < count; ++i) {
-      tm[o[i].from] = o[i].to;
-    }
-  }
+  TranslationMap(TranslationOp o[], size_t count);
 
   /// @brief Lookup translation string
-  const char* get(char c) const {
-    std::map<char,const char*>::const_iterator i = tm.find(c);
-    if(i == tm.end()) return 0;
-    return i->second;
-  }
+  const char* get(char c) const;
 
   /// predefined translation maps
   /// We do not use static variables in order to avoid racing conditions
   /// when initializing global variables.
-  static const TranslationMap& XMLAttr() {
-    static TranslationOp o[] =
-      { {'&'  , "&amp;" },
-        {'<'  , "&lt;"  },
-        {'>'  , "&gt;"  },
-        {'\"' , "&quot;"},
-        {'\'' , "&apos;"} };
-    static TranslationMap t(o, sizeof(o));
-    return t;
-  }
-  static const TranslationMap& None() {
-    static TranslationMap t;
-    return t;
-  }
+  static const TranslationMap& XMLAttr();
+  static const TranslationMap& None();
 };
 
 /**
