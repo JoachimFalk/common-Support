@@ -455,5 +455,35 @@ std::ostream &operator<<(std::ostream &os, const TranslationMap &t) {
   return os;
 }
 
+TranslationMap::TranslationMap() {}
+  
+TranslationMap::TranslationMap(TranslationOp o[], size_t count) {
+  for(size_t i = 0; i < count; ++i) {
+    tm[o[i].from] = o[i].to;
+  }
+}
+
+const char* TranslationMap::get(char c) const {
+  std::map<char,const char*>::const_iterator i = tm.find(c);
+  if(i == tm.end()) return 0;
+  return i->second;
+}
+
+const TranslationMap& TranslationMap::XMLAttr() {
+  static TranslationOp o[] =
+    { {'&'  , "&amp;" },
+      {'<'  , "&lt;"  },
+      {'>'  , "&gt;"  },
+      {'\"' , "&quot;"},
+      {'\'' , "&apos;"} };
+  static TranslationMap t(o, sizeof(o) / sizeof(TranslationOp));
+  return t;
+}
+
+const TranslationMap& TranslationMap::None() {
+  static TranslationMap t;
+  return t;
+}
+
 } } // namespace CoSupport::Streams
 

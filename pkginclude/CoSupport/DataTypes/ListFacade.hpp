@@ -116,10 +116,11 @@ namespace CoSupport { namespace DataTypes {
 
   } // namespace Detail
 
-  //
-  // ListFacade - use as a public base class for defining new
-  // [standard-conforming: not just yet] list containers.
-  //
+  /// ListFacade is used as a public base class for defining new
+  /// standard-conforming, e.g., std::list<VALUE>, list containers.
+  /// The derived class DERIVED must implement first(), last(),
+  /// add(), and del() as protected methods. These will be used
+  /// by this class to implement the std::list interface.
   template <
     class DERIVED, // The derived list container being constructed
     class ITER_,
