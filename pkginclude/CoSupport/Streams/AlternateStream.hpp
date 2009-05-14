@@ -40,10 +40,14 @@
 #include <istream>
 #include <fstream>
 #include <string>
+#include <stdexcept>
 
 namespace CoSupport { namespace Streams {
 
-  struct FileNotOpenException {};
+  struct FileNotOpenException : public std::runtime_error {
+    FileNotOpenException(const char* file) 
+      : std::runtime_error(std::string("Could not open '") + file + "'") {}
+  };
 
   template<class Base, class FStream>
   struct AlternateStream
@@ -60,7 +64,7 @@ namespace CoSupport { namespace Streams {
       else {
         FStream* fs = new FStream(file.c_str());
         if(!fs->is_open())
-          throw FileNotOpenException();
+          throw FileNotOpenException(file.c_str());
         obj = fs;
       }
       rdbuf(obj->rdbuf());
