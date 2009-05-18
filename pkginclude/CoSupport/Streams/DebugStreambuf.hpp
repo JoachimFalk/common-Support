@@ -49,10 +49,17 @@ namespace CoSupport { namespace Streams {
 struct Debug {
   /// new debug level
   size_t level;
+
+  /// new line will be prefixed with msg
+  std::string prefix;
   
   /// constructs a new object with the specified debug
   /// level
   Debug(size_t level);
+
+  /// constructs a new object with the specified debug
+  /// level and prefix
+  Debug(size_t level, const std::string& prefix);
   
   /// predefined debug levels
   static const Debug Low;
@@ -71,9 +78,15 @@ private:
   /// current debug level
   size_t level;
 
+  /// line prefix
+  std::string prefix;
+
   /// flag if output will be printend or not
   bool visible;
-  
+
+  /// indicator if newline was encountered 
+  bool newline;
+
 public:
   /// constructs a new object with the specified debug
   /// level

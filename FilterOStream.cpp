@@ -361,6 +361,10 @@ Debug::Debug(size_t level) :
   level(level)
 {}
   
+Debug::Debug(size_t level, const std::string& prefix) :
+  level(level), prefix(prefix)
+{}
+
 const Debug Debug::Low(0);
 const Debug Debug::Medium(1);
 const Debug Debug::High(2);
@@ -372,21 +376,32 @@ DebugStreambuf::DebugStreambuf(
     std::streambuf *next) :
   FilterStreambuf(next),
   level(dbg.level),
-  visible(visible)
+  visible(visible),
+  newline(true)
 {}
 
 void DebugStreambuf::setLevel(const Debug &dbg)
 { level = dbg.level; }
 
-void DebugStreambuf::setVisibility(const Debug &dbg)
-{ visible = dbg.level >= level; }
+void DebugStreambuf::setVisibility(const Debug &dbg) {
+  visible = dbg.level >= level;
+  prefix = dbg.prefix;
+}
 
 int DebugStreambuf::overflow(int c)
 {
-  if(visible)
-    return next->sputc(c);
-  else
+  if(!visible)
     return 1;
+
+  if(newline) {
+    next->sputn(prefix.c_str(), prefix.size());
+    newline = false;
+  }
+  if(!newline && c == '\n') {
+    newline = true;
+  } 
+
+  return next->sputc(c);
 }
 
 bool DebugStreambuf::hasManip() const
