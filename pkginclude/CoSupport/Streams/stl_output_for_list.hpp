@@ -39,7 +39,8 @@
 #include <iostream>
 #include <list>
 
-// This must be in the global namespace to be visible for all std::list<...> templates
+namespace std {
+
 template <typename T, class A>
 std::ostream &operator << (std::ostream &out, const std::list<T,A> &l) {
   out << "[List:";
@@ -50,5 +51,7 @@ std::ostream &operator << (std::ostream &out, const std::list<T,A> &l) {
   out << "]";
   return out;
 }
+
+} // namespace std
 
 #endif // _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_LIST_HPP
