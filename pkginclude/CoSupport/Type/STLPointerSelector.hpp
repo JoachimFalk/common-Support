@@ -1,6 +1,6 @@
 // vim: set sw=2 ts=8:
 /*
- * Copyright (c) 2004-2008 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
