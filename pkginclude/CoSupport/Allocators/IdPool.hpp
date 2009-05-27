@@ -1,29 +1,14 @@
-#ifndef INCLUDED_COSUPPORT_ALLOCATORS_IDPOOL_HPP
-#define INCLUDED_COSUPPORT_ALLOCATORS_IDPOOL_HPP
+#ifndef _INCLUDED_COSUPPORT_ALLOCATORS_IDPOOL_HPP
+#define _INCLUDED_COSUPPORT_ALLOCATORS_IDPOOL_HPP
 
 #include <utility>
 #include <stdlib.h>
 
 #include "../sassert.h"
-#include "../commondefs.h"
 
-//#include "../String/convert.hpp"
-//#include "../Math/string_hash.hpp"
-
-//#include <map>
-//#include <limits>
+#include "IdAllocRequest.hpp"
 
 namespace CoSupport { namespace Allocators {
-
-namespace Detail {
-
-  template <typename T>
-  struct IdRange {
-    static const T min = MIN_TYPE(T);
-    static const T max = MAX_TYPE(T);
-  };
-
-} // namespace Detail
 
 template <
   class DERIVED,
@@ -118,4 +103,4 @@ protected:
 
 } } // namespace CoSupport::Allocators
 
-#endif // INCLUDED_COSUPPORT_ALLOCATORS_IDPOOL_HPP
+#endif // _INCLUDED_COSUPPORT_ALLOCATORS_IDPOOL_HPP
