@@ -35,9 +35,10 @@
 #ifndef INCLUDED_COSUPPORT_STRING_HASH_HPP
 #define INCLUDED_COSUPPORT_STRING_HASH_HPP
 
-#include <CoSupport/compatibility-glue/integertypes.h>
+#include "../commondefs.h"
+#include "../compatibility-glue/integertypes.h"
 
-namespace CoSupport {
+namespace CoSupport { namespace Math {
 
 namespace Detail {
 
@@ -49,6 +50,23 @@ namespace Detail {
   template<uint64_t S>
   struct NextPower2<0, S>
     { static const uint64_t value = S; };
+
+  // http://isthe.com/chongo/tech/comp/fnv/
+  template<class T, T INIT, T PRIME>
+  class FNVBase {
+  public:
+    typedef T result_type;
+
+    template<class N>
+    result_type operator()(N n) const {
+      result_type h = INIT;
+      while(*n) {
+        h *= PRIME;
+        h ^= *n++;
+      }
+      return h;
+    }
+  };
 
 } // namespace Detail
 
@@ -73,25 +91,8 @@ private:
 };
 
 // http://isthe.com/chongo/tech/comp/fnv/
-template<class T, T INIT, T PRIME>
-class FNVBase {
-public:
-  typedef T result_type;
-
-  template<class N>
-  result_type operator()(N n) const {
-    result_type h = INIT;
-    while(*n) {
-      h *= PRIME;
-      h ^= *n++;
-    }
-    return h;
-  }
-};
-
-// http://isthe.com/chongo/tech/comp/fnv/
 template<>
-class FNV<32> : public FNVBase<
+class FNV<32> : public Detail::FNVBase<
   uint32_t,
   0x811C9DC5ul,
   0x01000193ul>
@@ -99,11 +100,22 @@ class FNV<32> : public FNVBase<
 
 // http://isthe.com/chongo/tech/comp/fnv/
 template<>
-class FNV<64> : public FNVBase<
+class FNV<64> : public Detail::FNVBase<
   uint64_t,
   0xCBF29CE484222325ull,
   0x00000100000001B3ull>
 {};
+
+} } // namespace CoSupport::Math
+
+// Backward compatibility cruft
+namespace CoSupport {
+
+template<size_t BITS>
+class FNV: public Math::FNV<BITS> {
+public:
+  COSUPPORT_ATTRIBUTE_DEPRECATED FNV() {}
+};
 
 } // namespace CoSupport
 
