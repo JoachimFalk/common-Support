@@ -80,7 +80,7 @@ public:
   template <class IDRANGE>
   this_type &idFromName(const std::string &name) {
     if (_allocType == Auto) {
-      CoSupport::FNV<IDRANGE::bits> hf;
+      CoSupport::Math::FNV<IDRANGE::bits> hf;
       _id = IDRANGE::min + hf(name.c_str());
       assert(_id <= IDRANGE::max);
       _allocType = Suggest;
