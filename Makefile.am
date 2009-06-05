@@ -102,7 +102,12 @@ libcosupport_streams_la_LIBADD =		\
 
 libcosupport_string_la_SOURCES =		\
 	TemplateProcessor.cpp			\
-	UniquePool.cpp
+	UniquePool.cpp				\
+	DoubleQuotedString.cpp			\
+	QuotedString.cpp			\
+	SingleQuotedString.cpp			\
+	UnQuotedString.cpp
+
 libcosupport_string_la_LIBADD =			\
 	-lboost_regex$(BOOST_LIBMTPOSTFIX)
 
