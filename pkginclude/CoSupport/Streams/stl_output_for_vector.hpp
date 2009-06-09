@@ -39,9 +39,8 @@
 #include <iostream>
 #include <vector>
 
+namespace std {
                                                                                 
-// This must be in the global namespace to be visible for all std::vector<...> templates
-// FIXME: really true ?? Not better std ??
 template <typename T, class A>
 std::ostream &operator << (std::ostream &out, const std::vector<T,A> &l) {
   out << "[Vector:";
@@ -52,5 +51,7 @@ std::ostream &operator << (std::ostream &out, const std::vector<T,A> &l) {
   out << "]";
   return out;
 }
+
+} // namespace std
 
 #endif // _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_VECTOR_HPP

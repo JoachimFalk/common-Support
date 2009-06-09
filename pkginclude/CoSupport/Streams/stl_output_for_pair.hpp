@@ -38,10 +38,13 @@
 
 #include <iostream>
 #include <utility>
+
+namespace std {
                                                                                 
-// This must be in the global namespace to be visible for all std::pair<...> templates
 template <typename TA, typename TB>
 std::ostream &operator <<(std::ostream &out, const std::pair<TA,TB> &p)
   { out << "[pair:" << p.first << "," << p.second << "]"; return out; }
+
+} // namespace std
 
 #endif // _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_PAIR_HPP
