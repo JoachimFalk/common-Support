@@ -30,6 +30,8 @@
 #ifndef _INCLUDED_COMMONDEFS_H
 #define _INCLUDED_COMMONDEFS_H
 
+#include <limits.h>
+
 #define PE_PTROK(x)		( ((unsigned long) (x)) >= 0x400 )
 #define PE_PTRERROR(x)		((void *) (x))
 #define PE_PTRERRORNR(x)	((unsigned long) (x))
@@ -73,36 +75,38 @@
 # define COSUPPORT_ATTRIBUTE_DEPRECATED
 #endif
 
+#define BITS_TYPE(TYPE) (sizeof(TYPE)*CHAR_BIT)
+
 /*
- * macros for getting the type and its respective min,max values
+ * macros for getting the TYPE and its respective min,max values
  */
 
 #ifdef HAVE_LONG_LONG
-# define MAX_STYPE( type )  ( (long long) ( (unsigned long long) -1 >>					\
-				     ((sizeof(unsigned long long)-sizeof(type))*8+1) ) )
-# define MIN_STYPE( type )  ( (long long) ( (long long) -1 <<						\
-				     (sizeof(type)*8-1) ) )
-# define MAX_UTYPE( type ) ( (unsigned long long) ( (unsigned long long) -1 >>				\
-					      ((sizeof(unsigned long long)-sizeof(type))*8) ) )
-# define MIN_UTYPE( type ) ( (unsigned long long) 0 )
+# define MAX_STYPE(TYPE) ((long long) ((unsigned long long) -1 >>			\
+                            ((sizeof(unsigned long long)-sizeof(TYPE))*CHAR_BIT+1)))
+# define MIN_STYPE(TYPE) ((long long) ((long long) -1 <<				\
+                            (sizeof(TYPE)*CHAR_BIT-1)))
+# define MAX_UTYPE(TYPE) ((unsigned long long) ((unsigned long long) -1 >>		\
+                            ((sizeof(unsigned long long)-sizeof(TYPE))*CHAR_BIT)))
+# define MIN_UTYPE(TYPE) ((unsigned long long) 0)
 
 # define LONGLONG_MAX  MAX_STYPE(long long)
 # define LONGLONG_MIN  MIN_STYPE(long long)
 # define ULONGLONG_MAX MAX_UTYPE(unsigned long long)
 
 #else // !defined(HAVE_LONG_LONG)
-# define MAX_STYPE( type )  ( (long) ( (unsigned long) -1 >>					\
-				     ((sizeof(unsigned long)-sizeof(type))*8+1) ) )
-# define MIN_STYPE( type )  ( (long) ( (long) -1 <<						\
-				     (sizeof(type)*8-1) ) )
-# define MAX_UTYPE( type ) ( (unsigned long) ( (unsigned long) -1 >>				\
-					      ((sizeof(unsigned long)-sizeof(type))*8) ) )
-# define MIN_UTYPE( type ) ( (unsigned long) 0 )
+# define MAX_STYPE(TYPE) ((long) ((unsigned long) -1 >>					\
+                            ((sizeof(unsigned long)-sizeof(TYPE))*CHAR_BIT+1)))
+# define MIN_STYPE(TYPE) ((long) ((long) -1 <<						\
+                            (sizeof(TYPE)*CHAR_BIT-1) ) )
+# define MAX_UTYPE(TYPE) ((unsigned long) ((unsigned long) -1 >>			\
+                            ((sizeof(unsigned long)-sizeof(TYPE))*CHAR_BIT)))
+# define MIN_UTYPE(TYPE) ((unsigned long) 0 )
 #endif // !defined(HAVE_LONG_LONG)
 
-#define ISSIGNED_TYPE( type ) ( (type) -1 < 0 )
+#define ISSIGNED_TYPE(TYPE) ((TYPE)-1 < 0)
 
-#define MAX_TYPE( type ) ( (type) ( ISSIGNED_TYPE( type ) ? MAX_STYPE( type ) : MAX_UTYPE( type ) ) )
-#define MIN_TYPE( type ) ( (type) ( ISSIGNED_TYPE( type ) ? MIN_STYPE( type ) : MIN_UTYPE( type ) ) )
+#define MAX_TYPE(TYPE) ((TYPE) (ISSIGNED_TYPE(TYPE) ? MAX_STYPE(TYPE) : MAX_UTYPE(TYPE)))
+#define MIN_TYPE(TYPE) ((TYPE) (ISSIGNED_TYPE(TYPE) ? MIN_STYPE(TYPE) : MIN_UTYPE(TYPE)))
 
 #endif /* _INCLUDED_COMMONDEFS_H */
