@@ -34,8 +34,74 @@
 
 #include <CoSupport/Initializer/BasicInitializer.hpp>
 
+#include <boost/thread/mutex.hpp>
+#include <cassert>
+
 namespace CoSupport { namespace Initializer {
 
-  std::map<std::string, size_t> BasicInitializerMap;
+namespace Detail {
+  typedef GlobalBasicInitializerRegistry::Map Map;
+
+  size_t  GlobalBasicInitializerRegistry::refCount = 0;
+  void   *GlobalBasicInitializerRegistry::mtx      = NULL;
+  Map    *GlobalBasicInitializerRegistry::map      = NULL;
+
+  // This should be the first global object derived from
+  // GlobalBasicInitializerRegistry. But you can never tell
+  // as the C++ standard leaves global object initialization
+  // sequence for global objects in different link units as
+  // implementation defined!
+  static GlobalBasicInitializerRegistry globalStartup(NULL,NULL,NULL);
+
+  GlobalBasicInitializerRegistry::GlobalBasicInitializerRegistry(
+    const char *_key, void (_initialize)(), void (_terminate)())
+    : key(_key), initialize(_initialize), terminate(_terminate)
+  {
+    // I surely hope global object ctor/dtor calls don't have any races!
+    if (mtx == NULL) {
+      // I am the first global object ctor!
+      assert(refCount == 0 && map == NULL);
+      // Allocate map and mutex
+      try {
+        mtx = new boost::mutex();
+        map = new Map();
+      } catch (...) {
+        delete reinterpret_cast<boost::mutex *>(mtx); mtx = NULL;
+        delete map; map = NULL;
+        throw;
+      }
+    }
+    // mtx and map must be setup!
+    assert(mtx != NULL && map != NULL);
+    {
+      boost::mutex::scoped_lock lck(*reinterpret_cast<boost::mutex *>(mtx));
+      ++refCount;
+      if (_key != NULL && map->operator[](_key)++ == 0)
+        (*_initialize)();
+    }
+  }
+
+  GlobalBasicInitializerRegistry::~GlobalBasicInitializerRegistry() {
+    bool cleanup;
+    // mtx and map must be setup!
+    assert(mtx != NULL && map != NULL);
+    {
+      boost::mutex::scoped_lock lck(*reinterpret_cast<boost::mutex *>(mtx));
+      cleanup = --refCount == 0;
+      if (key != NULL && --map->operator[](key) == 0) {
+        map->erase(key);
+        (*terminate)();
+      }
+    }
+    // I surely hope global object ctor/dtor calls don't have any races!
+    if (cleanup) {
+      // I am the last global object dtor!
+      assert(map->empty());
+      delete reinterpret_cast<boost::mutex *>(mtx); mtx = NULL;
+      delete map; map = NULL;
+    }
+  }
+
+} // namespace Detail
 
 } } // namespace CoSupport::Initializer

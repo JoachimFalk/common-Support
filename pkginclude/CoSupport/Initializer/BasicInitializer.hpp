@@ -42,34 +42,45 @@
 
 namespace CoSupport { namespace Initializer {
 
-  extern std::map<std::string, size_t> BasicInitializerMap;
+namespace Detail {
 
-  template <typename T>
-  struct BasicInitializerTraits {
-    static void initialize()
-      { T::initialize(); }
-    static void terminate()
-      { T::terminate(); }
+  class GlobalBasicInitializerRegistry {
+  public:
+    typedef std::map<std::string, size_t> Map;
+  private:
+    static size_t  refCount;
+    static void   *mtx; // Data hiding this is a boost::mutex *
+  protected:
+    static Map    *map; // BasicInitializerMap
+  protected:
+    const char *key;
+    void      (*initialize)();
+    void      (*terminate)();
+  public:
+    GlobalBasicInitializerRegistry(
+      const char *_key, void (_initialize)(), void (_terminate)());
+    ~GlobalBasicInitializerRegistry();
   };
 
-  template <typename T>
-  struct BasicInitializer {
-    BasicInitializer() {
-      const char *name = typeid(T()).name();
-      const size_t count = BasicInitializerMap[name]++;
-      if (count == 0) {
-        BasicInitializerTraits<T>::initialize();
-      }
-    }
-    ~BasicInitializer() {
-      const char *name = typeid(T()).name();
-      const size_t count = --BasicInitializerMap[name];
-      if (count == 0) {
-        BasicInitializerMap.erase(name);
-        BasicInitializerTraits<T>::terminate();
-      }
-    }
-  };
+} // namespace Detail
+
+template <typename T>
+struct BasicInitializerTraits {
+  static void initialize()
+    { T::initialize(); }
+  static void terminate()
+    { T::terminate(); }
+};
+
+template <typename T>
+struct BasicInitializer: public Detail::GlobalBasicInitializerRegistry {
+  BasicInitializer()
+    : Detail::GlobalBasicInitializerRegistry(
+        typeid(T()).name(),
+        BasicInitializerTraits<T>::initialize,
+        BasicInitializerTraits<T>::terminate)
+    {}
+};
 
 } } // namespace CoSupport::Initializer
 
