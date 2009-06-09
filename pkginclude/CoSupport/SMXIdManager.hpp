@@ -5,6 +5,8 @@
 #include "String/convert.hpp"
 #include "Math/string_hash.hpp"
 
+#include "commondefs.h"
+
 #include <set>
 #include <map>
 #include <limits>
@@ -19,6 +21,7 @@ typedef uint32_t SMXId;
 /**
  * @brief Helper struct for (de)serializing Ids
  */
+COSUPPORT_ATTRIBUTE_DEPRECATED
 struct SMXIdSer {
   /// @brief Constructor
   SMXIdSer(SMXId id);
@@ -45,6 +48,7 @@ SMXIdSer strAs<SMXIdSer>(const std::string &s);
 /// @brief Output operator for SMXIdSer
 std::ostream& operator<<(std::ostream& out, const SMXIdSer& id);
 
+COSUPPORT_ATTRIBUTE_DEPRECATED
 class SMXIdManager {
 public:
   /// @brief Returns single instance of SMXIdManager
