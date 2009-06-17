@@ -41,6 +41,7 @@
 #include <fstream>
 #include <string>
 #include <stdexcept>
+#include <memory>
 
 namespace CoSupport { namespace Streams {
 
@@ -49,32 +50,60 @@ namespace CoSupport { namespace Streams {
       : std::runtime_error(std::string("Could not open '") + file + "'") {}
   };
 
+  struct FileNotGoodException : public std::runtime_error {
+    FileNotGoodException() 
+      : std::runtime_error("AlternateStream opened is not good!") {}
+  };
+
   template<class Base, class FStream>
   struct AlternateStream
   : public Base {
   private:
-    Base *obj;
-    Base *def;
+    std::string  cmp;
+    Base        *obj;
+    Base        *def;
   public:
-    AlternateStream(Base &_def, const std::string &file, const std::string &cmp)
-      : Base(0), def(&_def)
-    {
+    AlternateStream(Base &def, const std::string &cmp)
+      : Base(NULL), cmp(cmp), obj(NULL), def(&def) {}
+
+    AlternateStream(Base &def, const std::string &file, const std::string &cmp)
+      : Base(NULL), cmp(cmp), obj(NULL), def(&def) { open(file); }
+
+    void open(const std::string &file) {
       if (file == cmp)
-        obj = def;
+        open(def);
       else {
-        FStream* fs = new FStream(file.c_str());
-        if(!fs->is_open())
+        std::auto_ptr<FStream> fs(new FStream(file.c_str()));
+        if (!fs->is_open())
           throw FileNotOpenException(file.c_str());
-        obj = fs;
+        open(fs.release());
       }
-      rdbuf(obj->rdbuf());
     }
 
-    ~AlternateStream()
-    {
+    void open(Base *fs) {
+      try {
+        if (!fs->good())
+          throw FileNotGoodException();
+        close();
+        obj = fs;
+        this->rdbuf(obj->rdbuf());
+      } catch (...) {
+        if (fs != def)
+          delete fs;
+        if (obj == fs)
+          obj = NULL;
+        throw;
+      }
+    }
+
+    void close() {
+      this->rdbuf(NULL);
       if (obj != def)
         delete obj;
+      obj = NULL;
     }
+
+    ~AlternateStream() { close(); }
   };
 
   typedef AlternateStream<std::ostream, std::ofstream> AOStream;
