@@ -41,6 +41,7 @@
 #include <fstream>
 #include <string>
 #include <stdexcept>
+#include <memory>
 
 namespace CoSupport { namespace Streams {
 
