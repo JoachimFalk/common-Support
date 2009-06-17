@@ -44,6 +44,7 @@
 // boost/thread/mutex.hpp seems to define _REENTRANT
 # include <boost/thread/mutex.hpp>
 #endif
+#include <boost/noncopyable.hpp>
 
 namespace CoSupport { namespace SmartPtr {
 
@@ -98,6 +99,22 @@ namespace CoSupport { namespace SmartPtr {
 #endif
       return use_count_ == 1;
     }
+  };
+
+  // This object temporarily boosts the reference
+  // count of obj to prevent another temporary
+  // reference pointer from deleting said object.
+  template <typename T = RefCount>
+  class ScopedRefCountBooster
+  : private boost::noncopyable {
+  private:
+    T *obj;
+  public:
+    explicit ScopedRefCountBooster(T *obj)
+      : obj(obj) { obj->add_ref(); }
+    // Decrement reference count but never delete object!
+    ~ScopedRefCountBooster()
+      { obj->del_ref(); }
   };
 
   template <typename T>
