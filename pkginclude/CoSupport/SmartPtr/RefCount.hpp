@@ -56,7 +56,7 @@ namespace CoSupport { namespace SmartPtr {
 #endif
 
     /* how many references are there */
-    long use_count_;
+    unsigned long use_count_;
   public:
     RefCount()
       : use_count_(0) {}
@@ -65,16 +65,22 @@ namespace CoSupport { namespace SmartPtr {
       : use_count_(0) {}
 
     /* Do not overwrite reference counter ! */
-    RefCount &operator = (const RefCount &)
-      { return *this; }
+    RefCount &operator = (const RefCount &) {
+      return *this;
+    }
 
-    ~RefCount() // nothrow
-      { assert(use_count_ == 0); }
+    ~RefCount() {
+      assert(use_count_ == 0);
+#ifndef NDEBUG
+      use_count_ = 0xDEADBEAF;
+#endif
+    }
 
     void add_ref( void ) {
 #if defined(_REENTRANT)
       mutex_type::scoped_lock lock(mtx_);
 #endif
+      assert(use_count_ != 0xDEADBEAF && "WTF?! Taking ownership of deleted object!");
       ++use_count_;
     }
 
