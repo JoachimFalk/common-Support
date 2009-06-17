@@ -44,6 +44,7 @@
 // boost/thread/mutex.hpp seems to define _REENTRANT
 # include <boost/thread/mutex.hpp>
 #endif
+#include <boost/noncopyable.hpp>
 
 namespace CoSupport { namespace SmartPtr {
 
@@ -56,7 +57,7 @@ namespace CoSupport { namespace SmartPtr {
 #endif
 
     /* how many references are there */
-    long use_count_;
+    unsigned long use_count_;
   public:
     RefCount()
       : use_count_(0) {}
@@ -65,16 +66,22 @@ namespace CoSupport { namespace SmartPtr {
       : use_count_(0) {}
 
     /* Do not overwrite reference counter ! */
-    RefCount &operator = (const RefCount &)
-      { return *this; }
+    RefCount &operator = (const RefCount &) {
+      return *this;
+    }
 
-    ~RefCount() // nothrow
-      { assert(use_count_ == 0); }
+    ~RefCount() {
+      assert(use_count_ == 0);
+#ifndef NDEBUG
+      use_count_ = 0xDEADBEAF;
+#endif
+    }
 
     void add_ref( void ) {
 #if defined(_REENTRANT)
       mutex_type::scoped_lock lock(mtx_);
 #endif
+      assert(use_count_ != 0xDEADBEAF && "WTF?! Taking ownership of deleted object!");
       ++use_count_;
     }
 
@@ -92,6 +99,22 @@ namespace CoSupport { namespace SmartPtr {
 #endif
       return use_count_ == 1;
     }
+  };
+
+  // This object temporarily boosts the reference
+  // count of obj to prevent another temporary
+  // reference pointer from deleting said object.
+  template <typename T = RefCount>
+  class ScopedRefCountBooster
+  : private boost::noncopyable {
+  private:
+    T *obj;
+  public:
+    explicit ScopedRefCountBooster(T *obj)
+      : obj(obj) { obj->add_ref(); }
+    // Decrement reference count but never delete object!
+    ~ScopedRefCountBooster()
+      { obj->del_ref(); }
   };
 
   template <typename T>
