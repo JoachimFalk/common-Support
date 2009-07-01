@@ -119,6 +119,7 @@ libcosupport_allocators_la_SOURCES =
 libcosupport_allocators_la_LIBADD =
 
 noinst_PROGRAMS=			\
+	test_dbgstream			\
 	test_maybevalue			\
 	test_arrayfifo			\
 	test_event_and_list		\
@@ -128,6 +129,9 @@ noinst_PROGRAMS=			\
 	test_facade			\
 	test_typename			\
 	test_value
+
+test_dbgstream_SOURCES		  = test_dbgstream.cpp
+test_dbgstream_LDADD		  = libcosupport-streams.la
 
 test_maybevalue_SOURCES		  = test_maybevalue.cpp
 test_maybevalue_LDADD		  =

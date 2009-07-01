@@ -61,16 +61,20 @@ FilterStreambuf::FilterStreambuf(std::streambuf *next) :
   //std::cerr << "Leave FilterStreambuf::FilterStreambuf" << std::endl;
 }
 
+int FilterStreambuf::sync() {
+  assert(next != NULL && "WTF?! No real streambuf at end of FilterStreambuf chain?");
+  return next->pubsync();
+}
+
 bool FilterStreambuf::hasManip() const
-{ return false; }
+  { return false; }
 
 int FilterStreambuf::getIndex() const
-{ return -1; }
+  { return -1; }
 
 FilterStreambuf::~FilterStreambuf()
-{}
+  {}
 
-  
 LineNumberStreambuf::LineNumberStreambuf(std::streambuf *next) :
   FilterStreambuf(next),
   line(1),
