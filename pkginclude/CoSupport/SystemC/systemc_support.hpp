@@ -166,6 +166,9 @@ namespace CoSupport { namespace SystemC {
       }
     }
 
+    virtual size_t getPriority() const
+      { return 0; }
+
     virtual void dump(std::ostream &out) const
       { out << "EventWaiter(" << this << ", active: " << isActive() << ")"; }
   private:
@@ -232,7 +235,8 @@ namespace CoSupport { namespace SystemC {
   public:
     typedef T EventType;
   protected:
-    typedef std::list<EventType *> EventList;
+    typedef std::pair<size_t,EventType*> ELEntry;
+    typedef std::set<ELEntry> EventList;
     typedef typename EventList::iterator       ELIter;
     typedef typename EventList::const_iterator ELCIter;
     EventList eventList;
@@ -265,8 +269,8 @@ namespace CoSupport { namespace SystemC {
     void eventDestroyed(EventWaiter *ew) {
       //outDbg << "EventOrList::eventDestroyed(" << *e << ")" << std::endl; 
       for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
-        if(*i != ew) {
-          (*i)->delListener(this);
+        if(i->second != ew) {
+          i->second->delListener(this);
         }
       }
       eventList.clear();
@@ -288,9 +292,7 @@ namespace CoSupport { namespace SystemC {
       { return active; }
 
     void remove(EventType &e) {
-      ELIter i = find(eventList.begin(), eventList.end(), &e);
-      if(i != eventList.end()) {
-        eventList.erase(i);
+      if(eventList.erase(ELEntry(e.getPriority(), &e))) {
         e.delListener(this);
         if(e.isActive()) {
           assert(active);
@@ -299,21 +301,24 @@ namespace CoSupport { namespace SystemC {
         }
       }
     }
-    
+
+    void insert(EventType &e) {
+      if(eventList.insert(ELEntry(e.getPriority(), &e)).second) {
+        e.addListener(this);
+        if(e.isActive()) {
+          if(!active++)
+            signalNotifyListener();
+        }
+      }
+    }
+
     // or´ing this list with event e
     this_type operator|(EventType& e)
       { return this_type(*this) |= e; }
 
     // or´ing this list with event e
-    this_type& operator|=(EventType &e) {
-      eventList.push_back(&e);
-      e.addListener(this);
-      if(e.isActive()) {
-        if(!active++)
-          signalNotifyListener();
-      }
-      return *this;
-    }
+    this_type& operator|=(EventType &e)
+      { insert(e); return *this; }
 
     // or´ing this list with list l
     this_type operator|(const this_type &l)
@@ -322,15 +327,15 @@ namespace CoSupport { namespace SystemC {
     // or´ing this list with list l
     this_type& operator|=(const this_type& l) {
       for(ELCIter i = l.eventList.begin(); i != l.eventList.end(); ++i) {
-        *this |= **i;
+        *this |= *i->second;
       }
       return *this;
     }
 
     EventType &getEventTrigger() {
       for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
-        if((*i)->isActive())
-          return **i;
+        if(i->second->isActive())
+          return *i->second;
       }
       assert(0);
       return *((EventType*)(NULL));
@@ -350,7 +355,7 @@ namespace CoSupport { namespace SystemC {
 
     void clear() {
       for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
-        (*i)->delListener(this);
+        (*i).second->delListener(this);
       }
       eventList.clear();
       if(active) {
@@ -366,15 +371,15 @@ namespace CoSupport { namespace SystemC {
       { return eventList.size(); }
 
     bool contains(EventType &e)
-      { return find(eventList.begin(), eventList.end(), &e) != eventList.end(); }
-    
+      { return eventList.count(ELEntry(e.getPriority(), &e)); }
+
     ~EventOrList()
       { clear(); }
 
     virtual void dump(std::ostream &out) const {
       out << "EventOrList([";
       for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
-        out << (i != eventList.begin() ? ", " : "") << **i;
+        out << (i != eventList.begin() ? ", " : "") << *i->second;
       }
       out << "], active: " << active << ")";
     }
@@ -391,7 +396,8 @@ namespace CoSupport { namespace SystemC {
   public:
     typedef T EventType;
   protected:
-    typedef std::list<EventType *> EventList;
+    typedef EventType* ELEntry;
+    typedef std::set<ELEntry> EventList;
     typedef typename EventList::iterator       ELIter;
     typedef typename EventList::const_iterator ELCIter;
     EventList eventList;
@@ -444,14 +450,22 @@ namespace CoSupport { namespace SystemC {
       { return !missing; }
 
     void remove(EventType &e) {
-      ELIter i = find(eventList.begin(), eventList.end(), &e);
-      if(i != eventList.end()) {
-        eventList.erase(i);
+      if(eventList.erase(&e)) {
         e.delListener(this);
         if(!e.isActive()) {
           assert(missing);
           if(!--missing)
             signalNotifyListener();
+        }
+      }
+    }
+
+    void insert(EventType &e) {
+      if(eventList.insert(&e).second) {
+        e.addListener(this);
+        if(!e.isActive()) {
+          if(!missing++)
+            signalResetListener();
         }
       }
     }
@@ -461,15 +475,8 @@ namespace CoSupport { namespace SystemC {
       { return this_type(*this) &= e; }
 
     // and´ing this list with event e
-    this_type& operator&=(EventType &e) {
-      eventList.push_back(&e);
-      e.addListener(this);
-      if(!e.isActive()) {
-        if(!missing++)
-          signalResetListener();
-      }
-      return *this;
-    }
+    this_type& operator&=(EventType &e)
+      { insert(e); return *this; }
     
     // and´ing this list with list l
     this_type operator&(const this_type &l)
@@ -516,7 +523,7 @@ namespace CoSupport { namespace SystemC {
       { return eventList.size(); }
 
     bool contains(EventType &e)
-      { return find(eventList.begin(), eventList.end(), &e) != eventList.end(); }
+      { return eventList.count(&e); }
     
     ~EventAndList()
       { clear(); }
