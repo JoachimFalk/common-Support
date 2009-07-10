@@ -55,7 +55,10 @@ protected:
   
   /// must be able to set next
   friend class FilterOStream;
-  
+
+  /// See std::streambuf
+  virtual int sync();
+
 public:  
   /// constructs a new object, optionally with a target
   /// streambuffer
