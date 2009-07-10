@@ -63,7 +63,10 @@ public:
   /// constructs a new object, optionally with a target
   /// streambuffer
   FilterStreambuf(std::streambuf *next = 0);
-  
+
+  /// Sets a new target for this buffer
+  void setTarget(std::streambuf* os);
+
 public:
   /// should be reimplemented in derived classes: return true
   /// if stream manipulators are available

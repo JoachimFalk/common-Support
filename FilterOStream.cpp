@@ -65,6 +65,10 @@ int FilterStreambuf::sync() {
   assert(next != NULL && "WTF?! No real streambuf at end of FilterStreambuf chain?");
   return next->pubsync();
 }
+  
+void FilterStreambuf::setTarget(std::streambuf* os) {
+  next = os;
+}
 
 bool FilterStreambuf::hasManip() const
   { return false; }
