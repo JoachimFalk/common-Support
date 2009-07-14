@@ -40,6 +40,8 @@
 #include <boost/type_traits/add_const.hpp>
 #include <boost/type_traits/remove_const.hpp>
 
+#include "../commondefs.h"
+
 namespace CoSupport { namespace DataTypes {
 
 namespace Detail {
@@ -320,10 +322,12 @@ private:
 };
 
 template <class TT, class T, template <class> class C>
+COSUPPORT_ATTRIBUTE_DEPRECATED
 const FacadePtr<TT,C> dynamic_pointer_cast(const FacadePtr<T,C> &ptr)
   { return TT::upcast(*ptr); }
 
 template <class TT, class T, template <class> class C>
+COSUPPORT_ATTRIBUTE_DEPRECATED
 const FacadePtr<TT,C> static_pointer_cast(const FacadePtr<T,C> &ptr)
   { return &static_cast<typename C<TT>::type &>(*ptr); }
 
@@ -360,6 +364,16 @@ namespace boost {
   template <class Derived, template <class> class C>
   struct remove_pointer<CoSupport::DataTypes::FacadePtr<Derived, C> >
     { typedef typename C<Derived>::type type; };
+
+  template <class TT, class T, template <class> class C>
+  const CoSupport::DataTypes::FacadePtr<TT,C> dynamic_pointer_cast(
+      const CoSupport::DataTypes::FacadePtr<T,C> &ptr)
+    { return TT::upcast(*ptr); }
+
+  template <class TT, class T, template <class> class C>
+  const CoSupport::DataTypes::FacadePtr<TT,C> static_pointer_cast(
+      const CoSupport::DataTypes::FacadePtr<T,C> &ptr)
+    { return &static_cast<typename C<TT>::type &>(*ptr); }
 
 } // namespace boost
 
