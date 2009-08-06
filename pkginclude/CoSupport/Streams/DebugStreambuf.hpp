@@ -38,6 +38,8 @@
 
 #include <stddef.h>
 
+#include <string>
+
 #include "FilterStreambuf.hpp"
 
 namespace CoSupport { namespace Streams {

@@ -25,67 +25,80 @@ include $(auxdir)/jfrules.mk
 SUBDIRS=
 
 nobase_include_HEADERS = \
+	CoSupport/Allocators/IdAllocRequest.hpp \
 	CoSupport/Allocators/IdPool.hpp \
-	CoSupport/Streams/HexOutput.hpp \
-	CoSupport/Streams/AlternateStream.hpp \
-	CoSupport/Streams/stl_output_for_list.hpp \
-	CoSupport/Streams/DebugOStream.hpp \
-	CoSupport/Streams/stl_output_for_pair.hpp \
-	CoSupport/Streams/stl_output_for_vector.hpp \
-	CoSupport/Streams/iterator_dump.hpp \
-	CoSupport/Streams/FilterStreambuf.hpp \
-	CoSupport/Streams/LineNumberStreambuf.hpp \
-	CoSupport/Streams/HeaderFooterStreambuf.hpp \
-	CoSupport/Streams/ColorStreambuf.hpp \
-	CoSupport/Streams/IndentStreambuf.hpp \
-	CoSupport/Streams/DebugStreambuf.hpp \
-	CoSupport/Streams/NullStreambuf.hpp \
-	CoSupport/Streams/FilterOStream.hpp \
-	CoSupport/Streams/SocketTCPClient.hpp \
-	CoSupport/Initializer/BasicInitializer.hpp \
-	CoSupport/String/convert.hpp \
-	CoSupport/String/TypeName.hpp \
-	CoSupport/String/Concat.hpp \
-	CoSupport/String/UniquePool.hpp \
-	CoSupport/XML/xalan_support.hpp \
-	CoSupport/XML/xerces_support.hpp \
-	CoSupport/XML/StdIstreamInputSource.hpp \
-	CoSupport/XML/StdIstreamInputStream.hpp \
-	CoSupport/XML/StdOstreamFormatTarget.hpp \
-	CoSupport/SMXIdManager.hpp \
-	CoSupport/sassert.h \
 	CoSupport/commondefs.h \
-	CoSupport/SmartPtr/shared_copyonwrite_ptr.hpp \
+	CoSupport/compatibility-glue/integertypes.h \
+	CoSupport/compatibility-glue/snprintf.h \
+	CoSupport/DataTypes/ArrayFifo.hpp \
+	CoSupport/DataTypes/bit_buffer.hpp \
+	CoSupport/DataTypes/CheckedVector.hpp \
+	CoSupport/DataTypes/container_insert.hpp \
+	CoSupport/DataTypes/EMPTY.hpp \
+	CoSupport/DataTypes/Facade.hpp \
+	CoSupport/DataTypes/ListFacade.hpp \
+	CoSupport/DataTypes/MaybeValue.hpp \
+	CoSupport/DataTypes/NILTYPE.hpp \
+	CoSupport/DataTypes/oneof.hpp \
+	CoSupport/DataTypes/SerializeHelper.hpp \
+	CoSupport/DataTypes/ValidWrapper.hpp \
+	CoSupport/DataTypes/Value.hpp \
+	CoSupport/endianess.h \
+	CoSupport/Initializer/BasicInitializer.hpp \
+	CoSupport/Lambda/function_objects.hpp \
+	CoSupport/Lambda/functor.hpp \
+	CoSupport/Math/flog2.hpp \
+	CoSupport/Math/modulo_arith.hpp \
+	CoSupport/Math/ModuloGroup.hpp \
+	CoSupport/Math/smoc_math.hpp \
+	CoSupport/Math/string_hash.hpp \
+	CoSupport/sassert.h \
 	CoSupport/SmartPtr/intrusive_copyonwrite_ptr.hpp \
 	CoSupport/SmartPtr/intrusive_refcount_ptr.hpp \
 	CoSupport/SmartPtr/RefCount.hpp \
 	CoSupport/SmartPtr/RefCountObject.hpp \
-  	CoSupport/SystemC/algorithm.hpp \
-	CoSupport/SystemC/systemc_support.hpp \
+	CoSupport/SmartPtr/shared_copyonwrite_ptr.hpp \
+	CoSupport/SMXIdManager.hpp \
+	CoSupport/Streams/AlternateStream.hpp \
+	CoSupport/Streams/ColorStreambuf.hpp \
+	CoSupport/Streams/DebugOStream.hpp \
+	CoSupport/Streams/DebugStreambuf.hpp \
+	CoSupport/Streams/FilterOStream.hpp \
+	CoSupport/Streams/FilterStreambuf.hpp \
+	CoSupport/Streams/HeaderFooterStreambuf.hpp \
+	CoSupport/Streams/HexOutput.hpp \
+	CoSupport/Streams/IndentStreambuf.hpp \
+	CoSupport/Streams/iterator_dump.hpp \
+	CoSupport/Streams/LineNumberStreambuf.hpp \
+	CoSupport/Streams/NullStreambuf.hpp \
+	CoSupport/Streams/SocketTCPClient.hpp \
+	CoSupport/Streams/stl_output_for_list.hpp \
+	CoSupport/Streams/stl_output_for_pair.hpp \
+	CoSupport/Streams/stl_output_for_vector.hpp \
+	CoSupport/Streams/TranslationStreambuf.hpp \
+	CoSupport/String/Concat.hpp \
+	CoSupport/String/convert.hpp \
+	CoSupport/String/DoubleQuotedString.hpp \
+	CoSupport/String/QuotedString.hpp \
+	CoSupport/String/SingleQuotedString.hpp \
+	CoSupport/String/TemplateProcessor.hpp \
+	CoSupport/String/TypeName.hpp \
+	CoSupport/String/UniquePool.hpp \
+	CoSupport/String/UnQuotedString.hpp \
+	CoSupport/SystemC/algorithm.hpp \
+	CoSupport/SystemC/ChannelModificationListener.hpp \
 	CoSupport/SystemC/par_manager.hpp \
 	CoSupport/SystemC/PerformanceEvaluation.hpp \
-	CoSupport/SystemC/ChannelModificationListener.hpp \
-	CoSupport/DataTypes/NILTYPE.hpp \
-	CoSupport/DataTypes/EMPTY.hpp \
-	CoSupport/DataTypes/ValidWrapper.hpp \
-	CoSupport/DataTypes/CheckedVector.hpp \
-	CoSupport/DataTypes/bit_buffer.hpp \
-	CoSupport/DataTypes/container_insert.hpp \
-	CoSupport/DataTypes/ListFacade.hpp \
-	CoSupport/DataTypes/oneof.hpp \
-	CoSupport/DataTypes/ArrayFifo.hpp \
-	CoSupport/DataTypes/Facade.hpp \
-	CoSupport/DataTypes/SerializeHelper.hpp \
-  	CoSupport/Math/ModuloGroup.hpp \
-	CoSupport/Math/modulo_arith.hpp \
-	CoSupport/Math/smoc_math.hpp \
-	CoSupport/Math/string_hash.hpp \
-	CoSupport/Type/transform.hpp \
+	CoSupport/SystemC/systemc_support.hpp \
+	CoSupport/SystemC/systemc_time.hpp \
+	CoSupport/Type/constpropagate.hpp \
 	CoSupport/Type/STLIteratorSelector.hpp \
 	CoSupport/Type/STLPointerSelector.hpp \
 	CoSupport/Type/STLReferenceSelector.hpp \
 	CoSupport/Type/STLReverseIteratorSelector.hpp \
-	CoSupport/Lambda/functor.hpp \
-	CoSupport/Lambda/function_objects.hpp \
-	CoSupport/compatibility-glue/integertypes.h \
-	CoSupport/compatibility-glue/snprintf.h
+	CoSupport/Type/transform.hpp \
+	CoSupport/XML/StdIstreamInputSource.hpp \
+	CoSupport/XML/StdIstreamInputStream.hpp \
+	CoSupport/XML/StdOstreamFormatTarget.hpp \
+	CoSupport/XML/xalan_support.hpp \
+	CoSupport/XML/xerces_support.hpp
