@@ -192,8 +192,10 @@ namespace CoSupport { namespace SystemC {
     typedef Event this_type;
   public:
     Event(bool active = false) :
-      active(active)
-      {}
+      active(active) {}
+
+    Event(const Event& e) :
+      active(e.active) {}
 
     // see EventWaiter
     bool isActive() const
@@ -254,6 +256,7 @@ namespace CoSupport { namespace SystemC {
       
       //outDbg << "EventOrList::signaled(" << *e << ")" << std::endl;
       if(e->isActive()) {
+        cache = e;
         //outDbg << "e is active; active: " << (active+1) << std::endl;
         if(!active++)
           signalNotifyListener();
@@ -278,14 +281,18 @@ namespace CoSupport { namespace SystemC {
         active = 0;
         //signalResetListener();
       }
+      cache = 0;
     }
   public:
     typedef EventOrList this_type;
     
     // constructors
-    EventOrList() : active(0) {}
-    EventOrList(EventType &e) : active(0) { *this |= e; }
-    EventOrList(const EventOrList &l) : active(0) { *this |= l; }
+    EventOrList()
+      : active(0), cache(0) {}
+    EventOrList(EventType &e)
+      : active(0), cache(0) { *this |= e; }
+    EventOrList(const EventOrList &l)
+      : active(0), cache(0) { *this |= l; }
 
     // see EventWaiter
     bool isActive() const
@@ -293,6 +300,8 @@ namespace CoSupport { namespace SystemC {
 
     void remove(EventType &e) {
       if(eventList.erase(ELEntry(e.getPriority(), &e))) {
+        if(cache == &e)
+          cache = 0;
         e.delListener(this);
         if(e.isActive()) {
           assert(active);
@@ -306,6 +315,7 @@ namespace CoSupport { namespace SystemC {
       if(eventList.insert(ELEntry(e.getPriority(), &e)).second) {
         e.addListener(this);
         if(e.isActive()) {
+          cache = &e;
           if(!active++)
             signalNotifyListener();
         }
@@ -333,6 +343,9 @@ namespace CoSupport { namespace SystemC {
     }
 
     EventType &getEventTrigger() {
+      if(cache && cache->isActive()) {
+        return *cache;
+      }
       for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
         if(i->second->isActive())
           return *i->second;
@@ -362,6 +375,7 @@ namespace CoSupport { namespace SystemC {
         active = 0;
         //signalResetListener();
       }
+      cache = 0;
     }
     
     bool empty()
@@ -386,6 +400,7 @@ namespace CoSupport { namespace SystemC {
 
     private:
       size_t active;
+      EventType* cache;
   };
 
   /**
