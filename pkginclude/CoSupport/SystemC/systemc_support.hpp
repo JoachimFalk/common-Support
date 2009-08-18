@@ -256,7 +256,10 @@ namespace CoSupport { namespace SystemC {
       
       //outDbg << "EventOrList::signaled(" << *e << ")" << std::endl;
       if(e->isActive()) {
-        cache = e;
+        
+        if(!cache || !cache->isActive() || cache->getPriority() > e->getPriority())
+           cache = e;
+
         //outDbg << "e is active; active: " << (active+1) << std::endl;
         if(!active++)
           signalNotifyListener();
@@ -315,7 +318,10 @@ namespace CoSupport { namespace SystemC {
       if(eventList.insert(ELEntry(e.getPriority(), &e)).second) {
         e.addListener(this);
         if(e.isActive()) {
-          cache = &e;
+          
+          if(!cache || !cache->isActive() || cache->getPriority() > e.getPriority())
+            cache = &e;
+          
           if(!active++)
             signalNotifyListener();
         }
