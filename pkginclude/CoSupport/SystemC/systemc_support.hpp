@@ -109,12 +109,10 @@ namespace CoSupport { namespace SystemC {
   class EventWaiter {
   public:
     typedef EventWaiter this_type;
-    typedef void (this_type::*unspecified_bool_type)(EventListener *);
+    typedef void (this_type::*unspecified_bool_type)(EventListener *, bool);
   protected:
     // forward event notifications to all listeners
     void notifyListener() {
-      if(cache)
-        cache->signaled(this);
       ell_ty::iterator iter, niter;
       for(iter = ell.begin();
           iter != ell.end();
@@ -127,8 +125,6 @@ namespace CoSupport { namespace SystemC {
 
     // forward event resets to all listeners except the specified one
     void resetListener(EventListener *el = NULL) {
-      if(cache)
-        cache->signaled(this);
       ell_ty::iterator iter, niter;
       for(iter = ell.begin();
           iter != ell.end();
@@ -142,7 +138,7 @@ namespace CoSupport { namespace SystemC {
 
   public:
     // default constructor
-    EventWaiter() : cache(0) {}
+    EventWaiter() {}
 
     // determines if this instance is active
     virtual bool isActive() const = 0;
@@ -155,29 +151,15 @@ namespace CoSupport { namespace SystemC {
     virtual EventWaiter *reset(EventListener *el = NULL) = 0;
 
     // el must NOT be in set previously
-    void addListener(EventListener *el) {
-      assert(cache != el);
-      if(cache) {
-        assert(ell.count(el) == 0);  
-        sassert(ell.insert(cache).second);
-      }
-      cache = el;
-    }
+    void addListener(EventListener *el, bool laxly = false)
+      { sassert(ell.insert(el).second || laxly); }
 
     // el must be in set previously
-    void delListener(EventListener *el) {
-      if(cache == el)
-        cache = 0;
-      else
-        sassert(ell.erase(el) == 1);
-    }
+    void delListener(EventListener *el, bool laxly = false)
+      { sassert(ell.erase(el) == 1 || laxly); }
     
     // notify listeners that this event is destroyed
     virtual ~EventWaiter() {
-      if(cache) {
-        assert(!"WTF?! ~EventWaiter but still have listeners!");
-        cache->eventDestroyed(this);
-      }
       ell_ty::iterator iter, niter;
       for(iter = ell.begin();
           iter != ell.end();
@@ -190,8 +172,6 @@ namespace CoSupport { namespace SystemC {
     }
 
     void renotifyListener() {
-      if(cache)
-        cache->renotified(this);
       ell_ty::iterator iter, niter;
       for(iter = ell.begin();
           iter != ell.end();
@@ -208,7 +188,6 @@ namespace CoSupport { namespace SystemC {
     // registered listeners
     typedef std::set<EventListener *> ell_ty;
     ell_ty ell;
-    EventListener *cache;
 
     // unimplemented
     EventWaiter(const this_type &);
@@ -455,7 +434,8 @@ namespace CoSupport { namespace SystemC {
     typedef typename EventList::const_iterator ELCIter;
 
     EventList                                  eventList;
-    ELEntry                                    missing;
+    size_t                                     missing;
+    bool                                       lazy;
 
     void signaled(EventWaiter *ew) {
       // must be compatible with our list type and must be in list
@@ -463,40 +443,24 @@ namespace CoSupport { namespace SystemC {
         contains(*static_cast<EventType *>(ew)));
       
       //std::cerr << "[" << this << "] EventAndList signaled by: " << *e << std::endl;
-      if(ew->isActive()) {
+      if (ew->isActive()) {
         //std::cerr << "  e is active; missing: " << (missing-1) << std::endl;
-        assert(missing == ew);
-        ew->delListener(this);
-        missing = NULL;
-        // 1 -> 0 => check with deregistered EventWaiters if they are still active
-        for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
-          if (!(*i)->isActive()) {
-            (*i)->addListener(this);
-            missing = *i;
-            break;
-          }
-        }
-        // register with all EventWaiters to detected EventWaiter resets
-        if (!missing) {
-          for(ELCIter i = eventList.begin(); i != eventList.end(); ++i)
-            (*i)->addListener(this);
-          notifyListener();
-        }
+        oneLessMissing();
       } else {
         //std::cerr << "  e is not active; missing: " << (missing+1) << std::endl;
-        assert(!missing);
-        missing = static_cast<EventType *>(ew);
-        for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
-          if ((*i) != ew)
-            (*i)->delListener(this);
+        if (missing == 0) { // 0 -> 1
+          missing = 1; resetListener();
+        } else {
+          lazy = true;
+          ew->delListener(this); // Still blocked on something else.
         }
-        resetListener();
       }
       //std::cerr << "  -> " << *this << std::endl;
     }
 
     void eventDestroyed(EventWaiter *ew) {
       //outDbg << "EventAndList::eventDestroyed(" << *ew << ")" << std::endl;
+      /*
       if (!missing) {
         for (ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
           if (*i != ew)
@@ -505,8 +469,9 @@ namespace CoSupport { namespace SystemC {
       } else {
         assert(missing == ew);
       }
+      */
       eventList.clear();
-      missing = NULL;
+      missing = 0;
     }
 
     void renotified(EventWaiter *e) {
@@ -514,52 +479,47 @@ namespace CoSupport { namespace SystemC {
         renotifyListener();
     }
 
+    void oneLessMissing() {
+      if (--missing == 0) {
+        if (lazy) {
+          // 1 -> 0 => check with deregistered EventWaiters if they are active
+          for (ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
+            (*i)->addListener(this, true);
+            if (!(*i)->isActive())
+              ++missing;
+          }
+          lazy = false;
+          if (missing != 0)
+            return;
+        }
+        notifyListener();
+      }
+    }
   public:
     typedef EventAndList this_type;
-    
+
     // constructors
-    EventAndList() : missing(0) {}
-    EventAndList(EventType &e) : missing(0) { *this &= e; }
-    EventAndList(const EventAndList &l) : missing(0) { *this &= l; }
+    EventAndList() : missing(0), lazy(false) {}
+    EventAndList(EventType &e) : missing(0), lazy(false) { *this &= e; }
+    EventAndList(const EventAndList &l) : missing(0), lazy(false) { *this &= l; }
 
     // see EventWaiter
     bool isActive() const
       { return !missing; }
 
     void remove(EventType &e) {
-      if (eventList.erase(&e) && (!missing || missing == &e)) {
-        e.delListener(this);
-        if (missing) { // missing == &e
-          missing = NULL;
-          // 1 -> 0 => check with deregistered EventWaiters if they are still active
-          for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
-            if (!(*i)->isActive()) {
-              (*i)->addListener(this);
-              missing = *i;
-              break;
-            }
-          }
-          // register with all EventWaiters to detected EventWaiter resets
-          if (!missing) {
-            for(ELCIter i = eventList.begin(); i != eventList.end(); ++i)
-              (*i)->addListener(this);
-            notifyListener();
-          }
-        }
+      if (eventList.erase(&e)) {
+        e.delListener(this, true);
+        if (!e.isActive())
+          oneLessMissing();
       }
     }
 
     void insert(EventType &e) {
-      if (eventList.insert(&e).second && !missing) {
+      if (eventList.insert(&e).second) {
         e.addListener(this);
-        if (!e.isActive()) {
-          missing = &e;
-          for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
-            if ((*i) != &e)
-              (*i)->delListener(this);
-          }
+        if (!e.isActive() && ++missing == 0)
           resetListener();
-        }
       }
     }
 
@@ -570,7 +530,7 @@ namespace CoSupport { namespace SystemC {
     // and´ing this list with event e
     this_type& operator&=(EventType &e)
       { insert(e); return *this; }
-    
+
     // and´ing this list with list l
     this_type operator&(const this_type &l)
       { return this_type(*this) &= l; }
@@ -582,42 +542,34 @@ namespace CoSupport { namespace SystemC {
       }
       return *this;
     }
-    
+
     EventType *reset(EventListener *el = NULL) {
       EventWaiter *ret = NULL;
       if (!missing) {
         for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
+          assert((*i)->isActive());
           (*i)->reset(this);
-          if(!(*i)->isActive())
-            missing = *i;
+          if (!(*i)->isActive())
+            ++missing;
         }
-        if (missing) {
-          for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
-            if ((*i) != missing)
-              (*i)->delListener(this);
-          }
+        if (missing)
           resetListener(el);
-        }
         ret = this;
       }
       return ret;
     }
 
     void clear() {
-      if (missing) {
-        missing->delListener(this);
-      } else {
-        for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
-          (*i)->delListener(this);
-        }
+      for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
+        (*i)->delListener(this, true);
       }
       eventList.clear();
-      missing = NULL;
+      missing = 0;
     }
 
     bool operator==(const this_type& l) const
       { return eventList == l.eventList; }
-    
+
     bool operator<(const this_type& l) const
       { return eventList < l.eventList; }
 
@@ -632,7 +584,7 @@ namespace CoSupport { namespace SystemC {
 
     size_t hash_value() const
       { return boost::hash_value(eventList); }
-    
+
     ~EventAndList()
       { clear(); }
 
