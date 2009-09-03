@@ -113,6 +113,8 @@ namespace CoSupport { namespace SystemC {
   protected:
     // forward event notifications to all listeners
     void notifyListener() {
+      if(cache)
+        cache->signaled(this);
       ell_ty::iterator iter, niter;
       for(iter = ell.begin();
           iter != ell.end();
@@ -125,6 +127,8 @@ namespace CoSupport { namespace SystemC {
 
     // forward event resets to all listeners except the specified one
     void resetListener(EventListener *el = NULL) {
+      if(cache)
+        cache->signaled(this);
       ell_ty::iterator iter, niter;
       for(iter = ell.begin();
           iter != ell.end();
@@ -138,7 +142,7 @@ namespace CoSupport { namespace SystemC {
 
   public:
     // default constructor
-    EventWaiter() {}
+    EventWaiter() : cache(0) {}
 
     // determines if this instance is active
     virtual bool isActive() const = 0;
@@ -151,15 +155,29 @@ namespace CoSupport { namespace SystemC {
     virtual EventWaiter *reset(EventListener *el = NULL) = 0;
 
     // el must NOT be in set previously
-    void addListener(EventListener *el)
-      { sassert(ell.insert(el).second); }
+    void addListener(EventListener *el) {
+      assert(cache != el);
+      if(cache) {
+        assert(ell.count(el) == 0);  
+        sassert(ell.insert(cache).second);
+      }
+      cache = el;
+    }
 
     // el must be in set previously
-    void delListener(EventListener *el)
-      { sassert(ell.erase(el) == 1); }
+    void delListener(EventListener *el) {
+      if(cache == el)
+        cache = 0;
+      else
+        sassert(ell.erase(el) == 1);
+    }
     
     // notify listeners that this event is destroyed
     virtual ~EventWaiter() {
+      if(cache) {
+        assert(!"WTF?! ~EventWaiter but still have listeners!");
+        cache->eventDestroyed(this);
+      }
       ell_ty::iterator iter, niter;
       for(iter = ell.begin();
           iter != ell.end();
@@ -172,6 +190,8 @@ namespace CoSupport { namespace SystemC {
     }
 
     void renotifyListener() {
+      if(cache)
+        cache->renotified(this);
       ell_ty::iterator iter, niter;
       for(iter = ell.begin();
           iter != ell.end();
@@ -188,6 +208,7 @@ namespace CoSupport { namespace SystemC {
     // registered listeners
     typedef std::set<EventListener *> ell_ty;
     ell_ty ell;
+    EventListener *cache;
 
     // unimplemented
     EventWaiter(const this_type &);
