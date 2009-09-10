@@ -165,7 +165,6 @@ namespace CoSupport { namespace SystemC {
           iter != ell.end();
           iter = niter)
       {
-        assert(!"WTF?! ~EventWaiter but still have listeners!");
         ++(niter = iter);
         (*iter)->eventDestroyed(this);
       }
@@ -460,16 +459,10 @@ namespace CoSupport { namespace SystemC {
 
     void eventDestroyed(EventWaiter *ew) {
       //outDbg << "EventAndList::eventDestroyed(" << *ew << ")" << std::endl;
-      /*
-      if (!missing) {
-        for (ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
-          if (*i != ew)
-            (*i)->delListener(this);
-        }
-      } else {
-        assert(missing == ew);
+      for (ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
+        if (*i != ew)
+          (*i)->delListener(this, true);
       }
-      */
       eventList.clear();
       missing = 0;
     }
