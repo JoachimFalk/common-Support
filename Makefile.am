@@ -46,22 +46,50 @@ lib_LTLIBRARIES=			\
 	libcosupport.la			\
 	libcosupport-initializer.la	\
 	libcosupport-smartptr.la	\
-	libcosupport-xerces.la		\
-	libcosupport-systemc.la		\
 	libcosupport-streams.la		\
 	libcosupport-string.la		\
 	libcosupport-math.la		\
 	libcosupport-allocators.la
 
+noinst_PROGRAMS=			\
+	test_dbgstream			\
+	test_maybevalue			\
+	test_arrayfifo			\
+	test_idpool			\
+	test_facade			\
+	test_typename			\
+	test_value
+
 libcosupport_la_SOURCES =
 libcosupport_la_LIBADD =			\
 	libcosupport-initializer.la		\
 	libcosupport-smartptr.la		\
-	libcosupport-xerces.la			\
-	libcosupport-systemc.la			\
 	libcosupport-streams.la			\
 	libcosupport-string.la			\
 	libcosupport-allocators.la
+
+if COSUPPORT_ENABLE_XERCES
+libcosupport_la_LIBADD +=			\
+	libcosupport-xerces.la
+lib_LTLIBRARIES +=				\
+	libcosupport-xerces.la
+endif
+if COSUPPORT_ENABLE_XALAN
+libcosupport_la_LIBADD +=			\
+	libcosupport-xalan.la
+lib_LTLIBRARIES +=				\
+	libcosupport-xalan.la
+endif
+if COSUPPORT_ENABLE_SYSTEMC
+libcosupport_la_LIBADD +=			\
+	libcosupport-systemc.la
+lib_LTLIBRARIES +=				\
+	libcosupport-systemc.la
+noinst_PROGRAMS +=				\
+	test_event_and_list			\
+	test_event_or_list			\
+	test_nested_event_lists
+endif
 
 libcosupport_initializer_la_SOURCES =		\
 	BasicInitializer.cpp
@@ -75,6 +103,7 @@ libcosupport_smartptr_la_LIBADD =		\
 	$(refcount_object_CH_LTOBJS)		\
 	-lboost_thread$(BOOST_LIBMTPOSTFIX)
 
+if COSUPPORT_ENABLE_XERCES
 libcosupport_xerces_la_SOURCES =		\
 	SMXIdManager.cpp			\
 	StdIstreamInputSource.cpp		\
@@ -84,13 +113,33 @@ libcosupport_xerces_la_LIBADD =			\
 	-lboost_thread$(BOOST_LIBMTPOSTFIX)	\
 	libcosupport-initializer.la		\
 	-lxerces-c
+endif
 
+if COSUPPORT_ENABLE_XALAN
+libcosupport_xalan_la_SOURCES =
+libcosupport_xalan_la_LIBADD =			\
+	-lboost_thread$(BOOST_LIBMTPOSTFIX)	\
+	libcosupport-initializer.la		\
+	-lxalan-c
+endif
+
+if COSUPPORT_ENABLE_SYSTEMC
 libcosupport_systemc_la_SOURCES =		\
 	par_manager.cpp				\
 	PerformanceEvaluation.cpp
 libcosupport_systemc_la_LIBADD =		\
 	-lboost_thread$(BOOST_LIBMTPOSTFIX)	\
 	-lsystemc
+
+test_event_and_list_SOURCES	  = test_event_and_list.cpp
+test_event_and_list_LDADD	  = libcosupport-systemc.la
+
+test_event_or_list_SOURCES	  = test_event_or_list.cpp
+test_event_or_list_LDADD	  = libcosupport-systemc.la
+
+test_nested_event_lists_SOURCES	  = test_nested_event_lists.cpp
+test_nested_event_lists_LDADD	  = libcosupport-systemc.la libcosupport-streams.la
+endif
 
 libcosupport_streams_la_SOURCES =		\
 	DebugOStream.cpp			\
@@ -118,18 +167,6 @@ libcosupport_math_la_LIBADD =
 libcosupport_allocators_la_SOURCES =
 libcosupport_allocators_la_LIBADD =
 
-noinst_PROGRAMS=			\
-	test_dbgstream			\
-	test_maybevalue			\
-	test_arrayfifo			\
-	test_event_and_list		\
-	test_event_or_list		\
-	test_nested_event_lists		\
-	test_idpool			\
-	test_facade			\
-	test_typename			\
-	test_value
-
 test_dbgstream_SOURCES		  = test_dbgstream.cpp
 test_dbgstream_LDADD		  = libcosupport-streams.la
 
@@ -138,15 +175,6 @@ test_maybevalue_LDADD		  =
 
 test_arrayfifo_SOURCES		  = test_arrayfifo.cpp
 test_arrayfifo_LDADD		  =
-
-test_event_and_list_SOURCES	  = test_event_and_list.cpp
-test_event_and_list_LDADD	  = libcosupport-systemc.la
-
-test_event_or_list_SOURCES	  = test_event_or_list.cpp
-test_event_or_list_LDADD	  = libcosupport-systemc.la
-
-test_nested_event_lists_SOURCES	  = test_nested_event_lists.cpp
-test_nested_event_lists_LDADD	  = libcosupport-systemc.la libcosupport-streams.la
 
 test_idpool_SOURCES		  = test_idpool.cpp
 test_idpool_LDADD		  = libcosupport-allocators.la
