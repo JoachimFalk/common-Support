@@ -37,16 +37,4 @@
 
 namespace CoSupport { namespace XML { namespace Xerces {
 
-  StdOstreamFormatTarget::StdOstreamFormatTarget(std::ostream& out) :
-    out(out) {}
-  
-  void StdOstreamFormatTarget::writeChars(
-      const XMLByte* const toWrite,
-      const unsigned int count,
-      XN::XMLFormatter* const)
-    { if(count) out.write(reinterpret_cast<const char*>(toWrite), count); }
-  
-  void StdOstreamFormatTarget::flush()
-    { out.flush(); }
-
-}}} // namespace CoSupport::XML::Xerces
+} } } // namespace CoSupport::XML::Xerces

@@ -36,20 +36,8 @@
 #include <CoSupport/XML/StdIstreamInputStream.hpp>
 
 namespace CoSupport { namespace XML { namespace Xerces {
-  
-  StdIstreamInputStream::StdIstreamInputStream(std::istream& in) :
-    in(in)
-  {}
-  
-  unsigned int StdIstreamInputStream::curPos() const
-  { return in.tellg(); }
-  
-  unsigned int StdIstreamInputStream::readBytes(
-      XMLByte* const toFill,
-      const unsigned int maxToRead)
-  { 
-    in.read(reinterpret_cast<char*>(toFill), maxToRead);
-    return in.gcount();
-  }
-  
-}}} // namespace CoSupport::XML::Xerces
+
+  const XMLCh *StdIstreamInputStream::getContentType () const
+    { return NULL; }
+
+} } } // namespace CoSupport::XML::Xerces
