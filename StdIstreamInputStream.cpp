@@ -35,9 +35,13 @@
 
 #include <CoSupport/XML/StdIstreamInputStream.hpp>
 
+#include <xercesc/util/XercesVersion.hpp>
+
 namespace CoSupport { namespace XML { namespace Xerces {
 
+#if XERCES_VERSION_MAJOR >= 3
   const XMLCh *StdIstreamInputStream::getContentType () const
     { return NULL; }
+#endif // XERCES_VERSION_MAJOR >= 3
 
 } } } // namespace CoSupport::XML::Xerces

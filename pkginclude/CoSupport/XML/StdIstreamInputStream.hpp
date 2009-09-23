@@ -41,6 +41,8 @@
 #include <istream>
 #include <boost/noncopyable.hpp>
 
+#include <xercesc/util/XercesVersion.hpp>
+
 namespace CoSupport { namespace XML { namespace Xerces {
 
   class StdIstreamInputStream
@@ -51,6 +53,15 @@ namespace CoSupport { namespace XML { namespace Xerces {
     StdIstreamInputStream(std::istream &in)
       : in(in) {}
 
+#if XERCES_VERSION_MAJOR == 2
+    unsigned int curPos() const
+      { return in.tellg(); }
+
+    unsigned int readBytes(XMLByte *const toFill, unsigned int maxToRead) {
+      in.read(reinterpret_cast<char *>(toFill), maxToRead);
+      return in.gcount();
+    }
+#elif XERCES_VERSION_MAJOR >= 3
     XMLFilePos  curPos() const
       { return in.tellg(); }
 
@@ -65,6 +76,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
      * parameters such as encoding) as defined by the HTTP 1.1 specification.
      */
     const XMLCh *getContentType () const;
+#endif // XERCES_VERSION_MAJOR >= 3
   };
 
 } } } // namespace CoSupport::XML::Xerces

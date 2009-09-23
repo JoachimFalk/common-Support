@@ -40,12 +40,12 @@ namespace CoSupport { namespace XML { namespace Xerces {
   
   StdIstreamInputSource::StdIstreamInputSource(
       std::istream& in,
-      XN::MemoryManager* const manager) :
-    InputSource(manager),
-    in(in)
-  {}
+      XN::MemoryManager* const manager)
+    : InputSource(manager),
+      in(in)
+    {}
   
   XN::BinInputStream* StdIstreamInputSource::makeStream() const
-  { return new StdIstreamInputStream(in); }
+    { return new StdIstreamInputStream(in); }
   
-}}} // namespace CoSupport::XML::Xerces
+} } } // namespace CoSupport::XML::Xerces

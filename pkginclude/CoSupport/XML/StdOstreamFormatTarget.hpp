@@ -37,9 +37,11 @@
 #define _INCLUDED_COSUPPORT_XML_XERCES_STDOSTREAMFORMATTARGET_HPP
 
 #include "xerces_support.hpp"
-#include <xercesc/framework/XMLFormatter.hpp>
 #include <ostream>
 #include <boost/noncopyable.hpp>
+
+#include <xercesc/util/XercesVersion.hpp>
+#include <xercesc/framework/XMLFormatter.hpp>
 
 namespace CoSupport { namespace XML { namespace Xerces {
 
@@ -51,11 +53,19 @@ namespace CoSupport { namespace XML { namespace Xerces {
     StdOstreamFormatTarget(std::ostream &out)
       : out(out) {}
 
+#if XERCES_VERSION_MAJOR == 2
+    void writeChars(
+        const XMLByte *const toWrite,
+        unsigned int count,
+        XN::XMLFormatter *const)
+      { out.write(reinterpret_cast<const char*>(toWrite), count); }
+#elif XERCES_VERSION_MAJOR >= 3
     void writeChars(
         const XMLByte *const toWrite,
         const XMLSize_t count,
         XN::XMLFormatter *const)
       { out.write(reinterpret_cast<const char*>(toWrite), count); }
+#endif // XERCES_VERSION_MAJOR >= 3
 
     void flush()
       { out.flush(); }
