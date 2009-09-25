@@ -44,56 +44,95 @@
 #include <boost/blank.hpp>
 #include <boost/variant.hpp>
 
+#include "Value.hpp"
+
 namespace CoSupport { namespace DataTypes {
 
-template <typename T>
-class MaybeValue {
-  typedef MaybeValue<T> this_type;
+namespace Detail {
 
-  template <typename TT> friend class MaybeValue;
+  template <typename T>
+  struct MaybeValueTypeClassifier
+  : public ValueTypeClassifier<T> {};
+
+} // namespace Detail
+
+template <class Derived, typename T, typename R = T const &>
+class MaybeValueInterface
+: public Detail::MaybeValueTypeClassifier<T>::
+    template Decorator<Derived,R>::type {
+  typedef MaybeValueInterface<Derived,T,R> this_type;
 protected:
-  boost::variant<boost::blank, T> value;
+  Derived       *getDerived()
+    { return static_cast<Derived *>(this); }
+
+  Derived const *getDerived() const
+    { return static_cast<Derived const *>(this); }
+public:
+  template <class DD, typename TT, typename RR>
+  Derived &operator = (const MaybeValueInterface<DD, TT, RR> &val)
+    { this->set(val); return *getDerived(); }
+  Derived &operator = (const T &val)
+    { this->set(val); return *getDerived(); }
+  Derived &operator = (const boost::blank &)
+    { this->undef(); return *getDerived(); }
+
+  operator R() const
+    { return this->get(); }
+
+  template <class DD, typename TT, typename RR>
+  void set(const MaybeValueInterface<DD,TT,RR> &val)
+    { if (val.isDefined()) this->set(val.get()); else this->undef(); }
+  // setImpl is an interface method which must be implemented in Derived!
+  void set(const T &val)
+    { getDerived()->setImpl(val); }
+  // getImpl is an interface method which must be implemented in Derived!
+  R get() const // this may throw
+    { return getDerived()->getImpl(); }
+  // undefImpl is an interface method which must be implemented in Derived!
+  void undef()
+    { return getDerived()->undefImpl(); }
+  // isDefinedImpl is an interface method which must be implemented in Derived!
+  bool isDefined() const
+    { return getDerived()->isDefinedImpl(); }
+};
+
+template <class DD, typename TT, typename RR>
+std::ostream &operator << (std::ostream &out, MaybeValueInterface<DD,TT,RR> const &x)
+  { return x.isDefined() ? out << x.get() : out << "undef"; }
+
+template <class T>
+class MaybeValue
+: public MaybeValueInterface<MaybeValue<T>, T> {
+  typedef MaybeValue<T>                      this_type;
+  typedef MaybeValueInterface<this_type, T>  base_type;
+
+  friend class MaybeValueInterface<this_type, T>;
+private:
+  typedef boost::variant<boost::blank, T>    storage_type;
+
+  storage_type value;
+protected:
+  void setImpl(const T &val)
+    { value = val; }
+  T const &getImpl() const
+    { return boost::get<T>(value); }
+  void undefImpl()
+    { value = boost::blank(); }
+  bool isDefinedImpl() const
+    { return boost::get<boost::blank>(&value) == NULL; }
 public:
   MaybeValue()
     : value(boost::blank()) {}
-  template <typename TT>
-  MaybeValue(const MaybeValue<TT> &val)
-    : value(val.value) {}
-  MaybeValue(const T &val)
+  MaybeValue(T const &val)
     : value(val) {}
+  template <class DD, typename TT, typename RR>
+  MaybeValue(MaybeValueInterface<DD,TT,RR> const &val)
+    : value(val.isDefined()
+        ? storage_type(val.get())
+        : storage_type(boost::blank())) {}
 
-  this_type &operator = (const boost::blank &)
-    { this->undef(); return *this; }
-  template <typename TT>
-  this_type &operator = (const MaybeValue<TT> &val)
-    { this->set(val); return *this; }
-  this_type &operator = (const T &val)
-    { this->set(val); return *this; }
-
-  void undef()
-    { value = boost::blank(); }
-  bool isDefined() const
-    { return boost::get<boost::blank>(&value) == NULL; }
-
-  template <typename TT>
-  void set(const MaybeValue<TT> &val)
-    { value = val.value; }
-  void set(const T &val)
-    { value = val; }
-  const T &get() const // this may throw
-    { return boost::get<T>(value); }
-
-  void dump(std::ostream &out) const {
-    if (isDefined())
-      out << get();
-    else
-      out << "undef";
-  }
+  using base_type::operator =;
 };
-
-template <typename T>
-std::ostream &operator <<(std::ostream &out, const MaybeValue<T> &val)
-  { val.dump(out); return out; }
 
 } } // namespace CoSupport::DataTypes
 

@@ -37,12 +37,7 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_VALUE_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_VALUE_HPP
 
-#include <cassert>
-#include <new>
 #include <ostream>
-
-#include <boost/blank.hpp>
-#include <boost/variant.hpp>
 
 namespace CoSupport { namespace DataTypes {
 
@@ -149,7 +144,7 @@ protected:
 public:
   template <class DD, typename TT, typename RR>
   Derived &operator = (const ValueInterface<DD, TT, RR> &val)
-    { this->set(val.get()); return *getDerived(); }
+    { this->set(val); return *getDerived(); }
   Derived &operator = (const T &val)
     { this->set(val); return *getDerived(); }
 
