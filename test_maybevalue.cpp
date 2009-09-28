@@ -37,6 +37,11 @@
 
 #include <CoSupport/DataTypes/MaybeValue.hpp>
 
+#define CHECK_OP(X,OP,V) do { \
+    std::cout << #X " " #OP " " << #V << ": " << (X OP V) << std::endl; \
+    assert((X OP V) == (X.get() OP V)); \
+  } while (0)
+
 using namespace CoSupport::DataTypes;
 
 int main(int argc, char *argv[]) {
@@ -74,9 +79,20 @@ int main(int argc, char *argv[]) {
   assert(foo.isDefined());
   assert(foo.get() == 4);
   
+  foo = 4711;
+  std::cout << "foo = 4711: " << foo << std::endl;
+  CHECK_OP(foo,==,4710); CHECK_OP(foo,==,4711); CHECK_OP(foo,==,4712);
+  CHECK_OP(foo,!=,4710); CHECK_OP(foo,!=,4711); CHECK_OP(foo,!=,4712);
+  CHECK_OP(foo,< ,4710); CHECK_OP(foo,< ,4711); CHECK_OP(foo,< ,4712);
+  CHECK_OP(foo,<=,4710); CHECK_OP(foo,<=,4711); CHECK_OP(foo,<=,4712);
+  CHECK_OP(foo,> ,4710); CHECK_OP(foo,> ,4711); CHECK_OP(foo,> ,4712);
+  CHECK_OP(foo,>=,4710); CHECK_OP(foo,>=,4711); CHECK_OP(foo,>=,4712);
+  
   foo = boost::blank();
   std::cout << "foo = boost::blank(): " << foo << std::endl;
   assert(!foo.isDefined());
+//CHECK_OP(foo,==,4710); CHECK_OP(foo,==,4711); CHECK_OP(foo,==,4712);
+//CHECK_OP(foo,!=,4710); CHECK_OP(foo,!=,4711); CHECK_OP(foo,!=,4712);
   
   MaybeValue<int> bar(17);
   

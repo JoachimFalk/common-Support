@@ -38,6 +38,11 @@
 
 #include <CoSupport/DataTypes/Value.hpp>
 
+#define CHECK_OP(X,OP,V) do { \
+    std::cout << #X " " #OP " " << #V << ": " << (X OP V) << std::endl; \
+    assert((X OP V) == (X.get() OP V)); \
+  } while (0)
+
 using namespace CoSupport::DataTypes;
 
 int main(int argc, char *argv[]) {
@@ -80,6 +85,15 @@ int main(int argc, char *argv[]) {
     x %= 5;
     std::cout << "x %= 5: " << x << std::endl;
     assert(x == 4);
+
+    x = 4711;
+    std::cout << "x = 4711: " << x << std::endl;
+    CHECK_OP(x,==,4710); CHECK_OP(x,==,4711); CHECK_OP(x,==,4712);
+    CHECK_OP(x,!=,4710); CHECK_OP(x,!=,4711); CHECK_OP(x,!=,4712);
+    CHECK_OP(x,< ,4710); CHECK_OP(x,< ,4711); CHECK_OP(x,< ,4712);
+    CHECK_OP(x,<=,4710); CHECK_OP(x,<=,4711); CHECK_OP(x,<=,4712);
+    CHECK_OP(x,> ,4710); CHECK_OP(x,> ,4711); CHECK_OP(x,> ,4712);
+    CHECK_OP(x,>=,4710); CHECK_OP(x,>=,4711); CHECK_OP(x,>=,4712);
     
     xx = M_E;
     x = -1;
@@ -119,10 +133,33 @@ int main(int argc, char *argv[]) {
     Value<const char *> cp("foo");
     Value<std::string>  str1(cp);
     Value<std::string>  str2("bar");
+    Value<std::string>  str3(std::string("zzz"));
     
-    std::cout << "cp   == \"" << cp << "\"" << std::endl;
-    std::cout << "str1 == \"" << str1 << "\"" << std::endl;
-    std::cout << "str2 == \"" << str2 << "\"" << std::endl;
+    std::cout << "cp:   \"" << cp << "\"" << std::endl;
+    std::cout << "str1: \"" << str1 << "\"" << std::endl;
+    std::cout << "str2: \"" << str2 << "\"" << std::endl;
+    std::cout << "str3: \"" << str3 << "\"" << std::endl;
+    
+    CHECK_OP(str1,==,std::string("foo")); CHECK_OP(str1,==,std::string("bar"));
+    CHECK_OP(str1,!=,std::string("foo")); CHECK_OP(str1,!=,std::string("bar"));
+    CHECK_OP(str1,< ,std::string("foo")); CHECK_OP(str1,< ,std::string("bar")); CHECK_OP(str1,< ,std::string("zzz"));
+    CHECK_OP(str1,<=,std::string("foo")); CHECK_OP(str1,<=,std::string("bar")); CHECK_OP(str1,<=,std::string("zzz"));
+    CHECK_OP(str1,> ,std::string("foo")); CHECK_OP(str1,> ,std::string("bar")); CHECK_OP(str1,> ,std::string("zzz"));
+    CHECK_OP(str1,>=,std::string("foo")); CHECK_OP(str1,>=,std::string("bar")); CHECK_OP(str1,>=,std::string("zzz"));
+
+    CHECK_OP(str1,==,"foo"); CHECK_OP(str1,==,"bar");
+    CHECK_OP(str1,!=,"foo"); CHECK_OP(str1,!=,"bar");
+    CHECK_OP(str1,< ,"foo"); CHECK_OP(str1,< ,"bar"); CHECK_OP(str1,< ,"zzz");
+    CHECK_OP(str1,<=,"foo"); CHECK_OP(str1,<=,"bar"); CHECK_OP(str1,<=,"zzz");
+    CHECK_OP(str1,> ,"foo"); CHECK_OP(str1,> ,"bar"); CHECK_OP(str1,> ,"zzz");
+    CHECK_OP(str1,>=,"foo"); CHECK_OP(str1,>=,"bar"); CHECK_OP(str1,>=,"zzz");
+
+    CHECK_OP(str1,==,cp); CHECK_OP(str1,==,str2);
+    CHECK_OP(str1,!=,cp); CHECK_OP(str1,!=,str2);
+    CHECK_OP(str1,< ,cp); CHECK_OP(str1,< ,str2); CHECK_OP(str1,< ,str3);
+    CHECK_OP(str1,<=,cp); CHECK_OP(str1,<=,str2); CHECK_OP(str1,<=,str3);
+    CHECK_OP(str1,> ,cp); CHECK_OP(str1,> ,str2); CHECK_OP(str1,> ,str3);
+    CHECK_OP(str1,>=,cp); CHECK_OP(str1,>=,str2); CHECK_OP(str1,>=,str3);
     
     cp   = "batz";
     str1 = "hix";

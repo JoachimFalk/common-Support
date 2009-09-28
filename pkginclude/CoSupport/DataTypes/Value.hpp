@@ -41,49 +41,59 @@
 
 namespace CoSupport { namespace DataTypes {
 
+template <class D, typename T, typename R = T const &>
+class ValueInterface;
+
 namespace Detail {
 
-  class ValueTypeDecoratorUnknown {};
+  struct value_type_unknown_tag_t {};
 
   template <typename T>
-  struct ValueTypeClassifier {
-    template <class Derived, typename R>
-    struct Decorator {
-      typedef ValueTypeDecoratorUnknown type;
-    };
-  };
+  struct ValueTypeClassifier { typedef value_type_unknown_tag_t tag; };
 
-#define COSUPPORT_CREATE_VALUETYPE_DECORATOR_MAPPING(TYPE,DECORATOR) \
-  template <> \
-  struct ValueTypeClassifier<TYPE> { \
-    template <class Derived, typename R> \
-    struct Decorator { \
-      typedef DECORATOR<Derived,TYPE,R> type; \
-    }; \
-  }
+  template <typename tag, class D, typename T, typename R>
+  class ValueTypeDecorator;
 
-  template <class Derived, typename T, typename R = T const &>
-  class ValueTypeDecoratorNumeric {
+  template <class D, typename T, typename R>
+  class ValueTypeDecorator<value_type_unknown_tag_t, D, T, R> {};
+
+#define COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(TYPE,TAG) \
+  template <> struct ValueTypeClassifier<TYPE> { typedef TAG tag; }
+
+  struct value_type_numeric_tag_t {};
+
+  COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(int,value_type_numeric_tag_t);
+  COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(long,value_type_numeric_tag_t);
+  COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(long long,value_type_numeric_tag_t);
+  COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(unsigned int,value_type_numeric_tag_t);
+  COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(unsigned long,value_type_numeric_tag_t);
+  COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(unsigned long long,value_type_numeric_tag_t);
+  COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(float,value_type_numeric_tag_t);
+  COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(double,value_type_numeric_tag_t);
+
+  template <class D, typename T, typename R>
+  class ValueTypeDecorator<value_type_numeric_tag_t, D, T, R> {
+    typedef ValueTypeDecorator<value_type_numeric_tag_t, D, T, R> this_type;
   protected:
-    Derived       *getDerived()
-      { return static_cast<Derived *>(this); }
+    D       *getDerived()
+      { return static_cast<D *>(this); }
 
-    Derived const *getDerived() const
-      { return static_cast<Derived const *>(this); }
+    D const *getDerived() const
+      { return static_cast<D const *>(this); }
   public:
-    Derived &operator +=(T const &x)
+    D &operator +=(T const &x)
       { getDerived()->set(getDerived()->get() + x); return *getDerived(); }
-    Derived &operator -=(T const &x)
+    D &operator -=(T const &x)
       { getDerived()->set(getDerived()->get() - x); return *getDerived(); }
-    Derived &operator *=(T const &x)
+    D &operator *=(T const &x)
       { getDerived()->set(getDerived()->get() * x); return *getDerived(); }
-    Derived &operator /=(T const &x)
+    D &operator /=(T const &x)
       { getDerived()->set(getDerived()->get() / x); return *getDerived(); }
-    Derived &operator %=(T const &x)
+    D &operator %=(T const &x)
       { getDerived()->set(getDerived()->get() % x); return *getDerived(); }
-    Derived &operator ++()
+    D &operator ++()
       { return *this += 1; }
-    Derived &operator --()
+    D &operator --()
       { return *this -= 1; }
     T operator ++(int) {
       T retval(getDerived()->get());
@@ -97,55 +107,110 @@ namespace Detail {
     }
   };
 
-  COSUPPORT_CREATE_VALUETYPE_DECORATOR_MAPPING(int,ValueTypeDecoratorNumeric);
-  COSUPPORT_CREATE_VALUETYPE_DECORATOR_MAPPING(long,ValueTypeDecoratorNumeric);
-  COSUPPORT_CREATE_VALUETYPE_DECORATOR_MAPPING(long long,ValueTypeDecoratorNumeric);
-  COSUPPORT_CREATE_VALUETYPE_DECORATOR_MAPPING(unsigned int,ValueTypeDecoratorNumeric);
-  COSUPPORT_CREATE_VALUETYPE_DECORATOR_MAPPING(unsigned long,ValueTypeDecoratorNumeric);
-  COSUPPORT_CREATE_VALUETYPE_DECORATOR_MAPPING(unsigned long long,ValueTypeDecoratorNumeric);
-  COSUPPORT_CREATE_VALUETYPE_DECORATOR_MAPPING(float,ValueTypeDecoratorNumeric);
-  COSUPPORT_CREATE_VALUETYPE_DECORATOR_MAPPING(double,ValueTypeDecoratorNumeric);
+  struct value_type_charptr_tag_t {};
 
-  template <class Derived, typename T, typename R = T const &>
-  class ValueTypeDecoratorStdString {
-    typedef ValueTypeDecoratorStdString<Derived,T,R> this_type;
-    template <class DD, typename TT, typename RR>
-    friend std::ostream &operator << (std::ostream &, ValueTypeDecoratorStdString<DD,TT,RR> const &);
+  COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(char *,value_type_charptr_tag_t);
+  COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(const char *,value_type_charptr_tag_t);
+
+  template <class D, typename T, typename R>
+  bool operator ==(
+      std::string const &lhs,
+      ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return lhs == rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator !=(
+      std::string const &lhs,
+      ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return lhs != rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator > (
+      std::string const &lhs,
+      ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return lhs >  rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator >=(
+      std::string const &lhs,
+      ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return lhs >= rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator < (
+      std::string const &lhs,
+      ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return lhs <  rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator <=(
+      std::string const &lhs,
+      ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return lhs <= rhs.getDerived()->get(); }
+
+  template <class D, typename T, typename R>
+  class ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> {
+    typedef ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> this_type;
+
+    friend bool operator ==<>(std::string const &, this_type const &);
+    friend bool operator !=<>(std::string const &, this_type const &);
+    friend bool operator > <>(std::string const &, this_type const &);
+    friend bool operator >=<>(std::string const &, this_type const &);
+    friend bool operator < <>(std::string const &, this_type const &);
+    friend bool operator <=<>(std::string const &, this_type const &);
   protected:
-    Derived       *getDerived()
-      { return static_cast<Derived *>(this); }
+    D       *getDerived()
+      { return static_cast<D *>(this); }
 
-    Derived const *getDerived() const
-      { return static_cast<Derived const *>(this); }
+    D const *getDerived() const
+      { return static_cast<D const *>(this); }
+  public:
   };
 
-  template <class DD, typename TT, typename RR>
-  std::ostream &operator << (std::ostream &out, ValueTypeDecoratorStdString<DD,TT,RR> const &x) {
-    return out << x.getDerived()->get();
-  }
+  struct value_type_std_string_tag_t {};
 
-  COSUPPORT_CREATE_VALUETYPE_DECORATOR_MAPPING(std::string,ValueTypeDecoratorStdString);
+  COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(std::string,value_type_std_string_tag_t);
 
-#undef COSUPPORT_CREATE_VALUETYPE_DECORATOR_MAPPING
+  template <class D, typename T, typename R>
+  class ValueTypeDecorator<value_type_std_string_tag_t, D, T, R> {
+    typedef ValueTypeDecorator<value_type_std_string_tag_t, D, T, R> this_type;
+  protected:
+    D       *getDerived()
+      { return static_cast<D *>(this); }
+
+    D const *getDerived() const
+      { return static_cast<D const *>(this); }
+  public:
+    bool operator ==(const char *v) const
+      { return getDerived()->get() == v; }
+    bool operator !=(const char *v) const
+      { return getDerived()->get() != v; }
+    bool operator < (const char *v) const
+      { return getDerived()->get() <  v; }
+    bool operator <=(const char *v) const
+      { return getDerived()->get() <= v; }
+    bool operator > (const char *v) const
+      { return getDerived()->get() >  v; }
+    bool operator >=(const char *v) const
+      { return getDerived()->get() >= v; }
+  };
+
+#undef COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION
 
 } // namespace Detail
 
-template <class Derived, typename T, typename R = T const &>
+template <class D, typename T, typename R>
 class ValueInterface
-: public Detail::ValueTypeClassifier<T>::
-    template Decorator<Derived,R>::type {
-  typedef ValueInterface<Derived,T,R> this_type;
+: public Detail::ValueTypeDecorator<
+    typename Detail::ValueTypeClassifier<T>::tag, D, T, R
+  > {
+  typedef ValueInterface<D,T,R> this_type;
 protected:
-  Derived       *getDerived()
-    { return static_cast<Derived *>(this); }
+  D       *getDerived()
+    { return static_cast<D *>(this); }
 
-  Derived const *getDerived() const
-    { return static_cast<Derived const *>(this); }
+  D const *getDerived() const
+    { return static_cast<D const *>(this); }
 public:
   template <class DD, typename TT, typename RR>
-  Derived &operator = (const ValueInterface<DD, TT, RR> &val)
+  D &operator = (const ValueInterface<DD, TT, RR> &val)
     { this->set(val); return *getDerived(); }
-  Derived &operator = (const T &val)
+  D &operator = (const T &val)
     { this->set(val); return *getDerived(); }
 
   operator R() const
@@ -154,13 +219,113 @@ public:
   template <class DD, typename TT, typename RR>
   void set(const ValueInterface<DD,TT,RR> &val)
     { this->set(val.get()); }
-  // setImpl is an interface method which must be implemented in Derived!
+  // setImpl is an interface method which must be implemented in D!
   void set(const T &val)
     { getDerived()->setImpl(val); }
-  // getImpl is an interface method which must be implemented in Derived!
+  // getImpl is an interface method which must be implemented in D!
   R get() const // this may throw
     { return getDerived()->getImpl(); }
 };
+
+template <class DD, typename TT, typename RR>
+std::ostream &operator << (std::ostream &out, ValueInterface<DD,TT,RR> const &x)
+  { return out << x.get(); }
+
+template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+bool operator ==(
+    const ValueInterface<D1, T1, R1> &lhs,
+    const ValueInterface<D2, T2, R2> &rhs)
+  { return lhs.get() == rhs.get(); }
+template <class D, typename T, typename R>
+bool operator ==(
+    T const &lhs,
+    const ValueInterface<D, T, R> &rhs)
+  { return lhs == rhs.get(); }
+template <class D, typename T, typename R>
+bool operator ==(
+    const ValueInterface<D, T, R> &lhs,
+    T const &rhs)
+  { return lhs.get() == rhs; }
+
+template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+bool operator !=(
+    const ValueInterface<D1, T1, R1> &lhs,
+    const ValueInterface<D2, T2, R2> &rhs)
+  { return lhs.get() != rhs.get(); }
+template <class D, typename T, typename R>
+bool operator !=(
+    T const &lhs,
+    const ValueInterface<D, T, R> &rhs)
+  { return lhs != rhs.get(); }
+template <class D, typename T, typename R>
+bool operator !=(
+    const ValueInterface<D, T, R> &lhs,
+    T const &rhs)
+  { return lhs.get() != rhs; }
+
+template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+bool operator < (
+    const ValueInterface<D1, T1, R1> &lhs,
+    const ValueInterface<D2, T2, R2> &rhs)
+  { return lhs.get() <  rhs.get(); }
+template <class D, typename T, typename R>
+bool operator < (
+    T const &lhs,
+    const ValueInterface<D, T, R> &rhs)
+  { return lhs <  rhs.get(); }
+template <class D, typename T, typename R>
+bool operator < (
+    const ValueInterface<D, T, R> &lhs,
+    T const &rhs)
+  { return lhs.get() <  rhs; }
+
+template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+bool operator <=(
+    const ValueInterface<D1, T1, R1> &lhs,
+    const ValueInterface<D2, T2, R2> &rhs)
+  { return lhs.get() <= rhs.get(); }
+template <class D, typename T, typename R>
+bool operator <=(
+    T const &lhs,
+    const ValueInterface<D, T, R> &rhs)
+  { return lhs <= rhs.get(); }
+template <class D, typename T, typename R>
+bool operator <=(
+    const ValueInterface<D, T, R> &lhs,
+    T const &rhs)
+  { return lhs.get() <= rhs; }
+
+template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+bool operator > (
+    const ValueInterface<D1, T1, R1> &lhs,
+    const ValueInterface<D2, T2, R2> &rhs)
+  { return lhs.get() >  rhs.get(); }
+template <class D, typename T, typename R>
+bool operator > (
+    T const &lhs,
+    const ValueInterface<D, T, R> &rhs)
+  { return lhs >  rhs.get(); }
+template <class D, typename T, typename R>
+bool operator > (
+    const ValueInterface<D, T, R> &lhs,
+    T const &rhs)
+  { return lhs.get() >  rhs; }
+
+template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+bool operator >=(
+    const ValueInterface<D1, T1, R1> &lhs,
+    const ValueInterface<D2, T2, R2> &rhs)
+  { return lhs.get() >= rhs.get(); }
+template <class D, typename T, typename R>
+bool operator >=(
+    T const &lhs,
+    const ValueInterface<D, T, R> &rhs)
+  { return lhs >= rhs.get(); }
+template <class D, typename T, typename R>
+bool operator >=(
+    const ValueInterface<D, T, R> &lhs,
+    T const &rhs)
+  { return lhs.get() >= rhs; }
 
 template <class T>
 class Value

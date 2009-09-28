@@ -50,30 +50,30 @@ namespace CoSupport { namespace DataTypes {
 
 namespace Detail {
 
-  template <typename T>
-  struct MaybeValueTypeClassifier
-  : public ValueTypeClassifier<T> {};
+  template <typename tag, class D, typename T, typename R>
+  class MaybeValueTypeDecorator: public ValueTypeDecorator<tag, D, T, R> {};
 
 } // namespace Detail
 
-template <class Derived, typename T, typename R = T const &>
+template <class D, typename T, typename R = T const &>
 class MaybeValueInterface
-: public Detail::MaybeValueTypeClassifier<T>::
-    template Decorator<Derived,R>::type {
-  typedef MaybeValueInterface<Derived,T,R> this_type;
+: public Detail::MaybeValueTypeDecorator<
+    typename Detail::ValueTypeClassifier<T>::tag, D, T, R
+  > {
+  typedef MaybeValueInterface<D,T,R> this_type;
 protected:
-  Derived       *getDerived()
-    { return static_cast<Derived *>(this); }
+  D       *getDerived()
+    { return static_cast<D *>(this); }
 
-  Derived const *getDerived() const
-    { return static_cast<Derived const *>(this); }
+  D const *getDerived() const
+    { return static_cast<D const *>(this); }
 public:
   template <class DD, typename TT, typename RR>
-  Derived &operator = (const MaybeValueInterface<DD, TT, RR> &val)
+  D &operator = (const MaybeValueInterface<DD, TT, RR> &val)
     { this->set(val); return *getDerived(); }
-  Derived &operator = (const T &val)
+  D &operator = (const T &val)
     { this->set(val); return *getDerived(); }
-  Derived &operator = (const boost::blank &)
+  D &operator = (const boost::blank &)
     { this->undef(); return *getDerived(); }
 
   operator R() const
@@ -82,16 +82,16 @@ public:
   template <class DD, typename TT, typename RR>
   void set(const MaybeValueInterface<DD,TT,RR> &val)
     { if (val.isDefined()) this->set(val.get()); else this->undef(); }
-  // setImpl is an interface method which must be implemented in Derived!
+  // setImpl is an interface method which must be implemented in D!
   void set(const T &val)
     { getDerived()->setImpl(val); }
-  // getImpl is an interface method which must be implemented in Derived!
+  // getImpl is an interface method which must be implemented in D!
   R get() const // this may throw
     { return getDerived()->getImpl(); }
-  // undefImpl is an interface method which must be implemented in Derived!
+  // undefImpl is an interface method which must be implemented in D!
   void undef()
     { return getDerived()->undefImpl(); }
-  // isDefinedImpl is an interface method which must be implemented in Derived!
+  // isDefinedImpl is an interface method which must be implemented in D!
   bool isDefined() const
     { return getDerived()->isDefinedImpl(); }
 };
