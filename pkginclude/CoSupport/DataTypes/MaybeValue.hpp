@@ -100,6 +100,135 @@ template <class DD, typename TT, typename RR>
 std::ostream &operator << (std::ostream &out, MaybeValueInterface<DD,TT,RR> const &x)
   { return x.isDefined() ? out << x.get() : out << "undef"; }
 
+template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+bool operator ==(
+    const MaybeValueInterface<D1, T1, R1> &lhs,
+    const MaybeValueInterface<D2, T2, R2> &rhs) {
+  bool def;
+  return (def = lhs.isDefined()) == rhs.isDefined() &&
+    (!def || lhs.get() == rhs.get());
+}
+template <class D, typename T, typename R>
+bool operator ==(
+    T const &lhs,
+    const MaybeValueInterface<D, T, R> &rhs)
+  { return rhs.isDefined() && lhs == rhs.get(); }
+template <class D, typename T, typename R>
+bool operator ==(
+    const MaybeValueInterface<D, T, R> &lhs,
+    T const &rhs)
+  { return lhs.isDefined() && lhs.get() == rhs; }
+
+template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+bool operator !=(
+    const MaybeValueInterface<D1, T1, R1> &lhs,
+    const MaybeValueInterface<D2, T2, R2> &rhs) {
+  bool def;
+  return (def = lhs.isDefined()) != rhs.isDefined() ||
+    (def && lhs.get() != rhs.get());
+}
+template <class D, typename T, typename R>
+bool operator !=(
+    T const &lhs,
+    const MaybeValueInterface<D, T, R> &rhs)
+  { return !rhs.isDefined() || lhs != rhs.get(); }
+template <class D, typename T, typename R>
+bool operator !=(
+    const MaybeValueInterface<D, T, R> &lhs,
+    T const &rhs)
+  { return !lhs.isDefined() || lhs.get() != rhs; }
+
+// We postolate undef as smaller than all valid values.
+template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+bool operator < (
+    const MaybeValueInterface<D1, T1, R1> &lhs,
+    const MaybeValueInterface<D2, T2, R2> &rhs) {
+  bool def;
+  // 0 0 => def=0 => 0
+  // 0 1 => 1
+  // 1 0 => def=0 => 0
+  // 1 1 => def=1 => lhs.get() <  rhs.get()
+  return lhs.isDefined() < (def = rhs.isDefined()) ||
+    (def && lhs.get() <  rhs.get());
+}
+template <class D, typename T, typename R>
+bool operator < (
+    T const &lhs,
+    const MaybeValueInterface<D, T, R> &rhs)
+  { return rhs.isDefined() && lhs <  rhs.get(); }
+template <class D, typename T, typename R>
+bool operator < (
+    const MaybeValueInterface<D, T, R> &lhs,
+    T const &rhs)
+  { return !lhs.isDefined() || lhs.get() <  rhs; }
+
+template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+bool operator <=(
+    const MaybeValueInterface<D1, T1, R1> &lhs,
+    const MaybeValueInterface<D2, T2, R2> &rhs) {
+  // 0 0 => 1
+  // 0 1 => 1
+  // 1 0 => 0
+  // 1 1 => lhs.get() <= rhs.get()
+  return !lhs.isDefined() ||
+    (rhs.isDefined() && lhs.get() <= rhs.get());
+}
+template <class D, typename T, typename R>
+bool operator <=(
+    T const &lhs,
+    const MaybeValueInterface<D, T, R> &rhs)
+  { return rhs.isDefined() && lhs <= rhs.get(); }
+template <class D, typename T, typename R>
+bool operator <=(
+    const MaybeValueInterface<D, T, R> &lhs,
+    T const &rhs)
+  { return !lhs.isDefined() || lhs.get() <= rhs; }
+
+template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+bool operator > (
+    const MaybeValueInterface<D1, T1, R1> &lhs,
+    const MaybeValueInterface<D2, T2, R2> &rhs) {
+  bool def;
+  // 0 0 => def=0 => 0
+  // 0 1 => def=0 => 0
+  // 1 0 => 1
+  // 1 1 => def=1 => lhs.get() >  rhs.get()
+  return (def = lhs.isDefined()) > rhs.isDefined() ||
+    (def && lhs.get() >  rhs.get());
+}
+template <class D, typename T, typename R>
+bool operator > (
+    T const &lhs,
+    const MaybeValueInterface<D, T, R> &rhs)
+  { return !rhs.isDefined() || lhs >  rhs.get(); }
+template <class D, typename T, typename R>
+bool operator > (
+    const MaybeValueInterface<D, T, R> &lhs,
+    T const &rhs)
+  { return lhs.isDefined() && lhs.get() >  rhs; }
+
+template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+bool operator >=(
+    const MaybeValueInterface<D1, T1, R1> &lhs,
+    const MaybeValueInterface<D2, T2, R2> &rhs) {
+  // 0 0 => 1
+  // 0 1 => 0
+  // 1 0 => 1
+  // 1 1 => lhs.get() >= rhs.get()
+  return !rhs.isDefined() ||
+    (lhs.isDefined() && lhs.get() >= rhs.get());
+}
+template <class D, typename T, typename R>
+bool operator >=(
+    T const &lhs,
+    const MaybeValueInterface<D, T, R> &rhs)
+  { return !rhs.isDefined() || lhs >= rhs.get(); }
+template <class D, typename T, typename R>
+bool operator >=(
+    const MaybeValueInterface<D, T, R> &lhs,
+    T const &rhs)
+  { return lhs.isDefined() && lhs.get() >= rhs; }
+
 template <class T>
 class MaybeValue
 : public MaybeValueInterface<MaybeValue<T>, T> {
