@@ -33,6 +33,7 @@
  */
 
 #include <iostream>
+#include <cassert>
 #include <cmath>
 
 #include <CoSupport/DataTypes/Value.hpp>
@@ -41,13 +42,44 @@ using namespace CoSupport::DataTypes;
 
 int main(int argc, char *argv[]) {
   {
-    Value<int> x;
+    Value<int> x(0);
     Value<int> y(10);
     Value<int> z(y);
     
     Value<double> xx;
     Value<double> yy(M_PI);
     Value<double> zz(y);
+    
+    std::cout << "x(0): " << x << std::endl;
+    
+    assert(x == 0);
+    
+    x = 13;
+    std::cout << "x = 13: " << x << std::endl;
+    
+    x += 1;
+    std::cout << "x += 1: " << x << std::endl;
+    std::cout << "++x:    " << ++x << std::endl;
+    
+    x -= 1;
+    std::cout << "x -= 1: " << x << std::endl;
+    std::cout << "--x:    " << --x << std::endl;
+    
+    std::cout << "x++:    " << x++ << std::endl;
+    std::cout << "x:      " << x << std::endl;
+    
+    std::cout << "x--:    " << x-- << std::endl;
+    std::cout << "x:      " << x << std::endl;
+    
+    x *= 3;
+    std::cout << "x *= 3: " << x << std::endl;
+    
+    x /= 4;
+    std::cout << "x /= 4: " << x << std::endl;
+    
+    x %= 5;
+    std::cout << "x %= 5: " << x << std::endl;
+    assert(x == 4);
     
     xx = M_E;
     x = -1;

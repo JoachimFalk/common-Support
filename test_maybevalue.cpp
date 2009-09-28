@@ -41,46 +41,70 @@ using namespace CoSupport::DataTypes;
 
 int main(int argc, char *argv[]) {
   MaybeValue<int> foo;
-  MaybeValue<int> bar(17);
-
-  std::cout << "foo: " << foo << std::endl;
-  std::cout << "bar: " << bar << std::endl;
-
+  
+  std::cout << "foo(): " << foo << std::endl;
+  
   assert(!foo.isDefined());
-
+  
   foo = 13;
-  std::cout << "foo: " << foo << std::endl;
-
+  std::cout << "foo = 13: " << foo << std::endl;
+  
+  foo += 1;
+  std::cout << "foo += 1: " << foo << std::endl;
+  std::cout << "++foo:    " << ++foo << std::endl;
+  
+  foo -= 1;
+  std::cout << "foo -= 1: " << foo << std::endl;
+  std::cout << "--foo:    " << --foo << std::endl;
+  
+  std::cout << "foo++:    " << foo++ << std::endl;
+  std::cout << "foo:      " << foo << std::endl;
+  
+  std::cout << "foo--:    " << foo-- << std::endl;
+  std::cout << "foo:      " << foo << std::endl;
+  
+  foo *= 3;
+  std::cout << "foo *= 3: " << foo << std::endl;
+  
+  foo /= 4;
+  std::cout << "foo /= 4: " << foo << std::endl;
+  
+  foo %= 5;
+  std::cout << "foo %= 5: " << foo << std::endl;
   assert(foo.isDefined());
-  assert(foo.get() == 13);
-
+  assert(foo.get() == 4);
+  
   foo = boost::blank();
-  std::cout << "foo: " << foo << std::endl;
-
+  std::cout << "foo = boost::blank(): " << foo << std::endl;
   assert(!foo.isDefined());
+  
+  MaybeValue<int> bar(17);
+  
+  std::cout << "bar(17): " << bar << std::endl;
+  
   assert(bar.isDefined());
   assert(bar.get() == 17);
-
+  
   bar.set(foo);
   std::cout << "bar: " << bar << std::endl;
-
+  
   assert(!bar.isDefined());
-
+  
   bar.set(33);
   std::cout << "bar: " << bar << std::endl;
-
+  
   MaybeValue<long> batz(bar);
-
+  
   std::cout << "batz: " << batz << std::endl;
-
+  
   assert(batz.isDefined());
   assert(batz.get() == 33);
-
+  
   batz.undef();
   std::cout << "batz: " << batz << std::endl;
-
+  
   foo.set(batz);
   std::cout << "foo: " << foo << std::endl;
-
+  
   return 0;
 }
