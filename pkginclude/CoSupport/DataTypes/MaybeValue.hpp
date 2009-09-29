@@ -53,6 +53,96 @@ namespace Detail {
   template <typename tag, class D, typename T, typename R>
   class MaybeValueTypeDecorator: public ValueTypeDecorator<tag, D, T, R> {};
 
+  template <class D, typename T, typename R>
+  bool operator ==(
+      std::string const &lhs,
+      MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return rhs.getDerived()->isDefined() && lhs == rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator !=(
+      std::string const &lhs,
+      MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return !rhs.getDerived()->isDefined() || lhs != rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator > (
+      std::string const &lhs,
+      MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return !rhs.getDerived()->isDefined() || lhs >  rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator >=(
+      std::string const &lhs,
+      MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return !rhs.getDerived()->isDefined() || lhs >= rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator < (
+      std::string const &lhs,
+      MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return rhs.getDerived()->isDefined() && lhs <  rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator <=(
+      std::string const &lhs,
+      MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return rhs.getDerived()->isDefined() && lhs <= rhs.getDerived()->get(); }
+
+  template <class D, typename T, typename R>
+  class MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R>
+  : public ValueTypeDecorator<value_type_charptr_tag_t, D, T, R>
+  {
+    typedef MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R> this_type;
+
+    friend bool operator ==<>(std::string const &, this_type const &);
+    friend bool operator !=<>(std::string const &, this_type const &);
+    friend bool operator > <>(std::string const &, this_type const &);
+    friend bool operator >=<>(std::string const &, this_type const &);
+    friend bool operator < <>(std::string const &, this_type const &);
+    friend bool operator <=<>(std::string const &, this_type const &);
+  protected:
+    D       *getDerived()
+      { return static_cast<D *>(this); }
+
+    D const *getDerived() const
+      { return static_cast<D const *>(this); }
+  public:
+    bool operator ==(std::string const &v) const
+      { return getDerived()->isDefined() && getDerived()->get() == v; }
+    bool operator !=(std::string const &v) const
+      { return !getDerived()->isDefined() || getDerived()->get() != v; }
+    bool operator < (std::string const &v) const
+      { return !getDerived()->isDefined() || getDerived()->get() <  v; }
+    bool operator <=(std::string const &v) const
+      { return !getDerived()->isDefined() || getDerived()->get() <= v; }
+    bool operator > (std::string const &v) const
+      { return getDerived()->isDefined() && getDerived()->get() >  v; }
+    bool operator >=(std::string const &v) const
+      { return getDerived()->isDefined() && getDerived()->get() >= v; }
+  };
+
+  template <class D, typename T, typename R>
+  class MaybeValueTypeDecorator<value_type_std_string_tag_t, D, T, R>
+  : public ValueTypeDecorator<value_type_std_string_tag_t, D, T, R>
+  {
+    typedef MaybeValueTypeDecorator<value_type_std_string_tag_t, D, T, R> this_type;
+  protected:
+    D       *getDerived()
+      { return static_cast<D *>(this); }
+
+    D const *getDerived() const
+      { return static_cast<D const *>(this); }
+  public:
+    bool operator ==(const char *v) const
+      { return getDerived()->isDefined() && getDerived()->get() == v; }
+    bool operator !=(const char *v) const
+      { return !getDerived()->isDefined() || getDerived()->get() != v; }
+    bool operator < (const char *v) const
+      { return !getDerived()->isDefined() || getDerived()->get() <  v; }
+    bool operator <=(const char *v) const
+      { return !getDerived()->isDefined() || getDerived()->get() <= v; }
+    bool operator > (const char *v) const
+      { return getDerived()->isDefined() && getDerived()->get() >  v; }
+    bool operator >=(const char *v) const
+      { return getDerived()->isDefined() && getDerived()->get() >= v; }
+  };
+
 } // namespace Detail
 
 template <class D, typename T, typename R = T const &>

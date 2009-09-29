@@ -34,102 +34,227 @@
 
 #include <iostream>
 #include <cassert>
+#include <climits>
 
 #include <CoSupport/DataTypes/MaybeValue.hpp>
 
-#define CHECK_OP(X,OP,V) do { \
+#define CHECK_OP_VW(MIN,X,OP,V) do { \
     std::cout << #X " " #OP " " << #V << ": " << (X OP V) << std::endl; \
-    assert(!X.isDefined() || (X OP V) == (X.get() OP V)); \
+    assert((X OP V) == (X OP (V.isDefined() ? V.get() : MIN))); \
+  } while (0)
+
+#define CHECK_OP_WV(MIN,X,OP,V) do { \
+    std::cout << #X " " #OP " " << #V << ": " << (X OP V) << std::endl; \
+    assert((X OP V) == ((X.isDefined() ? X.get() : MIN) OP V)); \
+  } while (0)
+
+#define CHECK_OP_WW(MIN,X,OP,V) do { \
+    std::cout << #X " " #OP " " << #V << ": " << (X OP V) << std::endl; \
+    assert((X OP V) == ((X.isDefined() ? X.get() : MIN) OP (V.isDefined() ? V.get() : MIN))); \
   } while (0)
 
 using namespace CoSupport::DataTypes;
 
 int main(int argc, char *argv[]) {
-  MaybeValue<int> foo;
-  
-  std::cout << "foo(): " << foo << std::endl;
-  
-  assert(!foo.isDefined());
-  
-  foo = 13;
-  std::cout << "foo = 13: " << foo << std::endl;
-  
-  foo += 1;
-  std::cout << "foo += 1: " << foo << std::endl;
-  std::cout << "++foo:    " << ++foo << std::endl;
-  
-  foo -= 1;
-  std::cout << "foo -= 1: " << foo << std::endl;
-  std::cout << "--foo:    " << --foo << std::endl;
-  
-  std::cout << "foo++:    " << foo++ << std::endl;
-  std::cout << "foo:      " << foo << std::endl;
-  
-  std::cout << "foo--:    " << foo-- << std::endl;
-  std::cout << "foo:      " << foo << std::endl;
-  
-  foo *= 3;
-  std::cout << "foo *= 3: " << foo << std::endl;
-  
-  foo /= 4;
-  std::cout << "foo /= 4: " << foo << std::endl;
-  
-  foo %= 5;
-  std::cout << "foo %= 5: " << foo << std::endl;
-  assert(foo.isDefined());
-  assert(foo.get() == 4);
-  
-  foo = 4711;
-  std::cout << "foo = 4711: " << foo << std::endl;
-  CHECK_OP(foo,==,4710); CHECK_OP(foo,==,4711LL); CHECK_OP(foo,==,4712);
-  CHECK_OP(foo,!=,4710); CHECK_OP(foo,!=,4711LL); CHECK_OP(foo,!=,4712);
-  CHECK_OP(foo,< ,4710); CHECK_OP(foo,< ,4711LL); CHECK_OP(foo,< ,4712);
-  CHECK_OP(foo,<=,4710); CHECK_OP(foo,<=,4711LL); CHECK_OP(foo,<=,4712);
-  CHECK_OP(foo,> ,4710); CHECK_OP(foo,> ,4711LL); CHECK_OP(foo,> ,4712);
-  CHECK_OP(foo,>=,4710); CHECK_OP(foo,>=,4711LL); CHECK_OP(foo,>=,4712);
-  
-  foo = boost::blank();
-  std::cout << "foo = boost::blank(): " << foo << std::endl;
-  assert(!foo.isDefined());
-  
-  MaybeValue<int> bar;
-  
-  std::cout << "bar: " << bar << std::endl;
-  
-  CHECK_OP(foo,==,13); CHECK_OP(foo,==,bar);
-  CHECK_OP(foo,!=,13); CHECK_OP(foo,!=,bar);
-  CHECK_OP(foo,< ,13); CHECK_OP(foo,< ,bar);
-  CHECK_OP(foo,<=,13); CHECK_OP(foo,<=,bar);
-  CHECK_OP(foo,> ,13); CHECK_OP(foo,> ,bar);
-  CHECK_OP(foo,>=,13); CHECK_OP(foo,>=,bar);
-  
-  bar = 17U;
-  
-  std::cout << "bar = 17: " << bar << std::endl;
-  
-  assert(bar.isDefined());
-  assert(bar.get() == 17);
-  
-  bar.set(foo);
-  std::cout << "bar: " << bar << std::endl;
-  
-  assert(!bar.isDefined());
-  
-  bar.set(33);
-  std::cout << "bar: " << bar << std::endl;
-  
-  MaybeValue<long> batz(bar);
-  
-  std::cout << "batz: " << batz << std::endl;
-  
-  assert(batz.isDefined());
-  assert(batz.get() == 33);
-  
-  batz.undef();
-  std::cout << "batz: " << batz << std::endl;
-  
-  foo.set(batz);
-  std::cout << "foo: " << foo << std::endl;
-  
+  {
+    MaybeValue<int> foo;
+    
+    std::cout << "foo(): " << foo << std::endl;
+    
+    assert(!foo.isDefined());
+    
+    foo = 13;
+    std::cout << "foo = 13: " << foo << std::endl;
+    
+    foo += 1;
+    std::cout << "foo += 1: " << foo << std::endl;
+    std::cout << "++foo:    " << ++foo << std::endl;
+    
+    foo -= 1;
+    std::cout << "foo -= 1: " << foo << std::endl;
+    std::cout << "--foo:    " << --foo << std::endl;
+    
+    std::cout << "foo++:    " << foo++ << std::endl;
+    std::cout << "foo:      " << foo << std::endl;
+    
+    std::cout << "foo--:    " << foo-- << std::endl;
+    std::cout << "foo:      " << foo << std::endl;
+    
+    foo *= 3;
+    std::cout << "foo *= 3: " << foo << std::endl;
+    
+    foo /= 4;
+    std::cout << "foo /= 4: " << foo << std::endl;
+    
+    foo %= 5;
+    std::cout << "foo %= 5: " << foo << std::endl;
+    assert(foo.isDefined());
+    assert(foo.get() == 4);
+    
+    foo = 4711;
+    std::cout << "foo = 4711: " << foo << std::endl;
+    CHECK_OP_WV(INT_MIN,foo,==,4710); CHECK_OP_WV(INT_MIN,foo,==,4711LL); CHECK_OP_WV(INT_MIN,foo,==,4712);
+    CHECK_OP_WV(INT_MIN,foo,!=,4710); CHECK_OP_WV(INT_MIN,foo,!=,4711LL); CHECK_OP_WV(INT_MIN,foo,!=,4712);
+    CHECK_OP_WV(INT_MIN,foo,< ,4710); CHECK_OP_WV(INT_MIN,foo,< ,4711LL); CHECK_OP_WV(INT_MIN,foo,< ,4712);
+    CHECK_OP_WV(INT_MIN,foo,<=,4710); CHECK_OP_WV(INT_MIN,foo,<=,4711LL); CHECK_OP_WV(INT_MIN,foo,<=,4712);
+    CHECK_OP_WV(INT_MIN,foo,> ,4710); CHECK_OP_WV(INT_MIN,foo,> ,4711LL); CHECK_OP_WV(INT_MIN,foo,> ,4712);
+    CHECK_OP_WV(INT_MIN,foo,>=,4710); CHECK_OP_WV(INT_MIN,foo,>=,4711LL); CHECK_OP_WV(INT_MIN,foo,>=,4712);
+    
+    foo = boost::blank();
+    std::cout << "foo = boost::blank(): " << foo << std::endl;
+    assert(!foo.isDefined());
+    
+    MaybeValue<int> bar;
+    std::cout << "bar: " << bar << std::endl;
+    
+    CHECK_OP_WV(INT_MIN,foo,==,13); CHECK_OP_WW(INT_MIN,foo,==,bar);
+    CHECK_OP_WV(INT_MIN,foo,!=,13); CHECK_OP_WW(INT_MIN,foo,!=,bar);
+    CHECK_OP_WV(INT_MIN,foo,< ,13); CHECK_OP_WW(INT_MIN,foo,< ,bar);
+    CHECK_OP_WV(INT_MIN,foo,<=,13); CHECK_OP_WW(INT_MIN,foo,<=,bar);
+    CHECK_OP_WV(INT_MIN,foo,> ,13); CHECK_OP_WW(INT_MIN,foo,> ,bar);
+    CHECK_OP_WV(INT_MIN,foo,>=,13); CHECK_OP_WW(INT_MIN,foo,>=,bar);
+    
+    MaybeValue<int> batz13(13);
+    MaybeValue<int> batz14(14);
+    MaybeValue<int> batz15(15);
+    std::cout << "batz13(13): " << batz13 << std::endl;
+    std::cout << "batz14(14): " << batz14 << std::endl;
+    std::cout << "batz15(15): " << batz15 << std::endl;
+    
+    bar = 14U;
+    std::cout << "bar = 14: " << bar << std::endl;
+    
+    assert(bar.isDefined());
+    assert(bar.get() == 14);
+    
+    CHECK_OP_WW(INT_MIN,bar,==,batz13); CHECK_OP_WW(INT_MIN,bar,==,batz14); CHECK_OP_WW(INT_MIN,bar,==,batz15);
+    CHECK_OP_WW(INT_MIN,bar,!=,batz13); CHECK_OP_WW(INT_MIN,bar,!=,batz14); CHECK_OP_WW(INT_MIN,bar,!=,batz15);
+    CHECK_OP_WW(INT_MIN,bar,< ,batz13); CHECK_OP_WW(INT_MIN,bar,< ,batz14); CHECK_OP_WW(INT_MIN,bar,< ,batz15);
+    CHECK_OP_WW(INT_MIN,bar,<=,batz13); CHECK_OP_WW(INT_MIN,bar,<=,batz14); CHECK_OP_WW(INT_MIN,bar,<=,batz15);
+    CHECK_OP_WW(INT_MIN,bar,> ,batz13); CHECK_OP_WW(INT_MIN,bar,> ,batz14); CHECK_OP_WW(INT_MIN,bar,> ,batz15);
+    CHECK_OP_WW(INT_MIN,bar,>=,batz13); CHECK_OP_WW(INT_MIN,bar,>=,batz14); CHECK_OP_WW(INT_MIN,bar,>=,batz15);
+    
+    bar.set(foo);
+    std::cout << "bar: " << bar << std::endl;
+    
+    assert(!bar.isDefined());
+    
+    bar.set(33);
+    std::cout << "bar: " << bar << std::endl;
+    
+    MaybeValue<long> batz(bar);
+    
+    std::cout << "batz: " << batz << std::endl;
+    
+    assert(batz.isDefined());
+    assert(batz.get() == 33);
+    
+    batz.undef();
+    std::cout << "batz: " << batz << std::endl;
+    
+    foo.set(batz);
+    std::cout << "foo: " << foo << std::endl;
+  }
+  {
+    MaybeValue<const char *> cp("foo");
+    MaybeValue<std::string>  str1(cp);
+    MaybeValue<std::string>  str2("bar");
+    MaybeValue<std::string>  str3(std::string("zzz"));
+    
+    std::cout << "cp(\"foo\"):                \"" << cp << "\"" << std::endl;
+    std::cout << "str1(cp):                 \"" << str1 << "\"" << std::endl;
+    std::cout << "str2(\"bar\"):              \"" << str2 << "\"" << std::endl;
+    std::cout << "str3(std::string(\"zzz\")): \"" << str3 << "\"" << std::endl;
+    
+    CHECK_OP_WV(std::string(),str1,==,std::string("foo")); CHECK_OP_WV(std::string(),str1,==,std::string("bar"));
+    CHECK_OP_WV(std::string(),str1,!=,std::string("foo")); CHECK_OP_WV(std::string(),str1,!=,std::string("bar"));
+    CHECK_OP_WV(std::string(),str1,< ,std::string("foo")); CHECK_OP_WV(std::string(),str1,< ,std::string("bar")); CHECK_OP_WV(std::string(),str1,< ,std::string("zzz"));
+    CHECK_OP_WV(std::string(),str1,<=,std::string("foo")); CHECK_OP_WV(std::string(),str1,<=,std::string("bar")); CHECK_OP_WV(std::string(),str1,<=,std::string("zzz"));
+    CHECK_OP_WV(std::string(),str1,> ,std::string("foo")); CHECK_OP_WV(std::string(),str1,> ,std::string("bar")); CHECK_OP_WV(std::string(),str1,> ,std::string("zzz"));
+    CHECK_OP_WV(std::string(),str1,>=,std::string("foo")); CHECK_OP_WV(std::string(),str1,>=,std::string("bar")); CHECK_OP_WV(std::string(),str1,>=,std::string("zzz"));
+
+    CHECK_OP_WV(std::string(),str1,==,"foo"); CHECK_OP_WV(std::string(),str1,==,"bar");
+    CHECK_OP_WV(std::string(),str1,!=,"foo"); CHECK_OP_WV(std::string(),str1,!=,"bar");
+    CHECK_OP_WV(std::string(),str1,< ,"foo"); CHECK_OP_WV(std::string(),str1,< ,"bar"); CHECK_OP_WV(std::string(),str1,< ,"zzz");
+    CHECK_OP_WV(std::string(),str1,<=,"foo"); CHECK_OP_WV(std::string(),str1,<=,"bar"); CHECK_OP_WV(std::string(),str1,<=,"zzz");
+    CHECK_OP_WV(std::string(),str1,> ,"foo"); CHECK_OP_WV(std::string(),str1,> ,"bar"); CHECK_OP_WV(std::string(),str1,> ,"zzz");
+    CHECK_OP_WV(std::string(),str1,>=,"foo"); CHECK_OP_WV(std::string(),str1,>=,"bar"); CHECK_OP_WV(std::string(),str1,>=,"zzz");
+
+    CHECK_OP_WW(std::string(),str1,==,cp); CHECK_OP_WW(std::string(),str1,==,str2);
+    CHECK_OP_WW(std::string(),str1,!=,cp); CHECK_OP_WW(std::string(),str1,!=,str2);
+    CHECK_OP_WW(std::string(),str1,< ,cp); CHECK_OP_WW(std::string(),str1,< ,str2); CHECK_OP_WW(std::string(),str1,< ,str3);
+    CHECK_OP_WW(std::string(),str1,<=,cp); CHECK_OP_WW(std::string(),str1,<=,str2); CHECK_OP_WW(std::string(),str1,<=,str3);
+    CHECK_OP_WW(std::string(),str1,> ,cp); CHECK_OP_WW(std::string(),str1,> ,str2); CHECK_OP_WW(std::string(),str1,> ,str3);
+    CHECK_OP_WW(std::string(),str1,>=,cp); CHECK_OP_WW(std::string(),str1,>=,str2); CHECK_OP_WW(std::string(),str1,>=,str3);
+
+    CHECK_OP_WV(std::string(),cp,==,std::string("aaa")); CHECK_OP_WV(std::string(),cp,==,std::string("foo"));
+    CHECK_OP_WV(std::string(),cp,!=,std::string("aaa")); CHECK_OP_WV(std::string(),cp,!=,std::string("foo"));
+    CHECK_OP_WV(std::string(),cp,< ,std::string("aaa")); CHECK_OP_WV(std::string(),cp,< ,std::string("foo")); CHECK_OP_WV(std::string(),cp,< ,std::string("zzz"));
+    CHECK_OP_WV(std::string(),cp,<=,std::string("aaa")); CHECK_OP_WV(std::string(),cp,<=,std::string("foo")); CHECK_OP_WV(std::string(),cp,<=,std::string("zzz"));
+    CHECK_OP_WV(std::string(),cp,> ,std::string("aaa")); CHECK_OP_WV(std::string(),cp,> ,std::string("foo")); CHECK_OP_WV(std::string(),cp,> ,std::string("zzz"));
+    CHECK_OP_WV(std::string(),cp,>=,std::string("aaa")); CHECK_OP_WV(std::string(),cp,>=,std::string("foo")); CHECK_OP_WV(std::string(),cp,>=,std::string("zzz"));
+
+//  This is not really string comparison put pointer comparison. Implement this later!
+//  CHECK_OP_WV(std::string(),cp,==,"aaa"); CHECK_OP_WV(std::string(),cp,==,"foo");
+//  CHECK_OP_WV(std::string(),cp,!=,"aaa"); CHECK_OP_WV(std::string(),cp,!=,"foo");
+//  CHECK_OP_WV(std::string(),cp,< ,"aaa"); CHECK_OP_WV(std::string(),cp,< ,"foo"); CHECK_OP_WV(std::string(),cp,< ,"zzz");
+//  CHECK_OP_WV(std::string(),cp,<=,"aaa"); CHECK_OP_WV(std::string(),cp,<=,"foo"); CHECK_OP_WV(std::string(),cp,<=,"zzz");
+//  CHECK_OP_WV(std::string(),cp,> ,"aaa"); CHECK_OP_WV(std::string(),cp,> ,"foo"); CHECK_OP_WV(std::string(),cp,> ,"zzz");
+//  CHECK_OP_WV(std::string(),cp,>=,"aaa"); CHECK_OP_WV(std::string(),cp,>=,"foo"); CHECK_OP_WV(std::string(),cp,>=,"zzz");
+    
+    str1 = "aaa"; str2 = "foo"; str3 = "zzz";
+    std::cout << "str1 = \"aaa\": \"" << str1 << "\"" << std::endl;
+    std::cout << "str2 = \"foo\": \"" << str2 << "\"" << std::endl;
+    std::cout << "str3 = \"zzz\": \"" << str3 << "\"" << std::endl;
+    
+    CHECK_OP_WW(std::string(),cp,==,str1); CHECK_OP_WW(std::string(),cp,==,str2);
+    CHECK_OP_WW(std::string(),cp,!=,str1); CHECK_OP_WW(std::string(),cp,!=,str2);
+    CHECK_OP_WW(std::string(),cp,< ,str1); CHECK_OP_WW(std::string(),cp,< ,str2); CHECK_OP_WW(std::string(),cp,< ,str3);
+    CHECK_OP_WW(std::string(),cp,<=,str1); CHECK_OP_WW(std::string(),cp,<=,str2); CHECK_OP_WW(std::string(),cp,<=,str3);
+    CHECK_OP_WW(std::string(),cp,> ,str1); CHECK_OP_WW(std::string(),cp,> ,str2); CHECK_OP_WW(std::string(),cp,> ,str3);
+    CHECK_OP_WW(std::string(),cp,>=,str1); CHECK_OP_WW(std::string(),cp,>=,str2); CHECK_OP_WW(std::string(),cp,>=,str3);
+    
+    str1 = boost::blank();
+    std::cout << "str1 = boost::blank(): " << str1 << std::endl;
+    assert(!str1.isDefined());
+    str3 = boost::blank();
+    std::cout << "str3 = boost::blank(): " << str3 << std::endl;
+    assert(!str3.isDefined());
+    
+    CHECK_OP_WV(std::string(),str1,==,"foo"); CHECK_OP_WW(std::string(),str1,==,str2); CHECK_OP_WW(std::string(),str1,==,str3);
+    CHECK_OP_WV(std::string(),str1,!=,"foo"); CHECK_OP_WW(std::string(),str1,!=,str2); CHECK_OP_WW(std::string(),str1,!=,str3);
+    CHECK_OP_WV(std::string(),str1,< ,"foo"); CHECK_OP_WW(std::string(),str1,< ,str2); CHECK_OP_WW(std::string(),str1,< ,str3);
+    CHECK_OP_WV(std::string(),str1,<=,"foo"); CHECK_OP_WW(std::string(),str1,<=,str2); CHECK_OP_WW(std::string(),str1,<=,str3);
+    CHECK_OP_WV(std::string(),str1,> ,"foo"); CHECK_OP_WW(std::string(),str1,> ,str2); CHECK_OP_WW(std::string(),str1,> ,str3);
+    CHECK_OP_WV(std::string(),str1,>=,"foo"); CHECK_OP_WW(std::string(),str1,>=,str2); CHECK_OP_WW(std::string(),str1,>=,str3);
+    
+    cp = boost::blank();
+    std::cout << "cp = boost::blank(): " << cp << std::endl;
+    
+    CHECK_OP_WW(std::string(),cp,==,cp); CHECK_OP_WW(std::string(),cp,==,str2); CHECK_OP_WW(std::string(),cp,==,str3);
+    CHECK_OP_WW(std::string(),cp,!=,cp); CHECK_OP_WW(std::string(),cp,!=,str2); CHECK_OP_WW(std::string(),cp,!=,str3);
+    CHECK_OP_WW(std::string(),cp,< ,cp); CHECK_OP_WW(std::string(),cp,< ,str2); CHECK_OP_WW(std::string(),cp,< ,str3);
+    CHECK_OP_WW(std::string(),cp,<=,cp); CHECK_OP_WW(std::string(),cp,<=,str2); CHECK_OP_WW(std::string(),cp,<=,str3);
+    CHECK_OP_WW(std::string(),cp,> ,cp); CHECK_OP_WW(std::string(),cp,> ,str2); CHECK_OP_WW(std::string(),cp,> ,str3);
+    CHECK_OP_WW(std::string(),cp,>=,cp); CHECK_OP_WW(std::string(),cp,>=,str2); CHECK_OP_WW(std::string(),cp,>=,str3);
+    
+    CHECK_OP_VW(std::string(),std::string("foo"),==,cp); CHECK_OP_WW(std::string(),str2,==,cp); CHECK_OP_WW(std::string(),str3,==,cp);
+    CHECK_OP_VW(std::string(),std::string("foo"),!=,cp); CHECK_OP_WW(std::string(),str2,!=,cp); CHECK_OP_WW(std::string(),str3,!=,cp);
+    CHECK_OP_VW(std::string(),std::string("foo"),< ,cp); CHECK_OP_WW(std::string(),str2,< ,cp); CHECK_OP_WW(std::string(),str3,< ,cp);
+    CHECK_OP_VW(std::string(),std::string("foo"),<=,cp); CHECK_OP_WW(std::string(),str2,<=,cp); CHECK_OP_WW(std::string(),str3,<=,cp);
+    CHECK_OP_VW(std::string(),std::string("foo"),> ,cp); CHECK_OP_WW(std::string(),str2,> ,cp); CHECK_OP_WW(std::string(),str3,> ,cp);
+    CHECK_OP_VW(std::string(),std::string("foo"),>=,cp); CHECK_OP_WW(std::string(),str2,>=,cp); CHECK_OP_WW(std::string(),str3,>=,cp);
+    
+    cp   = "batz";
+    str1 = "hix";
+    str2 = std::string("hax");
+    
+    std::cout << "cp = \"batz\":               \"" << cp << "\"" << std::endl;
+    std::cout << "str1 = \"hix\":              \"" << str1 << "\"" << std::endl;
+    std::cout << "str2 = std::string(\"hax\"): \"" << str2 << "\"" << std::endl;
+    
+    str1 = cp;
+    str2 = str1.get() + cp.get();
+  }
   return 0;
 }

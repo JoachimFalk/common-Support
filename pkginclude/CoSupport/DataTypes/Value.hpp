@@ -160,6 +160,18 @@ namespace Detail {
     D const *getDerived() const
       { return static_cast<D const *>(this); }
   public:
+    bool operator ==(std::string const &v) const
+      { return getDerived()->get() == v; }
+    bool operator !=(std::string const &v) const
+      { return getDerived()->get() != v; }
+    bool operator < (std::string const &v) const
+      { return getDerived()->get() <  v; }
+    bool operator <=(std::string const &v) const
+      { return getDerived()->get() <= v; }
+    bool operator > (std::string const &v) const
+      { return getDerived()->get() >  v; }
+    bool operator >=(std::string const &v) const
+      { return getDerived()->get() >= v; }
   };
 
   struct value_type_std_string_tag_t {};
