@@ -79,6 +79,8 @@ namespace CoSupport { namespace XML { namespace Xerces {
 
   class XStr: public std::basic_string<XMLCh> {
   public:
+    XStr()
+      : std::basic_string<XMLCh>() {}
     XStr(const XMLCh *const str)
       : std::basic_string<XMLCh>(str) {}
     XStr(const char  *const str) {
@@ -97,6 +99,97 @@ namespace CoSupport { namespace XML { namespace Xerces {
     operator const XMLCh *() const
       { return c_str(); }
   };
+
+  // Fixup comparison operators.
+  static inline
+  bool operator ==(const XStr &lhs, const XStr &rhs) {
+    return
+      static_cast<const std::basic_string<XMLCh> &>(lhs) ==
+      static_cast<const std::basic_string<XMLCh> &>(rhs);
+  }
+  static inline
+  bool operator ==(const XMLCh *const lhs, const XStr &rhs) { 
+    return lhs == static_cast<const std::basic_string<XMLCh> &>(rhs);
+  }
+  static inline
+  bool operator ==(const XStr &lhs, const XMLCh *const rhs) { 
+    return static_cast<const std::basic_string<XMLCh> &>(lhs) == rhs;
+  }
+
+  static inline
+  bool operator !=(const XStr &lhs, const XStr &rhs) {
+    return
+      static_cast<const std::basic_string<XMLCh> &>(lhs) !=
+      static_cast<const std::basic_string<XMLCh> &>(rhs);
+  }
+  static inline
+  bool operator !=(const XMLCh *const lhs, const XStr &rhs) { 
+    return lhs != static_cast<const std::basic_string<XMLCh> &>(rhs);
+  }
+  static inline
+  bool operator !=(const XStr &lhs, const XMLCh *const rhs) { 
+    return static_cast<const std::basic_string<XMLCh> &>(lhs) != rhs;
+  }
+
+  static inline
+  bool operator < (const XStr &lhs, const XStr &rhs) {
+    return
+      static_cast<const std::basic_string<XMLCh> &>(lhs) <
+      static_cast<const std::basic_string<XMLCh> &>(rhs);
+  }
+  static inline
+  bool operator < (const XMLCh *const lhs, const XStr &rhs) { 
+    return lhs <  static_cast<const std::basic_string<XMLCh> &>(rhs);
+  }
+  static inline
+  bool operator < (const XStr &lhs, const XMLCh *const rhs) { 
+    return static_cast<const std::basic_string<XMLCh> &>(lhs) <  rhs;
+  }
+
+  static inline
+  bool operator <=(const XStr &lhs, const XStr &rhs) {
+    return
+      static_cast<const std::basic_string<XMLCh> &>(lhs) <=
+      static_cast<const std::basic_string<XMLCh> &>(rhs);
+  }
+  static inline
+  bool operator <=(const XMLCh *const lhs, const XStr &rhs) { 
+    return lhs <= static_cast<const std::basic_string<XMLCh> &>(rhs);
+  }
+  static inline
+  bool operator <=(const XStr &lhs, const XMLCh *const rhs) { 
+    return static_cast<const std::basic_string<XMLCh> &>(lhs) <= rhs;
+  }
+
+  static inline
+  bool operator > (const XStr &lhs, const XStr &rhs) {
+    return
+      static_cast<const std::basic_string<XMLCh> &>(lhs) >
+      static_cast<const std::basic_string<XMLCh> &>(rhs);
+  }
+  static inline
+  bool operator > (const XMLCh *const lhs, const XStr &rhs) { 
+    return lhs >  static_cast<const std::basic_string<XMLCh> &>(rhs);
+  }
+  static inline
+  bool operator > (const XStr &lhs, const XMLCh *const rhs) { 
+    return static_cast<const std::basic_string<XMLCh> &>(lhs) >  rhs;
+  }
+
+  static inline
+  bool operator >=(const XStr &lhs, const XStr &rhs) {
+    return
+      static_cast<const std::basic_string<XMLCh> &>(lhs) >=
+      static_cast<const std::basic_string<XMLCh> &>(rhs);
+  }
+  static inline
+  bool operator >=(const XMLCh *const lhs, const XStr &rhs) { 
+    return lhs >= static_cast<const std::basic_string<XMLCh> &>(rhs);
+  }
+  static inline
+  bool operator >=(const XStr &lhs, const XMLCh *const rhs) { 
+    return static_cast<const std::basic_string<XMLCh> &>(lhs) >= rhs;
+  }
 
   class NStr: public std::basic_string<char> {
   public:
