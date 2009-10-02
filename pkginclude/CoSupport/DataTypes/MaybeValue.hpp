@@ -342,6 +342,8 @@ protected:
 public:
   MaybeValue()
     : value(boost::blank()) {}
+  MaybeValue(boost::blank)
+    : value(boost::blank()) {}
   MaybeValue(T const &val)
     : value(val) {}
   template <class DD, typename TT, typename RR>
