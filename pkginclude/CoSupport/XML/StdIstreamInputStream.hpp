@@ -39,23 +39,46 @@
 #include "xerces_support.hpp"
 #include <xercesc/util/BinInputStream.hpp>
 #include <istream>
+#include <boost/noncopyable.hpp>
+
+#include <xercesc/util/XercesVersion.hpp>
 
 namespace CoSupport { namespace XML { namespace Xerces {
 
-  class StdIstreamInputStream : public XN::BinInputStream {
+  class StdIstreamInputStream
+  : public XN::BinInputStream, private boost::noncopyable {
   private:
-    std::istream& in;
+    std::istream &in;
   public:
-    StdIstreamInputStream(std::istream& in);
-    unsigned int curPos() const;
-    unsigned int readBytes(
-        XMLByte* const toFill,
-        const unsigned int maxToRead);
-  private:
-    StdIstreamInputStream(const StdIstreamInputStream&);
-    StdIstreamInputStream& operator=(const StdIstreamInputStream&);
+    StdIstreamInputStream(std::istream &in)
+      : in(in) {}
+
+#if XERCES_VERSION_MAJOR == 2
+    unsigned int curPos() const
+      { return in.tellg(); }
+
+    unsigned int readBytes(XMLByte *const toFill, unsigned int maxToRead) {
+      in.read(reinterpret_cast<char *>(toFill), maxToRead);
+      return in.gcount();
+    }
+#elif XERCES_VERSION_MAJOR >= 3
+    XMLFilePos  curPos() const
+      { return in.tellg(); }
+
+    XMLSize_t   readBytes(XMLByte *const toFill, const XMLSize_t maxToRead) {
+      in.read(reinterpret_cast<char *>(toFill), maxToRead);
+      return in.gcount();
+    }
+
+    /*
+     * Return the "out-of-band" content type for the data supplied by this input
+     * stream in the form of the media-type production (mime type with optional
+     * parameters such as encoding) as defined by the HTTP 1.1 specification.
+     */
+    const XMLCh *getContentType () const;
+#endif // XERCES_VERSION_MAJOR >= 3
   };
 
-}}} // namespace CoSupport::XML::Xerces
+} } } // namespace CoSupport::XML::Xerces
 
 #endif // _INCLUDED_COSUPPORT_XML_XERCES_STDISTREAMINPUTSTREAM_HPP

@@ -35,21 +35,13 @@
 
 #include <CoSupport/XML/StdIstreamInputStream.hpp>
 
+#include <xercesc/util/XercesVersion.hpp>
+
 namespace CoSupport { namespace XML { namespace Xerces {
-  
-  StdIstreamInputStream::StdIstreamInputStream(std::istream& in) :
-    in(in)
-  {}
-  
-  unsigned int StdIstreamInputStream::curPos() const
-  { return in.tellg(); }
-  
-  unsigned int StdIstreamInputStream::readBytes(
-      XMLByte* const toFill,
-      const unsigned int maxToRead)
-  { 
-    in.read(reinterpret_cast<char*>(toFill), maxToRead);
-    return in.gcount();
-  }
-  
-}}} // namespace CoSupport::XML::Xerces
+
+#if XERCES_VERSION_MAJOR >= 3
+  const XMLCh *StdIstreamInputStream::getContentType () const
+    { return NULL; }
+#endif // XERCES_VERSION_MAJOR >= 3
+
+} } } // namespace CoSupport::XML::Xerces

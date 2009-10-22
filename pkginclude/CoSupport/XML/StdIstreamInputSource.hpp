@@ -39,22 +39,22 @@
 #include "xerces_support.hpp"
 #include <xercesc/sax/InputSource.hpp>
 #include <istream>
+#include <boost/noncopyable.hpp>
 
 namespace CoSupport { namespace XML { namespace Xerces {
 
-  class StdIstreamInputSource : public XN::InputSource {
+  class StdIstreamInputSource
+  : public XN::InputSource, private boost::noncopyable {
   private:
-    std::istream& in;
+    std::istream &in;
   public:
     StdIstreamInputSource(
-        std::istream& in,
-        XN::MemoryManager* const manager = XN::XMLPlatformUtils::fgMemoryManager);
-    XN::BinInputStream* makeStream() const;
-  private:
-    StdIstreamInputSource(const StdIstreamInputSource&);
-    StdIstreamInputSource& operator=(const StdIstreamInputSource&);
+        std::istream &in,
+        XN::MemoryManager *const manager = XN::XMLPlatformUtils::fgMemoryManager);
+
+    XN::BinInputStream *makeStream() const;
   };
 
-}}} // namespace CoSupport::XML::Xerces
+} } } // namespace CoSupport::XML::Xerces
 
 #endif // _INCLUDED_COSUPPORT_XML_XERCES_STDISTREAMINPUTSOURCE_HPP
