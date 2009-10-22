@@ -44,56 +44,316 @@
 #include <boost/blank.hpp>
 #include <boost/variant.hpp>
 
+#include "Value.hpp"
+
 namespace CoSupport { namespace DataTypes {
 
-template <typename T>
-class MaybeValue {
-  typedef MaybeValue<T> this_type;
+namespace Detail {
 
-  template <typename TT> friend class MaybeValue;
+  template <typename tag, class D, typename T, typename R>
+  class MaybeValueTypeDecorator: public ValueTypeDecorator<tag, D, T, R> {};
+
+  template <class D, typename T, typename R>
+  bool operator ==(
+      std::string const &lhs,
+      MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return rhs.getDerived()->isDefined() && lhs == rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator !=(
+      std::string const &lhs,
+      MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return !rhs.getDerived()->isDefined() || lhs != rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator > (
+      std::string const &lhs,
+      MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return !rhs.getDerived()->isDefined() || lhs >  rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator >=(
+      std::string const &lhs,
+      MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return !rhs.getDerived()->isDefined() || lhs >= rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator < (
+      std::string const &lhs,
+      MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return rhs.getDerived()->isDefined() && lhs <  rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator <=(
+      std::string const &lhs,
+      MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return rhs.getDerived()->isDefined() && lhs <= rhs.getDerived()->get(); }
+
+  template <class D, typename T, typename R>
+  class MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R>
+  : public ValueTypeDecorator<value_type_charptr_tag_t, D, T, R>
+  {
+    typedef MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R> this_type;
+
+    friend bool operator ==<>(std::string const &, this_type const &);
+    friend bool operator !=<>(std::string const &, this_type const &);
+    friend bool operator > <>(std::string const &, this_type const &);
+    friend bool operator >=<>(std::string const &, this_type const &);
+    friend bool operator < <>(std::string const &, this_type const &);
+    friend bool operator <=<>(std::string const &, this_type const &);
+  protected:
+    D       *getDerived()
+      { return static_cast<D *>(this); }
+
+    D const *getDerived() const
+      { return static_cast<D const *>(this); }
+  public:
+    bool operator ==(std::string const &v) const
+      { return getDerived()->isDefined() && getDerived()->get() == v; }
+    bool operator !=(std::string const &v) const
+      { return !getDerived()->isDefined() || getDerived()->get() != v; }
+    bool operator < (std::string const &v) const
+      { return !getDerived()->isDefined() || getDerived()->get() <  v; }
+    bool operator <=(std::string const &v) const
+      { return !getDerived()->isDefined() || getDerived()->get() <= v; }
+    bool operator > (std::string const &v) const
+      { return getDerived()->isDefined() && getDerived()->get() >  v; }
+    bool operator >=(std::string const &v) const
+      { return getDerived()->isDefined() && getDerived()->get() >= v; }
+  };
+
+  template <class D, typename T, typename R>
+  class MaybeValueTypeDecorator<value_type_std_string_tag_t, D, T, R>
+  : public ValueTypeDecorator<value_type_std_string_tag_t, D, T, R>
+  {
+    typedef MaybeValueTypeDecorator<value_type_std_string_tag_t, D, T, R> this_type;
+  protected:
+    D       *getDerived()
+      { return static_cast<D *>(this); }
+
+    D const *getDerived() const
+      { return static_cast<D const *>(this); }
+  public:
+    bool operator ==(const char *v) const
+      { return getDerived()->isDefined() && getDerived()->get() == v; }
+    bool operator !=(const char *v) const
+      { return !getDerived()->isDefined() || getDerived()->get() != v; }
+    bool operator < (const char *v) const
+      { return !getDerived()->isDefined() || getDerived()->get() <  v; }
+    bool operator <=(const char *v) const
+      { return !getDerived()->isDefined() || getDerived()->get() <= v; }
+    bool operator > (const char *v) const
+      { return getDerived()->isDefined() && getDerived()->get() >  v; }
+    bool operator >=(const char *v) const
+      { return getDerived()->isDefined() && getDerived()->get() >= v; }
+  };
+
+} // namespace Detail
+
+template <class D, typename T, typename R = T const &>
+class MaybeValueInterface
+: public Detail::MaybeValueTypeDecorator<
+    typename Detail::ValueTypeClassifier<T>::tag, D, T, R
+  > {
+  typedef MaybeValueInterface<D,T,R> this_type;
 protected:
-  boost::variant<boost::blank, T> value;
+  D       *getDerived()
+    { return static_cast<D *>(this); }
+
+  D const *getDerived() const
+    { return static_cast<D const *>(this); }
+public:
+  template <class DD, typename TT, typename RR>
+  D &operator = (const MaybeValueInterface<DD, TT, RR> &val)
+    { this->set(val); return *getDerived(); }
+  D &operator = (const T &val)
+    { this->set(val); return *getDerived(); }
+  D &operator = (const boost::blank &)
+    { this->undef(); return *getDerived(); }
+
+  operator R() const
+    { return this->get(); }
+
+  template <class DD, typename TT, typename RR>
+  void set(const MaybeValueInterface<DD,TT,RR> &val)
+    { if (val.isDefined()) this->set(val.get()); else this->undef(); }
+  // setImpl is an interface method which must be implemented in D!
+  void set(const T &val)
+    { getDerived()->setImpl(val); }
+  // getImpl is an interface method which must be implemented in D!
+  R get() const // this may throw
+    { return getDerived()->getImpl(); }
+  // undefImpl is an interface method which must be implemented in D!
+  void undef()
+    { return getDerived()->undefImpl(); }
+  // isDefinedImpl is an interface method which must be implemented in D!
+  bool isDefined() const
+    { return getDerived()->isDefinedImpl(); }
+};
+
+template <class DD, typename TT, typename RR>
+std::ostream &operator << (std::ostream &out, MaybeValueInterface<DD,TT,RR> const &x)
+  { return x.isDefined() ? out << x.get() : out << "undef"; }
+
+template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+bool operator ==(
+    const MaybeValueInterface<D1, T1, R1> &lhs,
+    const MaybeValueInterface<D2, T2, R2> &rhs) {
+  bool def;
+  return (def = lhs.isDefined()) == rhs.isDefined() &&
+    (!def || lhs.get() == rhs.get());
+}
+template <class D, typename T, typename R>
+bool operator ==(
+    T const &lhs,
+    const MaybeValueInterface<D, T, R> &rhs)
+  { return rhs.isDefined() && lhs == rhs.get(); }
+template <class D, typename T, typename R>
+bool operator ==(
+    const MaybeValueInterface<D, T, R> &lhs,
+    T const &rhs)
+  { return lhs.isDefined() && lhs.get() == rhs; }
+
+template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+bool operator !=(
+    const MaybeValueInterface<D1, T1, R1> &lhs,
+    const MaybeValueInterface<D2, T2, R2> &rhs) {
+  bool def;
+  return (def = lhs.isDefined()) != rhs.isDefined() ||
+    (def && lhs.get() != rhs.get());
+}
+template <class D, typename T, typename R>
+bool operator !=(
+    T const &lhs,
+    const MaybeValueInterface<D, T, R> &rhs)
+  { return !rhs.isDefined() || lhs != rhs.get(); }
+template <class D, typename T, typename R>
+bool operator !=(
+    const MaybeValueInterface<D, T, R> &lhs,
+    T const &rhs)
+  { return !lhs.isDefined() || lhs.get() != rhs; }
+
+// We postolate undef as smaller than all valid values.
+template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+bool operator < (
+    const MaybeValueInterface<D1, T1, R1> &lhs,
+    const MaybeValueInterface<D2, T2, R2> &rhs) {
+  bool def;
+  // 0 0 => def=0 => 0
+  // 0 1 => 1
+  // 1 0 => def=0 => 0
+  // 1 1 => def=1 => lhs.get() <  rhs.get()
+  return lhs.isDefined() < (def = rhs.isDefined()) ||
+    (def && lhs.get() <  rhs.get());
+}
+template <class D, typename T, typename R>
+bool operator < (
+    T const &lhs,
+    const MaybeValueInterface<D, T, R> &rhs)
+  { return rhs.isDefined() && lhs <  rhs.get(); }
+template <class D, typename T, typename R>
+bool operator < (
+    const MaybeValueInterface<D, T, R> &lhs,
+    T const &rhs)
+  { return !lhs.isDefined() || lhs.get() <  rhs; }
+
+template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+bool operator <=(
+    const MaybeValueInterface<D1, T1, R1> &lhs,
+    const MaybeValueInterface<D2, T2, R2> &rhs) {
+  // 0 0 => 1
+  // 0 1 => 1
+  // 1 0 => 0
+  // 1 1 => lhs.get() <= rhs.get()
+  return !lhs.isDefined() ||
+    (rhs.isDefined() && lhs.get() <= rhs.get());
+}
+template <class D, typename T, typename R>
+bool operator <=(
+    T const &lhs,
+    const MaybeValueInterface<D, T, R> &rhs)
+  { return rhs.isDefined() && lhs <= rhs.get(); }
+template <class D, typename T, typename R>
+bool operator <=(
+    const MaybeValueInterface<D, T, R> &lhs,
+    T const &rhs)
+  { return !lhs.isDefined() || lhs.get() <= rhs; }
+
+template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+bool operator > (
+    const MaybeValueInterface<D1, T1, R1> &lhs,
+    const MaybeValueInterface<D2, T2, R2> &rhs) {
+  bool def;
+  // 0 0 => def=0 => 0
+  // 0 1 => def=0 => 0
+  // 1 0 => 1
+  // 1 1 => def=1 => lhs.get() >  rhs.get()
+  return (def = lhs.isDefined()) > rhs.isDefined() ||
+    (def && lhs.get() >  rhs.get());
+}
+template <class D, typename T, typename R>
+bool operator > (
+    T const &lhs,
+    const MaybeValueInterface<D, T, R> &rhs)
+  { return !rhs.isDefined() || lhs >  rhs.get(); }
+template <class D, typename T, typename R>
+bool operator > (
+    const MaybeValueInterface<D, T, R> &lhs,
+    T const &rhs)
+  { return lhs.isDefined() && lhs.get() >  rhs; }
+
+template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+bool operator >=(
+    const MaybeValueInterface<D1, T1, R1> &lhs,
+    const MaybeValueInterface<D2, T2, R2> &rhs) {
+  // 0 0 => 1
+  // 0 1 => 0
+  // 1 0 => 1
+  // 1 1 => lhs.get() >= rhs.get()
+  return !rhs.isDefined() ||
+    (lhs.isDefined() && lhs.get() >= rhs.get());
+}
+template <class D, typename T, typename R>
+bool operator >=(
+    T const &lhs,
+    const MaybeValueInterface<D, T, R> &rhs)
+  { return !rhs.isDefined() || lhs >= rhs.get(); }
+template <class D, typename T, typename R>
+bool operator >=(
+    const MaybeValueInterface<D, T, R> &lhs,
+    T const &rhs)
+  { return lhs.isDefined() && lhs.get() >= rhs; }
+
+template <class T>
+class MaybeValue
+: public MaybeValueInterface<MaybeValue<T>, T> {
+  typedef MaybeValue<T>                      this_type;
+  typedef MaybeValueInterface<this_type, T>  base_type;
+
+  friend class MaybeValueInterface<this_type, T>;
+private:
+  typedef boost::variant<boost::blank, T>    storage_type;
+
+  storage_type value;
+protected:
+  void setImpl(const T &val)
+    { value = val; }
+  T const &getImpl() const
+    { return boost::get<T>(value); }
+  void undefImpl()
+    { value = boost::blank(); }
+  bool isDefinedImpl() const
+    { return boost::get<boost::blank>(&value) == NULL; }
 public:
   MaybeValue()
     : value(boost::blank()) {}
-  template <typename TT>
-  MaybeValue(const MaybeValue<TT> &val)
-    : value(val.value) {}
-  MaybeValue(const T &val)
+  MaybeValue(boost::blank)
+    : value(boost::blank()) {}
+  MaybeValue(T const &val)
     : value(val) {}
+  template <class DD, typename TT, typename RR>
+  MaybeValue(MaybeValueInterface<DD,TT,RR> const &val)
+    : value(val.isDefined()
+        ? storage_type(val.get())
+        : storage_type(boost::blank())) {}
 
-  this_type &operator = (const boost::blank &)
-    { this->undef(); return *this; }
-  template <typename TT>
-  this_type &operator = (const MaybeValue<TT> &val)
-    { this->set(val); return *this; }
-  this_type &operator = (const T &val)
-    { this->set(val); return *this; }
-
-  void undef()
-    { value = boost::blank(); }
-  bool isDefined() const
-    { return boost::get<boost::blank>(&value) == NULL; }
-
-  template <typename TT>
-  void set(const MaybeValue<TT> &val)
-    { value = val.value; }
-  void set(const T &val)
-    { value = val; }
-  const T &get() const // this may throw
-    { return boost::get<T>(value); }
-
-  void dump(std::ostream &out) const {
-    if (isDefined())
-      out << get();
-    else
-      out << "undef";
-  }
+  using base_type::operator =;
 };
-
-template <typename T>
-std::ostream &operator <<(std::ostream &out, const MaybeValue<T> &val)
-  { val.dump(out); return out; }
 
 } } // namespace CoSupport::DataTypes
 
