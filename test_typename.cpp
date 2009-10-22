@@ -40,6 +40,10 @@
 
 using namespace CoSupport::String;
 
+class A;
+
+COSUPPORT_REGISTER_TYPENAME(A);
+
 template <typename T>
 void check_typename_for(const std::string &expected) {
   std::string retval = TypeName<T>::name();
@@ -79,5 +83,34 @@ int main(int argc, char *argv[]) {
   CHECK_TYPENAME_FOR(const char **const &);
   CHECK_TYPENAME_FOR(char *const *const &);
   CHECK_TYPENAME_FOR(const char *const *const &);
+  
+  CHECK_TYPENAME_FOR(A);
+  CHECK_TYPENAME_FOR(const A);
+  CHECK_TYPENAME_FOR(A *);
+  CHECK_TYPENAME_FOR(const A *);
+  CHECK_TYPENAME_FOR(A *const);
+  CHECK_TYPENAME_FOR(const A *const);
+  CHECK_TYPENAME_FOR(A **);
+  CHECK_TYPENAME_FOR(const A **);
+  CHECK_TYPENAME_FOR(A *const *);
+  CHECK_TYPENAME_FOR(const A *const *);
+  CHECK_TYPENAME_FOR(A **const);
+  CHECK_TYPENAME_FOR(const A **const);
+  CHECK_TYPENAME_FOR(A *const *const);
+  CHECK_TYPENAME_FOR(const A *const *const);
+  CHECK_TYPENAME_FOR(A &);
+  CHECK_TYPENAME_FOR(const A &);
+  CHECK_TYPENAME_FOR(A * &);
+  CHECK_TYPENAME_FOR(const A * &);
+  CHECK_TYPENAME_FOR(A *const &);
+  CHECK_TYPENAME_FOR(const A *const &);
+  CHECK_TYPENAME_FOR(A ** &);
+  CHECK_TYPENAME_FOR(const A ** &);
+  CHECK_TYPENAME_FOR(A *const * &);
+  CHECK_TYPENAME_FOR(const A *const * &);
+  CHECK_TYPENAME_FOR(A **const &);
+  CHECK_TYPENAME_FOR(const A **const &);
+  CHECK_TYPENAME_FOR(A *const *const &);
+  CHECK_TYPENAME_FOR(const A *const *const &);
   return 0;
 }
