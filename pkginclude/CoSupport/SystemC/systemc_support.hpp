@@ -65,6 +65,8 @@ namespace Detail {
 static Detail::DebugOStream outDbg(std::cout);
 #define outDbg std::cout*/
 
+//#define DEBUG_COSUPPORT_SYSTEMC_SUPPORT
+
 namespace CoSupport { namespace SystemC {
 
   /**
@@ -440,16 +442,25 @@ namespace CoSupport { namespace SystemC {
       // must be compatible with our list type and must be in list
       assert(dynamic_cast<EventType *>(ew) &&
         contains(*static_cast<EventType *>(ew)));
-      
-      //std::cerr << "[" << this << "] EventAndList signaled by: " << *e << std::endl;
+#ifdef DEBUG_COSUPPORT_SYSTEMC_SUPPORT
+      std::cerr << "[" << this << "] EventAndList signaled by: [" << ew << "] " << *ew << std::endl;
+#endif // DEBUG_COSUPPORT_SYSTEMC_SUPPORT      
       if (ew->isActive()) {
-        //std::cerr << "  e is active; missing: " << (missing-1) << std::endl;
+#ifdef DEBUG_COSUPPORT_SYSTEMC_SUPPORT
+        std::cerr << "  ew is active; missing: " << (missing-1) << std::endl;
+#endif // DEBUG_COSUPPORT_SYSTEMC_SUPPORT      
         oneLessMissing();
       } else {
-        //std::cerr << "  e is not active; missing: " << (missing+1) << std::endl;
         if (missing == 0) { // 0 -> 1
-          missing = 1; resetListener();
+          assert(!lazy); missing = 1;
+#ifdef DEBUG_COSUPPORT_SYSTEMC_SUPPORT
+          std::cerr << "  ew is not active; missing: " << missing << std::endl;
+#endif // DEBUG_COSUPPORT_SYSTEMC_SUPPORT      
+          resetListener();
         } else {
+#ifdef DEBUG_COSUPPORT_SYSTEMC_SUPPORT
+          std::cerr << "  ew is not active; going lazy; missing: " << missing << std::endl;
+#endif // DEBUG_COSUPPORT_SYSTEMC_SUPPORT      
           lazy = true;
           ew->delListener(this); // Still blocked on something else.
         }
@@ -482,6 +493,9 @@ namespace CoSupport { namespace SystemC {
               ++missing;
           }
           lazy = false;
+#ifdef DEBUG_COSUPPORT_SYSTEMC_SUPPORT
+          std::cerr << "  was lazy; missing: " << missing << std::endl;
+#endif // DEBUG_COSUPPORT_SYSTEMC_SUPPORT      
           if (missing != 0)
             return;
         }
@@ -586,7 +600,7 @@ namespace CoSupport { namespace SystemC {
       for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
         out << (i != eventList.begin() ? ", " : "") << **i;
       }
-      out << "], missing: " << missing << ")";
+      out << "], missing: " << missing << ", lazy: " << lazy << ")";
     }
   };
   
