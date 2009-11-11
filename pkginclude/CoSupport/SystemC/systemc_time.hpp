@@ -36,6 +36,7 @@
 #ifndef _INCLUDED_SYSTEMC_TIME_SUPPORT_HPP
 #define _INCLUDED_SYSTEMC_TIME_SUPPORT_HPP
 #include <systemc.h>
+#include <algorithm>
 
 #include <iostream>
 
