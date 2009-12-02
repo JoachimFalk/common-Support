@@ -161,6 +161,8 @@ public:
   template <class DD, typename TT, typename RR>
   D &operator = (const MaybeValueInterface<DD, TT, RR> &val)
     { this->set(val); return *getDerived(); }
+  D &operator = (const this_type &val)
+    { this->set(val); return *getDerived(); }
   D &operator = (const T &val)
     { this->set(val); return *getDerived(); }
   D &operator = (const boost::blank &)
