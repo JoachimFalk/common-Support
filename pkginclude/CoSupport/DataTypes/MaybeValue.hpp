@@ -356,7 +356,7 @@ public:
 
 //You may need this if you can't rely on the default
 //assignment operator to do the job correctly!
-//Here we can rely on boost::variant operator =;
+//Here we can rely on storage_type::operator = of value.
 //this_type &operator = (const this_type &val)
 //  { return base_type::operator =(val); }
 
