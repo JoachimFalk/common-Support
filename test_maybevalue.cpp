@@ -58,19 +58,20 @@ using namespace CoSupport::DataTypes;
 int main(int argc, char *argv[]) {
   {
     MaybeValue<int> foo;
+    MaybeValue<int> foo2(foo);
     
     std::cout << "foo(): " << foo << std::endl;
     
     assert(!foo.isDefined());
     
-    foo = 13;
+    { MaybeValue<int> &check = (foo = 13); assert(&check == &foo); }
     std::cout << "foo = 13: " << foo << std::endl;
     
-    foo += 1;
+    { MaybeValue<int> &check = (foo += 1); assert(&check == &foo); }
     std::cout << "foo += 1: " << foo << std::endl;
     std::cout << "++foo:    " << ++foo << std::endl;
     
-    foo -= 1;
+    { MaybeValue<int> &check = (foo -= 1); assert(&check == &foo); }
     std::cout << "foo -= 1: " << foo << std::endl;
     std::cout << "--foo:    " << --foo << std::endl;
     
@@ -80,13 +81,13 @@ int main(int argc, char *argv[]) {
     std::cout << "foo--:    " << foo-- << std::endl;
     std::cout << "foo:      " << foo << std::endl;
     
-    foo *= 3;
+    { MaybeValue<int> &check = (foo *= 3); assert(&check == &foo); }
     std::cout << "foo *= 3: " << foo << std::endl;
     
-    foo /= 4;
+    { MaybeValue<int> &check = (foo /= 4); assert(&check == &foo); }
     std::cout << "foo /= 4: " << foo << std::endl;
     
-    foo %= 5;
+    { MaybeValue<int> &check = (foo %= 5); assert(&check == &foo); }
     std::cout << "foo %= 5: " << foo << std::endl;
     assert(foo.isDefined());
     assert(foo.get() == 4);
@@ -100,7 +101,7 @@ int main(int argc, char *argv[]) {
     CHECK_OP_WV(INT_MIN,foo,> ,4710); CHECK_OP_WV(INT_MIN,foo,> ,4711LL); CHECK_OP_WV(INT_MIN,foo,> ,4712);
     CHECK_OP_WV(INT_MIN,foo,>=,4710); CHECK_OP_WV(INT_MIN,foo,>=,4711LL); CHECK_OP_WV(INT_MIN,foo,>=,4712);
     
-    foo = boost::blank();
+    { MaybeValue<int> &check = (foo = boost::blank()); assert(&check == &foo); }
     std::cout << "foo = boost::blank(): " << foo << std::endl;
     assert(!foo.isDefined());
     
@@ -154,6 +155,11 @@ int main(int argc, char *argv[]) {
     
     foo.set(batz);
     std::cout << "foo: " << foo << std::endl;
+
+    { MaybeValue<int> &check = (foo = bar); assert(&check == &foo); }
+    { MaybeValue<int> &check = (foo = batz); assert(&check == &foo); }
+    { MaybeValue<int> &check = (foo = MaybeValue<int>(12)); assert(&check == &foo); }
+    { MaybeValue<int> &check = (foo = MaybeValue<long>(12)); assert(&check == &foo); }
   }
   {
     MaybeValue<const char *> cp("foo");
@@ -255,6 +261,8 @@ int main(int argc, char *argv[]) {
     
     str1 = cp;
     str2 = str1.get() + cp.get();
+
+    { MaybeValue<std::string> &check = (str1 = str2); assert(&check == &str1); }
   }
   return 0;
 }

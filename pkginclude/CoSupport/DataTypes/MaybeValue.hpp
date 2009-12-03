@@ -354,6 +354,12 @@ public:
         ? storage_type(val.get())
         : storage_type(boost::blank())) {}
 
+//You may need this if you can't rely on the default
+//assignment operator to do the job correctly!
+//Here we can rely on boost::variant operator =;
+//this_type &operator = (const this_type &val)
+//  { return base_type::operator =(val); }
+
   using base_type::operator =;
 };
 
