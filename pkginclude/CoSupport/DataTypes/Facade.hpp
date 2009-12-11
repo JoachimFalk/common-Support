@@ -317,8 +317,8 @@ public:
     { return Ptr(_impl()); }
 private:
   // default no copy no assign
-  FacadeFoundation(const FacadeFoundation &);
-  FacadeFoundation &operator =(const FacadeFoundation &);
+  FacadeFoundation(const this_type &);
+  FacadeFoundation &operator =(const this_type &);
 };
 
 template <class TT, class T, template <class> class C>

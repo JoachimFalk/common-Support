@@ -222,6 +222,8 @@ public:
   template <class DD, typename TT, typename RR>
   D &operator = (const ValueInterface<DD, TT, RR> &val)
     { this->set(val); return *getDerived(); }
+  D &operator = (const this_type &val)
+    { this->set(val); return *getDerived(); }
   D &operator = (const T &val)
     { this->set(val); return *getDerived(); }
 
@@ -360,6 +362,12 @@ public:
   template <class DD, typename TT, typename RR>
   Value(ValueInterface<DD,TT,RR> const &val)
     : value(val.get()) {}
+
+//You may need this if you can't rely on the default
+//assignment operator to do the job correctly!
+//Here we can rely on T::operator = of value.
+//this_type &operator = (const this_type &val)
+//  { return base_type::operator =(val); }
 
   using base_type::operator =;
 };

@@ -161,6 +161,8 @@ public:
   template <class DD, typename TT, typename RR>
   D &operator = (const MaybeValueInterface<DD, TT, RR> &val)
     { this->set(val); return *getDerived(); }
+  D &operator = (const this_type &val)
+    { this->set(val); return *getDerived(); }
   D &operator = (const T &val)
     { this->set(val); return *getDerived(); }
   D &operator = (const boost::blank &)
@@ -351,6 +353,12 @@ public:
     : value(val.isDefined()
         ? storage_type(val.get())
         : storage_type(boost::blank())) {}
+
+//You may need this if you can't rely on the default
+//assignment operator to do the job correctly!
+//Here we can rely on storage_type::operator = of value.
+//this_type &operator = (const this_type &val)
+//  { return base_type::operator =(val); }
 
   using base_type::operator =;
 };
