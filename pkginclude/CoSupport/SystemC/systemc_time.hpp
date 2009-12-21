@@ -36,8 +36,10 @@
 #ifndef _INCLUDED_SYSTEMC_TIME_SUPPORT_HPP
 #define _INCLUDED_SYSTEMC_TIME_SUPPORT_HPP
 #include <systemc.h>
+#include <algorithm>
 
 #include <iostream>
+#include <sstream>
 
 #include "../sassert.h"
 namespace CoSupport { namespace SystemC {

@@ -46,7 +46,10 @@
 
 #include <boost/functional/hash.hpp>
 
+#include <boost/intrusive_ptr.hpp>
+
 #include "../sassert.h"
+#include <CoSupport/SmartPtr/RefCountObject.hpp>
 
 /*#include "filter_ostream.hpp"
 
@@ -68,6 +71,17 @@ static Detail::DebugOStream outDbg(std::cout);
 //#define DEBUG_COSUPPORT_SYSTEMC_SUPPORT
 
 namespace CoSupport { namespace SystemC {
+
+#ifndef NDEBUG
+  // In some strange cases, an EventWaiter is deleted, but code of the object
+  // to be deleted is still executed (e.g. signalNotifyListener). This
+  // behaviour is undefined and causes errors on some platforms (Visual
+  // Studio). CHECK_SIGNALED_CONSISTENCY uses a counter to assert the absence
+  // of such scenarios. 
+# define CHECK_SIGNALED_CONSISTENCY
+#else
+# undef CHECK_SIGNALED_CONSISTENCY
+#endif
 
   /**
    * forward declarations
@@ -115,6 +129,9 @@ namespace CoSupport { namespace SystemC {
   protected:
     // forward event notifications to all listeners
     void notifyListener() {
+#ifdef CHECK_SIGNALED_CONSISTENCY
+      usedCounter++;
+#endif //CHECK_SIGNALED_CONSISTENCY 
       ell_ty::iterator iter, niter;
       for(iter = ell.begin();
           iter != ell.end();
@@ -123,10 +140,16 @@ namespace CoSupport { namespace SystemC {
         ++(niter = iter);
         (*iter)->signaled(this);
       }
+#ifdef CHECK_SIGNALED_CONSISTENCY
+      usedCounter--;
+#endif //CHECK_SIGNALED_CONSISTENCY 
     }
 
     // forward event resets to all listeners except the specified one
     void resetListener(EventListener *el = NULL) {
+#ifdef CHECK_SIGNALED_CONSISTENCY
+      usedCounter++;
+#endif //CHECK_SIGNALED_CONSISTENCY 
       ell_ty::iterator iter, niter;
       for(iter = ell.begin();
           iter != ell.end();
@@ -136,12 +159,18 @@ namespace CoSupport { namespace SystemC {
         if(*iter != el)
           (*iter)->signaled(this);
       }
+#ifdef CHECK_SIGNALED_CONSISTENCY
+      usedCounter--;
+#endif //CHECK_SIGNALED_CONSISTENCY 
     }
 
   public:
     // default constructor
-    EventWaiter() {}
-
+    EventWaiter()
+#ifdef CHECK_SIGNALED_CONSISTENCY
+      : usedCounter(0)
+#endif //CHECK_SIGNALED_CONSISTENCY 
+      {}
     // determines if this instance is active
     virtual bool isActive() const = 0;
     
@@ -162,6 +191,9 @@ namespace CoSupport { namespace SystemC {
     
     // notify listeners that this event is destroyed
     virtual ~EventWaiter() {
+#ifdef CHECK_SIGNALED_CONSISTENCY
+      assert(usedCounter == 0);
+#endif //CHECK_SIGNALED_CONSISTENCY 
       ell_ty::iterator iter, niter;
       for(iter = ell.begin();
           iter != ell.end();
@@ -189,6 +221,9 @@ namespace CoSupport { namespace SystemC {
     // registered listeners
     typedef std::set<EventListener *> ell_ty;
     ell_ty ell;
+#ifdef CHECK_SIGNALED_CONSISTENCY
+    unsigned int usedCounter;
+#endif //CHECK_SIGNALED_CONSISTENCY 
 
     // unimplemented
     EventWaiter(const this_type &);
