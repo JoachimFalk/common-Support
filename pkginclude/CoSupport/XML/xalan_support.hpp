@@ -49,6 +49,7 @@
 
 //#include <xalanc/Include/PlatformDefinitions.hpp>
 #include <xalanc/XalanTransformer/XalanTransformer.hpp>
+#include <xalanc/XPath/XPathEvaluator.hpp>
 #include <xalanc/XalanDOM/XalanNode.hpp>
 #include <xalanc/XalanDOM/XalanNamedNodeMap.hpp>
 
@@ -74,6 +75,14 @@ namespace Initializer {
     }
   };
 
+  template <>
+  struct BasicInitializerTraits<XML::Xerces::XN::XPathEvaluator> {
+    static void initialize()
+      { XML::Xerces::XN::XPathEvaluator::initialize(); }
+    static void terminate()
+      { XML::Xerces::XN::XPathEvaluator::terminate(); }
+  };
+
 } // namespace Initializer
 
 } // namespace CoSupport
@@ -84,8 +93,18 @@ namespace CoSupport { namespace XML { namespace Xalan {
 
   using namespace Xerces;
 
+  // If you use XalanTransformer::initialize(), then you don't need
+  // XPathEvaluator::initialize() or XalanSourceTreeInit. For more details, take
+  // a look at what XalanTransformer::initialize() does, vs. what
+  // XPathEvaluator::initialize() does, vs. what the class XalanSourceTreeInit
+  // does.
+
   class XalanInitializer : public XercesInitializer {
     Initializer::BasicInitializer<XN::XalanTransformer> m_initializer;
+  };
+
+  class XPathInitializer : public XercesInitializer {
+    Initializer::BasicInitializer<XN::XPathEvaluator> m_initializer;
   };
 
   inline
