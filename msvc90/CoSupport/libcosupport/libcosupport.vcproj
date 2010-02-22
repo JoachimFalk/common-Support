@@ -149,6 +149,10 @@
 			>
 		</File>
 		<File
+			RelativePath="$(OutDir)\libcosupport-math.lib"
+			>
+		</File>
+		<File
 			RelativePath="$(OutDir)\libcosupport-smartptr.lib"
 			>
 		</File>
