@@ -67,9 +67,12 @@ namespace Initializer {
 
   template <>
   struct BasicInitializerTraits<XML::Xerces::XN::XalanTransformer> {
-    static void initialize()
-      { XML::Xerces::XN::XalanTransformer::initialize(); }
+    static void initialize() {
+//    std::cerr << "BasicInitializerTraits<XML::Xerces::XN::XalanTransformer>::initialize()" << std::endl;
+      XML::Xerces::XN::XalanTransformer::initialize();
+    }
     static void terminate() {
+//    std::cerr << "BasicInitializerTraits<XML::Xerces::XN::XalanTransformer>::terminate()" << std::endl;
       XML::Xerces::XN::XalanTransformer::terminate();
       XML::Xerces::XN::XalanTransformer::ICUCleanUp();
     }
@@ -77,10 +80,14 @@ namespace Initializer {
 
   template <>
   struct BasicInitializerTraits<XML::Xerces::XN::XPathEvaluator> {
-    static void initialize()
-      { XML::Xerces::XN::XPathEvaluator::initialize(); }
-    static void terminate()
-      { XML::Xerces::XN::XPathEvaluator::terminate(); }
+    static void initialize() {
+//    std::cerr << "BasicInitializerTraits<XML::Xerces::XN::XPathEvaluator>::initialize()" << std::endl;
+      XML::Xerces::XN::XPathEvaluator::initialize();
+    }
+    static void terminate() {
+//    std::cerr << "BasicInitializerTraits<XML::Xerces::XN::XPathEvaluator>::terminate()" << std::endl;
+      XML::Xerces::XN::XPathEvaluator::terminate();
+    }
   };
 
 } // namespace Initializer
