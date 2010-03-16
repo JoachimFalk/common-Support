@@ -40,6 +40,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#include <memory>
 
 #include "../sassert.h"
 #include "../String/convert.hpp"
@@ -48,6 +49,8 @@
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/dom/DOM.hpp>
+
+#include <boost/noncopyable.hpp>
 
 namespace CoSupport {
 
@@ -80,6 +83,90 @@ namespace Initializer {
 namespace CoSupport { namespace XML { namespace Xerces {
 
   typedef Initializer::BasicInitializer<XN::XMLPlatformUtils> XercesInitializer;
+
+  // this stuff is stolen and adapted from boost::scoped_ptr
+
+  //  ScopedXMLPtr mimics a built-in pointer except that it guarantees deletion
+  //  of the object pointed to, either on destruction of the ScopedXMLPtr or via
+  //  an explicit reset(). ScopedXMLPtr is a simple solution for simple needs;
+  //  use shared_ptr or std::auto_ptr if your needs are more complex.
+
+  template <class T>
+  class ScopedXMLPtr: private boost::noncopyable {
+    typedef ScopedXMLPtr<T> this_type;
+  private:
+    typedef T *this_type::*unspecified_bool_type;
+  private:
+    T *ptr;
+  public:
+    typedef T element_type;
+
+    // never throws
+    explicit ScopedXMLPtr(T *p = NULL): ptr(p)
+      {}
+
+    // never throws
+    explicit ScopedXMLPtr(std::auto_ptr<T> p): ptr(p.release())
+      {}
+
+    ~ScopedXMLPtr() {
+      // don't use delete use release() method all xerces and xalan nodes have.
+      if (ptr != NULL)
+        ptr->release();
+    }
+
+    // never throws
+    void swap(this_type &b) {
+      T *tmp = b.ptr;
+      b.ptr  = ptr;
+      ptr    = tmp;
+    }
+
+    // never throws
+    void reset(T *p = NULL) {
+      assert(p == NULL || p != ptr); // catch self-reset errors
+      this_type(p).swap(*this);
+    }
+
+    // never throws
+    T &operator *() const {
+      assert(ptr != 0);
+      return *ptr;
+    }
+
+    // never throws
+    T *operator ->() const {
+      assert(ptr != 0);
+      return ptr;
+    }
+
+    // never throws
+    T *get() const {
+      return ptr;
+    }
+
+    // implicit conversion to "bool", never throws
+    operator unspecified_bool_type() const {
+      return ptr == NULL ? NULL: &this_type::ptr;
+    }
+
+    // never throws
+    bool operator !() const  {
+      return ptr == NULL;
+    }
+  };
+
+  // never throws
+  template <class T>
+  inline void swap(ScopedXMLPtr<T> &a, ScopedXMLPtr<T> &b) {
+    a.swap(b);
+  }
+
+  // get_pointer(p) is a generic way to say p.get()
+  template <class T>
+  inline T *get_pointer(ScopedXMLPtr<T> const &p) {
+    return p.get();
+  }
 
   class XStr: public std::basic_string<XMLCh> {
   public:
