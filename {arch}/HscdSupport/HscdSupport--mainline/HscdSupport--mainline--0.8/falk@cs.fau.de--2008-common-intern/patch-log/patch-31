@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.8--patch-31
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Fri Jul  4 09:59:27 CEST 2008
+Standard-date: 2008-07-04 07:59:27 GMT
+Modified-files: pkginclude/CoSupport/SystemC/systemc_support.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-31
+Summary: 
+ * systemc_support.hpp next fix for gcc/4.3.1
+Keywords: 
+
+
+

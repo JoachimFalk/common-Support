@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.6--patch-10
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Mar 29 15:59:45 CEST 2007
+Standard-date: 2007-03-29 13:59:45 GMT
+Modified-files: pkginclude/cosupport/xalan_support.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-10
+Summary: 
+ * Added getAddrNode and getNodeValueAs support to xalan_support.hpp
+Keywords: 
+
+
+

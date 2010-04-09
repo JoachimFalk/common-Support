@@ -1,0 +1,15 @@
+Revision: HscdSupport--mainline--0.6--patch-60
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Christian Zebelein <christian.zebelein@fen-net.de>
+Date: Tue Jul 24 09:42:27 CEST 2007
+Standard-date: 2007-07-24 07:42:27 GMT
+Modified-files: pkginclude/cosupport/intrusive_refcount_ptr.hpp
+    pkginclude/cosupport/refcount.hpp
+    pkginclude/cosupport/xerces_support.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-60
+Summary: 
+  * added ScopedRefCountPtr
+Keywords: 
+
+
+

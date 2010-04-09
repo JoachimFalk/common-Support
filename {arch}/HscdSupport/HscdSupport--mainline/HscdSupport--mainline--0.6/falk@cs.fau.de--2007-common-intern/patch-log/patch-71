@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.6--patch-71
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Sep 20 10:44:22 CEST 2007
+Standard-date: 2007-09-20 08:44:22 GMT
+New-files: .arch-ids/configure.in.frag.id configure.in.frag
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-71
+Summary: 
+ * Added backward compatibility configure.in.frag
+Keywords: 
+
+
+

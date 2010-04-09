@@ -1,0 +1,16 @@
+Revision: HscdSupport--mainline--0.6--patch-16
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Apr 19 16:36:31 CEST 2007
+Standard-date: 2007-04-19 14:36:31 GMT
+Modified-files: pkginclude/cosupport/refcount.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-16
+Summary: 
+ * Added assignment operator to RefCount
+   which does not overwrite the reference
+   counter, as done by the default assignment
+   operator
+Keywords: 
+
+
+

@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.6--patch-69
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Christian Zebelein <christian.zebelein@fen-net.de>
+Date: Wed Aug 29 14:13:04 CEST 2007
+Standard-date: 2007-08-29 12:13:04 GMT
+Modified-files: pkginclude/cosupport/string_convert.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-69
+Summary: 
+  * Concat: removed output operator, which seemed to be
+    buggy (use get() method instead)
+Keywords: 
+
+
+

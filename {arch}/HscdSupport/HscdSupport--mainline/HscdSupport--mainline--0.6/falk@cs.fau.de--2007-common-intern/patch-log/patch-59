@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.6--patch-59
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Christian Zebelein <christian.zebelein@fen-net.de>
+Date: Wed Jul 11 10:33:35 CEST 2007
+Standard-date: 2007-07-11 08:33:35 GMT
+Modified-files: pkginclude/cosupport/container_insert.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-59
+Summary: 
+  * added missing header to container_insert.hpp
+Keywords: 
+
+
+

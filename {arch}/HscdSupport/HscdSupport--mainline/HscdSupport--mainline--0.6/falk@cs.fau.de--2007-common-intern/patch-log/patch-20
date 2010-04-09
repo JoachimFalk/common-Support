@@ -1,0 +1,19 @@
+Revision: HscdSupport--mainline--0.6--patch-20
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Apr 19 16:40:32 CEST 2007
+Standard-date: 2007-04-19 14:40:32 GMT
+New-files: pkginclude/cosupport/.arch-ids/typetransform.hpp.id
+    pkginclude/cosupport/typetransform.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-20
+Summary: 
+ * Added typetransform.hpp containing following operations
+ - CoSupport::Type::Identity<T>::type     do nothing
+ - CoSupport::Type::Const<T>::type        add const
+ - CoSupport::Type::Mutable<T>::type      strip const
+ - CoSupport::Type::ToggleConst<T>::type  toggle constness
+
+Keywords: 
+
+
+

@@ -1,0 +1,21 @@
+Revision: HscdSupport--mainline--0.2--patch-5
+Archive: joachim.falk@gmx.de--2005-common-stuff
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue Oct 11 12:21:27 CEST 2005
+Standard-date: 2005-10-11 10:21:27 GMT
+Modified-files: modulo_arith.hpp
+New-patches: joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-13
+    joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-5
+Summary: 
+ * Merge from joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1 branch
+ - Added conversion of ModuloInt to unspecified_bool_type
+Keywords: 
+
+
+
+Patches applied:
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-13
+   
+ * Added conversion of ModuloInt to unspecified_bool_type
+

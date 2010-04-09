@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.6--patch-109
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Christian Zebelein <christian.zebelein@cs.fau.de>
+Date: Thu May  8 13:44:46 CEST 2008
+Standard-date: 2008-05-08 11:44:46 GMT
+Modified-files: pkginclude/cosupport/systemc_support.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-109
+Summary: 
+  * systemc_support.hpp: Added SCEventWrapper (be sure to unterstand
+    both SystemC-Events and SysteMoC-Events before trying to use it!!!)
+Keywords: 
+
+
+

@@ -1,0 +1,15 @@
+Revision: HscdSupport--mainline--0.2--patch-9
+Archive: joachim.falk@gmx.de--2005-common-stuff
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Mon Dec  5 11:05:54 CET 2005
+Standard-date: 2005-12-05 10:05:54 GMT
+New-files: .arch-ids/systemc_support.hpp.id
+    systemc_support.hpp
+Modified-files: Makefile.am
+New-patches: joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-9
+Summary: 
+ * Added systemc_support.hpp
+Keywords: 
+
+
+

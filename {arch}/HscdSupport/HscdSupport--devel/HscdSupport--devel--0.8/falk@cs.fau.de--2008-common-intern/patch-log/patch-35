@@ -1,0 +1,14 @@
+Revision: HscdSupport--devel--0.8--patch-35
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Christian Zebelein <christian.zebelein@cs.fau.de>
+Date: Tue Aug 18 14:30:16 CEST 2009
+Standard-date: 2009-08-18 12:30:16 GMT
+Modified-files: pkginclude/CoSupport/SystemC/systemc_support.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-35
+Summary:
+  * Added Event copy constructor
+  * EventOrList caches single active entry 
+Keywords: 
+
+
+

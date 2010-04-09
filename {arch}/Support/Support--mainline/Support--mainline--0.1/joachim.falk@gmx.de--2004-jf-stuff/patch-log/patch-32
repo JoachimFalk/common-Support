@@ -1,0 +1,25 @@
+Revision: Support--mainline--0.1--patch-32
+Archive: joachim.falk@gmx.de--2004-jf-stuff
+Creator: Joachim Falk <joachim.falk@gmx.de>
+Date: Fri Oct 13 21:49:30 CEST 2006
+Standard-date: 2006-10-13 19:49:30 GMT
+New-files: .arch-ids/refcount_object.cpp.id
+    .arch-ids/refcount_object.hpp.id refcount_object.cpp
+    refcount_object.hpp
+Modified-files: Makefile.am commondefs.h
+    intrusive_copyonwrite_ptr.hpp
+    intrusive_refcount_ptr.hpp refcount.hpp
+New-patches: joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-32
+    joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.3--patch-17
+Summary: 
+ * Merge from HscdSupport--mainline--0.3 branch
+Keywords: 
+
+
+
+Patches applied:
+
+ * joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.3--patch-17
+   
+ * Added RefCountObject class in refcount_object.hpp
+

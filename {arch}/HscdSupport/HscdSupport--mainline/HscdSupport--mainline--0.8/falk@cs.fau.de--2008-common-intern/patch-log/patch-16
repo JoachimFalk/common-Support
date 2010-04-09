@@ -1,0 +1,21 @@
+Revision: HscdSupport--mainline--0.8--patch-16
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed Jun  4 17:22:12 CEST 2008
+Standard-date: 2008-06-04 15:22:12 GMT
+New-files: .arch-ids/test_idpool.cpp.id
+    pkginclude/CoSupport/Allocators/.arch-ids/=id
+    pkginclude/CoSupport/Allocators/.arch-ids/IdPool.hpp.id
+    pkginclude/CoSupport/Allocators/IdPool.hpp
+    test_idpool.cpp
+New-directories: pkginclude/CoSupport/Allocators
+    pkginclude/CoSupport/Allocators/.arch-ids
+Modified-files: Makefile.am pkginclude/Makefile.am
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-16
+Summary: 
+ * First try at generic IdPool and IdAllocator classes.
+   Please do not use this code is still in development. Interface may change!
+Keywords: 
+
+
+

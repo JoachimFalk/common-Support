@@ -1,0 +1,20 @@
+Revision: HscdSupport--mainline--0.6--patch-5
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Jens Gladigau <gladigau@codesign.informatik.uni-erlangen.de>
+Date: Tue Mar 13 15:44:58 CET 2007
+Standard-date: 2007-03-13 14:44:58 GMT
+Modified-files: cosupport/filter_ostream.hpp
+    cosupport/smoc_debug_out.hpp filter_ostream.cpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-5
+Summary: 
+  * DebugStreambuf now has default level 'low' und is visible. Thus <<ing
+    something into DebugStreambuf without giveing a level is visible.
+    @filter_ostream.?pp
+
+  * DebugOstream now knows about debug levels, colors, indenting, and
+    header/footer.
+    @smoc_debug_out.hpp
+Keywords: 
+
+
+

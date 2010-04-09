@@ -1,0 +1,14 @@
+Revision: HscdSupport--devel--0.8--patch-51
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Mon Sep 28 17:28:30 CEST 2009
+Standard-date: 2009-09-28 15:28:30 GMT
+Modified-files: pkginclude/CoSupport/DataTypes/MaybeValue.hpp
+    test_maybevalue.cpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-51
+Summary: 
+ * Better comparision operators support for CoSupport::DataTypes::MaybeValue<T>.
+Keywords: 
+
+
+

@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.8--patch-51
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Thomas Schlichter <schlichter@cs.fau.de>
+Date: Mon Aug 18 18:16:13 CEST 2008
+Standard-date: 2008-08-18 16:16:13 GMT
+Modified-files: SMXIdManager.cpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-51
+Summary: Return NULL on unreachable return statement
+ - Microsoft Visual C++ complains if return value is missing
+Keywords: 
+
+
+

@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.6--patch-85
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Keinert <keinert@codesign.informatik.uni-erlangen.de>
+Date: Fri Nov 23 18:35:08 CET 2007
+Standard-date: 2007-11-23 17:35:08 GMT
+New-files: pkginclude/cosupport/.arch-ids/smoc_math.hpp.id
+    pkginclude/cosupport/smoc_math.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-85
+Summary: 
+ - Provide header file with greatest common divisor and smallest common multiple.
+Keywords: 
+
+
+

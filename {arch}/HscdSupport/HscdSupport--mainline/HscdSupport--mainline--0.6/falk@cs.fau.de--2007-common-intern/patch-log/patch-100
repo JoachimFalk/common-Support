@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.6--patch-100
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Christian Zebelein <christian.zebelein@cs.fau.de>
+Date: Mon Apr 21 16:11:19 CEST 2008
+Standard-date: 2008-04-21 14:11:19 GMT
+Modified-files: Makefile.am SMXIdManager.cpp
+    pkginclude/cosupport/SMXIdManager.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-100
+Summary:  
+  * added string_hash.hpp (outsourced from SysteMoC)
+Keywords: 
+
+
+

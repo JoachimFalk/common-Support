@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.8--patch-45
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Fri Aug  8 15:55:43 CEST 2008
+Standard-date: 2008-08-08 13:55:43 GMT
+Modified-files: Makefile.am SocketTCPClient.cpp
+    pkginclude/CoSupport/Streams/SocketTCPClient.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-45
+Summary: 
+ * Added  getIn(), getOut() and shutdownWrite() to SocketTCPClient
+Keywords: 
+
+
+

@@ -1,0 +1,14 @@
+Revision: HscdSupport--devel--0.8--patch-44
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Sep 10 17:19:18 CEST 2009
+Standard-date: 2009-09-10 15:19:18 GMT
+Modified-files: pkginclude/CoSupport/SystemC/systemc_support.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-44
+Summary: 
+ * Remove assert(!"WTF?! ~EventWaiter but still have listeners!");
+   We need this functionality at the moment.
+Keywords: 
+
+
+

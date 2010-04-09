@@ -1,0 +1,23 @@
+Revision: HscdSupport--mainline--0.8--patch-83
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue Jun  9 17:27:58 CEST 2009
+Standard-date: 2009-06-09 15:27:58 GMT
+Modified-files: pkginclude/CoSupport/Streams/stl_output_for_list.hpp
+    pkginclude/CoSupport/Streams/stl_output_for_pair.hpp
+    pkginclude/CoSupport/Streams/stl_output_for_vector.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-16
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-83
+Summary: 
+ * Merge from HscdSupport--devel--0.8 branch
+ - Fixed all stl_output_for_xxx moved operator << into std namespace.
+Keywords: 
+
+
+
+Patches applied:
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-16
+   
+ * Fixed all stl_output_for_xxx moved operator << into std namespace.
+

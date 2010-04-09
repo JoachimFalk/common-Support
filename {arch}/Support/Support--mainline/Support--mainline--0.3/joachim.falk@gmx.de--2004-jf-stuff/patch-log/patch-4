@@ -1,0 +1,13 @@
+Revision: Support--mainline--0.3--patch-4
+Archive: joachim.falk@gmx.de--2004-jf-stuff
+Creator: Joachim Falk <joachim.falk@gmx.de>
+Date: Tue Aug 28 16:14:58 CEST 2007
+Standard-date: 2007-08-28 14:14:58 GMT
+New-files: .arch-ids/doxygen.cfg.id doxygen.cfg
+New-patches: joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.3--patch-4
+Summary: 
+ * Added doxygen.cfg for doxygen-doc Makefile target
+Keywords: 
+
+
+

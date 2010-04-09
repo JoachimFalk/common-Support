@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.8--patch-50
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Christian Zebelein <christian.zebelein@cs.fau.de>
+Date: Mon Aug 18 08:26:18 CEST 2008
+Standard-date: 2008-08-18 06:26:18 GMT
+Modified-files: pkginclude/Makefile.am
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-50
+Summary:
+  * updated pkginclude/Makefile.am 
+Keywords: 
+
+
+

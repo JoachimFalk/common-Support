@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.2--patch-2
+Archive: joachim.falk@gmx.de--2005-common-stuff
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Oct  6 16:47:00 CEST 2005
+Standard-date: 2005-10-06 14:47:00 GMT
+Modified-files: configure.in.frag
+New-patches: joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-2
+Summary: 
+ * The subproject is now located in Support subdirectory
+ * Use subdirs variable to keep track of all subprojects
+Keywords: 
+
+
+

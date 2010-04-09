@@ -1,0 +1,19 @@
+Revision: HscdSupport--mainline--0.6--patch-22
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Fri Apr 27 17:34:46 CEST 2007
+Standard-date: 2007-04-27 15:34:46 GMT
+Modified-files: pkginclude/cosupport/xerces_support.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-22
+Summary: 
+ * New functions in xerces_support.hpp
+ - createAttrNode
+   get XML attribute node attr of XML node node.
+   Create the attribute node if it does not exist.
+ - setNodeValueFrom
+ - setAttrValueFrom
+
+Keywords: 
+
+
+

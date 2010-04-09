@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.6--patch-2
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Mon Feb 12 20:04:26 CET 2007
+Standard-date: 2007-02-12 19:04:26 GMT
+Modified-files: cosupport/smoc_debug_out.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-2
+Summary: 
+ * include fixing
+Keywords: 
+
+
+

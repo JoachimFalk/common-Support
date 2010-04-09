@@ -1,0 +1,13 @@
+Revision: HscdSupport--devel--0.8--patch-3
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Nov 27 12:01:42 CET 2008
+Standard-date: 2008-11-27 11:01:42 GMT
+Modified-files: pkginclude/CoSupport/DataTypes/oneof.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-3
+Summary: 
+ * oneof.hpp detail => Detail namespace. Namespace like types are capitalized in our codeing convetion.
+Keywords: 
+
+
+

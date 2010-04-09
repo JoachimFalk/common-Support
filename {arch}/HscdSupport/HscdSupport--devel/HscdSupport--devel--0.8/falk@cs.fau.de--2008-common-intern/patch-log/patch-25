@@ -1,0 +1,13 @@
+Revision: HscdSupport--devel--0.8--patch-25
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Jun  4 13:23:33 CEST 2009
+Standard-date: 2009-06-04 11:23:33 GMT
+Modified-files: pkginclude/CoSupport/SMXIdManager.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-25
+Summary: 
+ * Deprecate CoSupport::SMXIdManager.
+Keywords: 
+
+
+

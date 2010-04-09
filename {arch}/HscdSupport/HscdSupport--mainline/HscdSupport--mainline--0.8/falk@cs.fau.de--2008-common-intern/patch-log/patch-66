@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.8--patch-66
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Fri Nov  7 17:59:57 CET 2008
+Standard-date: 2008-11-07 16:59:57 GMT
+Modified-files: configure.in
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-66
+Summary: 
+ * Added commented out #AC_DISABLE_STATIC line to configure
+Keywords: 
+
+
+

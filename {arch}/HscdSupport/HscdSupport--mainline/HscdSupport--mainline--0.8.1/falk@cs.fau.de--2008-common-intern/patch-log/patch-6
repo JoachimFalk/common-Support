@@ -1,0 +1,17 @@
+Revision: HscdSupport--mainline--0.8.1--patch-6
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Fri Aug  7 17:37:11 CEST 2009
+Standard-date: 2009-08-07 15:37:11 GMT
+Modified-files: pkginclude/CoSupport/SmartPtr/RefCount.hpp
+    pkginclude/CoSupport/SmartPtr/intrusive_refcount_ptr.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8.1--patch-6
+Summary: 
+ * CoSupport::SmartPtr::ScopedRefCountBooster moved from RefCount.hpp => intrusive_refcount_ptr.hpp
+ * CoSupport::SmartPtr::ScopedRefCountPtr     moved from RefCount.hpp => intrusive_refcount_ptr.hpp
+ * CoSupport::SmartPtr::ScopedRefCountPtr better conversion operator to ::boost::intrusive_ptr
+
+Keywords: 
+
+
+

@@ -1,0 +1,30 @@
+Revision: HscdSupport--mainline--0.8--patch-72
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue Dec  2 17:36:51 CET 2008
+Standard-date: 2008-12-02 16:36:51 GMT
+Modified-files: pkginclude/CoSupport/DataTypes/Facade.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-7
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-72
+Summary: 
+ * Merge from HscdSupport--devel--0.8
+ - Added FacadeTraits<const T>
+   where FacadeTraits<const T>::Ref == FacadeTraits<T>::ConstRef
+   and   FacadeTraits<const T>::Ptr == FacadeTraits<T>::ConstPtr, i.e.,
+   If the facade object is const we can only get pointers to const
+   objects even if we request a normal pointer.
+
+Keywords: 
+
+
+
+Patches applied:
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-7
+   
+ * Added FacadeTraits<const T>
+ - where FacadeTraits<const T>::Ref == FacadeTraits<T>::ConstRef
+ - and   FacadeTraits<const T>::Ptr == FacadeTraits<T>::ConstPtr, i.e.,
+ - If the facade object is const we can only get pointers to const
+   objects even if we request a normal pointer.
+

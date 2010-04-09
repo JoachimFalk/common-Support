@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.5--patch-3
+Archive: joachim.falk@gmx.de--2006-common-stuff
+Creator: Christian Zebelein <christian.zebelein@fen-net.de>
+Date: Tue Oct 31 19:18:33 CET 2006
+Standard-date: 2006-10-31 18:18:33 GMT
+Modified-files: Makefile.am
+New-patches: joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.5--patch-3
+Summary: 
+ * Added missing intrusive_refcount_ptr.hpp to pkgheaders
+Keywords: 
+
+
+

@@ -1,0 +1,65 @@
+Revision: HscdSupport--devel--0.8--patch-13
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu May  7 18:25:07 CEST 2009
+Standard-date: 2009-05-07 16:25:07 GMT
+New-files: .arch-ids/flog2.cpp.id flog2.cpp
+    pkginclude/CoSupport/Math/.arch-ids/flog2.hpp.id
+    pkginclude/CoSupport/Math/flog2.hpp
+Modified-files: FilterOStream.cpp Makefile.am
+    SMXIdManager.cpp
+    pkginclude/CoSupport/DataTypes/ListFacade.hpp
+    pkginclude/CoSupport/Streams/TranslationStreambuf.hpp
+    pkginclude/CoSupport/Streams/stl_output_for_vector.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-13
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-69
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-73
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-74
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-76
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-77
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-78
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-79
+Summary: 
+ * Sync up from HscdSupport--mainline--0.8 branch
+ - Fixed missing boost_regex library dependency for libcosupport-string.la
+ - Add a comment for a possible fixme
+ - added flog2.{hpp,cpp}
+ - XLC compiler fixes.
+ - Fixed translation table constructor parameter count for XMLAttr
+   translation table
+Keywords: 
+
+
+
+Patches applied:
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-69
+   
+ * Added seperate header for NILTYPE definition.
+ - oneof.hpp detail => Detail namespace. Namespace like types are capitalized in our codeing convetion.
+ - oneof.hpp use NILTYPE from NILTYPE.hpp
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-73
+   
+ * Fixed missing boost_regex library dependency for libcosupport-string.la
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-74
+   - Add a comment for a possible fixme
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-76
+   
+ * Better doxygen documentation for ListFacade.
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-77
+   
+  * added flog2.{hpp,cpp} 
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-78
+   
+ * XLC compiler fixes.
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-79
+   
+  * Fixed translation table constructor parameter count for XMLAttr
+    translation table
+

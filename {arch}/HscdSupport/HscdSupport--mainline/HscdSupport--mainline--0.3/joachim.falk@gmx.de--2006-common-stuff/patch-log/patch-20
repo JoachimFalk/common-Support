@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.3--patch-20
+Archive: joachim.falk@gmx.de--2006-common-stuff
+Creator: Joachim Falk <joachim.falk@gmx.de>
+Date: Fri Oct 20 19:33:10 CEST 2006
+Standard-date: 2006-10-20 17:33:10 GMT
+Modified-files: Makefile.am
+New-patches: joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.3--patch-20
+Summary: 
+ * Minor Makefile.am tweaks
+Keywords: 
+
+
+

@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.8--patch-15
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed Jun  4 17:21:11 CEST 2008
+Standard-date: 2008-06-04 15:21:11 GMT
+Modified-files: pkginclude/CoSupport/DataTypes/Facade.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-15
+Summary: 
+ * Added default constructor for FacadePtr
+Keywords: 
+
+
+

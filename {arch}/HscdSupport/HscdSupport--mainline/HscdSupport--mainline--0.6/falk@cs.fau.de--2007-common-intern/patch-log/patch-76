@@ -1,0 +1,15 @@
+Revision: HscdSupport--mainline--0.6--patch-76
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Fri Sep 21 16:49:01 CEST 2007
+Standard-date: 2007-09-21 14:49:01 GMT
+Modified-files: Makefile.am
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-76
+Summary: 
+ * Makefile.am:
+   Added XALAN_INCLUDE, XERCES_INCLUDE to AM_CPPFLAGS
+   Added XALAN_LDFLAGS, XERCES_LDFLAGS to AM_LDFLAGS
+Keywords: 
+
+
+

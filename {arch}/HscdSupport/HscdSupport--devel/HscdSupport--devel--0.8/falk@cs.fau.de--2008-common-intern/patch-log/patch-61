@@ -1,0 +1,28 @@
+Revision: HscdSupport--devel--0.8--patch-61
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Martin Streubuehr <streubuehr@cs.fau.de>
+Date: Mon Dec 21 09:21:17 CET 2009
+Standard-date: 2009-12-21 08:21:17 GMT
+Modified-files: pkginclude/CoSupport/SystemC/systemc_support.hpp
+    pkginclude/CoSupport/SystemC/systemc_time.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-61
+    falk@cs.fau.de--2008-common-intern/HscdSupport--msvc90--0.8--patch-1
+    falk@cs.fau.de--2008-common-intern/HscdSupport--msvc90--0.8--patch-2
+Summary: 
+ - replayed patch-1 and patch-2 from HscdSupport--msvc90--0.8 
+ - added missing header (required for msvc90)
+ - added debug code to check consistency of EventWaiter(s)
+Keywords: 
+
+
+
+Patches applied:
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--msvc90--0.8--patch-1
+   
+ - added missing header (required for msvc90)
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--msvc90--0.8--patch-2
+   
+ - added debug code to check consistency of EventWaiter(s)
+

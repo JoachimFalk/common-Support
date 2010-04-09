@@ -1,0 +1,15 @@
+Revision: HscdSupport--devel--0.8--patch-21
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed May 27 11:25:42 CEST 2009
+Standard-date: 2009-05-27 09:25:42 GMT
+New-files: pkginclude/CoSupport/Allocators/.arch-ids/IdAllocRequest.hpp.id
+    pkginclude/CoSupport/Allocators/IdAllocRequest.hpp
+Modified-files: pkginclude/CoSupport/Allocators/IdPool.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-21
+Summary: 
+ * Added CoSupport::Allocators::IdAllocRequest class.
+Keywords: 
+
+
+

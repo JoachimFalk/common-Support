@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.3--patch-12
+Archive: joachim.falk@gmx.de--2006-common-stuff
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed May 31 10:29:30 CEST 2006
+Standard-date: 2006-05-31 08:29:30 GMT
+Modified-files: systemc_support.hpp
+New-patches: joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.3--patch-12
+Summary: 
+ * Added remove method to EventOrList and EventAndList to
+   remove events from list
+Keywords: 
+
+
+

@@ -1,0 +1,12 @@
+Revision: HscdSupport--mainline--0.8--patch-60
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Thomas Schlichter <schlichter@cs.fau.de>
+Date: Thu Sep  4 13:48:04 CEST 2008
+Standard-date: 2008-09-04 11:48:04 GMT
+Modified-files: msvc90/CoSupport/libcosupport-xerces/libcosupport-xerces.vcproj
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-60
+Summary: Added missing/new files StdIstreamInputSource.cpp, StdIstreamInputStream.cpp, and StdOstreamFormatTarget.cpp to Microsoft Visual C++ 2008 project
+Keywords: 
+
+
+

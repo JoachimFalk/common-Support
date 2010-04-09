@@ -1,0 +1,29 @@
+Revision: Support--mainline--0.1--patch-21
+Archive: joachim.falk@gmx.de--2004-jf-stuff
+Creator: Joachim Falk <joachim.falk@gmx.de>
+Date: Mon Apr 17 17:08:17 CEST 2006
+Standard-date: 2006-04-17 15:08:17 GMT
+Modified-files: functor.hpp
+New-patches: joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-21
+    joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-15
+Summary: 
+ * Merge from HscdSupport--mainline--0.2 branch
+ - Don't use const references to assemble ParamList in functor.hpp
+   therefore allowing to use reference arguments in guards and actions, e.g,
+   dosomething( smoc_port_in<double> &in ) { ... }
+   Should only be used for smoc port references
+
+Keywords: 
+
+
+
+Patches applied:
+
+ * joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-15
+   
+ * Don't use const references to assemble ParamList in functor.hpp
+   therefore allowing to use reference arguments in guards and actions, e.g,
+   dosomething( smoc_port_in<double> &in ) { ... }
+   Should only be used for smoc port references
+   
+

@@ -1,0 +1,38 @@
+Revision: HscdSupport--mainline--0.3--patch-8
+Archive: joachim.falk@gmx.de--2006-common-stuff
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed May 10 13:44:20 CEST 2006
+Standard-date: 2006-05-10 11:44:20 GMT
+New-files: .arch-ids/checked_vector.hpp.id
+    .arch-ids/par_actor.hpp.id
+    .arch-ids/par_actor_factory.hpp.id
+    .arch-ids/par_manager.cpp.id
+    .arch-ids/par_manager.hpp.id .arch-ids/par_port.hpp.id
+    .arch-ids/string_convert.hpp.id checked_vector.hpp
+    par_actor.hpp par_actor_factory.hpp par_manager.cpp
+    par_manager.hpp par_port.hpp string_convert.hpp
+Modified-files: Makefile.am systemc_support.hpp
+New-patches: joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-19
+    joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-20
+    joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.3--patch-8
+Summary: 
+ * Merge from HscdSupport--mainline--0.2 branch
+ - Create cosupport library
+ - moved parallization infrastructure to this project
+ - added checked_vector class to support classes in par_*.hpp
+
+Keywords: 
+
+
+
+Patches applied:
+
+ * joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-19
+   
+ * Create cosupport library
+
+ * joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-20
+   
+  * moved parallization infrastructure to this project
+  * added checked_vector class to support classes in par_*.hpp
+

@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.8--patch-40
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed Jul 16 17:57:23 CEST 2008
+Standard-date: 2008-07-16 15:57:23 GMT
+Modified-files: pkginclude/CoSupport/DataTypes/Facade.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-40
+Summary: 
+ * Fixed comparison operators for FacadePtr
+Keywords: 
+
+
+

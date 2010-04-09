@@ -1,0 +1,104 @@
+Revision: HscdSupport--mainline--0.8--patch-90
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue Jun  9 17:33:52 CEST 2009
+Standard-date: 2009-06-09 15:33:52 GMT
+Modified-files: BasicInitializer.cpp COPYRIGHT
+    DebugOStream.cpp FilterOStream.cpp
+    PerformanceEvaluation.cpp RefCountObject.cpp
+    SMXIdManager.cpp SocketTCPClient.cpp
+    StdIstreamInputSource.cpp StdIstreamInputStream.cpp
+    StdOstreamFormatTarget.cpp TemplateProcessor.cpp
+    UniquePool.cpp flog2.cpp par_manager.cpp
+    pkginclude/CoSupport/Allocators/IdAllocRequest.hpp
+    pkginclude/CoSupport/Allocators/IdPool.hpp
+    pkginclude/CoSupport/DataTypes/ArrayFifo.hpp
+    pkginclude/CoSupport/DataTypes/CheckedVector.hpp
+    pkginclude/CoSupport/DataTypes/EMPTY.hpp
+    pkginclude/CoSupport/DataTypes/Facade.hpp
+    pkginclude/CoSupport/DataTypes/ListFacade.hpp
+    pkginclude/CoSupport/DataTypes/MaybeValue.hpp
+    pkginclude/CoSupport/DataTypes/NILTYPE.hpp
+    pkginclude/CoSupport/DataTypes/SerializeHelper.hpp
+    pkginclude/CoSupport/DataTypes/ValidWrapper.hpp
+    pkginclude/CoSupport/DataTypes/Value.hpp
+    pkginclude/CoSupport/DataTypes/bit_buffer.hpp
+    pkginclude/CoSupport/DataTypes/container_insert.hpp
+    pkginclude/CoSupport/DataTypes/oneof.hpp
+    pkginclude/CoSupport/Initializer/BasicInitializer.hpp
+    pkginclude/CoSupport/Lambda/function_objects.hpp
+    pkginclude/CoSupport/Lambda/functor.hpp
+    pkginclude/CoSupport/Math/ModuloGroup.hpp
+    pkginclude/CoSupport/Math/flog2.hpp
+    pkginclude/CoSupport/Math/modulo_arith.hpp
+    pkginclude/CoSupport/Math/smoc_math.hpp
+    pkginclude/CoSupport/Math/string_hash.hpp
+    pkginclude/CoSupport/SMXIdManager.hpp
+    pkginclude/CoSupport/SmartPtr/RefCount.hpp
+    pkginclude/CoSupport/SmartPtr/RefCountObject.hpp
+    pkginclude/CoSupport/SmartPtr/intrusive_copyonwrite_ptr.hpp
+    pkginclude/CoSupport/SmartPtr/intrusive_refcount_ptr.hpp
+    pkginclude/CoSupport/SmartPtr/shared_copyonwrite_ptr.hpp
+    pkginclude/CoSupport/Streams/AlternateStream.hpp
+    pkginclude/CoSupport/Streams/ColorStreambuf.hpp
+    pkginclude/CoSupport/Streams/DebugOStream.hpp
+    pkginclude/CoSupport/Streams/DebugStreambuf.hpp
+    pkginclude/CoSupport/Streams/FilterOStream.hpp
+    pkginclude/CoSupport/Streams/FilterStreambuf.hpp
+    pkginclude/CoSupport/Streams/HeaderFooterStreambuf.hpp
+    pkginclude/CoSupport/Streams/HexOutput.hpp
+    pkginclude/CoSupport/Streams/IndentStreambuf.hpp
+    pkginclude/CoSupport/Streams/LineNumberStreambuf.hpp
+    pkginclude/CoSupport/Streams/NullStreambuf.hpp
+    pkginclude/CoSupport/Streams/SocketTCPClient.hpp
+    pkginclude/CoSupport/Streams/TranslationStreambuf.hpp
+    pkginclude/CoSupport/Streams/iterator_dump.hpp
+    pkginclude/CoSupport/Streams/stl_output_for_list.hpp
+    pkginclude/CoSupport/Streams/stl_output_for_pair.hpp
+    pkginclude/CoSupport/Streams/stl_output_for_vector.hpp
+    pkginclude/CoSupport/String/Concat.hpp
+    pkginclude/CoSupport/String/TemplateProcessor.hpp
+    pkginclude/CoSupport/String/TypeName.hpp
+    pkginclude/CoSupport/String/UniquePool.hpp
+    pkginclude/CoSupport/String/convert.hpp
+    pkginclude/CoSupport/SystemC/ChannelModificationListener.hpp
+    pkginclude/CoSupport/SystemC/PerformanceEvaluation.hpp
+    pkginclude/CoSupport/SystemC/algorithm.hpp
+    pkginclude/CoSupport/SystemC/par_manager.hpp
+    pkginclude/CoSupport/SystemC/systemc_support.hpp
+    pkginclude/CoSupport/SystemC/systemc_time.hpp
+    pkginclude/CoSupport/Type/STLIteratorSelector.hpp
+    pkginclude/CoSupport/Type/STLPointerSelector.hpp
+    pkginclude/CoSupport/Type/STLReferenceSelector.hpp
+    pkginclude/CoSupport/Type/STLReverseIteratorSelector.hpp
+    pkginclude/CoSupport/Type/constpropagate.hpp
+    pkginclude/CoSupport/Type/transform.hpp
+    pkginclude/CoSupport/XML/StdIstreamInputSource.hpp
+    pkginclude/CoSupport/XML/StdIstreamInputStream.hpp
+    pkginclude/CoSupport/XML/StdOstreamFormatTarget.hpp
+    pkginclude/CoSupport/XML/xalan_support.hpp
+    pkginclude/CoSupport/XML/xerces_support.hpp
+    pkginclude/CoSupport/commondefs.h
+    pkginclude/CoSupport/compatibility-glue/integertypes.h
+    pkginclude/CoSupport/compatibility-glue/snprintf.h
+    pkginclude/CoSupport/sassert.h test_arrayfifo.cpp
+    test_event_and_list.cpp test_event_or_list.cpp
+    test_facade.cpp test_facade_lib.cpp test_facade_lib.hpp
+    test_idpool.cpp test_maybevalue.cpp
+    test_nested_event_lists.cpp test_typename.cpp
+    test_value.cpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-22
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-90
+Summary: 
+ * Merge from HscdSupport--devel--0.8 branch
+ - Updated COPYRIGHT boilerplate.
+Keywords: 
+
+
+
+Patches applied:
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-22
+   
+ * Updated COPYRIGHT boilerplate.
+

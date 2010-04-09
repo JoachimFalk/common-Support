@@ -1,0 +1,40 @@
+Revision: HscdSupport--mainline--0.8--patch-71
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue Dec  2 17:36:14 CET 2008
+Standard-date: 2008-12-02 16:36:14 GMT
+New-files: pkginclude/CoSupport/Type/.arch-ids/STLIteratorSelector.hpp.id
+    pkginclude/CoSupport/Type/.arch-ids/STLPointerSelector.hpp.id
+    pkginclude/CoSupport/Type/.arch-ids/STLReferenceSelector.hpp.id
+    pkginclude/CoSupport/Type/.arch-ids/STLReverseIteratorSelector.hpp.id
+    pkginclude/CoSupport/Type/STLIteratorSelector.hpp
+    pkginclude/CoSupport/Type/STLPointerSelector.hpp
+    pkginclude/CoSupport/Type/STLReferenceSelector.hpp
+    pkginclude/CoSupport/Type/STLReverseIteratorSelector.hpp
+Modified-files: pkginclude/CoSupport/DataTypes/ListFacade.hpp
+    pkginclude/Makefile.am
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-6
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-71
+Summary: 
+ * Merge from HscdSupport--devel--0.8
+ * Change ListFacade to explicitly provide the types reference, const_reference, pointer and const_pointer.
+ * No longer use CoSupport::Type::Const/Mutable to change between iterator and const_iterator now use
+ - Type::STLIteratorSelector<C>::type to access const_iterator if container C is const and iterator otherwise.
+ - Type::STLReverseIteratorSelector<C>::type to access const_reverse_iterator if container C is const and reverse_iterator otherwise.
+ - Type::STLPointerSelector<C>::type to access const_pointer if container C is const and pointer otherwise.
+ - Type::STLReferenceSelector<C>::type to access const_reference if container C is const and reference otherwise.
+Keywords: 
+
+
+
+Patches applied:
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-6
+   
+ * Change ListFacade to explicitly provide the types reference, const_reference, pointer and const_pointer.
+ * Now longer use CoSupport::Type::Const/Mutable to change between iterator and const_iterator now use
+ - Type::STLIteratorSelector<C>::type to access const_iterator if container C is const and iterator otherwise.
+ - Type::STLReverseIteratorSelector<C>::type to access const_reverse_iterator if container C is const and reverse_iterator otherwise.
+ - Type::STLPointerSelector<C>::type to access const_pointer if container C is const and pointer otherwise.
+ - Type::STLReferenceSelector<C>::type to access const_reference if container C is const and reference otherwise.
+

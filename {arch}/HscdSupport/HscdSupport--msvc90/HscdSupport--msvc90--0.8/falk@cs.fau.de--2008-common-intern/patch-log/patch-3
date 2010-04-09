@@ -1,0 +1,13 @@
+Revision: HscdSupport--msvc90--0.8--patch-3
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Martin Streubuehr <streubuehr@cs.fau.de>
+Date: Mon Nov 30 11:14:49 CET 2009
+Standard-date: 2009-11-30 10:14:49 GMT
+Modified-files: pkginclude/CoSupport/SystemC/systemc_support.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--msvc90--0.8--patch-3
+Summary: 
+ - moved definition of a reference counted Event from SysteMoC to Support
+Keywords: 
+
+
+

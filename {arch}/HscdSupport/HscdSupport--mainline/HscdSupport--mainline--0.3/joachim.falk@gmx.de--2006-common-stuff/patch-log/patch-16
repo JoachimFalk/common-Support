@@ -1,0 +1,141 @@
+Revision: HscdSupport--mainline--0.3--patch-16
+Archive: joachim.falk@gmx.de--2006-common-stuff
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Mon Jun 19 14:52:04 CEST 2006
+Standard-date: 2006-06-19 12:52:04 GMT
+New-files: .arch-ids/intrusive_refcount_ptr.hpp.id
+    .arch-ids/refcount.hpp.id intrusive_refcount_ptr.hpp
+    refcount.hpp
+Modified-files: Makefile.am checked_vector.hpp
+    configure.in.frag functor.hpp
+    intrusive_copyonwrite_ptr.hpp oneof.hpp par_actor.hpp
+    par_actor_factory.hpp par_manager.hpp par_port.hpp
+    snprintf.h string_convert.hpp
+New-patches: joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-17
+    joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-18
+    joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-20
+    joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-21
+    joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-22
+    joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-23
+    joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-24
+    joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-25
+    joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-26
+    joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-27
+    joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-29
+    joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-30
+    joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-21
+    joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-22
+    joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-23
+    joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-24
+    joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.3--patch-16
+Summary: 
+ * Merged from HscdSupport--mainline--0.2 branch
+ - DECL_INTRUSIVE_COPYONWRITE_PTR and IMPL_INTRUSIVE_COPYONWRITE_PTR
+   hardcode JFLibs namespace to make macros useable from other namespaces too
+ - Use new makefile var auxdir generated in ACJF_DONE
+ - BUGFIX for intrusive_copyonwrite_ptr fixed inverted logic for operator bool !!!
+ - Rename refonly_count => RefCount
+ - Use ACJF_VAR_SUBPROJECT_DIR for configure.in.frag
+ - Added intrusive_refcount_ptr which defines
+   DECL_INTRUSIVE_REFCOUNT_PTR(T, PST)
+   IMPL_INTRUSIVE_REFCOUNT_PTR(T)
+ - Use OutputVisitor for oneof ostream output operator <<
+ - Use default argument for second argument of applyVisitor instead of
+   overloading applyVisitor with only one argument
+ - Changes any appearance of JFLibs to CoSupport
+ - Change multi include protection schema to _INCLUDED_COSUPPORT_XXX
+Keywords: 
+
+
+
+Patches applied:
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-17
+   
+ * Merge from joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2 branch
+ - gcc-3.4 compile fixes
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-18
+   
+ * Merge from HscdSupport--mainline--0.2 Branch
+ - Added functor.hpp used for variable (0-4) parameter methods
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-20
+   
+ * DECL_INTRUSIVE_COPYONWRITE_PTR and IMPL_INTRUSIVE_COPYONWRITE_PTR
+   hardcode JFLibs namespace to make macros useable from other namespaces
+   too
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-21
+   
+ * Merge from HscdSupport--mainline--0.2 branch
+ - Don't use const references to assemble ParamList in functor.hpp
+   therefore allowing to use reference arguments in guards and actions, e.g,
+   dosomething( smoc_port_in<double> &in ) { ... }
+   Should only be used for smoc port references
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-22
+   
+ * Merge from HscdSupport--mainline--0.2 branch
+ - added visitor functionality for oneof (-> applyVisitor)
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-23
+   
+ * Merge from HscdSupport--mainline--0.2 branch
+ - added non-const visitors
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-24
+   
+ * Merge from HscdSupport--mainline--0.2 branch
+ - g++-3.4 compile fixes
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-25
+   
+ * Use new makefile var auxdir generated in ACJF_DONE
+   needs joachim.falk@gmx.de--2004-jf-stuff/BuildSystem--mainline--0.1--patch-12
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-26
+   
+ * BUGFIX for intrusive_copyonwrite_ptr fixed inverted logic for operator bool !!!
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-27
+   
+ * Rename refonly_count => RefCount
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-29
+   
+ * Use ACJF_VAR_SUBPROJECT_DIR for configure.in.frag
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-30
+   
+ * Added intrusive_refcount_ptr which defines
+ - DECL_INTRUSIVE_REFCOUNT_PTR(T, PST)
+ - IMPL_INTRUSIVE_REFCOUNT_PTR(T)
+
+ * joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-21
+   
+ * Use OutputVisitor for oneof ostream output operator <<
+
+ * joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-22
+   
+ * Use default argument for second argument of applyVisitor instead of
+   overloading applyVisitor with only one argument
+
+ * joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-23
+   
+ * Merge from joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1
+ - DECL_INTRUSIVE_COPYONWRITE_PTR and IMPL_INTRUSIVE_COPYONWRITE_PTR
+   hardcode JFLibs namespace to make macros useable from other namespaces too.
+ - Use new makefile var auxdir generated in ACJF_DONE
+ - BUGFIX for intrusive_copyonwrite_ptr fixed inverted logic for operator bool !!!
+ - Rename refonly_count => RefCount
+ - Use ACJF_VAR_SUBPROJECT_DIR for configure.in.frag
+ - Added intrusive_refcount_ptr which defines
+   DECL_INTRUSIVE_REFCOUNT_PTR(T, PST)
+   IMPL_INTRUSIVE_REFCOUNT_PTR(T)
+
+ * joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-24
+   
+ * Changes any appearance of JFLibs to CoSupport
+ * Change multi include protection schema to _INCLUDED_COSUPPORT_XXX
+

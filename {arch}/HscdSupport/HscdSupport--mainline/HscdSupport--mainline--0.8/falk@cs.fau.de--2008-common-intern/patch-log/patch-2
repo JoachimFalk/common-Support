@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.8--patch-2
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue May 13 10:25:37 CEST 2008
+Standard-date: 2008-05-13 08:25:37 GMT
+Modified-files: PerformanceEvaluation.cpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-2
+Summary: 
+ * Fixed a SEGFAULT if PerformanceEvaluation is destroyed but was never used
+   to record timestamps.
+Keywords: 
+
+
+

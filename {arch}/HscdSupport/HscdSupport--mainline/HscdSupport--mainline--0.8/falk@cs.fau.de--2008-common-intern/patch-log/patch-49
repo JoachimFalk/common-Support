@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.8--patch-49
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Martin Streubuehr <streubuehr@cs.fau.de>
+Date: Thu Aug 14 11:03:38 CEST 2008
+Standard-date: 2008-08-14 09:03:38 GMT
+New-files: pkginclude/CoSupport/SystemC/.arch-ids/algorithm.hpp.id
+    pkginclude/CoSupport/SystemC/algorithm.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-49
+Summary: 
+ - added modulus algorithm for sc_time
+Keywords: 
+
+
+

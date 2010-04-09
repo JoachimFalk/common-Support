@@ -1,0 +1,17 @@
+Revision: HscdSupport--mainline--0.8--patch-43
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Aug  7 13:38:08 CEST 2008
+Standard-date: 2008-08-07 11:38:08 GMT
+Modified-files: pkginclude/CoSupport/Streams/ColorStreambuf.hpp
+    pkginclude/CoSupport/Streams/DebugStreambuf.hpp
+    pkginclude/CoSupport/Streams/HeaderFooterStreambuf.hpp
+    pkginclude/CoSupport/Streams/IndentStreambuf.hpp
+    pkginclude/CoSupport/Type/transform.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-43
+Summary: 
+ * Added KASCPAR_PARSING annotations
+Keywords: 
+
+
+

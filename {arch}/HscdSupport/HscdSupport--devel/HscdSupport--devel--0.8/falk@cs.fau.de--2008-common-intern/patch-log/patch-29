@@ -1,0 +1,27 @@
+Revision: HscdSupport--devel--0.8--patch-29
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed Jun 17 17:30:37 CEST 2009
+Standard-date: 2009-06-17 15:30:37 GMT
+Modified-files: pkginclude/CoSupport/SmartPtr/RefCount.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-29
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-91
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-92
+Summary: 
+ * Merge from HscdSupport--mainline--0.8
+ - Improved paranoia in CoSupport::SmartPtr::RefCount.
+ - Added CoSupport::SmartPtr::ScopedRefCountBooster<T>
+Keywords: 
+
+
+
+Patches applied:
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-91
+   
+ * Improved paranoia in CoSupport::SmartPtr::RefCount.
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-92
+   
+ * Added CoSupport::SmartPtr::ScopedRefCountBooster<T>
+

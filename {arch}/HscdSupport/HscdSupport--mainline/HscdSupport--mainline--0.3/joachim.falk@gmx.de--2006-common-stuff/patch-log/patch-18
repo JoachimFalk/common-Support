@@ -1,0 +1,36 @@
+Revision: HscdSupport--mainline--0.3--patch-18
+Archive: joachim.falk@gmx.de--2006-common-stuff
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Mon Oct 16 10:51:11 CEST 2006
+Standard-date: 2006-10-16 08:51:11 GMT
+Modified-files: intrusive_copyonwrite_ptr.hpp
+    intrusive_refcount_ptr.hpp refcount.hpp
+New-patches: joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-31
+    joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-32
+    joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-33
+    joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.3--patch-18
+Summary: 
+ * Merge from Support--mainline--0.1
+ - Fixed RefCountObject and refcounting in general
+
+Keywords: 
+
+
+
+Patches applied:
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-31
+   
+ * Merge from joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2 branch
+ - Use OutputVisitor for oneof ostream output operator <<
+ - Use default argument for second argument of applyVisitor instead of
+   overloading applyVisitor with only one argument
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-32
+   
+ * Merge from HscdSupport--mainline--0.3 branch
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-33
+   
+ * Fixed RefCountObject and refcounting in general
+

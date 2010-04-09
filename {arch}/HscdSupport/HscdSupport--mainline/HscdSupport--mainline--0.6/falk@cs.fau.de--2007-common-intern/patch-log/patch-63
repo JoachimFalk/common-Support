@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.6--patch-63
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Christian Zebelein <christian.zebelein@fen-net.de>
+Date: Fri Aug  3 09:55:30 CEST 2007
+Standard-date: 2007-08-03 07:55:30 GMT
+Modified-files: pkginclude/cosupport/list_facade.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-63
+Summary: 
+  * ListFacade: added helper methods to find an
+    element in a list (find_if and lookup)
+Keywords: 
+
+
+

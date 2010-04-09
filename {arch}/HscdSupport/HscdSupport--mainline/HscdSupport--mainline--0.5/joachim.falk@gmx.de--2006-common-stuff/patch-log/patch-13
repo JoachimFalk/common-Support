@@ -1,0 +1,17 @@
+Revision: HscdSupport--mainline--0.5--patch-13
+Archive: joachim.falk@gmx.de--2006-common-stuff
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Mon Jan 22 18:27:36 CET 2007
+Standard-date: 2007-01-22 17:27:36 GMT
+New-files: .arch-ids/stl_output_for_vector.hpp.id
+    stl_output_for_vector.hpp
+Modified-files: Makefile.am
+New-patches: joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.5--patch-13
+Summary: 
+ * Added stl_output_for_vector.hpp which defines ostream output operator <<
+   for all std::vector containers. This requires for outpit of std::vector<T>
+   the corresponding ostream output operator << for T.
+Keywords: 
+
+
+

@@ -1,0 +1,14 @@
+Revision: Support--mainline--0.1--patch-33
+Archive: joachim.falk@gmx.de--2004-jf-stuff
+Creator: Joachim Falk <joachim.falk@gmx.de>
+Date: Mon Oct 16 09:52:49 CEST 2006
+Standard-date: 2006-10-16 07:52:49 GMT
+Modified-files: intrusive_copyonwrite_ptr.hpp
+    intrusive_refcount_ptr.hpp refcount.hpp
+New-patches: joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-33
+Summary: 
+ * Fixed RefCountObject and refcounting in general
+Keywords: 
+
+
+

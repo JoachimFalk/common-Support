@@ -1,0 +1,14 @@
+Revision: HscdSupport--devel--0.8--patch-53
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Oct  1 15:13:15 CEST 2009
+Standard-date: 2009-10-01 13:13:15 GMT
+Modified-files: pkginclude/CoSupport/XML/xerces_support.hpp
+    {arch}/=tagging-method
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-53
+Summary: 
+ * Fixup comparison operations for XStr.
+Keywords: 
+
+
+

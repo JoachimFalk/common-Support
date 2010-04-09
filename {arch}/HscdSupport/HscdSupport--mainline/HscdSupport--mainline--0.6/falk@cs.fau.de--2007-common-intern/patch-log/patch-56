@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.6--patch-56
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Christian Zebelein <christian.zebelein@fen-net.de>
+Date: Mon Jul  2 15:17:37 CEST 2007
+Standard-date: 2007-07-02 13:17:37 GMT
+Modified-files: pkginclude/cosupport/facade.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-56
+Summary: 
+  * facade.hpp: fixed comparison operators
+    for FacadePtr
+Keywords: 
+
+
+

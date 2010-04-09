@@ -1,0 +1,16 @@
+Revision: HscdSupport--mainline--0.8--patch-23
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Keinert <keinert@codesign.informatik.uni-erlangen.de>
+Date: Thu Jun 19 19:55:07 CEST 2008
+Standard-date: 2008-06-19 17:55:07 GMT
+Modified-files: FilterOStream.cpp
+    pkginclude/CoSupport/Streams/ColorStreambuf.hpp
+    pkginclude/CoSupport/Streams/DebugOStream.hpp
+    test_nested_event_lists.cpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-23
+Summary: 
+ - Fix initialization problem in CoSupport::Streams::Color
+Keywords: 
+
+
+

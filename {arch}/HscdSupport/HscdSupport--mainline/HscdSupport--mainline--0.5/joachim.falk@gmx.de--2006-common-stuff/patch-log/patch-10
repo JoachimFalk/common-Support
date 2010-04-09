@@ -1,0 +1,25 @@
+Revision: HscdSupport--mainline--0.5--patch-10
+Archive: joachim.falk@gmx.de--2006-common-stuff
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Mon Nov 13 14:03:08 CET 2006
+Standard-date: 2006-11-13 13:03:08 GMT
+Modified-files: arrayfifo.hpp bit_buffer.hpp
+    checked_vector.hpp functor.hpp
+    intrusive_copyonwrite_ptr.hpp
+    intrusive_refcount_ptr.hpp iterator_dump.hpp
+    modulo_arith.hpp oneof.hpp par_actor.hpp
+    par_actor_factory.hpp par_manager.cpp par_manager.hpp
+    par_port.hpp refcount.hpp refcount_object.cpp
+    refcount_object.hpp shared_copyonwrite_ptr.hpp
+    smoc_debug_out.cpp smoc_debug_out.hpp smoc_ostream.cpp
+    smoc_ostream.hpp stl_output_for_list.hpp
+    stl_output_for_pair.hpp string_convert.hpp
+    systemc_support.hpp test_arrayfifo.cpp
+    test_event_and_list.cpp test_event_or_list.cpp
+New-patches: joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.5--patch-10
+Summary: 
+ * Added copyright boilerplate from COPYRIGHT
+Keywords: 
+
+
+

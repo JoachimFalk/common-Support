@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.3--patch-6
+Archive: joachim.falk@gmx.de--2006-common-stuff
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Mar  9 19:05:52 CET 2006
+Standard-date: 2006-03-09 18:05:52 GMT
+Modified-files: systemc_support.hpp
+New-patches: joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.3--patch-6
+Summary: 
+ * Removed dead commented out code
+Keywords: 
+
+
+

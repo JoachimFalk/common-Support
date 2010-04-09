@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.6--patch-44
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Fri Jun 22 09:37:13 CEST 2007
+Standard-date: 2007-06-22 07:37:13 GMT
+Modified-files: pkginclude/cosupport/facade.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-44
+Summary: 
+ * Use internal _impl() and _impl(x) in FacadePtr instead of getImpl() and setImpl(x)
+Keywords: 
+
+
+

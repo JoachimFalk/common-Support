@@ -1,0 +1,13 @@
+Revision: HscdSupport--devel--0.8--patch-56
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Mon Nov 23 15:53:05 CET 2009
+Standard-date: 2009-11-23 14:53:05 GMT
+Modified-files: configure.in
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-56
+Summary: 
+ * General configure.in cleanup.
+Keywords: 
+
+
+

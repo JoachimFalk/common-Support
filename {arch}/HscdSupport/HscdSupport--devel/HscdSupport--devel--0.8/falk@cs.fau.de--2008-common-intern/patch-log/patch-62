@@ -1,0 +1,31 @@
+Revision: HscdSupport--devel--0.8--patch-62
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Martin Streubuehr <streubuehr@cs.fau.de>
+Date: Tue Dec 22 16:10:15 CET 2009
+Standard-date: 2009-12-22 15:10:15 GMT
+Removed-files: msvc90/CoSupport/.arch-ids/CoSupport.ncb.id
+    msvc90/CoSupport/.arch-ids/CoSupport.suo.id
+    msvc90/CoSupport/CoSupport.ncb
+    msvc90/CoSupport/CoSupport.suo
+Modified-files: pkginclude/CoSupport/SystemC/systemc_support.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-62
+    falk@cs.fau.de--2008-common-intern/HscdSupport--msvc90--0.8--patch-3
+    falk@cs.fau.de--2008-common-intern/HscdSupport--msvc90--0.8--patch-4
+Summary: 
+ - replayed patch-3 and patch-4 from HscdSupport--msvc90--0.8
+ - moved definition of a reference counted Event from SysteMoC to Support
+ - removed unnecessary and fluctuating binary files (msvc90) from version control
+Keywords: 
+
+
+
+Patches applied:
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--msvc90--0.8--patch-3
+   
+ - moved definition of a reference counted Event from SysteMoC to Support
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--msvc90--0.8--patch-4
+   
+ - removed unnecessary and fluctuating binary files (msvc90) from version control
+

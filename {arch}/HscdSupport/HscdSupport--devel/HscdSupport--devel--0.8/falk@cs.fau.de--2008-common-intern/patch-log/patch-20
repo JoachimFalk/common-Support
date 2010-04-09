@@ -1,0 +1,15 @@
+Revision: HscdSupport--devel--0.8--patch-20
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed May 27 11:24:27 CEST 2009
+Standard-date: 2009-05-27 09:24:27 GMT
+Modified-files: pkginclude/CoSupport/commondefs.h
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-20
+Summary: 
+ * Updated pkginclude/CoSupport/commondefs.h
+ - No longer assume CHAR_BIT is 8
+ - Added BITS_TYPE(T) macro
+Keywords: 
+
+
+

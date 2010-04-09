@@ -1,0 +1,23 @@
+Revision: HscdSupport--mainline--0.8--patch-86
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue Jun  9 17:30:52 CEST 2009
+Standard-date: 2009-06-09 15:30:52 GMT
+Modified-files: pkginclude/CoSupport/Math/string_hash.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-23
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-86
+Summary: 
+ * Merge from HscdSupport--devel--0.8 branch
+ - Move CoSupport::FNV into CoSupport::Math namespace.
+   Deprecate CoSupport::FNV.
+Keywords: 
+
+
+
+Patches applied:
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-23
+   
+ * Move CoSupport::FNV into CoSupport::Math namespace.
+   Deprecate CoSupport::FNV.
+

@@ -1,0 +1,18 @@
+Revision: HscdSupport--mainline--0.6--patch-24
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Fri May 18 11:50:31 CEST 2007
+Standard-date: 2007-05-18 09:50:31 GMT
+New-files: pkginclude/cosupport/.arch-ids/facade2.hpp.id
+    pkginclude/cosupport/.arch-ids/list_facade.hpp.id
+    pkginclude/cosupport/facade2.hpp
+    pkginclude/cosupport/list_facade.hpp
+Modified-files: Makefile.am pkginclude/cosupport/facade.hpp
+    pkginclude/cosupport/typetransform.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-24
+Summary: 
+ * Added List facade and new facade code
+Keywords: 
+
+
+

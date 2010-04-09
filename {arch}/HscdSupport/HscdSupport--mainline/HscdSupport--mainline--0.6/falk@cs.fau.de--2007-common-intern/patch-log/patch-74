@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.6--patch-74
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Sep 20 16:43:44 CEST 2007
+Standard-date: 2007-09-20 14:43:44 GMT
+Modified-files: pkginclude/cosupport/functor.hpp
+    pkginclude/cosupport/systemc_support.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-74
+Summary: 
+ * gcc 4.1.2 compile fixes
+Keywords: 
+
+
+

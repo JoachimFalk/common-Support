@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.5--patch-14
+Archive: joachim.falk@gmx.de--2006-common-stuff
+Creator: Christian Zebelein <christian.zebelein@fen-net.de>
+Date: Tue Jan 23 10:15:05 CET 2007
+Standard-date: 2007-01-23 09:15:05 GMT
+Modified-files: filter_ostream.cpp filter_ostream.hpp
+New-patches: joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.5--patch-14
+Summary: 
+  * modified filter_ostream.{hpp,cpp} (Header, Footer, Color)
+Keywords: 
+
+
+

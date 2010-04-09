@@ -1,0 +1,16 @@
+Revision: HscdSupport--mainline--0.6--patch-80
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Christian Zebelein <christian.zebelein@fen-net.de>
+Date: Fri Oct 19 11:20:54 CEST 2007
+Standard-date: 2007-10-19 09:20:54 GMT
+Modified-files: pkginclude/cosupport/systemc_support.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-80
+Summary: 
+  * systemoc_support.hpp: restored old (confusing?)
+    behaviour of clear() / eventDestroyed() member functions
+    of Or/And-Lists (this also fixed a bug introduced by the
+    last patch)
+Keywords: 
+
+
+

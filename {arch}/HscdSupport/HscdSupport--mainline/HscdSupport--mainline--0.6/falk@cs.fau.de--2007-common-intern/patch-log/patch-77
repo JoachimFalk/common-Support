@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.6--patch-77
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Mon Sep 24 11:17:31 CEST 2007
+Standard-date: 2007-09-24 09:17:31 GMT
+Modified-files: configure.in.frag
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-77
+Summary: 
+ * Hardcode subproject dir into configure.in.frag solves problem
+   in case of relative configure path, e.g., ../configure.
+Keywords: 
+
+
+

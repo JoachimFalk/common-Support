@@ -1,0 +1,22 @@
+Revision: HscdSupport--devel--0.8--patch-12
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu May  7 18:21:04 CEST 2009
+Standard-date: 2009-05-07 16:21:04 GMT
+New-files: pkginclude/CoSupport/SystemC/.arch-ids/systemc_time.hpp.id
+    pkginclude/CoSupport/SystemC/systemc_time.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-12
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-68
+Summary: 
+ * Merge from HscdSupport--mainline--0.8 branch
+ - added SystemC helper to create sc_time object
+Keywords: 
+
+
+
+Patches applied:
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-68
+   
+ - added SystemC helper to create sc_time object
+

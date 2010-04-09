@@ -1,0 +1,16 @@
+Revision: HscdSupport--devel--0.8--patch-15
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Mon May 11 11:42:27 CEST 2009
+Standard-date: 2009-05-11 09:42:27 GMT
+New-files: .arch-ids/test_value.cpp.id
+    pkginclude/CoSupport/DataTypes/.arch-ids/Value.hpp.id
+    pkginclude/CoSupport/DataTypes/Value.hpp test_value.cpp
+Modified-files: Makefile.am
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-15
+Summary: 
+ * Improved ValueInterface<std::string>.
+Keywords: 
+
+
+

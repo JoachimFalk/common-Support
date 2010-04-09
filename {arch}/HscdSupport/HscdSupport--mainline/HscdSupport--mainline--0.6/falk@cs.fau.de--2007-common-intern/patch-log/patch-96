@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.6--patch-96
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Mar 20 09:57:45 CET 2008
+Standard-date: 2008-03-20 08:57:45 GMT
+Modified-files: pkginclude/cosupport/facade.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-96
+Summary: 
+ * Added FacadeTraits
+Keywords: 
+
+
+

@@ -1,0 +1,13 @@
+Revision: HscdSupport--devel--0.8--patch-59
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Dec  3 15:55:53 CET 2009
+Standard-date: 2009-12-03 14:55:53 GMT
+Modified-files: pkginclude/CoSupport/DataTypes/Facade.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-59
+Summary: 
+ * Smal cleanups in Facade.hpp.
+Keywords: 
+
+
+

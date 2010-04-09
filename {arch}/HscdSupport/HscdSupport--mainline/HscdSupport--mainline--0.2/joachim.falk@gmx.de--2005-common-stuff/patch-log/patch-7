@@ -1,0 +1,34 @@
+Revision: HscdSupport--mainline--0.2--patch-7
+Archive: joachim.falk@gmx.de--2005-common-stuff
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue Oct 11 17:46:59 CEST 2005
+Standard-date: 2005-10-11 15:46:59 GMT
+Modified-files: arrayfifo.hpp
+New-patches: joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-15
+    joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-16
+    joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-7
+Summary: 
+ * Merge from joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1
+ - Add some documentation to ArrayFifo methods
+ - Added following methods to ArrayFifo
+   - void clear_by_consume() // same as: while ( !empty() ) pop_front();
+   - clear_by_invalidate()   // same as: while ( !empty() ) pop_back();
+   - clear()                 // clear array fifo
+
+Keywords: 
+
+
+
+Patches applied:
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-15
+   
+ * Add some documentation to ArrayFifo methods
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-16
+   
+ * Added following methods to ArrayFifo
+ - void clear_by_consume() // same as: while ( !empty() ) pop_front();
+ - clear_by_invalidate()   // same as: while ( !empty() ) pop_back();
+ - clear()                 // clear array fifo
+

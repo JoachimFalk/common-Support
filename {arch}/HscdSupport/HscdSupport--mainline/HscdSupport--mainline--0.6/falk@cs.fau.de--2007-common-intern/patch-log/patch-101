@@ -1,0 +1,16 @@
+Revision: HscdSupport--mainline--0.6--patch-101
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Christian Zebelein <christian.zebelein@cs.fau.de>
+Date: Tue Apr 22 08:56:41 CEST 2008
+Standard-date: 2008-04-22 06:56:41 GMT
+New-files: pkginclude/cosupport/.arch-ids/string_hash.hpp.id
+    pkginclude/cosupport/string_hash.hpp
+Modified-files: SMXIdManager.cpp
+    pkginclude/cosupport/SMXIdManager.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-101
+Summary: 
+  * forgot to add string_hash.hpp
+Keywords: 
+
+
+

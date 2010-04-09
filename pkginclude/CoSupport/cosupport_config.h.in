@@ -1,0 +1,18 @@
+/* vim: set sw=2 ts=8 syn=c: */
+
+#ifndef _INCLUDED_COSUPPORT_CONFIG_H
+#define _INCLUDED_COSUPPORT_CONFIG_H
+
+/* Defined if debug support is enabled */
+#undef COSUPPORT_ENABLE_DEBUG
+
+/* Defined if systemc support is enabled */
+#undef COSUPPORT_ENABLE_SYSTEMC
+
+/* Defined if xerces support is enabled */
+#undef COSUPPORT_ENABLE_XERCES
+
+/* Defined if xalan support is enabled */
+#undef COSUPPORT_ENABLE_XALAN
+
+#endif /* _INCLUDED_COSUPPORT_CONFIG_H */

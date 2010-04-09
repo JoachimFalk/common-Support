@@ -1,0 +1,16 @@
+Revision: HscdSupport--mainline--0.8--patch-14
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Mon Jun  2 16:08:36 CEST 2008
+Standard-date: 2008-06-02 14:08:36 GMT
+Modified-files: pkginclude/CoSupport/DataTypes/ListFacade.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-14
+Summary: 
+ * Disable find_if, erase_if, and lookup from ListFacade which are
+   not methods of real lists and therefore should not be provided
+   by ListFacade. ListFacade has to goal to provide the interface
+   of a std::list nothing more or less.
+Keywords: 
+
+
+

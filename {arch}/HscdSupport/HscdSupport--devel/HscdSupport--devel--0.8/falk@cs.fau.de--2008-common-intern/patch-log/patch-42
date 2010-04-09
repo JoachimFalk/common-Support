@@ -1,0 +1,13 @@
+Revision: HscdSupport--devel--0.8--patch-42
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Sep  3 17:29:19 CEST 2009
+Standard-date: 2009-09-03 15:29:19 GMT
+Modified-files: pkginclude/CoSupport/SystemC/systemc_support.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-42
+Summary: 
+ * New strategy to speedup EventAndList.
+Keywords: 
+
+
+

@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.6--patch-37
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Jens Gladigau <gladigau@codesign.informatik.uni-erlangen.de>
+Date: Mon Jun 11 17:40:20 CEST 2007
+Standard-date: 2007-06-11 15:40:20 GMT
+Modified-files: pkginclude/cosupport/list_facade.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-37
+Summary: 
+ * Added size method to list_facade.hpp
+Keywords: 
+
+
+

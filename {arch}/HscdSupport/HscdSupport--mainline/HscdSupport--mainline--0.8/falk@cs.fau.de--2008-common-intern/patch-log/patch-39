@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.8--patch-39
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Christian Zebelein <christian.zebelein@cs.fau.de>
+Date: Wed Jul 16 17:07:06 CEST 2008
+Standard-date: 2008-07-16 15:07:06 GMT
+Modified-files: pkginclude/CoSupport/Lambda/functor.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-39
+Summary:
+  * Functor: added paramListVisit 
+Keywords: 
+
+
+

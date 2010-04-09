@@ -1,0 +1,31 @@
+Revision: Support--mainline--0.1--patch-18
+Archive: joachim.falk@gmx.de--2004-jf-stuff
+Creator: Joachim Falk <joachim.falk@gmx.de>
+Date: Sat Jan 28 09:08:51 CET 2006
+Standard-date: 2006-01-28 08:08:51 GMT
+New-files: .arch-ids/functor.hpp.id functor.hpp
+Modified-files: Makefile.am
+Modified-directories: {arch}/HscdSupport/HscdSupport--mainline/HscdSupport--mainline--0.2
+    {arch}/HscdSupport/HscdSupport--mainline/HscdSupport--mainline--0.2/joachim.falk@gmx.de--2005-common-stuff
+    {arch}/HscdSupport/HscdSupport--mainline/HscdSupport--mainline--0.2/joachim.falk@gmx.de--2005-common-stuff/patch-log
+New-patches: joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-18
+    joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-12
+    joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-13
+Summary: 
+ * Merge from HscdSupport--mainline--0.2 Branch
+ - Added functor.hpp used for variable (0-4) parameter methods
+Keywords: 
+
+
+
+Patches applied:
+
+ * joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-12
+   
+ * Added functor.hpp used for variable (0-3) parameter actions and guards in SysteMoC v0.3
+
+ * joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-13
+   
+ * Cleaned up macros for Functor and ConstFunctor definition
+ * Now support up to 4 function parameters
+
