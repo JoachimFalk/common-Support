@@ -1,0 +1,14 @@
+Revision: Support--mainline--0.1--patch-4
+Archive: joachim.falk@gmx.de--2004-jf-stuff
+Creator: Joachim Falk <joachim.falk@gmx.de>
+Date: Sat Oct  1 00:57:33 CEST 2005
+Standard-date: 2005-09-30 22:57:33 GMT
+Modified-files: Makefile.am
+New-patches: joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-4
+Summary: 
+ * Added intrusive_copyonwrite_ptr.hpp shared_copyonwrite_ptr.hpp 
+   to package includes
+Keywords: 
+
+
+

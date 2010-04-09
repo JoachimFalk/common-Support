@@ -1,0 +1,21 @@
+Revision: HscdSupport--mainline--0.6--patch-48
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue Jun 26 10:02:54 CEST 2007
+Standard-date: 2007-06-26 08:02:54 GMT
+Modified-files: pkginclude/cosupport/bit_buffer.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-48
+    joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.5--patch-18
+Summary: 
+ * Merge from HscdSupport--mainline--0.5
+ - fixed bit_buffer
+Keywords: 
+
+
+
+Patches applied:
+
+ * joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.5--patch-18
+   
+  * fixed bit_buffer 
+

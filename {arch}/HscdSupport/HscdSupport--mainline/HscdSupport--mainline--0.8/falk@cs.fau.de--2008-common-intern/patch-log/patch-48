@@ -1,0 +1,23 @@
+Revision: HscdSupport--mainline--0.8--patch-48
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Thomas Schlichter <schlichter@cs.fau.de>
+Date: Wed Aug 13 20:30:39 CEST 2008
+Standard-date: 2008-08-13 18:30:39 GMT
+Modified-files: SMXIdManager.cpp
+    msvc90/CoSupport/CoSupport.ncb
+    msvc90/CoSupport/CoSupport.suo
+    msvc90/CoSupport/libcosupport-initializer/libcosupport-initializer.vcproj
+    msvc90/CoSupport/libcosupport-smartptr/libcosupport-smartptr.vcproj
+    msvc90/CoSupport/libcosupport-streams/libcosupport-streams.vcproj
+    msvc90/CoSupport/libcosupport-string/libcosupport-string.vcproj
+    msvc90/CoSupport/libcosupport-systemc/libcosupport-systemc.vcproj
+    msvc90/CoSupport/libcosupport-xerces/libcosupport-xerces.vcproj
+    msvc90/CoSupport/libcosupport/libcosupport.vcproj
+    pkginclude/CoSupport/SMXIdManager.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-48
+Summary: Minor changes for Visual C++ compatibility
+ - Fix linker error: change the "static const" member variables of SMXIdManager to be just "const"
+Keywords: 
+
+
+

@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.6--patch-25
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Fri May 18 15:36:09 CEST 2007
+Standard-date: 2007-05-18 13:36:09 GMT
+Modified-files: pkginclude/cosupport/facade2.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-25
+Summary: 
+ * FacadePtr improvments == ! operators
+Keywords: 
+
+
+

@@ -1,0 +1,13 @@
+Revision: Support--mainline--0.1--patch-15
+Archive: joachim.falk@gmx.de--2004-jf-stuff
+Creator: Joachim Falk <joachim.falk@gmx.de>
+Date: Tue Oct 11 14:19:51 CEST 2005
+Standard-date: 2005-10-11 12:19:51 GMT
+Modified-files: arrayfifo.hpp
+New-patches: joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-15
+Summary: 
+ * Add some documentation to ArrayFifo methods
+Keywords: 
+
+
+

@@ -1,0 +1,19 @@
+Revision: Support--mainline--0.1--patch-11
+Archive: joachim.falk@gmx.de--2004-jf-stuff
+Creator: Joachim Falk <joachim.falk@gmx.de>
+Date: Sat Oct  8 17:46:03 CEST 2005
+Standard-date: 2005-10-08 15:46:03 GMT
+New-files: .arch-ids/modulo_arith.hpp.id modulo_arith.hpp
+Removed-files: .arch-ids/fifo.c.id fifo.c
+Renamed-files: .arch-ids/fifo.h.id .arch-ids/arrayfifo.hpp.id
+    .arch-ids/test_fifo.c.id .arch-ids/test_arrayfifo.cpp.id
+    fifo.h arrayfifo.hpp
+    test_fifo.c test_arrayfifo.cpp
+Modified-files: Makefile.am arrayfifo.hpp test_arrayfifo.cpp
+New-patches: joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-11
+Summary: 
+ * Added ArrayFifo and ModuloInt
+Keywords: 
+
+
+

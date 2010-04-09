@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.2--patch-17
+Archive: joachim.falk@gmx.de--2005-common-stuff
+Creator: Christian Zebelein <christian.zebelein@fen-net.de>
+Date: Mon Mar  6 16:29:07 CET 2006
+Standard-date: 2006-03-06 15:29:07 GMT
+Modified-files: oneof.hpp
+New-patches: joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-17
+Summary:
+ * added non-const visitors 
+Keywords: 
+
+
+

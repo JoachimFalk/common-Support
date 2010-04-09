@@ -1,0 +1,36 @@
+Revision: HscdSupport--mainline--0.2--patch-3
+Archive: joachim.falk@gmx.de--2005-common-stuff
+Creator: Joachim Falk <joachim.falk@gmx.de>
+Date: Sat Oct  8 18:04:16 CEST 2005
+Standard-date: 2005-10-08 16:04:16 GMT
+New-files: .arch-ids/arrayfifo.hpp.id
+    .arch-ids/modulo_arith.hpp.id
+    .arch-ids/test_arrayfifo.cpp.id arrayfifo.hpp
+    modulo_arith.hpp test_arrayfifo.cpp
+Modified-files: Makefile.am
+New-patches: joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-9
+    joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-10
+    joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-11
+    joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-3
+Summary: 
+ * Merge from joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1 branch
+ - Added ArrayFifo and ModuloInt
+Keywords: 
+
+
+
+Patches applied:
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-9
+   
+ * Added fifo code
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-10
+   
+ * Merge from
+   joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.1 branch
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-11
+   
+ * Added ArrayFifo and ModuloInt
+

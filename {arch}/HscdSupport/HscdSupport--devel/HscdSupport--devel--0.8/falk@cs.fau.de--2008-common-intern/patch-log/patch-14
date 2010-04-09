@@ -1,0 +1,52 @@
+Revision: HscdSupport--devel--0.8--patch-14
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu May  7 18:31:15 CEST 2009
+Standard-date: 2009-05-07 16:31:15 GMT
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-14
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-70
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-71
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-72
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-75
+Summary: 
+ * Sync up to HscdSupport--mainline--0.8 branch
+   (Dummy commit)
+Keywords: 
+
+
+
+Patches applied:
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-70
+   
+ * Merge from HscdSupport--devel--0.8
+ - Added test_typename
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-71
+   
+ * Merge from HscdSupport--devel--0.8
+ * Change ListFacade to explicitly provide the types reference, const_reference, pointer and const_pointer.
+ * No longer use CoSupport::Type::Const/Mutable to change between iterator and const_iterator now use
+ - Type::STLIteratorSelector<C>::type to access const_iterator if container C is const and iterator otherwise.
+ - Type::STLReverseIteratorSelector<C>::type to access const_reverse_iterator if container C is const and reverse_iterator otherwise.
+ - Type::STLPointerSelector<C>::type to access const_pointer if container C is const and pointer otherwise.
+ - Type::STLReferenceSelector<C>::type to access const_reference if container C is const and reference otherwise.
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-72
+   
+ * Merge from HscdSupport--devel--0.8
+ - Added FacadeTraits<const T>
+   where FacadeTraits<const T>::Ref == FacadeTraits<T>::ConstRef
+   and   FacadeTraits<const T>::Ptr == FacadeTraits<T>::ConstPtr, i.e.,
+   If the facade object is const we can only get pointers to const
+   objects even if we request a normal pointer.
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-75
+   
+ * Merge from HscdSupport--devel--0.8
+ - Concentrate face type definitions in FacadeTraits class.
+ - Switched to boost::add_const and boost::remove_const from boost/type_traits for Facade.hpp
+   Instead of Const<T::Ptr> use FacadeTraits<typename boost::add_const<T>::type>::Ptr
+   Instead of Mutable<T::Ptr> use FacadeTraits<typename boost::remove_const<T>::type>::Ptr
+ - Provide boost::add_reference/remove_reference boost::add_pointer/remove_pointer for Facade.hpp
+

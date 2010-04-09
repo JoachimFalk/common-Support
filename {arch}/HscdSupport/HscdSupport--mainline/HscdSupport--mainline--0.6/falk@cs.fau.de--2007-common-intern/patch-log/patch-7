@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.6--patch-7
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Fri Mar 23 14:31:37 CET 2007
+Standard-date: 2007-03-23 13:31:37 GMT
+Modified-files: Makefile.am
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-7
+Summary: 
+ * Fixed up Makefile.am to make previous patch working
+Keywords: 
+
+
+

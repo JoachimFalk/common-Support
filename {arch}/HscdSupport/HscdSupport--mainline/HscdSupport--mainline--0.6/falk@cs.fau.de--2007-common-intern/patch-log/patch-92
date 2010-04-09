@@ -1,0 +1,15 @@
+Revision: HscdSupport--mainline--0.6--patch-92
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Christian Zebelein <christian.zebelein@cs.fau.de>
+Date: Tue Mar 11 13:26:38 CET 2008
+Standard-date: 2008-03-11 12:26:38 GMT
+Modified-files: pkginclude/cosupport/bit_buffer.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-92
+Summary: 
+  * bit_buffer.hpp: Added bit_field_scatter which allows regions
+    of a bitfield to be non-continuous (must be not overlapping)
+  * bit_buffer.hpp: fixed some access modifiers 
+Keywords: 
+
+
+

@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.6--patch-73
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Sep 20 12:27:17 CEST 2007
+Standard-date: 2007-09-20 10:27:17 GMT
+Modified-files: pkginclude/cosupport/refcount.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-73
+Summary: 
+ * Fix mutex usage if defined _REENTRANT for refcount objects 
+Keywords: 
+
+
+

@@ -1,0 +1,14 @@
+Revision: HscdSupport--devel--0.8--patch-19
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed May 20 13:45:58 CEST 2009
+Standard-date: 2009-05-20 11:45:58 GMT
+Modified-files: BasicInitializer.cpp
+    pkginclude/CoSupport/Initializer/BasicInitializer.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-19
+Summary: 
+ * Make BasicInitializer more resistant against global object ctor/dtor sequence.
+Keywords: 
+
+
+

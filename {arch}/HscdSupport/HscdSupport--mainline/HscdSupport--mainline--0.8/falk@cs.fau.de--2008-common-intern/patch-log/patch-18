@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.8--patch-18
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue Jun 10 10:26:40 CEST 2008
+Standard-date: 2008-06-10 08:26:40 GMT
+Modified-files: pkginclude/CoSupport/DataTypes/Facade.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-18
+Summary: 
+ * Fixed Const<...>, Mutable<...>, and ToggleConst<...> for FacadePtr<...>
+Keywords: 
+
+
+

@@ -1,0 +1,16 @@
+Revision: HscdSupport--mainline--0.8--patch-95
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Jens Gladigau <gladigau@codesign.informatik.uni-erlangen.de>
+Date: Tue Jul 14 14:08:50 CEST 2009
+Standard-date: 2009-07-14 12:08:50 GMT
+Modified-files: pkginclude/CoSupport/DataTypes/Facade.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-95
+Summary: 
+  (under supervision of joachim)
+  * moved 'dynamic_pointer_cast' and 'static_pointer_cast' into namepace boost
+  * marked CoSupport::DataTypes' casts as deprecated
+    @pkginclude/CoSupport/DataTypes/Facade.hpp
+Keywords: 
+
+
+

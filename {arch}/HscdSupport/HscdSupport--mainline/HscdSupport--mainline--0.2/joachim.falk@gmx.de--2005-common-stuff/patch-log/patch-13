@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.2--patch-13
+Archive: joachim.falk@gmx.de--2005-common-stuff
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed Jan 25 14:52:43 MET 2006
+Standard-date: 2006-01-25 13:52:43 GMT
+Modified-files: functor.hpp
+New-patches: joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-13
+Summary: 
+ * Cleaned up macros for Functor and ConstFunctor definition
+ * Now support up to 4 function parameters
+Keywords: 
+
+
+

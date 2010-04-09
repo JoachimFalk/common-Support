@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.2--patch-18
+Archive: joachim.falk@gmx.de--2005-common-stuff
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed Apr  5 19:56:54 CEST 2006
+Standard-date: 2006-04-05 17:56:54 GMT
+Modified-files: oneof.hpp
+New-patches: joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-18
+Summary: 
+ * g++-3.4 compile fixes
+Keywords: 
+
+
+

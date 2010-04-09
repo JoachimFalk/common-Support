@@ -1,0 +1,15 @@
+Revision: HscdSupport--mainline--0.6--patch-84
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Christian Zebelein <christian.zebelein@fen-net.de>
+Date: Fri Nov 16 12:44:19 CET 2007
+Standard-date: 2007-11-16 11:44:19 GMT
+Modified-files: pkginclude/cosupport/systemc_support.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-84
+Summary: 
+  * systemc_support.hpp: added VariantEventWaiter which
+    can contain a single EventWaiter (can be exchanged
+    with another EventWaiter)
+Keywords: 
+
+
+

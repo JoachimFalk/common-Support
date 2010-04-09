@@ -1,0 +1,16 @@
+Revision: HscdSupport--mainline--0.6--patch-3
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed Feb 28 10:09:46 CET 2007
+Standard-date: 2007-02-28 09:09:46 GMT
+Modified-files: cosupport/checked_vector.hpp
+    cosupport/filter_ostream.hpp filter_ostream.cpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-3
+Summary: 
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ * !!! NO DOS FILEFORMAT SOURCE FILES HERE !!!
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Keywords: 
+
+
+

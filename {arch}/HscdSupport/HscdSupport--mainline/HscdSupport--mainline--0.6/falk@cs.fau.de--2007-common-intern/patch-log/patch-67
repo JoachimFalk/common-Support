@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.6--patch-67
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Christian Zebelein <christian.zebelein@fen-net.de>
+Date: Wed Aug 29 10:41:29 CEST 2007
+Standard-date: 2007-08-29 08:41:29 GMT
+Modified-files: pkginclude/cosupport/string_convert.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-67
+Summary: 
+  * string_convert.hpp: added Concat class for convenient
+    concatenation of non-string values
+Keywords: 
+
+
+

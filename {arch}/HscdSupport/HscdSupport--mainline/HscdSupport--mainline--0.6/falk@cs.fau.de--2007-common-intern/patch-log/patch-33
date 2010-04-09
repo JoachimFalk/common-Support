@@ -1,0 +1,16 @@
+Revision: HscdSupport--mainline--0.6--patch-33
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue Jun  5 12:30:38 CEST 2007
+Standard-date: 2007-06-05 10:30:38 GMT
+Modified-files: pkginclude/cosupport/facade2.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-33
+Summary: 
+  * Rename PtrConst => ConstPtr and RefConst => ConstRef in facade2.hpp
+  - ConstPtr is a mutable pointer to a constant object
+  - ConstPtr const is a constant pointer to a constant object
+  - ConstRef is a reference to a constant object
+Keywords: 
+
+
+

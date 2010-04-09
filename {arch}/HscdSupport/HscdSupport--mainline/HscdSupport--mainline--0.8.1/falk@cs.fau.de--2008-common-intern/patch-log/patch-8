@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.8.1--patch-8
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Christian Zebelein <christian.zebelein@cs.fau.de>
+Date: Tue Aug 18 16:00:48 CEST 2009
+Standard-date: 2009-08-18 14:00:48 GMT
+Modified-files: pkginclude/CoSupport/SystemC/systemc_support.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8.1--patch-8
+Summary:
+  * EventOrList: cached entry must be overwritten by
+    active event with higher priority 
+Keywords: 
+
+
+

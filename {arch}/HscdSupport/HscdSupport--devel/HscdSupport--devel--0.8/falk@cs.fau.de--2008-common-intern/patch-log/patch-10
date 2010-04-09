@@ -1,0 +1,13 @@
+Revision: HscdSupport--devel--0.8--patch-10
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue Dec  2 14:14:58 CET 2008
+Standard-date: 2008-12-02 13:14:58 GMT
+Modified-files: pkginclude/CoSupport/DataTypes/Facade.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-10
+Summary: 
+ * Switched to boost::add_const and boost::remove_const from boost/type_traits for Facade.hpp
+Keywords: 
+
+
+

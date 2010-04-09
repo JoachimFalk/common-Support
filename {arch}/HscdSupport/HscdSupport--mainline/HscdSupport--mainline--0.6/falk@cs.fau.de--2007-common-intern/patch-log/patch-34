@@ -1,0 +1,15 @@
+Revision: HscdSupport--mainline--0.6--patch-34
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue Jun  5 12:31:36 CEST 2007
+Standard-date: 2007-06-05 10:31:36 GMT
+Renamed-files: pkginclude/cosupport/.arch-ids/facade2.hpp.id pkginclude/cosupport/.arch-ids/facade.hpp.id
+    pkginclude/cosupport/facade2.hpp pkginclude/cosupport/facade.hpp
+Modified-files: Makefile.am
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-34
+Summary: 
+ * Rename facade2.hpp => facade.hpp
+Keywords: 
+
+
+

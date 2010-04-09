@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.6--patch-21
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Apr 19 16:41:06 CEST 2007
+Standard-date: 2007-04-19 14:41:06 GMT
+New-files: pkginclude/cosupport/.arch-ids/facade.hpp.id
+    pkginclude/cosupport/facade.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-21
+Summary: 
+ * First try for universal pimpl idiom facade
+Keywords: 
+
+
+

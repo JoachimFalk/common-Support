@@ -1,0 +1,13 @@
+Revision: Support--mainline--0.1--patch-14
+Archive: joachim.falk@gmx.de--2004-jf-stuff
+Creator: Joachim Falk <joachim.falk@gmx.de>
+Date: Tue Oct 11 12:19:13 CEST 2005
+Standard-date: 2005-10-11 10:19:13 GMT
+Modified-files: arrayfifo.hpp test_arrayfifo.cpp
+New-patches: joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-14
+Summary: 
+ * Added empty method to ArrayFifo
+Keywords: 
+
+
+

@@ -1,0 +1,16 @@
+Revision: HscdSupport--devel--0.8--patch-43
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue Sep  8 19:06:57 CEST 2009
+Standard-date: 2009-09-08 17:06:57 GMT
+New-files: pkginclude/CoSupport/.arch-ids/cosupport_config.h.in.id
+    pkginclude/CoSupport/cosupport_config.h.in
+Modified-files: Makefile.am configure.in
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-43
+Summary: 
+ * Conditionally compile systemc, xerces, and xalana cosupport libraries if
+   libsystemc, libxerces-c, and libxalana-c are available.
+Keywords: 
+
+
+

@@ -1,0 +1,15 @@
+Revision: HscdSupport--devel--0.8--patch-67
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Martin Streubuehr <streubuehr@cs.fau.de>
+Date: Mon Feb 22 09:04:19 CET 2010
+Standard-date: 2010-02-22 08:04:19 GMT
+Modified-files: msvc90/CoSupport/libcosupport-math/libcosupport-math.vcproj
+    msvc90/CoSupport/libcosupport/libcosupport.vcproj
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-67
+Summary: 
+ msvc90: - fixed compilation of libcosupport-math
+ msvc90: - included libcosupport-math to libcosupport
+Keywords: 
+
+
+

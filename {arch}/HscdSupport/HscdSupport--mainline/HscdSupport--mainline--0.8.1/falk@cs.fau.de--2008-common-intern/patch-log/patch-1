@@ -1,0 +1,23 @@
+Revision: HscdSupport--mainline--0.8.1--patch-1
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Christian Zebelein <christian.zebelein@cs.fau.de>
+Date: Fri Jul 10 12:37:17 CEST 2009
+Standard-date: 2009-07-10 10:37:17 GMT
+Modified-files: pkginclude/CoSupport/SystemC/systemc_support.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-31
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8.1--patch-1
+Summary:
+  * Merge from HscdSupport--devel--0.8--patch-31
+  - smoc_event_or_list now stores (priority,Event) pairs
+    in a set 
+Keywords: 
+
+
+
+Patches applied:
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-31
+   
+  * smoc_event_or_list now stores (priority,Event) pairs 
+    in a set
+

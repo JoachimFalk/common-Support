@@ -1,0 +1,14 @@
+Revision: HscdSupport--devel--0.8--patch-58
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Dec  3 15:55:37 CET 2009
+Standard-date: 2009-12-03 14:55:37 GMT
+Modified-files: pkginclude/CoSupport/DataTypes/MaybeValue.hpp
+    test_maybevalue.cpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-58
+Summary: 
+ * More paranoid checking for MaybeValue functionality.
+Keywords: 
+
+
+

@@ -1,0 +1,46 @@
+Revision: HscdSupport--devel--0.8--patch-40
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed Sep  2 12:29:29 CEST 2009
+Standard-date: 2009-09-02 10:29:29 GMT
+Modified-files: pkginclude/CoSupport/SystemC/systemc_support.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-40
+    falk@cs.fau.de--2009-common-intern/HscdSupport--fastsim--0.8.1--base-0
+    falk@cs.fau.de--2009-common-intern/HscdSupport--fastsim--0.8.1--patch-1
+    falk@cs.fau.de--2009-common-intern/HscdSupport--fastsim--0.8.1--patch-2
+    falk@cs.fau.de--2009-common-intern/HscdSupport--fastsim--0.8.1--patch-3
+    falk@cs.fau.de--2009-common-intern/HscdSupport--fastsim--0.8.1--patch-4
+Summary: 
+ * Merge from HscdSupport--fastsim--0.8.1 branch
+ - Removed priorities from EventOrList which are not needed in the SysteMoC fastsim version
+ - Added renotifyListener() method which renotifies listeners of an event
+ - Added some missing 'const' modifiers
+ - Added hashing support for EventAndList
+ - Improved EventAndList for never activated event and lists.
+Keywords: 
+
+
+
+Patches applied:
+
+ * falk@cs.fau.de--2009-common-intern/HscdSupport--fastsim--0.8.1--base-0
+   tag of falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8.1--patch-8
+
+ * falk@cs.fau.de--2009-common-intern/HscdSupport--fastsim--0.8.1--patch-1
+   
+  * Removed priorities from EventOrList which are not needed in the SysteMoC
+    fastsim version
+  * Added renotifyListener() method which renotifies listeners of an event
+
+ * falk@cs.fau.de--2009-common-intern/HscdSupport--fastsim--0.8.1--patch-2
+   
+  * Added some missing 'const' modifiers
+
+ * falk@cs.fau.de--2009-common-intern/HscdSupport--fastsim--0.8.1--patch-3
+   
+  * Added hashing support for EventAndList 
+
+ * falk@cs.fau.de--2009-common-intern/HscdSupport--fastsim--0.8.1--patch-4
+   
+ * Improved EventAndList for never activated event and lists.
+

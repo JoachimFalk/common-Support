@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.2--patch-16
+Archive: joachim.falk@gmx.de--2005-common-stuff
+Creator: Christian Zebelein <christian.zebelein@fen-net.de>
+Date: Wed Feb 22 13:43:49 CET 2006
+Standard-date: 2006-02-22 12:43:49 GMT
+Modified-files: oneof.hpp
+New-patches: joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-16
+Summary: 
+  * added visitor functionality for oneof (-> applyVisitor)
+Keywords: 
+
+
+

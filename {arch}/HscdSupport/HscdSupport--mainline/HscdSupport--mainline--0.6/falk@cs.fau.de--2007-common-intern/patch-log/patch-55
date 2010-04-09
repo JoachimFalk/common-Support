@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.6--patch-55
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Christian Zebelein <christian.zebelein@fen-net.de>
+Date: Fri Jun 29 10:44:08 CEST 2007
+Standard-date: 2007-06-29 08:44:08 GMT
+Modified-files: pkginclude/cosupport/facade.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-55
+Summary: 
+  * fixed operator== for FacadePtr in facade.hpp
+Keywords: 
+
+
+

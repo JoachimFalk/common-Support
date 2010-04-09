@@ -1,0 +1,13 @@
+Revision: HscdSupport--devel--0.8--patch-64
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Martin Streubuehr <streubuehr@cs.fau.de>
+Date: Wed Dec 23 10:14:34 CET 2009
+Standard-date: 2009-12-23 09:14:34 GMT
+Modified-files: msvc90/CoSupport/CoSupport.sln
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-64
+Summary: 
+ - added libcosupport-math project (msvc90)
+Keywords: 
+
+
+

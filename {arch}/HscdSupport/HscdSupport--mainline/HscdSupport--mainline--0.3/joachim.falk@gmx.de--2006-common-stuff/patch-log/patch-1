@@ -1,0 +1,36 @@
+Revision: HscdSupport--mainline--0.3--patch-1
+Archive: joachim.falk@gmx.de--2006-common-stuff
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Fri Feb  3 17:08:43 CET 2006
+Standard-date: 2006-02-03 16:08:43 GMT
+New-files: .arch-ids/functor.hpp.id functor.hpp
+Modified-files: Makefile.am arrayfifo.hpp
+    intrusive_copyonwrite_ptr.hpp modulo_arith.hpp oneof.hpp
+    shared_copyonwrite_ptr.hpp test_arrayfifo.cpp
+New-patches: joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-12
+    joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-13
+    joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-14
+    joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.3--patch-1
+Summary: 
+ * Merge from HscdSupport--mainline--0.2 branch
+ - Added functor.hpp used for variable (0-4) parameter actions and guards in SysteMoC v0.x x >= 3
+ - Namespace of Support is now consistently  CoSupport
+Keywords: 
+
+
+
+Patches applied:
+
+ * joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-12
+   
+ * Added functor.hpp used for variable (0-3) parameter actions and guards in SysteMoC v0.3
+
+ * joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-13
+   
+ * Cleaned up macros for Functor and ConstFunctor definition
+ * Now support up to 4 function parameters
+
+ * joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-14
+   
+ * Namespace of Support is now consistently  CoSupport
+

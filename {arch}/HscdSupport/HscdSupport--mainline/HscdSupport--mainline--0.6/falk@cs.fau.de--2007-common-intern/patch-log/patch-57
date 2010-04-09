@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.6--patch-57
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Christian Zebelein <christian.zebelein@fen-net.de>
+Date: Tue Jul  3 10:41:35 CEST 2007
+Standard-date: 2007-07-03 08:41:35 GMT
+Modified-files: filter_ostream.cpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-57
+Summary:
+  * filter_ostream.cpp: assert non-negative indentation
+Keywords: 
+
+
+

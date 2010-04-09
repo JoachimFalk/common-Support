@@ -1,0 +1,13 @@
+Revision: HscdSupport--fastsim--0.8.1--patch-3
+Archive: falk@cs.fau.de--2009-common-intern
+Creator: Christian Zebelein <christian.zebelein@cs.fau.de>
+Date: Wed Aug 26 10:56:46 CEST 2009
+Standard-date: 2009-08-26 08:56:46 GMT
+Modified-files: pkginclude/CoSupport/SystemC/systemc_support.hpp
+New-patches: falk@cs.fau.de--2009-common-intern/HscdSupport--fastsim--0.8.1--patch-3
+Summary:
+  * Added hashing support for EventAndList 
+Keywords: 
+
+
+

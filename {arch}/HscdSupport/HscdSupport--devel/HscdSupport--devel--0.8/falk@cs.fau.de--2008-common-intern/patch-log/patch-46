@@ -1,0 +1,16 @@
+Revision: HscdSupport--devel--0.8--patch-46
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed Sep 23 19:23:23 CEST 2009
+Standard-date: 2009-09-23 17:23:23 GMT
+Modified-files: StdIstreamInputSource.cpp
+    StdIstreamInputStream.cpp
+    pkginclude/CoSupport/XML/StdIstreamInputStream.hpp
+    pkginclude/CoSupport/XML/StdOstreamFormatTarget.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-46
+Summary: 
+ * Reenable support for libxerces-c 2.8.0.
+Keywords: 
+
+
+

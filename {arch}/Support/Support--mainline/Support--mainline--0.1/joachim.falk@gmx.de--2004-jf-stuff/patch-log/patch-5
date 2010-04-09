@@ -1,0 +1,13 @@
+Revision: Support--mainline--0.1--patch-5
+Archive: joachim.falk@gmx.de--2004-jf-stuff
+Creator: Joachim Falk <joachim.falk@gmx.de>
+Date: Sat Oct  1 13:45:44 CEST 2005
+Standard-date: 2005-10-01 11:45:44 GMT
+New-files: .arch-ids/configure.in.frag.id configure.in.frag
+New-patches: joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.1--patch-5
+Summary: 
+ * Added configure.in.frag to replace removed configure.in
+Keywords: 
+
+
+

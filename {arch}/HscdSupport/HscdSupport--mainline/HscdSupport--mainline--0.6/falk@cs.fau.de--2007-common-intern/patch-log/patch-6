@@ -1,0 +1,50 @@
+Revision: HscdSupport--mainline--0.6--patch-6
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Fri Mar 23 11:56:52 CET 2007
+Standard-date: 2007-03-23 10:56:52 GMT
+New-directories: pkginclude/cosupport/.arch-ids
+Removed-files: pkginclude/.arch-ids/cosupport.id
+    pkginclude/cosupport
+Removed-directories: cosupport/.arch-ids
+Renamed-files: cosupport/.arch-ids/=id pkginclude/cosupport/.arch-ids/=id
+    cosupport/.arch-ids/arrayfifo.hpp.id pkginclude/cosupport/.arch-ids/arrayfifo.hpp.id
+    cosupport/.arch-ids/bit_buffer.hpp.id pkginclude/cosupport/.arch-ids/bit_buffer.hpp.id
+    cosupport/.arch-ids/checked_vector.hpp.id pkginclude/cosupport/.arch-ids/checked_vector.hpp.id
+    cosupport/.arch-ids/commondefs.h.id pkginclude/cosupport/.arch-ids/commondefs.h.id
+    cosupport/.arch-ids/filter_ostream.hpp.id pkginclude/cosupport/.arch-ids/filter_ostream.hpp.id
+    cosupport/.arch-ids/functor.hpp.id pkginclude/cosupport/.arch-ids/functor.hpp.id
+    cosupport/.arch-ids/integertypes.h.id pkginclude/cosupport/.arch-ids/integertypes.h.id
+    cosupport/.arch-ids/intrusive_copyonwrite_ptr.hpp.id pkginclude/cosupport/.arch-ids/intrusive_copyonwrite_ptr.hpp.id
+    cosupport/.arch-ids/intrusive_refcount_ptr.hpp.id pkginclude/cosupport/.arch-ids/intrusive_refcount_ptr.hpp.id
+    cosupport/.arch-ids/iterator_dump.hpp.id pkginclude/cosupport/.arch-ids/iterator_dump.hpp.id
+    cosupport/.arch-ids/modulo_arith.hpp.id pkginclude/cosupport/.arch-ids/modulo_arith.hpp.id
+    cosupport/.arch-ids/oneof.hpp.id pkginclude/cosupport/.arch-ids/oneof.hpp.id
+    cosupport/.arch-ids/par_actor.hpp.id pkginclude/cosupport/.arch-ids/par_actor.hpp.id
+    cosupport/.arch-ids/par_actor_factory.hpp.id pkginclude/cosupport/.arch-ids/par_actor_factory.hpp.id
+    cosupport/.arch-ids/par_manager.hpp.id pkginclude/cosupport/.arch-ids/par_manager.hpp.id
+    cosupport/.arch-ids/par_port.hpp.id pkginclude/cosupport/.arch-ids/par_port.hpp.id
+    cosupport/.arch-ids/refcount.hpp.id pkginclude/cosupport/.arch-ids/refcount.hpp.id
+    cosupport/.arch-ids/refcount_object.hpp.id pkginclude/cosupport/.arch-ids/refcount_object.hpp.id
+    cosupport/.arch-ids/sassert.h.id pkginclude/cosupport/.arch-ids/sassert.h.id
+    cosupport/.arch-ids/shared_copyonwrite_ptr.hpp.id pkginclude/cosupport/.arch-ids/shared_copyonwrite_ptr.hpp.id
+    cosupport/.arch-ids/smoc_debug_out.hpp.id pkginclude/cosupport/.arch-ids/smoc_debug_out.hpp.id
+    cosupport/.arch-ids/snprintf.h.id pkginclude/cosupport/.arch-ids/snprintf.h.id
+    cosupport/.arch-ids/stl_output_for_list.hpp.id pkginclude/cosupport/.arch-ids/stl_output_for_list.hpp.id
+    cosupport/.arch-ids/stl_output_for_pair.hpp.id pkginclude/cosupport/.arch-ids/stl_output_for_pair.hpp.id
+    cosupport/.arch-ids/stl_output_for_vector.hpp.id pkginclude/cosupport/.arch-ids/stl_output_for_vector.hpp.id
+    cosupport/.arch-ids/string_convert.hpp.id pkginclude/cosupport/.arch-ids/string_convert.hpp.id
+    cosupport/.arch-ids/systemc_support.hpp.id pkginclude/cosupport/.arch-ids/systemc_support.hpp.id
+Renamed-directories: cosupport pkginclude/cosupport
+Modified-files: Makefile.am filter_ostream.cpp
+    par_manager.cpp pkginclude/cosupport/commondefs.h
+    pkginclude/cosupport/smoc_debug_out.hpp
+    refcount_object.cpp test_arrayfifo.cpp
+    test_event_and_list.cpp test_event_or_list.cpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-6
+Summary: 
+ * Moved cosupport into pkinclude
+Keywords: 
+
+
+

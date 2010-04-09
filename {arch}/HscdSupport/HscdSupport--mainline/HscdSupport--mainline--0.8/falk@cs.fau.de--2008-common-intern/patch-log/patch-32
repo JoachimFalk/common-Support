@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.8--patch-32
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Fri Jul  4 13:45:18 CEST 2008
+Standard-date: 2008-07-04 11:45:18 GMT
+Modified-files: pkginclude/CoSupport/DataTypes/Facade.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-32
+Summary: 
+ * gcc/4.3.1 compile fixes for Facade.hpp
+Keywords: 
+
+
+

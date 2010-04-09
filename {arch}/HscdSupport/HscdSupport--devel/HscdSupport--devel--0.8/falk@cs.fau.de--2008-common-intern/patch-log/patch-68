@@ -1,0 +1,13 @@
+Revision: HscdSupport--devel--0.8--patch-68
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Mon Mar  1 13:26:15 CET 2010
+Standard-date: 2010-03-01 12:26:15 GMT
+Modified-files: pkginclude/CoSupport/XML/xerces_support.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-68
+Summary: 
+ * Fixup xerces_support/xalan_support.hpp integration.
+Keywords: 
+
+
+

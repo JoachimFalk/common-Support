@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.6--patch-91
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Mon Mar 10 11:03:16 CET 2008
+Standard-date: 2008-03-10 10:03:16 GMT
+Modified-files: Makefile.am {arch}/=tagging-method
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-91
+Summary: 
+ * Use BOOST_LIBMTPOSTFIX
+Keywords: 
+
+
+

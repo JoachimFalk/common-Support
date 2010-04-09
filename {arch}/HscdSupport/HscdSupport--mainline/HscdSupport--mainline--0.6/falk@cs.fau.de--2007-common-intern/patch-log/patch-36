@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.6--patch-36
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Fri Jun  8 18:22:33 CEST 2007
+Standard-date: 2007-06-08 16:22:33 GMT
+Modified-files: pkginclude/cosupport/list_facade.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-36
+Summary: 
+ * list_facade.hpp one more template parameter, Ptr type
+Keywords: 
+
+
+

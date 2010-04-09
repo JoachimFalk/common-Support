@@ -1,0 +1,18 @@
+Revision: HscdSupport--mainline--0.8--patch-52
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Thomas Schlichter <schlichter@cs.fau.de>
+Date: Mon Aug 18 18:20:23 CEST 2008
+Standard-date: 2008-08-18 16:20:23 GMT
+Modified-files: msvc90/CoSupport/CoSupport.ncb
+    msvc90/CoSupport/CoSupport.suo
+    pkginclude/CoSupport/SystemC/systemc_support.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-52
+Summary: Return NULL on unreachable return statement
+ - Microsoft Visual C++ complains if return value is missing
+
+Changelog for patch-51 should read:
+ - Fix SMXIdManager.cpp, do not increment iterator idIter after deletion, instead introduce idNext
+Keywords: 
+
+
+

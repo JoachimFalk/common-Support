@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.5--patch-20
+Archive: joachim.falk@gmx.de--2006-common-stuff
+Creator: Christian Zebelein <christian.zebelein@fen-net.de>
+Date: Wed Feb 21 13:30:27 CET 2007
+Standard-date: 2007-02-21 12:30:27 GMT
+Modified-files: filter_ostream.cpp filter_ostream.hpp
+New-patches: joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.5--patch-20
+Summary: 
+  * added getter methods for HeaderFooterStreambuf
+Keywords: 
+
+
+

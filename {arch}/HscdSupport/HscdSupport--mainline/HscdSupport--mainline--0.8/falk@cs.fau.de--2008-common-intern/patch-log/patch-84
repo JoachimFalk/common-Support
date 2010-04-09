@@ -1,0 +1,22 @@
+Revision: HscdSupport--mainline--0.8--patch-84
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue Jun  9 17:29:08 CEST 2009
+Standard-date: 2009-06-09 15:29:08 GMT
+Modified-files: BasicInitializer.cpp
+    pkginclude/CoSupport/Initializer/BasicInitializer.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-19
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-84
+Summary: 
+ * Merge from HscdSupport--devel--0.8 branch
+ - Make BasicInitializer more resistant against global object ctor/dtor sequence.
+Keywords: 
+
+
+
+Patches applied:
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-19
+   
+ * Make BasicInitializer more resistant against global object ctor/dtor sequence.
+

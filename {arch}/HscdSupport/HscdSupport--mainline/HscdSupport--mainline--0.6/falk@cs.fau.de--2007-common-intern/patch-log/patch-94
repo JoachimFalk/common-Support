@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.6--patch-94
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Christian Zebelein <christian.zebelein@cs.fau.de>
+Date: Wed Mar 12 16:13:26 CET 2008
+Standard-date: 2008-03-12 15:13:26 GMT
+Modified-files: pkginclude/cosupport/bit_buffer.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-94
+Summary: 
+  * bit_buffer.hpp: Added const_bit_field* versions for
+    const bit_buffer
+Keywords: 
+
+
+

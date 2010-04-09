@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.5--patch-5
+Archive: joachim.falk@gmx.de--2006-common-stuff
+Creator: Joachim Falk <joachim.falk@gmx.de>
+Date: Thu Nov  2 10:54:43 CET 2006
+Standard-date: 2006-11-02 09:54:43 GMT
+Modified-files: oneof.hpp
+New-patches: joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.5--patch-5
+Summary: 
+ * Fixed debug output of oneof class
+Keywords: 
+
+
+

@@ -1,0 +1,16 @@
+Revision: HscdSupport--mainline--0.8--patch-9
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Christian Zebelein <christian.zebelein@cs.fau.de>
+Date: Thu May 15 17:24:08 CEST 2008
+Standard-date: 2008-05-15 15:24:08 GMT
+Modified-files: pkginclude/CoSupport/String/Concat.hpp
+    pkginclude/CoSupport/String/convert.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-9
+Summary:
+  * restored original Concat behavior (can't return reference to
+    temporary...)
+  * removed Concat from convert.hpp 
+Keywords: 
+
+
+

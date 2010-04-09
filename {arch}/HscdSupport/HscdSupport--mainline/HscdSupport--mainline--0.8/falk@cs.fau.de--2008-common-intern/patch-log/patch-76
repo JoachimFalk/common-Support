@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.8--patch-76
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Mar 12 22:10:58 CET 2009
+Standard-date: 2009-03-12 21:10:58 GMT
+Modified-files: pkginclude/CoSupport/DataTypes/ListFacade.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-76
+Summary: 
+ * Better doxygen documentation for ListFacade.
+Keywords: 
+
+
+

@@ -1,0 +1,16 @@
+Revision: HscdSupport--devel--0.8--patch-8
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue Dec  2 13:18:00 CET 2008
+Standard-date: 2008-12-02 12:18:00 GMT
+Modified-files: pkginclude/CoSupport/DataTypes/Facade.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-8
+Summary: 
+ * Disabled CoSupport::Type::Const/Mutable/ToggleConst for FacadePtr and FacadeRef.
+ - Instead of Const<T::Ptr> use FacadeTraits<typename boost::add_const<T>::type>::Ptr
+ - Instead of Mutable<T::Ptr> use FacadeTraits<typename boost::remove_const<T>::type>::Ptr
+
+Keywords: 
+
+
+

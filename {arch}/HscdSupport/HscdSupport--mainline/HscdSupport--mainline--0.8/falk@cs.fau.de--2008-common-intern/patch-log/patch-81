@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.8--patch-81
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Christian Zebelein <christian.zebelein@cs.fau.de>
+Date: Thu May 14 10:07:28 CEST 2009
+Standard-date: 2009-05-14 08:07:28 GMT
+Modified-files: pkginclude/CoSupport/Streams/AlternateStream.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-81
+Summary: 
+  * Derive FileNotOpenException from std::runtime_error
+Keywords: 
+
+
+

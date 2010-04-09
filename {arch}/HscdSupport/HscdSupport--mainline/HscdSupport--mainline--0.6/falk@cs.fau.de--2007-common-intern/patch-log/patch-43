@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.6--patch-43
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Martin Streubuehr <streubuehr@cs.fau.de>
+Date: Mon Jun 18 15:57:52 CEST 2007
+Standard-date: 2007-06-18 13:57:52 GMT
+Modified-files: autotest-sh
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-43
+Summary: 
+ - fixed autotest script
+Keywords: 
+
+
+

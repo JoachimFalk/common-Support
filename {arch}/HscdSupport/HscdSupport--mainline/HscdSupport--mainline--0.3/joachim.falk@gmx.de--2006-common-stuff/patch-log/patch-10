@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.3--patch-10
+Archive: joachim.falk@gmx.de--2006-common-stuff
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed May 31 10:25:29 CEST 2006
+Standard-date: 2006-05-31 08:25:29 GMT
+Modified-files: systemc_support.hpp
+New-patches: joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.3--patch-10
+Summary: 
+ * Fixed templatization of EventAndList and EventOrList with contained event type
+ - Some methods must still use the base event type and not the contained event type
+Keywords: 
+
+
+

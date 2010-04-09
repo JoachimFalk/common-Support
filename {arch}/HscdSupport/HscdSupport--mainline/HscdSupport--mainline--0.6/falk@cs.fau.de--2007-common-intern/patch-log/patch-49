@@ -1,0 +1,22 @@
+Revision: HscdSupport--mainline--0.6--patch-49
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue Jun 26 10:03:20 CEST 2007
+Standard-date: 2007-06-26 08:03:20 GMT
+Modified-files: pkginclude/cosupport/bit_buffer.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-49
+    joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.5--patch-19
+Summary: 
+ * Merge from HscdSupport--mainline--0.5
+ - fixed 'unused variable' warning in bit_buffer.hpp
+
+Keywords: 
+
+
+
+Patches applied:
+
+ * joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.5--patch-19
+   
+  * fixed 'unused variable' warning in bit_buffer.hpp
+

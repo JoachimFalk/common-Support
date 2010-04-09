@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.8--patch-26
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Mon Jun 23 14:57:02 CEST 2008
+Standard-date: 2008-06-23 12:57:02 GMT
+Modified-files: pkginclude/CoSupport/Math/ModuloGroup.hpp
+    pkginclude/CoSupport/Math/modulo_arith.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-26
+Summary: 
+ * ModuloGroup fixups
+Keywords: 
+
+
+

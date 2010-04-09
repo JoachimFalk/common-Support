@@ -1,0 +1,17 @@
+Revision: HscdSupport--devel--0.8--patch-65
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Martin Streubuehr <streubuehr@cs.fau.de>
+Date: Wed Dec 23 11:22:43 CET 2009
+Standard-date: 2009-12-23 10:22:43 GMT
+New-files: msvc90/CoSupport/libcosupport-math/.arch-ids/=id
+    msvc90/CoSupport/libcosupport-math/.arch-ids/libcosupport-math.vcproj.id
+    msvc90/CoSupport/libcosupport-math/libcosupport-math.vcproj
+New-directories: msvc90/CoSupport/libcosupport-math
+    msvc90/CoSupport/libcosupport-math/.arch-ids
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-65
+Summary: 
+ - msvc90: added missing project files for libcosupport-math
+Keywords: 
+
+
+

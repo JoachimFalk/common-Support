@@ -1,0 +1,17 @@
+Revision: HscdSupport--mainline--0.8--patch-29
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue Jul  1 18:24:04 CEST 2008
+Standard-date: 2008-07-01 16:24:04 GMT
+New-files: .arch-ids/TemplateProcessor.cpp.id
+    TemplateProcessor.cpp
+    pkginclude/CoSupport/String/.arch-ids/TemplateProcessor.hpp.id
+    pkginclude/CoSupport/String/TemplateProcessor.hpp
+Modified-files: Makefile.am
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-29
+Summary: 
+ * Added CoSupport::String::TemplateProcessor formerly residing in Synthesis-SW
+Keywords: 
+
+
+

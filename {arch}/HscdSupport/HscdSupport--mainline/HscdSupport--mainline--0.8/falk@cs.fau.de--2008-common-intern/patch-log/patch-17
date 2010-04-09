@@ -1,0 +1,22 @@
+Revision: HscdSupport--mainline--0.8--patch-17
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Mon Jun  9 09:25:57 CEST 2008
+Standard-date: 2008-06-09 07:25:57 GMT
+Modified-files: pkginclude/CoSupport/SmartPtr/intrusive_copyonwrite_ptr.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-17
+    joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.8--patch-1
+Summary: 
+ * Merge from joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.8--patch-1
+ - Bugfix for pkginclude/CoSupport/SmartPtr/intrusive_copyonwrite_ptr.hpp
+
+Keywords: 
+
+
+
+Patches applied:
+
+ * joachim.falk@gmx.de--2004-jf-stuff/Support--mainline--0.8--patch-1
+   
+ * Bugfix for pkginclude/CoSupport/SmartPtr/intrusive_copyonwrite_ptr.hpp
+

@@ -1,0 +1,21 @@
+Revision: HscdSupport--devel--0.8--patch-41
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Thu Sep  3 11:19:09 CEST 2009
+Standard-date: 2009-09-03 09:19:09 GMT
+Modified-files: pkginclude/CoSupport/SystemC/systemc_support.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-41
+    falk@cs.fau.de--2009-common-intern/HscdSupport--fastsim--0.8.1--patch-5
+Summary: 
+ * Merge from HscdSupport--fastsim--0.8.1 branch
+ - Cache single EventListener in EventWaiter
+Keywords: 
+
+
+
+Patches applied:
+
+ * falk@cs.fau.de--2009-common-intern/HscdSupport--fastsim--0.8.1--patch-5
+   
+  * Cache single EventListener in EventWaiter 
+

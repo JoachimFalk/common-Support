@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.6--patch-97
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Christian Zebelein <christian.zebelein@cs.fau.de>
+Date: Thu Mar 27 10:02:48 CET 2008
+Standard-date: 2008-03-27 09:02:48 GMT
+Modified-files: pkginclude/cosupport/typetransform.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-97
+Summary: 
+  * removed <string> include from typetransform.hpp
+Keywords: 
+
+
+

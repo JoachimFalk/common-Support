@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.6--patch-27
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue May 22 18:21:34 CEST 2007
+Standard-date: 2007-05-22 16:21:34 GMT
+Modified-files: pkginclude/cosupport/facade2.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-27
+Summary: 
+ * Facade: Ignore type redefinitions in derived facade classes
+Keywords: 
+
+
+

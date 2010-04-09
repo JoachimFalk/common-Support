@@ -1,0 +1,21 @@
+Revision: HscdSupport--mainline--0.5--patch-4
+Archive: joachim.falk@gmx.de--2006-common-stuff
+Creator: Joachim Falk <joachim.falk@gmx.de>
+Date: Thu Nov  2 10:03:20 CET 2006
+Standard-date: 2006-11-02 09:03:20 GMT
+Modified-files: oneof.hpp
+New-patches: joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.3--patch-24
+    joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.5--patch-4
+Summary: 
+ * Merge from HscdSupport--mainline--0.3 branch
+ - fixed "ambiguous" error in oneof.hpp
+
+Keywords: 
+
+
+
+Patches applied:
+
+ * joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.3--patch-24
+   fix "ambiguous" error
+

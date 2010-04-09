@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.6--patch-88
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <joachim.falk@gmx.de>
+Date: Sun Feb 24 20:46:46 CET 2008
+Standard-date: 2008-02-24 19:46:46 GMT
+Modified-files: Makefile.am
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-88
+Summary: 
+ * Added @BOOST_LIBPOSTFIX@ for libboost_thread linking
+Keywords: 
+
+
+

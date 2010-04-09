@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.2--patch-10
+Archive: joachim.falk@gmx.de--2005-common-stuff
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Mon Dec  5 12:51:22 CET 2005
+Standard-date: 2005-12-05 11:51:22 GMT
+Modified-files: systemc_support.hpp
+New-patches: joachim.falk@gmx.de--2005-common-stuff/HscdSupport--mainline--0.2--patch-10
+Summary: 
+ * fixed systemc_support.hpp namespace A::B { not allowed
+   use namespace A { namespace B { instead
+Keywords: 
+
+
+

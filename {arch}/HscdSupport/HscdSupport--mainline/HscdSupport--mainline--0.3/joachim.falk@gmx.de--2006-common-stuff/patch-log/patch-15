@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.3--patch-15
+Archive: joachim.falk@gmx.de--2006-common-stuff
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed Jun  7 16:18:34 CEST 2006
+Standard-date: 2006-06-07 14:18:34 GMT
+Modified-files: systemc_support.hpp
+New-patches: joachim.falk@gmx.de--2006-common-stuff/HscdSupport--mainline--0.3--patch-15
+Summary: 
+ * systemc_support handle case that x->signaled(e) calls e->delListener(x);
+Keywords: 
+
+
+

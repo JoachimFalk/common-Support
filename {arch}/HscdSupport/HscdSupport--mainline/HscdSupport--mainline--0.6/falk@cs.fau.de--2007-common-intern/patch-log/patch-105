@@ -1,0 +1,12 @@
+Revision: HscdSupport--mainline--0.6--patch-105
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Keinert <keinert@codesign.informatik.uni-erlangen.de>
+Date: Wed Apr 30 14:48:52 CEST 2008
+Standard-date: 2008-04-30 12:48:52 GMT
+Modified-files: pkginclude/cosupport/xerces_support.hpp
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-105
+Summary:  - Bugfix such that SDFClustering compiles again
+Keywords: 
+
+ - Bugfix such that SDFClustering compiles again
+

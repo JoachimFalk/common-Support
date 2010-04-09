@@ -1,0 +1,17 @@
+Revision: HscdSupport--mainline--0.6--patch-9
+Archive: falk@cs.fau.de--2007-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed Mar 28 12:45:03 CEST 2007
+Standard-date: 2007-03-28 10:45:03 GMT
+New-files: pkginclude/cosupport/.arch-ids/xalan_support.hpp.id
+    pkginclude/cosupport/.arch-ids/xerces_support.hpp.id
+    pkginclude/cosupport/xalan_support.hpp
+    pkginclude/cosupport/xerces_support.hpp
+Modified-files: Makefile.am
+New-patches: falk@cs.fau.de--2007-common-intern/HscdSupport--mainline--0.6--patch-9
+Summary: 
+ * Added {xalan,xerce}_support.hpp providing miscellaneous helpers
+Keywords: 
+
+
+

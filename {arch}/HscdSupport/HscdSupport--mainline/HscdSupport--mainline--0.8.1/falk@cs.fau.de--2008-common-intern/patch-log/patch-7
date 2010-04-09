@@ -1,0 +1,23 @@
+Revision: HscdSupport--mainline--0.8.1--patch-7
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Christian Zebelein <christian.zebelein@cs.fau.de>
+Date: Tue Aug 18 14:31:55 CEST 2009
+Standard-date: 2009-08-18 12:31:55 GMT
+Modified-files: pkginclude/CoSupport/SystemC/systemc_support.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-35
+    falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8.1--patch-7
+Summary:
+  * Merge from HscdSupport--devel--0.8--patch-35
+  - Added Event copy constructor
+  - EventOrList caches single active entry 
+Keywords: 
+
+
+
+Patches applied:
+
+ * falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-35
+   
+  * Added Event copy constructor
+  * EventOrList caches single active entry 
+

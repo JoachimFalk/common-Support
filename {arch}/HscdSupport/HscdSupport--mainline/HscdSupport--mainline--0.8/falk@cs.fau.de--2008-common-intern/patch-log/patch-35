@@ -1,0 +1,13 @@
+Revision: HscdSupport--mainline--0.8--patch-35
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Tue Jul 15 16:06:09 CEST 2008
+Standard-date: 2008-07-15 14:06:09 GMT
+Modified-files: TemplateProcessor.cpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-35
+Summary: 
+ * TemplateProcessor does auto indentation of replacements
+Keywords: 
+
+
+

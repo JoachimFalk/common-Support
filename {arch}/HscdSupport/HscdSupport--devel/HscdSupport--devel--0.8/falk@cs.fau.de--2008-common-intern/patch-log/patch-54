@@ -1,0 +1,13 @@
+Revision: HscdSupport--devel--0.8--patch-54
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Fri Oct  2 16:16:57 CEST 2009
+Standard-date: 2009-10-02 14:16:57 GMT
+Modified-files: pkginclude/CoSupport/DataTypes/MaybeValue.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-54
+Summary: 
+ * Added boost::blank => MaybeValue<T> auto conversion constructor.
+Keywords: 
+
+
+
