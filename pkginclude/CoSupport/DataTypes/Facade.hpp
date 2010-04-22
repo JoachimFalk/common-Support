@@ -321,16 +321,6 @@ private:
   FacadeFoundation &operator =(const this_type &);
 };
 
-template <class TT, class T, template <class> class C>
-COSUPPORT_ATTRIBUTE_DEPRECATED
-const FacadePtr<TT,C> dynamic_pointer_cast(const FacadePtr<T,C> &ptr)
-  { return TT::upcast(*ptr); }
-
-template <class TT, class T, template <class> class C>
-COSUPPORT_ATTRIBUTE_DEPRECATED
-const FacadePtr<TT,C> static_pointer_cast(const FacadePtr<T,C> &ptr)
-  { return &static_cast<typename C<TT>::type &>(*ptr); }
-
 } } // namespace CoSupport::DataTypes
 
 #include <boost/type_traits/add_reference.hpp>
