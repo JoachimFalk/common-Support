@@ -37,6 +37,7 @@
 
 #include "../commondefs.h"
 #include "../compatibility-glue/integertypes.h"
+#include <stdint.h> // uint64_t
 
 namespace CoSupport { namespace Math {
 
