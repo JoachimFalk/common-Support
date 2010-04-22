@@ -35,6 +35,7 @@
 
 #include <iostream>
 #include <string>
+#include <cstdio> // for EOF
 #include <limits.h>
 #include <ctype.h>
 
