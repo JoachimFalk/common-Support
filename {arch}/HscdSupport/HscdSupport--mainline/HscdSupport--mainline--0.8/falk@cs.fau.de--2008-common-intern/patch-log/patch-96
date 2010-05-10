@@ -1,0 +1,14 @@
+Revision: HscdSupport--mainline--0.8--patch-96
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Philipp Kutzer <philipp.kutzer@e-technik.stud.uni-erlangen.de>
+Date: Mon Sep 14 12:10:44 CEST 2009
+Standard-date: 2009-09-14 10:10:44 GMT
+Modified-files: pkginclude/CoSupport/SMXIdManager.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--mainline--0.8--patch-96
+Summary: 
+ * @SMXIdManager.hpp: Moved COSUPPORT_ATTRIBUTE_DEPRECATED for SMXIdSer
+   and SMXIdManager into proper location after class keyword.
+
+Keywords: 
+
+
