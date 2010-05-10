@@ -35,6 +35,7 @@
 
 #include <iostream>
 #include <string>
+#include <cstdio> // For EOF
 
 #include <CoSupport/String/SingleQuotedString.hpp>
 
