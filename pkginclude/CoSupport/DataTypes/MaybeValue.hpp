@@ -54,6 +54,9 @@ namespace Detail {
   class MaybeValueTypeDecorator: public ValueTypeDecorator<tag, D, T, R> {};
 
   template <class D, typename T, typename R>
+  class MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R>;
+
+  template <class D, typename T, typename R>
   bool operator ==(
       std::string const &lhs,
       MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
@@ -90,6 +93,7 @@ namespace Detail {
   {
     typedef MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, R> this_type;
 
+#ifndef _MSC_VER
     friend bool operator ==<>(std::string const &, this_type const &);
     friend bool operator !=<>(std::string const &, this_type const &);
     friend bool operator > <>(std::string const &, this_type const &);
@@ -97,6 +101,9 @@ namespace Detail {
     friend bool operator < <>(std::string const &, this_type const &);
     friend bool operator <=<>(std::string const &, this_type const &);
   protected:
+#else
+  public:
+#endif // _MSC_VER
     D       *getDerived()
       { return static_cast<D *>(this); }
 

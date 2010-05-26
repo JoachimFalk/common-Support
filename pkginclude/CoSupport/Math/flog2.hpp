@@ -35,8 +35,13 @@
 #ifndef INCLUDED_COSUPPORT_FLOG2_HPP
 #define INCLUDED_COSUPPORT_FLOG2_HPP
 
+
 #include <stddef.h>
+#ifdef _MSC_VER
+#include "../compatibility-glue/integertypes.h"
+#else
 #include <stdint.h>
+#endif // _MSC_VER
 
 namespace CoSupport {
 
