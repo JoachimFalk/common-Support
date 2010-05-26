@@ -197,10 +197,10 @@ namespace CoSupport { namespace XML { namespace Xerces {
       :  std::basic_string<char>(str) {}
     NStr(const XMLCh *const str)
       { fromXMLCh(str); }
-#ifdef _INCLUDED_XALAN_SUPPORT_HPP
+#ifdef _INCLUDED_COSUPPORT_XML_XALAN_SUPPORT_HPP
     NStr(const XN::XalanDOMString &str)
       { fromXMLCh(str.c_str()); }
-#endif
+#endif //_INCLUDED_COSUPPORT_XML_XALAN_SUPPORT_HPP
 
     operator const char *() const
       { return c_str(); }
