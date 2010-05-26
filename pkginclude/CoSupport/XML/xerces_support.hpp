@@ -63,10 +63,14 @@ namespace Initializer {
 
   template <>
   struct BasicInitializerTraits<XML::Xerces::XN::XMLPlatformUtils> {
-    static void initialize()
-      { XML::Xerces::XN::XMLPlatformUtils::Initialize(); }
-    static void terminate()
-      { XML::Xerces::XN::XMLPlatformUtils::Terminate(); }
+    static void initialize() {
+//    std::cerr << "BasicInitializerTraits<XML::Xerces::XN::XMLPlatformUtils>::initialize()" << std::endl;
+      XML::Xerces::XN::XMLPlatformUtils::Initialize();
+    }
+    static void terminate() {
+//    std::cerr << "BasicInitializerTraits<XML::Xerces::XN::XMLPlatformUtils>::terminate()" << std::endl;
+      XML::Xerces::XN::XMLPlatformUtils::Terminate();
+    }
   };
 
 } // namespace Initializer
