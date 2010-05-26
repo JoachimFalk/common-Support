@@ -112,7 +112,7 @@ libcosupport_xerces_la_SOURCES =		\
 libcosupport_xerces_la_LIBADD =			\
 	-lboost_thread$(BOOST_LIBMTPOSTFIX)	\
 	libcosupport-initializer.la		\
-	-lxerces-c
+	-lxerces-c $(XERCES_AUXLIBS)
 endif
 
 if COSUPPORT_ENABLE_XALAN
