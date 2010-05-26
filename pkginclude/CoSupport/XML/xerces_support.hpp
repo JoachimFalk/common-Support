@@ -187,6 +187,9 @@ namespace CoSupport { namespace XML { namespace Xerces {
       resize(XN::XMLString::stringLen(c_str()));
     }
 
+    inline
+    operator std::string () const;
+
     operator const XMLCh *() const
       { return c_str(); }
   };
@@ -305,6 +308,10 @@ namespace CoSupport { namespace XML { namespace Xerces {
       resize(strlen(c_str()));
     }
   };
+
+  inline
+  XStr::operator std::string () const
+    { return NStr(c_str()); }
 
   inline
   std::ostream &operator << (std::ostream &out, const XMLCh *const str)

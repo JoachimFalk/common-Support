@@ -1,0 +1,13 @@
+Revision: HscdSupport--devel--0.8--patch-79
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed May 26 10:45:24 CEST 2010
+Standard-date: 2010-05-26 08:45:24 GMT
+Modified-files: pkginclude/CoSupport/XML/xerces_support.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-79
+Summary: 
+ * Implemented XStr => std::string conversion operator.
+Keywords: 
+
+
+
