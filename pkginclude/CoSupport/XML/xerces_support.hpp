@@ -84,6 +84,53 @@ namespace CoSupport { namespace XML { namespace Xerces {
 
   typedef Initializer::BasicInitializer<XN::XMLPlatformUtils> XercesInitializer;
 
+  /**
+   * Simple error handler deriviative to install on parser
+   */
+  template <class DBGSTREAM>
+  class DOMParserErrorHandler
+  : public XN::DOMErrorHandler,
+    private boost::noncopyable {
+  public:
+    DOMParserErrorHandler(DBGSTREAM &outDbg)
+      : outDbg(outDbg), failed(false) {}
+
+    /**
+     * Implementation of the DOM ErrorHandler interface
+     */
+    bool handleError(const XN::DOMError &domError){
+      outDbg << "Xerces DOMError: ";
+      switch (domError.getSeverity()) {
+        case XN::DOMError::DOM_SEVERITY_WARNING:
+          outDbg << "Warning at file ";
+          break;
+        case XN::DOMError::DOM_SEVERITY_ERROR:
+          outDbg << "Error at file ";
+          failed = true;
+          break;
+        case XN::DOMError::DOM_SEVERITY_FATAL_ERROR:
+          outDbg << "Fatal error at file ";
+          failed = true;
+          break;
+#ifndef NDEBUG
+        default:
+          assert(!"Unhandled domError.getSeverity() level!");
+#endif
+      }
+      outDbg << domError.getLocation()->getURI()
+           << ", line " << domError.getLocation()->getLineNumber()
+           << ", char " << domError.getLocation()->getColumnNumber()
+           << "\n  Message: " << static_cast<const XMLCh *const>(domError.getMessage()) << std::endl;
+      return !failed;
+    }
+
+    bool parseFailed()
+      { return failed; }
+  private:
+    DBGSTREAM &outDbg;
+    bool       failed;
+  };
+
   // this stuff is stolen and adapted from boost::scoped_ptr
 
   //  ScopedXMLPtr mimics a built-in pointer except that it guarantees deletion
