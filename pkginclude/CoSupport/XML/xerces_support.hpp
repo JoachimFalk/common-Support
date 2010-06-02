@@ -89,7 +89,6 @@ namespace CoSupport { namespace XML { namespace Xerces {
   //  ScopedXMLPtr mimics a built-in pointer except that it guarantees deletion
   //  of the object pointed to, either on destruction of the ScopedXMLPtr or via
   //  an explicit reset(). ScopedXMLPtr is a simple solution for simple needs;
-  //  use shared_ptr or std::auto_ptr if your needs are more complex.
 
   template <class T>
   class ScopedXMLPtr: private boost::noncopyable {
@@ -103,10 +102,6 @@ namespace CoSupport { namespace XML { namespace Xerces {
 
     // never throws
     explicit ScopedXMLPtr(T *p = NULL): ptr(p)
-      {}
-
-    // never throws
-    explicit ScopedXMLPtr(std::auto_ptr<T> p): ptr(p.release())
       {}
 
     ~ScopedXMLPtr() {
