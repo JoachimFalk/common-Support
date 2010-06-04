@@ -1,0 +1,13 @@
+Revision: HscdSupport--devel--0.8--patch-81
+Archive: falk@cs.fau.de--2008-common-intern
+Creator: Joachim Falk <falk@cs.fau.de>
+Date: Wed Jun  2 10:15:39 CEST 2010
+Standard-date: 2010-06-02 08:15:39 GMT
+Modified-files: pkginclude/CoSupport/XML/xerces_support.hpp
+New-patches: falk@cs.fau.de--2008-common-intern/HscdSupport--devel--0.8--patch-81
+Summary: 
+ * Provide DOMParserErrorHandler in xerces_support.hpp
+Keywords: 
+
+
+
