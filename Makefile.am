@@ -55,6 +55,7 @@ noinst_PROGRAMS=			\
 	test_dbgstream			\
 	test_maybevalue			\
 	test_arrayfifo			\
+	test_interval			\
 	test_idpool			\
 	test_facade			\
 	test_typename			\
@@ -175,6 +176,9 @@ test_maybevalue_LDADD		  =
 
 test_arrayfifo_SOURCES		  = test_arrayfifo.cpp
 test_arrayfifo_LDADD		  =
+
+test_interval_SOURCES		  = test_interval.cpp
+test_interval_LDADD		  =
 
 test_idpool_SOURCES		  = test_idpool.cpp
 test_idpool_LDADD		  = libcosupport-allocators.la
