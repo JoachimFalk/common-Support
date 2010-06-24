@@ -43,6 +43,7 @@ nobase_include_HEADERS = \
 	CoSupport/Initializer/BasicInitializer.hpp \
 	CoSupport/Lambda/function_objects.hpp \
 	CoSupport/Lambda/functor.hpp \
+	CoSupport/Math/Interval.hpp \
 	CoSupport/Math/ModuloGroup.hpp \
 	CoSupport/Math/flog2.hpp \
 	CoSupport/Math/modulo_arith.hpp \
