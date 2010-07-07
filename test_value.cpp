@@ -53,6 +53,21 @@
     assert((X OP V) == (X.get() OP V.get())); \
   } while (0)
 
+struct A {
+  int a;
+};
+
+struct B: public A {
+  int b;
+};
+
+struct C: public A {
+  int c;
+};
+
+
+
+
 using namespace CoSupport::DataTypes;
 
 int main(int argc, char *argv[]) {
@@ -185,13 +200,28 @@ int main(int argc, char *argv[]) {
     CHECK_OP_WV(cp,> ,std::string("aaa")); CHECK_OP_WV(cp,> ,std::string("foo")); CHECK_OP_WV(cp,> ,std::string("zzz"));
     CHECK_OP_WV(cp,>=,std::string("aaa")); CHECK_OP_WV(cp,>=,std::string("foo")); CHECK_OP_WV(cp,>=,std::string("zzz"));
 
-//  This is not really string comparison put pointer comparison. Implement this later!
-//  CHECK_OP_WV(cp,==,"aaa"); CHECK_OP_WV(cp,==,"foo");
-//  CHECK_OP_WV(cp,!=,"aaa"); CHECK_OP_WV(cp,!=,"foo");
-//  CHECK_OP_WV(cp,< ,"aaa"); CHECK_OP_WV(cp,< ,"foo"); CHECK_OP_WV(cp,< ,"zzz");
-//  CHECK_OP_WV(cp,<=,"aaa"); CHECK_OP_WV(cp,<=,"foo"); CHECK_OP_WV(cp,<=,"zzz");
-//  CHECK_OP_WV(cp,> ,"aaa"); CHECK_OP_WV(cp,> ,"foo"); CHECK_OP_WV(cp,> ,"zzz");
-//  CHECK_OP_WV(cp,>=,"aaa"); CHECK_OP_WV(cp,>=,"foo"); CHECK_OP_WV(cp,>=,"zzz");
+    // This is not really string comparison put pointer comparison.
+    {
+      char aaa[] = "aaa";
+      char foo[] = "foo";
+      char caaa[] = "aaa";
+      char cfoo[] = "foo";
+    
+      CHECK_OP_WV(cp,==,aaa); CHECK_OP_VW(foo,==,cp);
+      CHECK_OP_WV(cp,!=,aaa); CHECK_OP_VW(foo,!=,cp);
+      CHECK_OP_WV(cp,< ,aaa); CHECK_OP_VW(foo,< ,cp);
+      CHECK_OP_WV(cp,<=,aaa); CHECK_OP_VW(foo,<=,cp);
+      CHECK_OP_WV(cp,> ,aaa); CHECK_OP_VW(foo,> ,cp);
+      CHECK_OP_WV(cp,>=,aaa); CHECK_OP_VW(foo,>=,cp);
+
+      CHECK_OP_WV(cp,==,caaa); CHECK_OP_VW(cfoo,==,cp);
+      CHECK_OP_WV(cp,!=,caaa); CHECK_OP_VW(cfoo,!=,cp);
+      CHECK_OP_WV(cp,< ,caaa); CHECK_OP_VW(cfoo,< ,cp);
+      CHECK_OP_WV(cp,<=,caaa); CHECK_OP_VW(cfoo,<=,cp);
+      CHECK_OP_WV(cp,> ,caaa); CHECK_OP_VW(cfoo,> ,cp);
+      CHECK_OP_WV(cp,>=,caaa); CHECK_OP_VW(cfoo,>=,cp);
+
+    }
     
     str1 = "aaa"; str2 = "foo"; str3 = "zzz";
     std::cout << "str1 = \"aaa\": \"" << str1 << "\"" << std::endl;
@@ -215,6 +245,32 @@ int main(int argc, char *argv[]) {
     
     str1 = cp;
     str2 = str1.get() + cp.get();
+  }
+  {
+    A a;
+    B b;
+    C c;
+
+    Value<A *> pan(NULL);
+    Value<A *> pa1(&a);
+    Value<B *> pb1(&b);
+    Value<C *> pc1(&c);
+
+    CHECK_OP_WW(pa1,==,pan); CHECK_OP_WW(pa1,==,pb1); CHECK_OP_WW(pa1,==,pc1);
+    CHECK_OP_WW(pa1,!=,pan); CHECK_OP_WW(pa1,!=,pb1); CHECK_OP_WW(pa1,!=,pc1);
+    CHECK_OP_WW(pa1,< ,pan); CHECK_OP_WW(pa1,< ,pb1); CHECK_OP_WW(pa1,< ,pc1);
+    CHECK_OP_WW(pa1,<=,pan); CHECK_OP_WW(pa1,<=,pb1); CHECK_OP_WW(pa1,<=,pc1);
+    CHECK_OP_WW(pa1,> ,pan); CHECK_OP_WW(pa1,> ,pb1); CHECK_OP_WW(pa1,> ,pc1);
+    CHECK_OP_WW(pa1,>=,pan); CHECK_OP_WW(pa1,>=,pb1); CHECK_OP_WW(pa1,>=,pc1);
+
+    CHECK_OP_WW(pa1,==,pa1); CHECK_OP_WW(pb1,==,pb1); CHECK_OP_WW(pc1,==,pc1);
+    CHECK_OP_WW(pa1,!=,pa1); CHECK_OP_WW(pb1,!=,pb1); CHECK_OP_WW(pc1,!=,pc1);
+    CHECK_OP_WW(pa1,< ,pa1); CHECK_OP_WW(pb1,< ,pb1); CHECK_OP_WW(pc1,< ,pc1);
+    CHECK_OP_WW(pa1,<=,pa1); CHECK_OP_WW(pb1,<=,pb1); CHECK_OP_WW(pc1,<=,pc1);
+    CHECK_OP_WW(pa1,> ,pa1); CHECK_OP_WW(pb1,> ,pb1); CHECK_OP_WW(pc1,> ,pc1);
+    CHECK_OP_WW(pa1,>=,pa1); CHECK_OP_WW(pb1,>=,pb1); CHECK_OP_WW(pc1,>=,pc1);
+
+
   }
   return 0;
 }

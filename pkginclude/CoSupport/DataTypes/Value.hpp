@@ -144,6 +144,68 @@ namespace Detail {
     { return lhs <= rhs.getDerived()->get(); }
 
   template <class D, typename T, typename R>
+  bool operator ==(
+      char const *lhs,
+      ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return lhs == rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator !=(
+      char const *lhs,
+      ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return lhs != rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator > (
+      char const *lhs,
+      ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return lhs >  rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator >=(
+      char const *lhs,
+      ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return lhs >= rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator < (
+      char const *lhs,
+      ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return lhs <  rhs.getDerived()->get(); }
+  template <class D, typename T, typename R>
+  bool operator <=(
+      char const *lhs,
+      ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &rhs)
+    { return lhs <= rhs.getDerived()->get(); }
+
+/*template <class D, typename T, typename R>
+  bool operator ==(
+      ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &lhs,
+      std::string const &rhs)
+    { return lhs.getDerived()->get() == rhs; }
+  template <class D, typename T, typename R>
+  bool operator !=(
+      ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &lhs,
+      std::string const &rhs)
+    { return lhs.getDerived()->get() != rhs; }
+  template <class D, typename T, typename R>
+  bool operator > (
+      ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &lhs,
+      std::string const &rhs)
+    { return lhs.getDerived()->get() >  rhs; }
+  template <class D, typename T, typename R>
+  bool operator >=(
+      ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &lhs,
+      std::string const &rhs)
+    { return lhs.getDerived()->get() >= rhs; }
+  template <class D, typename T, typename R>
+  bool operator < (
+      ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &lhs,
+      std::string const &rhs)
+    { return lhs.getDerived()->get() <  rhs; }
+  template <class D, typename T, typename R>
+  bool operator <=(
+      ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> const &lhs,
+      std::string const &rhs)
+    { return lhs.getDerived()->get() <= rhs; }*/
+
+  template <class D, typename T, typename R>
   class ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> {
     typedef ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> this_type;
 
@@ -153,6 +215,21 @@ namespace Detail {
     friend bool operator >=<>(std::string const &, this_type const &);
     friend bool operator < <>(std::string const &, this_type const &);
     friend bool operator <=<>(std::string const &, this_type const &);
+
+    friend bool operator ==<>(char const *, this_type const &);
+    friend bool operator !=<>(char const *, this_type const &);
+    friend bool operator > <>(char const *, this_type const &);
+    friend bool operator >=<>(char const *, this_type const &);
+    friend bool operator < <>(char const *, this_type const &);
+    friend bool operator <=<>(char const *, this_type const &);
+
+/*  friend bool operator ==<>(this_type const &, std::string const &);
+    friend bool operator !=<>(this_type const &, std::string const &);
+    friend bool operator > <>(this_type const &, std::string const &);
+    friend bool operator >=<>(this_type const &, std::string const &);
+    friend bool operator < <>(this_type const &, std::string const &);
+    friend bool operator <=<>(this_type const &, std::string const &); */
+
   protected:
     D       *getDerived()
       { return static_cast<D *>(this); }
@@ -160,6 +237,7 @@ namespace Detail {
     D const *getDerived() const
       { return static_cast<D const *>(this); }
   public:
+    // std::string
     bool operator ==(std::string const &v) const
       { return getDerived()->get() == v; }
     bool operator !=(std::string const &v) const
@@ -171,6 +249,20 @@ namespace Detail {
     bool operator > (std::string const &v) const
       { return getDerived()->get() >  v; }
     bool operator >=(std::string const &v) const
+      { return getDerived()->get() >= v; }
+
+    // This is not really string comparison put pointer comparison.
+    bool operator ==(char const *v) const
+      { return getDerived()->get() == v; }
+    bool operator !=(char const *v) const
+      { return getDerived()->get() != v; }
+    bool operator < (char const *v) const
+      { return getDerived()->get() <  v; }
+    bool operator <=(char const *v) const
+      { return getDerived()->get() <= v; }
+    bool operator > (char const *v) const
+      { return getDerived()->get() >  v; }
+    bool operator >=(char const *v) const
       { return getDerived()->get() >= v; }
   };
 
