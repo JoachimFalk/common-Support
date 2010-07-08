@@ -162,13 +162,13 @@ int main(int argc, char *argv[]) {
     }
   }
   {
-    Value<const char *> cp("foo");
-    Value<std::string>  str1(cp);
+    Value<const char *> ccp("foo");
+    Value<std::string>  str1(ccp);
     Value<std::string>  str2("bar");
     Value<std::string>  str3(std::string("zzz"));
     
-    std::cout << "cp(\"foo\"):                \"" << cp << "\"" << std::endl;
-    std::cout << "str1(cp):                 \"" << str1 << "\"" << std::endl;
+    std::cout << "ccp(\"foo\"):                \"" << ccp << "\"" << std::endl;
+    std::cout << "str1(ccp):                 \"" << str1 << "\"" << std::endl;
     std::cout << "str2(\"bar\"):              \"" << str2 << "\"" << std::endl;
     std::cout << "str3(std::string(\"zzz\")): \"" << str3 << "\"" << std::endl;
     
@@ -179,6 +179,13 @@ int main(int argc, char *argv[]) {
     CHECK_OP_WV(str1,> ,std::string("foo")); CHECK_OP_WV(str1,> ,std::string("bar")); CHECK_OP_WV(str1,> ,std::string("zzz"));
     CHECK_OP_WV(str1,>=,std::string("foo")); CHECK_OP_WV(str1,>=,std::string("bar")); CHECK_OP_WV(str1,>=,std::string("zzz"));
 
+    CHECK_OP_VW("foo",==,str1); CHECK_OP_VW("bar",==,str1);
+    CHECK_OP_VW("foo",!=,str1); CHECK_OP_VW("bar",!=,str1);
+    CHECK_OP_VW("foo",< ,str1); CHECK_OP_VW("bar",< ,str1); CHECK_OP_VW("zzz",< ,str1);
+    CHECK_OP_VW("foo",<=,str1); CHECK_OP_VW("bar",<=,str1); CHECK_OP_VW("zzz",<=,str1);
+    CHECK_OP_VW("foo",> ,str1); CHECK_OP_VW("bar",> ,str1); CHECK_OP_VW("zzz",> ,str1);
+    CHECK_OP_VW("foo",>=,str1); CHECK_OP_VW("bar",>=,str1); CHECK_OP_VW("zzz",>=,str1);
+
     CHECK_OP_WV(str1,==,"foo"); CHECK_OP_WV(str1,==,"bar");
     CHECK_OP_WV(str1,!=,"foo"); CHECK_OP_WV(str1,!=,"bar");
     CHECK_OP_WV(str1,< ,"foo"); CHECK_OP_WV(str1,< ,"bar"); CHECK_OP_WV(str1,< ,"zzz");
@@ -186,65 +193,81 @@ int main(int argc, char *argv[]) {
     CHECK_OP_WV(str1,> ,"foo"); CHECK_OP_WV(str1,> ,"bar"); CHECK_OP_WV(str1,> ,"zzz");
     CHECK_OP_WV(str1,>=,"foo"); CHECK_OP_WV(str1,>=,"bar"); CHECK_OP_WV(str1,>=,"zzz");
 
-    CHECK_OP_WW(str1,==,cp); CHECK_OP_WW(str1,==,str2);
-    CHECK_OP_WW(str1,!=,cp); CHECK_OP_WW(str1,!=,str2);
-    CHECK_OP_WW(str1,< ,cp); CHECK_OP_WW(str1,< ,str2); CHECK_OP_WW(str1,< ,str3);
-    CHECK_OP_WW(str1,<=,cp); CHECK_OP_WW(str1,<=,str2); CHECK_OP_WW(str1,<=,str3);
-    CHECK_OP_WW(str1,> ,cp); CHECK_OP_WW(str1,> ,str2); CHECK_OP_WW(str1,> ,str3);
-    CHECK_OP_WW(str1,>=,cp); CHECK_OP_WW(str1,>=,str2); CHECK_OP_WW(str1,>=,str3);
+    CHECK_OP_WW(str1,==,ccp); CHECK_OP_WW(str1,==,str2);
+    CHECK_OP_WW(str1,!=,ccp); CHECK_OP_WW(str1,!=,str2);
+    CHECK_OP_WW(str1,< ,ccp); CHECK_OP_WW(str1,< ,str2); CHECK_OP_WW(str1,< ,str3);
+    CHECK_OP_WW(str1,<=,ccp); CHECK_OP_WW(str1,<=,str2); CHECK_OP_WW(str1,<=,str3);
+    CHECK_OP_WW(str1,> ,ccp); CHECK_OP_WW(str1,> ,str2); CHECK_OP_WW(str1,> ,str3);
+    CHECK_OP_WW(str1,>=,ccp); CHECK_OP_WW(str1,>=,str2); CHECK_OP_WW(str1,>=,str3);
 
-    CHECK_OP_WV(cp,==,std::string("aaa")); CHECK_OP_WV(cp,==,std::string("foo"));
-    CHECK_OP_WV(cp,!=,std::string("aaa")); CHECK_OP_WV(cp,!=,std::string("foo"));
-    CHECK_OP_WV(cp,< ,std::string("aaa")); CHECK_OP_WV(cp,< ,std::string("foo")); CHECK_OP_WV(cp,< ,std::string("zzz"));
-    CHECK_OP_WV(cp,<=,std::string("aaa")); CHECK_OP_WV(cp,<=,std::string("foo")); CHECK_OP_WV(cp,<=,std::string("zzz"));
-    CHECK_OP_WV(cp,> ,std::string("aaa")); CHECK_OP_WV(cp,> ,std::string("foo")); CHECK_OP_WV(cp,> ,std::string("zzz"));
-    CHECK_OP_WV(cp,>=,std::string("aaa")); CHECK_OP_WV(cp,>=,std::string("foo")); CHECK_OP_WV(cp,>=,std::string("zzz"));
+    CHECK_OP_WV(ccp,==,std::string("aaa")); CHECK_OP_WV(ccp,==,std::string("foo"));
+    CHECK_OP_WV(ccp,!=,std::string("aaa")); CHECK_OP_WV(ccp,!=,std::string("foo"));
+    CHECK_OP_WV(ccp,< ,std::string("aaa")); CHECK_OP_WV(ccp,< ,std::string("foo")); CHECK_OP_WV(ccp,< ,std::string("zzz"));
+    CHECK_OP_WV(ccp,<=,std::string("aaa")); CHECK_OP_WV(ccp,<=,std::string("foo")); CHECK_OP_WV(ccp,<=,std::string("zzz"));
+    CHECK_OP_WV(ccp,> ,std::string("aaa")); CHECK_OP_WV(ccp,> ,std::string("foo")); CHECK_OP_WV(ccp,> ,std::string("zzz"));
+    CHECK_OP_WV(ccp,>=,std::string("aaa")); CHECK_OP_WV(ccp,>=,std::string("foo")); CHECK_OP_WV(ccp,>=,std::string("zzz"));
 
-    // This is not really string comparison put pointer comparison.
-    {
-      char aaa[] = "aaa";
-      char foo[] = "foo";
-      char caaa[] = "aaa";
-      char cfoo[] = "foo";
-    
-      CHECK_OP_WV(cp,==,aaa); CHECK_OP_VW(foo,==,cp);
-      CHECK_OP_WV(cp,!=,aaa); CHECK_OP_VW(foo,!=,cp);
-      CHECK_OP_WV(cp,< ,aaa); CHECK_OP_VW(foo,< ,cp);
-      CHECK_OP_WV(cp,<=,aaa); CHECK_OP_VW(foo,<=,cp);
-      CHECK_OP_WV(cp,> ,aaa); CHECK_OP_VW(foo,> ,cp);
-      CHECK_OP_WV(cp,>=,aaa); CHECK_OP_VW(foo,>=,cp);
-
-      CHECK_OP_WV(cp,==,caaa); CHECK_OP_VW(cfoo,==,cp);
-      CHECK_OP_WV(cp,!=,caaa); CHECK_OP_VW(cfoo,!=,cp);
-      CHECK_OP_WV(cp,< ,caaa); CHECK_OP_VW(cfoo,< ,cp);
-      CHECK_OP_WV(cp,<=,caaa); CHECK_OP_VW(cfoo,<=,cp);
-      CHECK_OP_WV(cp,> ,caaa); CHECK_OP_VW(cfoo,> ,cp);
-      CHECK_OP_WV(cp,>=,caaa); CHECK_OP_VW(cfoo,>=,cp);
-
-    }
     
     str1 = "aaa"; str2 = "foo"; str3 = "zzz";
     std::cout << "str1 = \"aaa\": \"" << str1 << "\"" << std::endl;
     std::cout << "str2 = \"foo\": \"" << str2 << "\"" << std::endl;
     std::cout << "str3 = \"zzz\": \"" << str3 << "\"" << std::endl;
     
-    CHECK_OP_WW(cp,==,str1); CHECK_OP_WW(cp,==,str2);
-    CHECK_OP_WW(cp,!=,str1); CHECK_OP_WW(cp,!=,str2);
-    CHECK_OP_WW(cp,< ,str1); CHECK_OP_WW(cp,< ,str2); CHECK_OP_WW(cp,< ,str3);
-    CHECK_OP_WW(cp,<=,str1); CHECK_OP_WW(cp,<=,str2); CHECK_OP_WW(cp,<=,str3);
-    CHECK_OP_WW(cp,> ,str1); CHECK_OP_WW(cp,> ,str2); CHECK_OP_WW(cp,> ,str3);
-    CHECK_OP_WW(cp,>=,str1); CHECK_OP_WW(cp,>=,str2); CHECK_OP_WW(cp,>=,str3);
+    CHECK_OP_WW(ccp,==,str1); CHECK_OP_WW(ccp,==,str2);
+    CHECK_OP_WW(ccp,!=,str1); CHECK_OP_WW(ccp,!=,str2);
+    CHECK_OP_WW(ccp,< ,str1); CHECK_OP_WW(ccp,< ,str2); CHECK_OP_WW(ccp,< ,str3);
+    CHECK_OP_WW(ccp,<=,str1); CHECK_OP_WW(ccp,<=,str2); CHECK_OP_WW(ccp,<=,str3);
+    CHECK_OP_WW(ccp,> ,str1); CHECK_OP_WW(ccp,> ,str2); CHECK_OP_WW(ccp,> ,str3);
+    CHECK_OP_WW(ccp,>=,str1); CHECK_OP_WW(ccp,>=,str2); CHECK_OP_WW(ccp,>=,str3);
     
-    cp   = "batz";
+    ccp   = "batz";
     str1 = "hix";
     str2 = std::string("hax");
     
-    std::cout << "cp = \"batz\":               \"" << cp << "\"" << std::endl;
+    std::cout << "ccp = \"batz\":               \"" << ccp << "\"" << std::endl;
     std::cout << "str1 = \"hix\":              \"" << str1 << "\"" << std::endl;
     std::cout << "str2 = std::string(\"hax\"): \"" << str2 << "\"" << std::endl;
     
-    str1 = cp;
-    str2 = str1.get() + cp.get();
+    str1 = ccp;
+    str2 = str1.get() + ccp.get();
+  }
+  {
+    char aaa[] = "aaa";
+    char foo[] = "foo";
+    char caaa[] = "aaa";
+    char cfoo[] = "foo";
+    
+    Value<const char *> ccp(cfoo);
+    Value<char *>       cp(foo);
+    
+    // This is not really string comparison put pointer comparison.
+    CHECK_OP_WV(ccp,==,aaa); CHECK_OP_VW(foo,==,ccp);
+    CHECK_OP_WV(ccp,!=,aaa); CHECK_OP_VW(foo,!=,ccp);
+    CHECK_OP_WV(ccp,< ,aaa); CHECK_OP_VW(foo,< ,ccp);
+    CHECK_OP_WV(ccp,<=,aaa); CHECK_OP_VW(foo,<=,ccp);
+    CHECK_OP_WV(ccp,> ,aaa); CHECK_OP_VW(foo,> ,ccp);
+    CHECK_OP_WV(ccp,>=,aaa); CHECK_OP_VW(foo,>=,ccp);
+
+    CHECK_OP_WV(ccp,==,caaa); CHECK_OP_VW(cfoo,==,ccp);
+    CHECK_OP_WV(ccp,!=,caaa); CHECK_OP_VW(cfoo,!=,ccp);
+    CHECK_OP_WV(ccp,< ,caaa); CHECK_OP_VW(cfoo,< ,ccp);
+    CHECK_OP_WV(ccp,<=,caaa); CHECK_OP_VW(cfoo,<=,ccp);
+    CHECK_OP_WV(ccp,> ,caaa); CHECK_OP_VW(cfoo,> ,ccp);
+    CHECK_OP_WV(ccp,>=,caaa); CHECK_OP_VW(cfoo,>=,ccp);
+
+    CHECK_OP_WV(cp,==,aaa); CHECK_OP_VW(foo,==,cp);
+    CHECK_OP_WV(cp,!=,aaa); CHECK_OP_VW(foo,!=,cp);
+    CHECK_OP_WV(cp,< ,aaa); CHECK_OP_VW(foo,< ,cp);
+    CHECK_OP_WV(cp,<=,aaa); CHECK_OP_VW(foo,<=,cp);
+    CHECK_OP_WV(cp,> ,aaa); CHECK_OP_VW(foo,> ,cp);
+    CHECK_OP_WV(cp,>=,aaa); CHECK_OP_VW(foo,>=,cp);
+
+    CHECK_OP_WV(cp,==,caaa); CHECK_OP_VW(cfoo,==,cp);
+    CHECK_OP_WV(cp,!=,caaa); CHECK_OP_VW(cfoo,!=,cp);
+    CHECK_OP_WV(cp,< ,caaa); CHECK_OP_VW(cfoo,< ,cp);
+    CHECK_OP_WV(cp,<=,caaa); CHECK_OP_VW(cfoo,<=,cp);
+    CHECK_OP_WV(cp,> ,caaa); CHECK_OP_VW(cfoo,> ,cp);
+    CHECK_OP_WV(cp,>=,caaa); CHECK_OP_VW(cfoo,>=,cp);
   }
   {
     A a;
