@@ -199,14 +199,6 @@ int main(int argc, char *argv[]) {
     CHECK_OP_WV(std::string(),cp,<=,std::string("aaa")); CHECK_OP_WV(std::string(),cp,<=,std::string("foo")); CHECK_OP_WV(std::string(),cp,<=,std::string("zzz"));
     CHECK_OP_WV(std::string(),cp,> ,std::string("aaa")); CHECK_OP_WV(std::string(),cp,> ,std::string("foo")); CHECK_OP_WV(std::string(),cp,> ,std::string("zzz"));
     CHECK_OP_WV(std::string(),cp,>=,std::string("aaa")); CHECK_OP_WV(std::string(),cp,>=,std::string("foo")); CHECK_OP_WV(std::string(),cp,>=,std::string("zzz"));
-
-//  This is not really string comparison put pointer comparison. Implement this later!
-//  CHECK_OP_WV(std::string(),cp,==,"aaa"); CHECK_OP_WV(std::string(),cp,==,"foo");
-//  CHECK_OP_WV(std::string(),cp,!=,"aaa"); CHECK_OP_WV(std::string(),cp,!=,"foo");
-//  CHECK_OP_WV(std::string(),cp,< ,"aaa"); CHECK_OP_WV(std::string(),cp,< ,"foo"); CHECK_OP_WV(std::string(),cp,< ,"zzz");
-//  CHECK_OP_WV(std::string(),cp,<=,"aaa"); CHECK_OP_WV(std::string(),cp,<=,"foo"); CHECK_OP_WV(std::string(),cp,<=,"zzz");
-//  CHECK_OP_WV(std::string(),cp,> ,"aaa"); CHECK_OP_WV(std::string(),cp,> ,"foo"); CHECK_OP_WV(std::string(),cp,> ,"zzz");
-//  CHECK_OP_WV(std::string(),cp,>=,"aaa"); CHECK_OP_WV(std::string(),cp,>=,"foo"); CHECK_OP_WV(std::string(),cp,>=,"zzz");
     
     str1 = "aaa"; str2 = "foo"; str3 = "zzz";
     std::cout << "str1 = \"aaa\": \"" << str1 << "\"" << std::endl;
@@ -264,5 +256,44 @@ int main(int argc, char *argv[]) {
 
     { MaybeValue<std::string> &check = (str1 = str2); assert(&check == &str1); }
   }
+  {
+    char aaa[] = "aaa";
+    char foo[] = "foo";
+    char caaa[] = "aaa";
+    char cfoo[] = "foo";
+    
+    MaybeValue<const char *> ccp(cfoo);
+    MaybeValue<char *>       cp(foo);
+    
+    // This is not really string comparison put pointer comparison.
+    CHECK_OP_WV(NULL,ccp,==,aaa); CHECK_OP_VW(NULL,foo,==,ccp);
+    CHECK_OP_WV(NULL,ccp,!=,aaa); CHECK_OP_VW(NULL,foo,!=,ccp);
+    CHECK_OP_WV(NULL,ccp,< ,aaa); CHECK_OP_VW(NULL,foo,< ,ccp);
+    CHECK_OP_WV(NULL,ccp,<=,aaa); CHECK_OP_VW(NULL,foo,<=,ccp);
+    CHECK_OP_WV(NULL,ccp,> ,aaa); CHECK_OP_VW(NULL,foo,> ,ccp);
+    CHECK_OP_WV(NULL,ccp,>=,aaa); CHECK_OP_VW(NULL,foo,>=,ccp);
+
+    CHECK_OP_WV(NULL,ccp,==,caaa); CHECK_OP_VW(NULL,cfoo,==,ccp);
+    CHECK_OP_WV(NULL,ccp,!=,caaa); CHECK_OP_VW(NULL,cfoo,!=,ccp);
+    CHECK_OP_WV(NULL,ccp,< ,caaa); CHECK_OP_VW(NULL,cfoo,< ,ccp);
+    CHECK_OP_WV(NULL,ccp,<=,caaa); CHECK_OP_VW(NULL,cfoo,<=,ccp);
+    CHECK_OP_WV(NULL,ccp,> ,caaa); CHECK_OP_VW(NULL,cfoo,> ,ccp);
+    CHECK_OP_WV(NULL,ccp,>=,caaa); CHECK_OP_VW(NULL,cfoo,>=,ccp);
+
+    CHECK_OP_WV(NULL,cp,==,aaa); CHECK_OP_VW(NULL,foo,==,cp);
+    CHECK_OP_WV(NULL,cp,!=,aaa); CHECK_OP_VW(NULL,foo,!=,cp);
+    CHECK_OP_WV(NULL,cp,< ,aaa); CHECK_OP_VW(NULL,foo,< ,cp);
+    CHECK_OP_WV(NULL,cp,<=,aaa); CHECK_OP_VW(NULL,foo,<=,cp);
+    CHECK_OP_WV(NULL,cp,> ,aaa); CHECK_OP_VW(NULL,foo,> ,cp);
+    CHECK_OP_WV(NULL,cp,>=,aaa); CHECK_OP_VW(NULL,foo,>=,cp);
+
+    CHECK_OP_WV(NULL,cp,==,caaa); CHECK_OP_VW(NULL,cfoo,==,cp);
+    CHECK_OP_WV(NULL,cp,!=,caaa); CHECK_OP_VW(NULL,cfoo,!=,cp);
+    CHECK_OP_WV(NULL,cp,< ,caaa); CHECK_OP_VW(NULL,cfoo,< ,cp);
+    CHECK_OP_WV(NULL,cp,<=,caaa); CHECK_OP_VW(NULL,cfoo,<=,cp);
+    CHECK_OP_WV(NULL,cp,> ,caaa); CHECK_OP_VW(NULL,cfoo,> ,cp);
+    CHECK_OP_WV(NULL,cp,>=,caaa); CHECK_OP_VW(NULL,cfoo,>=,cp);
+  }
+
   return 0;
 }
