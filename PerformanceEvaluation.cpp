@@ -83,7 +83,8 @@ void PerformanceEvaluation::startSimulation(){
  *
  */
 PerformanceEvaluation::~PerformanceEvaluation(){
-  assert(startTimes.size() == stopTimes.size());
+	//removed (sg)
+  //assert(startTimes.size() == stopTimes.size());
   
   if (!startTimes.empty()) {
     // store number of samples
