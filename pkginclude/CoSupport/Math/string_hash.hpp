@@ -37,8 +37,11 @@
 
 #include "../commondefs.h"
 #include "../compatibility-glue/integertypes.h"
-#include <stdint.h> // uint64_t
-
+#ifdef _MSC_VER
+# include <boost/cstdint.hpp>
+#else
+# include <stdint.h> // uint64_t
+#endif
 namespace CoSupport { namespace Math {
 
 namespace Detail {
