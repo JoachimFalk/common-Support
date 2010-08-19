@@ -1,6 +1,6 @@
 /* vim: set sw=2 ts=8: */
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2010 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -33,43 +33,22 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-/*
- * $Log: mystdint.h,v $
- * Revision 1.4  2001/09/01 17:51:54  joachim
- * Added stuff from typemac.h
- *
- * Revision 1.3  2001/05/07 00:43:14  joachim
- * handle case that we have only some intxx_t and not neccessary in stdint.h
- *
- * Revision 1.2  2001/04/15 03:59:34  joachim
- * Added extern "C" { xxx } protection for c++ header inclusion
- *
- * Revision 1.1  2001/03/13 10:35:10  joachim
- * Initial revision
- *
- */
+#ifndef _INCLUDED_COSUPPORT_COMPAT_INTEGERTYPES_H
+#define _INCLUDED_COSUPPORT_COMPAT_INTEGERTYPES_H
 
-#ifndef _INCLUDED_INTEGERTYPES_H
-#define _INCLUDED_INTEGERTYPES_H
+#include "../cosupport_config.h"
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#ifdef HAVE_STDLIB_H
+#ifdef COSUPPORT_HAVE_STDLIB_H
 # include <stdlib.h>
 #endif
-#ifdef HAVE_STDDEF_H
+#ifdef COSUPPORT_HAVE_STDDEF_H
 # include <stddef.h>
 #endif
-#ifdef HAVE_SYS_TYPES_H
+#ifdef COSUPPORT_HAVE_SYS_TYPES_H
 # include <sys/types.h>
 #endif
-#ifdef HAVE_STDINT_H
+#ifdef COSUPPORT_HAVE_STDINT_H
 # include <stdint.h>
-#endif
-#ifdef HAVE_LIMITS_H
-# include <limits.h>
 #endif
 
 /* Allow the use in C++ code.  */
@@ -77,92 +56,85 @@
 extern "C" {
 #endif
 
-#ifndef HAVE_INT8_T
-  /* Find uint8_t & int8_t */
+#ifndef COSUPPORT_HAVE_INT8_T
+  /* Find int8_t */
 # if defined(_MSC_VER)
-typedef unsigned __int8		uint8_t;
-typedef signed   __int8		int8_t;
-# elif SIZEOF_CHAR == 1
-typedef unsigned char		uint8_t;
-typedef signed   char		int8_t;
-# elif SIZEOF_SHORT == 1
-typedef unsigned short		uint8_t;
-typedef signed   short		int8_t;
-# elif SIZEOF_INT == 1
-typedef unsigned int		uint8_t;
-typedef signed   int		int8_t;
-# elif SIZEOF_LONG == 1
-typedef unsigned long		uint8_t;
-typedef signed   long		int8_t;
-# elif SIZEOF_LONG_LONG == 1
-typedef unsigned long long	uint8_t;
-typedef signed   long long	int8_t;
+typedef signed __int8              int8_t;
+# else // !_MSC_VER
+typedef COSUPPORT_REPLTYP_INT8_T   int8_t;
 # endif
-#endif
-
-#ifndef HAVE_INT16_T
-  /* Find uint16_t & int16_t */
+#endif // !COSUPPORT_HAVE_INT8_T
+#ifndef COSUPPORT_HAVE_UINT8_T
+  /* Find uint8_t */
 # if defined(_MSC_VER)
-typedef unsigned __int16	uint16_t;
-typedef signed   __int16	int16_t;
-# elif SIZEOF_SHORT == 2
-typedef unsigned short		uint16_t;
-typedef signed   short		int16_t;
-# elif SIZEOF_INT == 2
-typedef unsigned int		uint16_t;
-typedef signed   int		int16_t;
-# elif SIZEOF_LONG == 2
-typedef unsigned long		uint16_t;
-typedef signed   long		int16_t;
-# elif SIZEOF_LONG_LONG == 2
-typedef unsigned long long	uint16_t;
-typedef signed   long long	int16_t;
+typedef unsigned __int8            uint8_t;
+# else // !_MSC_VER
+typedef COSUPPORT_REPLTYP_UINT8_T  uint8_t;
 # endif
-#endif
+#endif // !COSUPPORT_HAVE_UINT8_T
 
-
-#ifndef HAVE_INT32_T
-  /* Find uint32_t & int32_t */
+#ifndef COSUPPORT_HAVE_INT16_T
+  /* Find int16_t */
 # if defined(_MSC_VER)
-typedef unsigned __int32	uint32_t;
-typedef signed   __int32	int32_t;
-# elif SIZEOF_SHORT == 4
-typedef unsigned short		uint32_t;
-typedef signed   short		int32_t;
-# elif SIZEOF_INT == 4
-typedef unsigned int		uint32_t;
-typedef signed   int		int32_t;
-# elif SIZEOF_LONG == 4
-typedef unsigned long		uint32_t;
-typedef signed   long		int32_t;
-# elif SIZEOF_LONG_LONG == 4
-typedef unsigned long long	uint32_t;
-typedef signed   long long	int32_t;
+typedef signed __int16             int16_t;
+# else // !_MSC_VER
+typedef COSUPPORT_REPLTYP_INT16_T  int16_t;
 # endif
-#endif
-
-#ifndef HAVE_INT64_T
-  /* Find uint64_t & int64_t */
+#endif // !COSUPPORT_HAVE_INT16_T
+#ifndef COSUPPORT_HAVE_UINT16_T
+  /* Find uint16_t */
 # if defined(_MSC_VER)
-typedef unsigned __int64	uint64_t;
-typedef signed   __int64	int64_t;
-# elif SIZEOF_SHORT == 8
-typedef unsigned short		uint64_t;
-typedef signed short		int64_t;
-# elif SIZEOF_INT == 8
-typedef unsigned int		uint64_t;
-typedef signed int		int64_t;
-# elif SIZEOF_LONG == 8
-typedef unsigned long		uint64_t;
-typedef signed long		int64_t;
-# elif SIZEOF_LONG_LONG == 8
-typedef unsigned long long	uint64_t;
-typedef signed long long	int64_t;
+typedef unsigned __int16           uint16_t;
+# else // !_MSC_VER
+typedef COSUPPORT_REPLTYP_UINT16_T uint16_t;
 # endif
-#endif
+#endif // !COSUPPORT_HAVE_UINT16_T
+
+#ifndef COSUPPORT_HAVE_INT32_T
+  /* Find int32_t */
+# if defined(_MSC_VER)
+typedef signed __int32             int32_t;
+# else // !_MSC_VER
+typedef COSUPPORT_REPLTYP_INT32_T  int32_t;
+# endif
+#endif // !COSUPPORT_HAVE_INT32_T
+#ifndef COSUPPORT_HAVE_UINT32_T
+  /* Find uint32_t */
+# if defined(_MSC_VER)
+typedef unsigned __int32           uint32_t;
+# else // !_MSC_VER
+typedef COSUPPORT_REPLTYP_UINT32_T uint32_t;
+# endif
+#endif // !COSUPPORT_HAVE_UINT32_T
+
+#ifndef COSUPPORT_HAVE_INT64_T
+  /* Find int64_t */
+# if defined(_MSC_VER)
+typedef signed __int64             int64_t;
+# else // !_MSC_VER
+typedef COSUPPORT_REPLTYP_INT64_T  int64_t;
+# endif
+#endif // !COSUPPORT_HAVE_INT64_T
+#ifndef COSUPPORT_HAVE_UINT64_T
+  /* Find uint64_t */
+# if defined(_MSC_VER)
+typedef unsigned __int64           uint64_t;
+# else // !_MSC_VER
+typedef COSUPPORT_REPLTYP_UINT64_T uint64_t;
+# endif
+#endif // !COSUPPORT_HAVE_UINT64_T
+
+#ifndef COSUPPORT_HAVE_SIZE_T
+  /* Find size_t */
+typedef COSUPPORT_REPLTYP_SIZE_T   size_t;
+#endif // !COSUPPORT_HAVE_SIZE_T
+#ifndef COSUPPORT_HAVE_SSIZE_T
+  /* Find ssize_t */
+typedef COSUPPORT_REPLTYP_SSIZE_T  ssize_t;
+#endif // !COSUPPORT_HAVE_SSIZE_T
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _INCLUDED_INTEGERTYPES_H */
+#endif /* _INCLUDED_COSUPPORT_COMPAT_INTEGERTYPES_H */
