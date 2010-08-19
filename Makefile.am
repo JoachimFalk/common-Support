@@ -28,13 +28,23 @@ SUBDIRS=pkginclude
 # This is only needed if there is a configure.in in this directory
 ACLOCAL_AMFLAGS=-I ../BuildSystem/m4
 
+all: pkginclude/lndir.stamp
+
+clean-local:
+	@$(RM) pkginclude/lndir.stamp
+	@find pkginclude -type l -delete
+	@find pkginclude -type d | sort -r | xargs rmdir 2>/dev/null || :
+
+pkginclude/lndir.stamp:
+	lndir -silent $(srcdir)/pkginclude pkginclude
+	touch "$@"
+
 AM_CPPFLAGS=				\
 	@AM_CPPFLAGS@			\
 	$(BOOST_INCLUDE)		\
 	$(SYSTEMC_INCLUDE)		\
 	$(XERCES_INCLUDE)		\
-	-I$(srcdir)/pkginclude		\
-	-I$(srcdir)
+	-I$(builddir)/pkginclude
 
 AM_LDFLAGS=				\
 	@AM_LDFLAGS@			\
