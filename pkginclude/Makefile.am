@@ -24,6 +24,17 @@ include $(auxdir)/jfrules.mk
 
 SUBDIRS=
 
+all: lndir.stamp
+
+clean-local:
+	@$(RM) lndir.stamp
+	@find . -type l -delete
+	@find . -type d | sort -r | xargs rmdir 2>/dev/null || :
+
+lndir.stamp:
+	lndir -silent $(srcdir) .
+	touch "$@"
+
 nobase_include_HEADERS = \
 	CoSupport/Allocators/IdAllocRequest.hpp \
 	CoSupport/Allocators/IdPool.hpp \
