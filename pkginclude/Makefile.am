@@ -82,6 +82,7 @@ nobase_include_HEADERS = \
 	CoSupport/Streams/stl_output_for_list.hpp \
 	CoSupport/Streams/stl_output_for_pair.hpp \
 	CoSupport/Streams/stl_output_for_vector.hpp \
+	CoSupport/Streams/stl_output_for_set.hpp \
 	CoSupport/String/Concat.hpp \
 	CoSupport/String/DoubleQuotedString.hpp \
 	CoSupport/String/QuotedString.hpp \
