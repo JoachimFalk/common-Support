@@ -36,7 +36,7 @@
 #ifndef _INCLUDED_COSUPPORT_COMPAT_INTEGERTYPES_H
 #define _INCLUDED_COSUPPORT_COMPAT_INTEGERTYPES_H
 
-#include <CoSupport/cosupport_config.h>
+#include "../cosupport_config.h"
 
 #ifdef COSUPPORT_HAVE_STDLIB_H
 # include <stdlib.h>
