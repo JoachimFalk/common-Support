@@ -48,7 +48,8 @@ lib_LTLIBRARIES=			\
 	libcosupport-streams.la		\
 	libcosupport-string.la		\
 	libcosupport-math.la		\
-	libcosupport-allocators.la
+	libcosupport-allocators.la	\
+	libcosupport-tracing.la
 
 noinst_PROGRAMS=			\
 	test_dbgstream			\
@@ -66,7 +67,8 @@ libcosupport_la_LIBADD =			\
 	libcosupport-smartptr.la		\
 	libcosupport-streams.la			\
 	libcosupport-string.la			\
-	libcosupport-allocators.la
+	libcosupport-allocators.la		\
+	libcosupport-tracing.la
 
 if COSUPPORT_ENABLE_XERCES
 libcosupport_la_LIBADD +=			\
@@ -166,6 +168,10 @@ libcosupport_math_la_LIBADD =
 
 libcosupport_allocators_la_SOURCES =
 libcosupport_allocators_la_LIBADD =
+
+libcosupport_tracing_la_SOURCES =		\
+	TracingFactory.cpp				\
+	PTPTracing.cpp
 
 test_dbgstream_SOURCES		  = test_dbgstream.cpp
 test_dbgstream_LDADD		  = libcosupport-streams.la
