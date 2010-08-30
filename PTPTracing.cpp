@@ -108,14 +108,14 @@ PTPTracing::~PTPTracing(){
     averageLatency = averageLatency / sampleCount;
 
     // write latency
-    std::ofstream lat("result.latency");
+    std::ofstream lat(((getName() + ".result.latency")).c_str());
     if( lat.is_open() ){
       lat << averageLatency.to_default_time_units() << std::endl;
     }
     lat.close();
 
     //write inverse throughput
-    std::ofstream thr("result.inversethroughput");
+    std::ofstream thr((getName() + ".result.inversethroughput").c_str());
     if( thr.is_open() ){
       thr << averageInverseThroughput.to_default_time_units() << std::endl;
     }
@@ -128,6 +128,10 @@ std::string PTPTracing::createReport(){
   std::stringstream result;
 
   if (!stopTimes.empty()) {
+
+    if(startTimes.empty()){
+      result << "Something very strange happend... PTPTracing has no start_times!" << std::endl;
+    }
   // store number of samples
   size_t sampleCount = stopTimes.size();
   sc_time averageLatency;
@@ -195,8 +199,9 @@ std::string PTPTracing::getRAWData(){
     }
 
   }
-    std::ofstream thr(name.append(".RAW").c_str());
+    std::ofstream thr((getName() + ".RAW").c_str());
     thr<<result.str();
+    thr.close();
     return result.str();
 }
 
