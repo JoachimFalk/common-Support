@@ -120,9 +120,9 @@ for(std::map<std::string, Tracing*>::const_iterator it = traceMap.begin(); it !=
 
           it->second->getRAWData();
           //std::cerr << "delete it" << it->second << std::endl;
-          //delete((it->second));
+          delete((it->second));
       }
-//traceMap.clear();
+traceMap.clear();
 
 
 
