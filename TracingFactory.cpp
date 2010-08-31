@@ -58,11 +58,11 @@ TracingFactory& TracingFactory::getInstance(){
 }
 
 /**
- *
+ * returns the Tracing-Object to a given key
  */
-Tracing* TracingFactory::getInstancefromID(std::string id){
-  if(traceMap[id] != 0){
-    return traceMap[id];
+Tracing* TracingFactory::getInstancefromID(std::string key){
+  if(traceMap[key] != 0){
+    return traceMap[key];
   }else{
     std::cerr<<"Error! ID not registered!"<<std::endl;
     return 0;
@@ -70,11 +70,13 @@ Tracing* TracingFactory::getInstancefromID(std::string id){
 
 }
 
+/**
+ * returns a PTPTracingObject for the given key - and will create it, if it's not present
+ */
 Tracing* TracingFactory::getPTPTracingObject(std::string key){
   if(traceMap[key] != 0){
       return traceMap[key];
     }else{
-      std::cerr<<"creating new Trace-object " << key <<std::endl;
       Tracing* newTraceObject = new PTPTracing(key);
       traceMap[key] = newTraceObject;
       return newTraceObject;
@@ -83,89 +85,40 @@ Tracing* TracingFactory::getPTPTracingObject(std::string key){
 }
 
 /**
- *
+ * should not be used - starts the tracing of the Trace-Object with the given key (PTPTracing)
  */
-void TracingFactory::startUnit(std::string id){
-  Tracing* trace = getInstancefromID(id);
+void TracingFactory::startUnit(std::string key){
+  Tracing* trace = getInstancefromID(key);
   ((PTPTracing*)trace)->startUnit();
 }
 
 
 /**
- *
+ * should not be used - stops the tracing of the Trace-Object with the given key (PTPTracing)
  */
-void TracingFactory::stopUnit(std::string id){
-  Tracing* trace = getInstancefromID(id);
+void TracingFactory::stopUnit(std::string key){
+  Tracing* trace = getInstancefromID(key);
   ((PTPTracing*)trace)->stopUnit();
 }
 
 
 /**
- *
+ * Destructor - generates the report for every Trace-Object and extracts the RAW-Data
  */
 TracingFactory::~TracingFactory(){
-        //removed (sg)
   //assert(startTimes.size() == stopTimes.size());
-  if(traceMap.size() != 0){
-    std::cout<<"we have " << traceMap.size() << " elements in the traceMap!"<<std::endl;
-  }
-
-for(std::map<std::string, Tracing*>::const_iterator it = traceMap.begin(); it != traceMap.end(); ++it)
+  for(std::map<std::string, Tracing*>::const_iterator it = traceMap.begin(); it != traceMap.end(); ++it)
       {
           //std::string name =(it->second->getName());
           //name +="result.inversethroughput";
-          std::ofstream thr((it->second->getName()).append(".result.csv").c_str());
+          std::ofstream thr((it->second->getName() + ".result.csv").c_str());
           thr<<it->second->createReport();
           thr.close();
 
           it->second->getRAWData();
-          //std::cerr << "delete it" << it->second << std::endl;
           delete((it->second));
       }
-traceMap.clear();
-
-
-
-  /*
-  if (!startTimes.empty()) {
-    // store number of samples
-    size_t sampleCount = startTimes.size();
-    sc_time averageLatency;
-
-    // calculate inverse throughput
-    sc_time lastSample = stopTimes.back();
-    sc_time averageInverseThroughput = (lastSample - measureStart)/sampleCount;
-
-    // sum up latencies
-    while( startTimes.size() ){
-      const sc_time& start = startTimes.front();
-      const sc_time& stop  = stopTimes.front();
-
-      //std::cerr << "sample: " << start << " -> " << stop << std::endl;
-      averageLatency  += stop-start;
-
-      startTimes.pop_front();
-      stopTimes.pop_front();
-    }
-
-    // compute avarage latency
-    averageLatency = averageLatency / sampleCount;
-
-    // write latency
-    std::ofstream lat("result.latency");
-    if( lat.is_open() ){
-      lat << averageLatency.to_default_time_units() << std::endl;
-    }
-    lat.close();
-
-    //write inverse throughput
-    std::ofstream thr("result.inversethroughput");
-    if( thr.is_open() ){
-      thr << averageInverseThroughput.to_default_time_units() << std::endl;
-    }
-    thr.close();
-  }
-  */
+  traceMap.clear();
 }
 
-} } // namespace CoSupport::SystemC
+} } // namespace CoSupport::Tracing

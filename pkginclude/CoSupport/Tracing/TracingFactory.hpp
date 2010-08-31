@@ -52,6 +52,7 @@ namespace CoSupport { namespace Tracing {
 
 /**
  * \brief Enables logging of simulation times
+ * @author graf
  */
 class TracingFactory {
 
