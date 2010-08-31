@@ -49,7 +49,8 @@
 namespace CoSupport { namespace Tracing {
 
 /**
- * \brief Enables logging of simulation times
+ * \brief Enables logging of simulation times - PointToPoint Connections with start and stop
+ * @author graf
  */
 class PTPTracing:public Tracing {
 
@@ -107,6 +108,6 @@ public:
 
 };
 
-} } // namespace CoSupport::SystemC
+} } // namespace CoSupport::Tracing
 
 #endif // _INCLUDED_COSUPPORT_TRACING_PTPTRACING_HPP

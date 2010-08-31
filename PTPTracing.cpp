@@ -41,7 +41,7 @@ namespace CoSupport { namespace Tracing {
 
 
 /**
- *
+ * Creates a new PTP-Tracing Object with the given name
  */
 
   PTPTracing::PTPTracing(std::string id)
@@ -51,23 +51,21 @@ namespace CoSupport { namespace Tracing {
 
 
 /**
- *
+ * starts one tracing-path / registers the start-time
  */
 void PTPTracing::startUnit(){
-  std::cout<<"PTPTracing::startUnit() "<< name << " "<<this << std::endl;
   startTimes.push_back( sc_time_stamp() );
 }
 
 /**
- *
+ * stops one tracing -path / registers the stop-time
  */
 void PTPTracing::stopUnit(){
-  std::cout<<"PTPTracing::stopUnit() "<< name << " "<<this << std::endl;
   stopTimes.push_back( sc_time_stamp() );
 }
 
 /**
- *
+ * registers the measureStart (optional?)
  */
 void PTPTracing::startSimulation(){
   measureStart = sc_time_stamp();
@@ -75,11 +73,10 @@ void PTPTracing::startSimulation(){
 
 
 /**
- *
+ * Destructor - writes the latency and inverse throughput to files (see PerformanceEvaluation)
  */
 PTPTracing::~PTPTracing(){
   //assert(startTimes.size() >= stopTimes.size());
-  std::cerr << "PTPTracing::~PTPTracing size" <<startTimes.size() << " " << stopTimes.size() << std::endl;
 
   if (!startTimes.empty()) {
     // store number of samples
@@ -93,13 +90,10 @@ PTPTracing::~PTPTracing(){
     int count = 0;
     // sum up latencies
     for(std::deque<sc_time>::const_iterator it = stopTimes.begin(); it != stopTimes.end(); ++it){
-
       const sc_time& start = startTimes[count++];
       const sc_time& stop  = *it;
 
-      //std::cerr << "sample: " << start << " -> " << stop << std::endl;
       averageLatency  += stop-start;
-
       startTimes.pop_front();
       stopTimes.pop_front();
     }
@@ -123,81 +117,82 @@ PTPTracing::~PTPTracing(){
   }
 }
 
+/**
+ * Creates a CSV-Report (type,value) with some calculates results of the measures (average, max_trip, min_trip)
+ */
 std::string PTPTracing::createReport(){
-//  std::cerr<<"startTimes:" << startTimes.size() << " stopTimes:" << stopTimes.size() << std::endl;
   std::stringstream result;
 
   if (!stopTimes.empty()) {
-
     if(startTimes.empty()){
-      result << "Something very strange happend... PTPTracing has no start_times!" << std::endl;
+      result << "Something very strange happened... PTPTracing has no startTimes, but stopTimes!" << std::endl;
+    }else{
+      size_t sampleCount = stopTimes.size();
+      sc_time averageLatency;
+      sc_time last_trip;
+      sc_time min_trip = sc_time(-1, SC_NS);
+      sc_time max_trip = sc_time(0,SC_NS);
+
+      // calculate inverse throughput
+      sc_time lastSample = stopTimes.back();
+      sc_time averageInverseThroughput = (lastSample - measureStart)/sampleCount;
+
+      // sum up latencies
+      int count = 0;
+      for(std::deque<sc_time>::const_iterator it = stopTimes.begin(); it != stopTimes.end(); ++it){
+          const sc_time& start = startTimes[count];
+          const sc_time& stop  = *it;
+          last_trip = stop - start;
+          averageLatency  += last_trip;
+          if(last_trip < min_trip) min_trip = last_trip;
+          if(last_trip > max_trip) max_trip = last_trip;
+          count++;
+      }
+
+      // compute average latency
+      averageLatency = averageLatency / sampleCount;
+
+      // write average, max and min latency
+      result << "average,"<< averageLatency.to_default_time_units() << std::endl;
+      result << "max_trip," << max_trip.to_default_time_units()  << std::endl;
+      result << "min_trip," << min_trip.to_default_time_units()  << std::endl;
     }
-  // store number of samples
-  size_t sampleCount = stopTimes.size();
-  sc_time averageLatency;
-  sc_time last_trip;
-  sc_time min_trip = sc_time(-1, SC_NS);
-  sc_time max_trip = sc_time(0,SC_NS);
-
-  // calculate inverse throughput
-  sc_time lastSample = stopTimes.back();
-  sc_time averageInverseThroughput = (lastSample - measureStart)/sampleCount;
-
-//  result << "trip_duration";
-  // sum up latencies
-  int count = 0;
-  for(std::deque<sc_time>::const_iterator it = stopTimes.begin(); it != stopTimes.end(); ++it){
-        const sc_time& start = startTimes[count];
-        const sc_time& stop  = *it;
-        //std::cerr << "sample: " << start << " -> " << stop << std::endl;
-        last_trip = stop - start;
-        averageLatency  += last_trip;
-        if(last_trip < min_trip) min_trip = last_trip;
-        if(last_trip > max_trip) max_trip = last_trip;
-        //std::cerr<<"last_trip="<<last_trip<<" min_trip="<<min_trip<<" max_trip="<<max_trip << std::endl;
-  //      result << "," << last_trip.to_default_time_units();
-
-        count++;
   }
-  //result<<std::endl;
-
-  // compute avarage latency
-  averageLatency = averageLatency / sampleCount;
-
-  // write average and max latency
-    result << "average,"<< averageLatency.to_default_time_units() << std::endl;
-    result << "max_trip," << max_trip.to_default_time_units()  << std::endl;
-}
   return result.str();
 }
 
 
-
+/**
+ * writes the Report to the given Filename
+ */
 void PTPTracing::writeReportToFile(std::string filename){
+  std::ofstream file(filename.c_str());
+  if( file.is_open() ){
+    file << createReport();
+  }
+  file.close();
+
 
 }
 
+/**
+ *
+ *
+ */
 std::string PTPTracing::getRAWData(){
-  //  std::cerr<<"startTimes:" << startTimes.size() << " stopTimes:" << stopTimes.size() << std::endl;
-
     std::stringstream result;
 
     if (!stopTimes.empty()) {
-    // store number of samples
     sc_time last_trip;
-
     int count = 0;
     // sum up latencies
     for(std::deque<sc_time>::const_iterator it = stopTimes.begin(); it != stopTimes.end(); ++it){
       const sc_time& start = startTimes[count];
       const sc_time& stop  = *it;
-
-      //std::cerr << "sample: " << start << " -> " << stop << std::endl;
       last_trip = stop - start;
-      result << count++ << " " << last_trip.to_default_time_units() << std::endl;
-
+      result << last_trip.to_default_time_units() << std::endl;
+      count++;
     }
-
   }
     std::ofstream thr((getName() + ".RAW").c_str());
     thr<<result.str();
@@ -209,4 +204,4 @@ std::string PTPTracing::getName(){
   return name;
 }
 
-} } // namespace CoSupport::SystemC
+} } // namespace CoSupport::Tracing
