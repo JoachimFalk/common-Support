@@ -1,7 +1,7 @@
 //  -*- tab-width:8; intent-tabs-mode:nil;  c-basic-offset:2; -*-
 // vim: set sw=2 ts=8 sts=2 et:
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2010 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  *
  *   This library is free software; you can redistribute it and/or modify it under
@@ -34,8 +34,11 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#include <CoSupport/Tracing/PTPTracing.hpp>
+#include <CoSupport/Tracing/PtpTracer.hpp>
 #include <fstream>
+#include <sstream>
+#include <vector>
+#include <map>
 
 namespace CoSupport { namespace Tracing {
 
@@ -44,7 +47,7 @@ namespace CoSupport { namespace Tracing {
  * Creates a new PTP-Tracing Object with the given name
  */
 
-  PTPTracing::PTPTracing(std::string id)
+  PtpTracer::PtpTracer(std::string id)
   : measureStart(SC_ZERO_TIME) {
     name = id;
   };
@@ -53,79 +56,40 @@ namespace CoSupport { namespace Tracing {
 /**
  * starts one tracing-path / registers the start-time
  */
-void PTPTracing::startUnit(){
+void PtpTracer::start(){
   startTimes.push_back( sc_time_stamp() );
 }
 
 /**
  * stops one tracing -path / registers the stop-time
  */
-void PTPTracing::stopUnit(){
+void PtpTracer::stop(){
   stopTimes.push_back( sc_time_stamp() );
 }
 
 /**
  * registers the measureStart (optional?)
  */
-void PTPTracing::startSimulation(){
+void PtpTracer::startSimulation(){
   measureStart = sc_time_stamp();
 }
 
-
-/**
- * Destructor - writes the latency and inverse throughput to files (see PerformanceEvaluation)
- */
-PTPTracing::~PTPTracing(){
-  //assert(startTimes.size() >= stopTimes.size());
-
-  if (!startTimes.empty()) {
-    // store number of samples
-    size_t sampleCount = startTimes.size();
-    sc_time averageLatency;
-
-    // calculate inverse throughput
-    sc_time lastSample = stopTimes.back();
-    sc_time averageInverseThroughput = (lastSample - measureStart)/sampleCount;
-
-    int count = 0;
-    // sum up latencies
-    for(std::deque<sc_time>::const_iterator it = stopTimes.begin(); it != stopTimes.end(); ++it){
-      const sc_time& start = startTimes[count++];
-      const sc_time& stop  = *it;
-
-      averageLatency  += stop-start;
-      startTimes.pop_front();
-      stopTimes.pop_front();
-    }
-
-    // compute avarage latency
-    averageLatency = averageLatency / sampleCount;
-
-    // write latency
-    std::ofstream lat(((getName() + ".result.latency")).c_str());
-    if( lat.is_open() ){
-      lat << averageLatency.to_default_time_units() << std::endl;
-    }
-    lat.close();
-
-    //write inverse throughput
-    std::ofstream thr((getName() + ".result.inversethroughput").c_str());
-    if( thr.is_open() ){
-      thr << averageInverseThroughput.to_default_time_units() << std::endl;
-    }
-    thr.close();
-  }
+template<typename T>
+std::string toString(const T& obj) {
+  std::ostringstream out; out << obj; return out.str();
 }
 
 /**
  * Creates a CSV-Report (type,value) with some calculates results of the measures (average, max_trip, min_trip)
  */
-std::string PTPTracing::createReport(){
-  std::stringstream result;
+void PtpTracer::createCsvReport(std::ostream &result,
+    const std::vector<std::string> &sequence)
+{
+  std::map<std::string, std::string> resultMap;
 
   if (!stopTimes.empty()) {
     if(startTimes.empty()){
-      result << "Something very strange happened... PTPTracing has no startTimes, but stopTimes!" << std::endl;
+      result << "Something very strange happened... PtpTracer has no startTimes, but stopTimes!" << std::endl;
     }else{
       size_t sampleCount = stopTimes.size();
       sc_time averageLatency;
@@ -152,34 +116,28 @@ std::string PTPTracing::createReport(){
       // compute average latency
       averageLatency = averageLatency / sampleCount;
 
-      // write average, max and min latency
-      result << "average,"<< averageLatency.to_default_time_units() << std::endl;
-      result << "max_trip," << max_trip.to_default_time_units()  << std::endl;
-      result << "min_trip," << min_trip.to_default_time_units()  << std::endl;
+      resultMap[Tracer::AVG_LATENCY] = toString(averageLatency.to_default_time_units());
+      resultMap[Tracer::MAX_LATENCY] = toString(max_trip.to_default_time_units());
+      resultMap[Tracer::MIN_LATENCY] = toString(min_trip.to_default_time_units());
+
+      // write the csv line
+      result << this->name;
+      // write average, max and min latency starting with a tabulator
+      for(std::vector<std::string>::const_iterator iter
+          = sequence.begin(); iter != sequence.end(); ++iter){
+        assert(resultMap.find(*iter) != resultMap.end());
+        result << "\t" << resultMap[*iter];
+      }
+      result << std::endl;
     }
   }
-  return result.str();
-}
-
-
-/**
- * writes the Report to the given Filename
- */
-void PTPTracing::writeReportToFile(std::string filename){
-  std::ofstream file(filename.c_str());
-  if( file.is_open() ){
-    file << createReport();
-  }
-  file.close();
-
-
 }
 
 /**
  *
  *
  */
-std::string PTPTracing::getRAWData(){
+std::string PtpTracer::getRAWData(){
     std::stringstream result;
 
     if (!stopTimes.empty()) {
@@ -200,7 +158,7 @@ std::string PTPTracing::getRAWData(){
     return result.str();
 }
 
-std::string PTPTracing::getName(){
+std::string PtpTracer::getName(){
   return name;
 }
 

@@ -1,7 +1,7 @@
 //  -*- tab-width:8; intent-tabs-mode:nil;  c-basic-offset:2; -*-
 // vim: set sw=2 ts=8 sts=2 et:
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2010 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  *
  *   This library is free software; you can redistribute it and/or modify it under
@@ -34,46 +34,49 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#include <pkginclude/CoSupport/SystemC/Tracing.hpp>
+#ifndef _INCLUDED_COSUPPORT_TRACING_TRACER_HPP
+#define _INCLUDED_COSUPPORT_TRACING_TRACER_HPP
+
+#include <systemc.h>
+
+#include <memory>
+#include <iostream>
 #include <fstream>
 
-namespace CoSupport { namespace SystemC {
+#include <deque>
 
-
-/**
- *
- */
-  Tracing::Tracing(std::string id)
-  : measureStart(SC_ZERO_TIME), name(id) {};
+namespace CoSupport { namespace Tracing {
 
 /**
- *
+ * \brief Enables logging of simulation times
  */
-void Tracing::startUnit(){
-  startTimes.push_back( sc_time_stamp() );
-}
+class Tracer {
+
+public:
+  static const std::string AVG_LATENCY;
+  static const std::string MIN_LATENCY;
+  static const std::string MAX_LATENCY;
+
+  virtual ~Tracer() {}
+  /*
+   * creates a CVS-Report from the Simulation-results
+   */
+  virtual void createCsvReport(std::ostream &stream,
+       const std::vector<std::string> &sequence) = 0;
+
+  /*
+   * dumps the acquired data
+   */
+  virtual std::string getRAWData() = 0;
+
+  /**
+   *
+   */
+  virtual std::string getName() = 0;
 
 
-/**
- *
- */
-void Tracing::stopUnit(){
-  stopTimes.push_back( sc_time_stamp() );
-}
-
-/**
- *
- */
-void Tracing::startSimulation(){
-  measureStart = sc_time_stamp();
-}
-
-
-/**
- *
- */
-Tracing::~Tracing(){
-
-}
+};
 
 } } // namespace CoSupport::SystemC
+
+#endif // _INCLUDED_COSUPPORT_SYSTEMC_TRACER_HPP

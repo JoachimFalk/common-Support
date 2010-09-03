@@ -170,8 +170,9 @@ libcosupport_allocators_la_SOURCES =
 libcosupport_allocators_la_LIBADD =
 
 libcosupport_tracing_la_SOURCES =		\
-	TracingFactory.cpp				\
-	PTPTracing.cpp
+	Tracer.cpp							\
+	TracingFactory.cpp					\
+	PtpTracer.cpp
 
 test_dbgstream_SOURCES		  = test_dbgstream.cpp
 test_dbgstream_LDADD		  = libcosupport-streams.la

@@ -42,8 +42,8 @@
 #include <memory>
 #include <iostream>
 #include <fstream>
-#include <CoSupport/Tracing/Tracing.hpp>
-#include <CoSupport/Tracing/PTPTracing.hpp>
+#include <CoSupport/Tracing/Tracer.hpp>
+#include <CoSupport/Tracing/PtpTracer.hpp>
 #include <map>
 
 #include <deque>
@@ -69,8 +69,14 @@ private:
 
 
 
-  // contains all Trace-Objects associated with Trace-IDs
-  std::map<std::string, Tracing*> traceMap;
+  // TODO: we may need a map for all (different types) of tracer
+  //std::map<std::string, Trace*> traceMap;
+
+  // contains all PtpTracer
+  typedef std::map<std::string, PtpTracer*> PtpMap;
+  PtpMap ptpMap;
+
+
 
 public:
 
@@ -87,14 +93,10 @@ public:
   virtual ~TracingFactory();
 
 
-  Tracing* getInstancefromID(std::string id);
+  Tracer* getTracer(std::string id);
 
 
-  Tracing* getPTPTracingObject(std::string id);
-
-  void startUnit(std::string id);
-
-  void stopUnit(std::string id);
+  PtpTracer* createPtpTracer(std::string id);
 
 };
 

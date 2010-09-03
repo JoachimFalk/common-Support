@@ -34,17 +34,18 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_TRACING_PTPTRACING_HPP
-#define _INCLUDED_COSUPPORT_TRACING_PTPTRACING_HPP
+#ifndef _INCLUDED_COSUPPORT_TRACING_PTPTRACER_HPP
+#define _INCLUDED_COSUPPORT_TRACING_PTPTRACER_HPP
 
 #include <systemc.h>
 
 #include <memory>
 #include <iostream>
 #include <fstream>
-#include <CoSupport/Tracing/TracingFactory.hpp>
+#include <CoSupport/Tracing/Tracer.hpp>
 
 #include <deque>
+#include <vector>
 
 namespace CoSupport { namespace Tracing {
 
@@ -52,7 +53,7 @@ namespace CoSupport { namespace Tracing {
  * \brief Enables logging of simulation times - PointToPoint Connections with start and stop
  * @author graf
  */
-class PTPTracing:public Tracing {
+class PtpTracer : public Tracer {
 
 private:
 
@@ -65,13 +66,7 @@ private:
   std::string name;
 public:
 
-  PTPTracing(std::string id);
-
-
-  /**
-   *
-   */
-  ~PTPTracing();
+  PtpTracer(std::string id);
 
   /**
    * trace the start of an unit (e.g. a frame, a block,)
@@ -79,7 +74,7 @@ public:
    * if interleaving should be support we would need an identifer
    * but thats future work
    */
-  void startUnit();
+  void start();
 
 
   /**
@@ -88,7 +83,7 @@ public:
    * if interleaving should be support we would need an identifer
    * but thats future work
    */
-  void stopUnit();
+  void stop();
 
   /**
    * optionally you may want to signal another time of simulation startup
@@ -98,11 +93,10 @@ public:
    */
   void startSimulation();
 
-  std::string createReport();
+  void createCsvReport(std::ostream &stream,
+      const std::vector<std::string> &sequence);
 
   std::string getRAWData();
-
-  void writeReportToFile(std::string filename);
 
   std::string getName();
 
@@ -110,4 +104,4 @@ public:
 
 } } // namespace CoSupport::Tracing
 
-#endif // _INCLUDED_COSUPPORT_TRACING_PTPTRACING_HPP
+#endif // _INCLUDED_COSUPPORT_TRACING_PTPTRACER_HPP

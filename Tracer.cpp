@@ -34,52 +34,13 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_TRACING_TRACING_HPP
-#define _INCLUDED_COSUPPORT_TRACING_TRACING_HPP
-
-#include <systemc.h>
-
-#include <memory>
-#include <iostream>
+#include <CoSupport/Tracing/Tracer.hpp>
 #include <fstream>
-
-#include <deque>
 
 namespace CoSupport { namespace Tracing {
 
-/**
- * \brief Enables logging of simulation times
- */
-class Tracing {
-
-private:
-public:
-
-  virtual ~Tracing() {}
-  /*
-   * creates a CVS-Report from the Simulation-results
-   */
-  virtual std::string createReport() = 0;
-
-  /*
-   * dumps the acquired data
-   */
-  virtual std::string getRAWData() = 0;
-
-
-  /**
-   * trace the end/stop of an unit
-   * here we assume that starts and stops of units occure in the same order
-   * if interleaving should be support we would need an identifer
-   * but thats future work
-   */
-  virtual void writeReportToFile(std::string filename) = 0;
-
-  virtual std::string getName() = 0;
-
-
-};
+  const std::string Tracer::AVG_LATENCY("AVG_LATENCY");
+  const std::string Tracer::MIN_LATENCY("MIN_LATENCY");
+  const std::string Tracer::MAX_LATENCY("MAX_LATENCY");
 
 } } // namespace CoSupport::SystemC
-
-#endif // _INCLUDED_COSUPPORT_SYSTEMC_TRACING_HPP
