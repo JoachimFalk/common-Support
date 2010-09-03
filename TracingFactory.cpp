@@ -1,7 +1,7 @@
 //  -*- tab-width:8; intent-tabs-mode:nil;  c-basic-offset:2; -*-
 // vim: set sw=2 ts=8 sts=2 et:
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2010 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  *
  *   This library is free software; you can redistribute it and/or modify it under
@@ -36,6 +36,7 @@
 
 #include <CoSupport/Tracing/TracingFactory.hpp>
 #include <fstream>
+#include <vector>
 
 namespace CoSupport { namespace Tracing {
 
@@ -60,9 +61,9 @@ TracingFactory& TracingFactory::getInstance(){
 /**
  * returns the Tracing-Object to a given key
  */
-Tracing* TracingFactory::getInstancefromID(std::string key){
-  if(traceMap[key] != 0){
-    return traceMap[key];
+Tracer* TracingFactory::getTracer(std::string key){
+  if (ptpMap.find(key) != ptpMap.end()){
+    return ptpMap[key];
   }else{
     std::cerr<<"Error! ID not registered!"<<std::endl;
     return 0;
@@ -71,34 +72,13 @@ Tracing* TracingFactory::getInstancefromID(std::string key){
 }
 
 /**
- * returns a PTPTracingObject for the given key - and will create it, if it's not present
+ * returns a PtpTracer for the given key - and will create and cache it, if it's not present
  */
-Tracing* TracingFactory::getPTPTracingObject(std::string key){
-  if(traceMap[key] != 0){
-      return traceMap[key];
-    }else{
-      Tracing* newTraceObject = new PTPTracing(key);
-      traceMap[key] = newTraceObject;
-      return newTraceObject;
-    }
-
-}
-
-/**
- * should not be used - starts the tracing of the Trace-Object with the given key (PTPTracing)
- */
-void TracingFactory::startUnit(std::string key){
-  Tracing* trace = getInstancefromID(key);
-  ((PTPTracing*)trace)->startUnit();
-}
-
-
-/**
- * should not be used - stops the tracing of the Trace-Object with the given key (PTPTracing)
- */
-void TracingFactory::stopUnit(std::string key){
-  Tracing* trace = getInstancefromID(key);
-  ((PTPTracing*)trace)->stopUnit();
+PtpTracer* TracingFactory::createPtpTracer(std::string key){
+  if (ptpMap.find(key) == ptpMap.end()){
+    ptpMap[key] = new PtpTracer(key);
+  }
+  return ptpMap[key];
 }
 
 
@@ -107,18 +87,32 @@ void TracingFactory::stopUnit(std::string key){
  */
 TracingFactory::~TracingFactory(){
   //assert(startTimes.size() == stopTimes.size());
-  for(std::map<std::string, Tracing*>::const_iterator it = traceMap.begin(); it != traceMap.end(); ++it)
+  std::ofstream stream("tracing.log");
+
+  stream << "#\n"
+         << "# PtpTacer";
+  std::vector<std::string> sequence;
+  sequence.push_back(Tracer::AVG_LATENCY);
+  sequence.push_back(Tracer::MIN_LATENCY);
+  sequence.push_back(Tracer::MAX_LATENCY);
+  //TODO: sequence.push_back(throughput);
+
+  for (std::vector<std::string>::const_iterator iter = sequence.begin(); iter
+          != sequence.end(); ++iter){
+    stream << "\t" << *iter;
+  }
+  stream << std::endl;
+    for(PtpMap::const_iterator it = ptpMap.begin(); it != ptpMap.end(); ++it)
       {
           //std::string name =(it->second->getName());
           //name +="result.inversethroughput";
-          std::ofstream thr((it->second->getName() + ".result.csv").c_str());
-          thr<<it->second->createReport();
-          thr.close();
+          it->second->createCsvReport(stream, sequence);
 
-          it->second->getRAWData();
+          //it->second->getRAWData();
           delete((it->second));
       }
-  traceMap.clear();
+    stream.close();
+  ptpMap.clear();
 }
 
 } } // namespace CoSupport::Tracing
