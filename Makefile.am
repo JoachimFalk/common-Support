@@ -33,7 +33,8 @@ AM_CPPFLAGS=				\
 	$(BOOST_INCLUDE)		\
 	$(SYSTEMC_INCLUDE)		\
 	$(XERCES_INCLUDE)		\
-	-I$(builddir)/pkginclude
+	-I$(builddir)/pkginclude	\
+	-I$(srcdir)/pkginclude
 
 AM_LDFLAGS=				\
 	@AM_LDFLAGS@			\
