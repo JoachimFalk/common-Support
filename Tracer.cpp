@@ -1,7 +1,7 @@
 //  -*- tab-width:8; intent-tabs-mode:nil;  c-basic-offset:2; -*-
 // vim: set sw=2 ts=8 sts=2 et:
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2010 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  *
  *   This library is free software; you can redistribute it and/or modify it under
@@ -34,46 +34,13 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#include <pkginclude/CoSupport/SystemC/Tracing.hpp>
+#include <CoSupport/Tracing/Tracer.hpp>
 #include <fstream>
 
-namespace CoSupport { namespace SystemC {
+namespace CoSupport { namespace Tracing {
 
-
-/**
- *
- */
-  Tracing::Tracing(std::string id)
-  : measureStart(SC_ZERO_TIME), name(id) {};
-
-/**
- *
- */
-void Tracing::startUnit(){
-  startTimes.push_back( sc_time_stamp() );
-}
-
-
-/**
- *
- */
-void Tracing::stopUnit(){
-  stopTimes.push_back( sc_time_stamp() );
-}
-
-/**
- *
- */
-void Tracing::startSimulation(){
-  measureStart = sc_time_stamp();
-}
-
-
-/**
- *
- */
-Tracing::~Tracing(){
-
-}
+  const std::string Tracer::AVG_LATENCY("AVG_LATENCY");
+  const std::string Tracer::MIN_LATENCY("MIN_LATENCY");
+  const std::string Tracer::MAX_LATENCY("MAX_LATENCY");
 
 } } // namespace CoSupport::SystemC

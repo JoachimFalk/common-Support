@@ -1,7 +1,7 @@
 //  -*- tab-width:8; intent-tabs-mode:nil;  c-basic-offset:2; -*-
 // vim: set sw=2 ts=8 sts=2 et:
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2010 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  *
  *   This library is free software; you can redistribute it and/or modify it under
@@ -36,6 +36,7 @@
 
 #include <CoSupport/Tracing/TracingFactory.hpp>
 #include <fstream>
+#include <vector>
 
 namespace CoSupport { namespace Tracing {
 
@@ -58,11 +59,11 @@ TracingFactory& TracingFactory::getInstance(){
 }
 
 /**
- *
+ * returns the Tracing-Object to a given key
  */
-Tracing* TracingFactory::getInstancefromID(std::string id){
-  if(traceMap[id] != 0){
-    return traceMap[id];
+Tracer* TracingFactory::getTracer(std::string key){
+  if (ptpMap.find(key) != ptpMap.end()){
+    return ptpMap[key];
   }else{
     std::cerr<<"Error! ID not registered!"<<std::endl;
     return 0;
@@ -70,102 +71,48 @@ Tracing* TracingFactory::getInstancefromID(std::string id){
 
 }
 
-Tracing* TracingFactory::getPTPTracingObject(std::string key){
-  if(traceMap[key] != 0){
-      return traceMap[key];
-    }else{
-      std::cerr<<"creating new Trace-object " << key <<std::endl;
-      Tracing* newTraceObject = new PTPTracing(key);
-      traceMap[key] = newTraceObject;
-      return newTraceObject;
-    }
-
-}
-
 /**
- *
+ * returns a PtpTracer for the given key - and will create and cache it, if it's not present
  */
-void TracingFactory::startUnit(std::string id){
-  Tracing* trace = getInstancefromID(id);
-  ((PTPTracing*)trace)->startUnit();
+PtpTracer* TracingFactory::createPtpTracer(std::string key){
+  if (ptpMap.find(key) == ptpMap.end()){
+    ptpMap[key] = new PtpTracer(key);
+  }
+  return ptpMap[key];
 }
 
 
 /**
- *
- */
-void TracingFactory::stopUnit(std::string id){
-  Tracing* trace = getInstancefromID(id);
-  ((PTPTracing*)trace)->stopUnit();
-}
-
-
-/**
- *
+ * Destructor - generates the report for every Trace-Object and extracts the RAW-Data
  */
 TracingFactory::~TracingFactory(){
-        //removed (sg)
   //assert(startTimes.size() == stopTimes.size());
-  if(traceMap.size() != 0){
-    std::cout<<"we have " << traceMap.size() << " elements in the traceMap!"<<std::endl;
-  }
+  std::ofstream stream("tracing.log");
 
-for(std::map<std::string, Tracing*>::const_iterator it = traceMap.begin(); it != traceMap.end(); ++it)
+  stream << "#\n"
+         << "# PtpTacer";
+  std::vector<std::string> sequence;
+  sequence.push_back(Tracer::AVG_LATENCY);
+  sequence.push_back(Tracer::MIN_LATENCY);
+  sequence.push_back(Tracer::MAX_LATENCY);
+  //TODO: sequence.push_back(throughput);
+
+  for (std::vector<std::string>::const_iterator iter = sequence.begin(); iter
+          != sequence.end(); ++iter){
+    stream << "\t" << *iter;
+  }
+  stream << std::endl;
+    for(PtpMap::const_iterator it = ptpMap.begin(); it != ptpMap.end(); ++it)
       {
           //std::string name =(it->second->getName());
           //name +="result.inversethroughput";
-          std::ofstream thr((it->second->getName()).append(".result.csv").c_str());
-          thr<<it->second->createReport();
-          thr.close();
+          it->second->createCsvReport(stream, sequence);
 
-          it->second->getRAWData();
-          //std::cerr << "delete it" << it->second << std::endl;
+          //it->second->getRAWData();
           delete((it->second));
       }
-traceMap.clear();
-
-
-
-  /*
-  if (!startTimes.empty()) {
-    // store number of samples
-    size_t sampleCount = startTimes.size();
-    sc_time averageLatency;
-
-    // calculate inverse throughput
-    sc_time lastSample = stopTimes.back();
-    sc_time averageInverseThroughput = (lastSample - measureStart)/sampleCount;
-
-    // sum up latencies
-    while( startTimes.size() ){
-      const sc_time& start = startTimes.front();
-      const sc_time& stop  = stopTimes.front();
-
-      //std::cerr << "sample: " << start << " -> " << stop << std::endl;
-      averageLatency  += stop-start;
-
-      startTimes.pop_front();
-      stopTimes.pop_front();
-    }
-
-    // compute avarage latency
-    averageLatency = averageLatency / sampleCount;
-
-    // write latency
-    std::ofstream lat("result.latency");
-    if( lat.is_open() ){
-      lat << averageLatency.to_default_time_units() << std::endl;
-    }
-    lat.close();
-
-    //write inverse throughput
-    std::ofstream thr("result.inversethroughput");
-    if( thr.is_open() ){
-      thr << averageInverseThroughput.to_default_time_units() << std::endl;
-    }
-    thr.close();
-  }
-  */
+    stream.close();
+  ptpMap.clear();
 }
 
-} } // namespace CoSupport::SystemC
+} } // namespace CoSupport::Tracing

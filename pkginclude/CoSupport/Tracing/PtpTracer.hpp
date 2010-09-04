@@ -34,37 +34,47 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_TRACING_TRACING_HPP
-#define _INCLUDED_COSUPPORT_TRACING_TRACING_HPP
+#ifndef _INCLUDED_COSUPPORT_TRACING_PTPTRACER_HPP
+#define _INCLUDED_COSUPPORT_TRACING_PTPTRACER_HPP
 
 #include <systemc.h>
 
 #include <memory>
 #include <iostream>
 #include <fstream>
+#include <CoSupport/Tracing/Tracer.hpp>
 
 #include <deque>
+#include <vector>
 
 namespace CoSupport { namespace Tracing {
 
 /**
- * \brief Enables logging of simulation times
+ * \brief Enables logging of simulation times - PointToPoint Connections with start and stop
+ * @author graf
  */
-class Tracing {
+class PtpTracer : public Tracer {
 
 private:
+
+
+  // contains all logs associated with function calls
+  std::deque<sc_time> startTimes;
+  std::deque<sc_time> stopTimes;
+
+  sc_time measureStart;
+  std::string name;
 public:
 
-  virtual ~Tracing() {}
-  /*
-   * creates a CVS-Report from the Simulation-results
-   */
-  virtual std::string createReport() = 0;
+  PtpTracer(std::string id);
 
-  /*
-   * dumps the acquired data
+  /**
+   * trace the start of an unit (e.g. a frame, a block,)
+   * here we assume that starts and stops of units occure in the same order
+   * if interleaving should be support we would need an identifer
+   * but thats future work
    */
-  virtual std::string getRAWData() = 0;
+  void start();
 
 
   /**
@@ -73,13 +83,25 @@ public:
    * if interleaving should be support we would need an identifer
    * but thats future work
    */
-  virtual void writeReportToFile(std::string filename) = 0;
+  void stop();
 
-  virtual std::string getName() = 0;
+  /**
+   * optionally you may want to signal another time of simulation startup
+   * (another one than SC_ZERO_TIME)
+   * if called the actual time stamp of the simulator is used as start time
+   * this effect for example the throughput
+   */
+  void startSimulation();
 
+  void createCsvReport(std::ostream &stream,
+      const std::vector<std::string> &sequence);
+
+  std::string getRAWData();
+
+  std::string getName();
 
 };
 
-} } // namespace CoSupport::SystemC
+} } // namespace CoSupport::Tracing
 
-#endif // _INCLUDED_COSUPPORT_SYSTEMC_TRACING_HPP
+#endif // _INCLUDED_COSUPPORT_TRACING_PTPTRACER_HPP

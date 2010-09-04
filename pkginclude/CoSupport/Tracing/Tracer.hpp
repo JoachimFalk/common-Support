@@ -34,15 +34,14 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_TRACING_PTPTRACING_HPP
-#define _INCLUDED_COSUPPORT_TRACING_PTPTRACING_HPP
+#ifndef _INCLUDED_COSUPPORT_TRACING_TRACER_HPP
+#define _INCLUDED_COSUPPORT_TRACING_TRACER_HPP
 
 #include <systemc.h>
 
 #include <memory>
 #include <iostream>
 #include <fstream>
-#include <CoSupport/Tracing/TracingFactory.hpp>
 
 #include <deque>
 
@@ -51,62 +50,33 @@ namespace CoSupport { namespace Tracing {
 /**
  * \brief Enables logging of simulation times
  */
-class PTPTracing:public Tracing {
+class Tracer {
 
-private:
-
-
-  // contains all logs associated with function calls
-  std::deque<sc_time> startTimes;
-  std::deque<sc_time> stopTimes;
-
-  sc_time measureStart;
-  std::string name;
 public:
+  static const std::string AVG_LATENCY;
+  static const std::string MIN_LATENCY;
+  static const std::string MAX_LATENCY;
 
-  PTPTracing(std::string id);
+  virtual ~Tracer() {}
+  /*
+   * creates a CVS-Report from the Simulation-results
+   */
+  virtual void createCsvReport(std::ostream &stream,
+       const std::vector<std::string> &sequence) = 0;
 
+  /*
+   * dumps the acquired data
+   */
+  virtual std::string getRAWData() = 0;
 
   /**
    *
    */
-  ~PTPTracing();
+  virtual std::string getName() = 0;
 
-  /**
-   * trace the start of an unit (e.g. a frame, a block,)
-   * here we assume that starts and stops of units occure in the same order
-   * if interleaving should be support we would need an identifer
-   * but thats future work
-   */
-  void startUnit();
-
-
-  /**
-   * trace the end/stop of an unit
-   * here we assume that starts and stops of units occure in the same order
-   * if interleaving should be support we would need an identifer
-   * but thats future work
-   */
-  void stopUnit();
-
-  /**
-   * optionally you may want to signal another time of simulation startup
-   * (another one than SC_ZERO_TIME)
-   * if called the actual time stamp of the simulator is used as start time
-   * this effect for example the throughput
-   */
-  void startSimulation();
-
-  std::string createReport();
-
-  std::string getRAWData();
-
-  void writeReportToFile(std::string filename);
-
-  std::string getName();
 
 };
 
 } } // namespace CoSupport::SystemC
 
-#endif // _INCLUDED_COSUPPORT_TRACING_PTPTRACING_HPP
+#endif // _INCLUDED_COSUPPORT_SYSTEMC_TRACER_HPP

@@ -92,8 +92,8 @@ nobase_include_HEADERS = \
 	CoSupport/String/UnQuotedString.hpp \
 	CoSupport/String/UniquePool.hpp \
 	CoSupport/String/convert.hpp \
-	CoSupport/Tracing/PTPTracing.hpp	\
-	CoSupport/Tracing/Tracing.hpp \
+	CoSupport/Tracing/PtpTracer.hpp	\
+	CoSupport/Tracing/Tracer.hpp \
 	CoSupport/Tracing/TracingFactory.hpp \
 	CoSupport/Type/STLIteratorSelector.hpp \
 	CoSupport/Type/STLPointerSelector.hpp \
