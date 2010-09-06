@@ -43,33 +43,13 @@
 namespace CoSupport { namespace Tracing {
 
 
-/**
- * Creates a new PTP-Tracing Object with the given name
- */
-
+//
   PtpTracer::PtpTracer(std::string id)
   : measureStart(SC_ZERO_TIME) {
     name = id;
   };
 
-
-/**
- * starts one tracing-path / registers the start-time
- */
-void PtpTracer::start(){
-  startTimes.push_back( sc_time_stamp() );
-}
-
-/**
- * stops one tracing -path / registers the stop-time
- */
-void PtpTracer::stop(){
-  stopTimes.push_back( sc_time_stamp() );
-}
-
-/**
- * registers the measureStart (optional?)
- */
+//
 void PtpTracer::startSimulation(){
   measureStart = sc_time_stamp();
 }
@@ -79,9 +59,7 @@ std::string toString(const T& obj) {
   std::ostringstream out; out << obj; return out.str();
 }
 
-/**
- * Creates a CSV-Report (type,value) with some calculates results of the measures (average, max_trip, min_trip)
- */
+//
 void PtpTracer::createCsvReport(std::ostream &result,
     const std::vector<std::string> &sequence)
 {
@@ -91,27 +69,35 @@ void PtpTracer::createCsvReport(std::ostream &result,
     if(startTimes.empty()){
       result << "Something very strange happened... PtpTracer has no startTimes, but stopTimes!" << std::endl;
     }else{
-      size_t sampleCount = stopTimes.size();
+
+      // filter missing end times
+
       sc_time averageLatency;
       sc_time last_trip;
       sc_time min_trip = sc_time(-1, SC_NS);
       sc_time max_trip = sc_time(0,SC_NS);
 
-      // calculate inverse throughput
-      sc_time lastSample = stopTimes.back();
-      sc_time averageInverseThroughput = (lastSample - measureStart)/sampleCount;
+      sc_time lastSample = measureStart;
+      size_t sampleCount = 0;
 
       // sum up latencies
-      int count = 0;
-      for(std::deque<sc_time>::const_iterator it = stopTimes.begin(); it != stopTimes.end(); ++it){
-          const sc_time& start = startTimes[count];
-          const sc_time& stop  = *it;
-          last_trip = stop - start;
-          averageLatency  += last_trip;
-          if(last_trip < min_trip) min_trip = last_trip;
-          if(last_trip > max_trip) max_trip = last_trip;
-          count++;
+      for(size_t count = 0; count < stopTimes.size(); ++count){
+        const sc_time& start = startTimes[count];
+        const sc_time& stop  = stopTimes[count];
+        if(start > stop) {
+          continue;
+        }
+        lastSample = stop;
+        sampleCount++;
+
+        last_trip = stop - start;
+        averageLatency  += last_trip;
+        if(last_trip < min_trip) min_trip = last_trip;
+        if(last_trip > max_trip) max_trip = last_trip;
       }
+
+      // calculate inverse throughput
+      sc_time averageInverseThroughput = (lastSample - measureStart)/sampleCount;
 
       // compute average latency
       averageLatency = averageLatency / sampleCount;

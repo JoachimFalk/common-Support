@@ -73,7 +73,7 @@ private:
   //std::map<std::string, Trace*> traceMap;
 
   // contains all PtpTracer
-  typedef std::map<std::string, PtpTracer*> PtpMap;
+  typedef std::map<std::string, PtpTracer::Ptr> PtpMap;
   PtpMap ptpMap;
 
 
@@ -93,10 +93,7 @@ public:
   virtual ~TracingFactory();
 
 
-  Tracer* getTracer(std::string id);
-
-
-  PtpTracer* createPtpTracer(std::string id);
+  PtpTracer::Ptr createPtpTracer(std::string id);
 
 };
 

@@ -37,53 +37,71 @@
 #ifndef _INCLUDED_COSUPPORT_TRACING_PTPTRACER_HPP
 #define _INCLUDED_COSUPPORT_TRACING_PTPTRACER_HPP
 
+#include <CoSupport/Tracing/Tracer.hpp>
+
 #include <systemc.h>
 
 #include <memory>
 #include <iostream>
 #include <fstream>
-#include <CoSupport/Tracing/Tracer.hpp>
 
 #include <deque>
 #include <vector>
+
+#include <boost/shared_ptr.hpp>
 
 namespace CoSupport { namespace Tracing {
 
 /**
  * \brief Enables logging of simulation times - PointToPoint Connections with start and stop
  * @author graf
+ *
+ * use the PtpTracer to trace in-order operations only
+ * i.e. the n-th stop() signal corresponds to the n-th start() signal
+ *
+ * e.g..
+ * ptpTracer = factory->createPtpTracer("foo");
+ * ptpTracer->start() #0
+ * ptpTracer->start() #1
+ * ptpTracer->stop()  #0
+ * ptpTracer->stop()  #1
+ *
+ * use a Ticket to trace out-of-order operations
+ * ptpTracer = factory->createPtpTracer("foo");
+ * Ticket ticket0 = ptpTracer->startOoo() #0
+ * Ticket ticket1 = ptpTracer->startOoo() #1
+ * ptpTracer->stopOoo(ticket1)            #1
+ * ptpTracer->stopOoo(ticket0)            #0
  */
 class PtpTracer : public Tracer {
-
-private:
-
-
-  // contains all logs associated with function calls
-  std::deque<sc_time> startTimes;
-  std::deque<sc_time> stopTimes;
-
-  sc_time measureStart;
-  std::string name;
+  friend class TracingFactory;
 public:
-
+  typedef boost::shared_ptr<PtpTracer>  Ptr;
+  typedef size_t                        Ticket;
+  /**
+   * Creates a new PTP-Tracing Object with the given name
+   */
   PtpTracer(std::string id);
 
   /**
    * trace the start of an unit (e.g. a frame, a block,)
-   * here we assume that starts and stops of units occure in the same order
-   * if interleaving should be support we would need an identifer
+   * here we assume that starts and stops of units occur in the same order
+   * if interleaving should be support we would need an identifier
    * but thats future work
    */
-  void start();
-
+  void start(){
+    startTimes.push_back( sc_time_stamp() );
+  }
 
   /**
    * trace the end/stop of an unit
-   * here we assume that starts and stops of units occure in the same order
-   * if interleaving should be support we would need an identifer
+   * here we assume that starts and stops of units occur in the same order
+   * if interleaving should be support we would need an identifier
    * but thats future work
    */
-  void stop();
+  void stop(){
+    stopTimes.push_back( sc_time_stamp() );
+  }
 
   /**
    * optionally you may want to signal another time of simulation startup
@@ -93,6 +111,9 @@ public:
    */
   void startSimulation();
 
+  /**
+   * Creates a CSV-Report (type,value) with some calculates results of the measures (average, max_trip, min_trip)
+   */
   void createCsvReport(std::ostream &stream,
       const std::vector<std::string> &sequence);
 
@@ -100,6 +121,32 @@ public:
 
   std::string getName();
 
+  /**
+   * start and return sequence Id (used by OooTicket)
+   */
+  Ticket startOoo() {
+    startTimes.push_back( sc_time_stamp() );
+    stopTimes.push_back( SC_ZERO_TIME );
+    return (startTimes.size() - 1);
+  }
+
+  /**
+   * trace the end of a ticket
+   */
+  void stopOoo(const Ticket& ticket){
+    //  if (ticket>= stopTimes.size()){
+    //    stopTimes.resize(ticket+ 100, SC_ZERO_TIME);
+    //  }
+      stopTimes[ticket] = sc_time_stamp();
+    }
+private:
+
+  // contains all logs associated with function calls
+  std::deque<sc_time> startTimes;
+  std::deque<sc_time> stopTimes;
+
+  sc_time measureStart;
+  std::string name;
 };
 
 } } // namespace CoSupport::Tracing

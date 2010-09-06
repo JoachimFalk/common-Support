@@ -58,26 +58,15 @@ TracingFactory& TracingFactory::getInstance(){
   return *singleton;
 }
 
-/**
- * returns the Tracing-Object to a given key
- */
-Tracer* TracingFactory::getTracer(std::string key){
-  if (ptpMap.find(key) != ptpMap.end()){
-    return ptpMap[key];
-  }else{
-    std::cerr<<"Error! ID not registered!"<<std::endl;
-    return 0;
-  }
-
-}
-
-/**
- * returns a PtpTracer for the given key - and will create and cache it, if it's not present
- */
-PtpTracer* TracingFactory::createPtpTracer(std::string key){
+//
+PtpTracer::Ptr TracingFactory::createPtpTracer(std::string key){
+  std::cerr << "createPtpTracer " << key << " ... ";
   if (ptpMap.find(key) == ptpMap.end()){
-    ptpMap[key] = new PtpTracer(key);
+    PtpTracer::Ptr tracer = PtpTracer::Ptr(new PtpTracer(key));
+    ptpMap[key] = tracer;
+    std::cerr << "create new ";
   }
+  std::cerr << std::endl;
   return ptpMap[key];
 }
 
@@ -109,7 +98,6 @@ TracingFactory::~TracingFactory(){
           it->second->createCsvReport(stream, sequence);
 
           //it->second->getRAWData();
-          delete((it->second));
       }
     stream.close();
   ptpMap.clear();

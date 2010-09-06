@@ -45,6 +45,8 @@
 
 #include <deque>
 
+#include <boost/shared_ptr.hpp>
+
 namespace CoSupport { namespace Tracing {
 
 /**
@@ -53,6 +55,8 @@ namespace CoSupport { namespace Tracing {
 class Tracer {
 
 public:
+  typedef boost::shared_ptr<Tracer>  Ptr;
+
   static const std::string AVG_LATENCY;
   static const std::string MIN_LATENCY;
   static const std::string MAX_LATENCY;
