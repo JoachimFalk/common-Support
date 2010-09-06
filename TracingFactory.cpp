@@ -60,13 +60,10 @@ TracingFactory& TracingFactory::getInstance(){
 
 //
 PtpTracer::Ptr TracingFactory::createPtpTracer(std::string key){
-  std::cerr << "createPtpTracer " << key << " ... ";
   if (ptpMap.find(key) == ptpMap.end()){
     PtpTracer::Ptr tracer = PtpTracer::Ptr(new PtpTracer(key));
     ptpMap[key] = tracer;
-    std::cerr << "create new ";
   }
-  std::cerr << std::endl;
   return ptpMap[key];
 }
 
