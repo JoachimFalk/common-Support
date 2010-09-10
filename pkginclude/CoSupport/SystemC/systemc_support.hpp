@@ -50,6 +50,7 @@
 
 #include "../sassert.h"
 #include <CoSupport/SmartPtr/RefCountObject.hpp>
+#include <CoSupport/cosupport_config.h>
 
 /*#include "filter_ostream.hpp"
 
@@ -72,7 +73,7 @@ static Detail::DebugOStream outDbg(std::cout);
 
 namespace CoSupport { namespace SystemC {
 
-#ifndef NDEBUG
+#ifdef COSUPPORT_ENABLE_DEBUG
   // In some strange cases, an EventWaiter is deleted, but code of the object
   // to be deleted is still executed (e.g. signalNotifyListener). This
   // behaviour is undefined and causes errors on some platforms (Visual
