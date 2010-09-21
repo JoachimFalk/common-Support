@@ -136,21 +136,23 @@ void PtpTracer::createCsvReport(std::ostream &result,
 std::string PtpTracer::getRAWData(){
     std::stringstream result;
 
-    if (!stopTimes.empty()) {
+    if (!stopTimes.empty() && !startTimes.empty()) {
     sc_time last_trip;
-    int count = 0;
+    unsigned int count = 0;
     // sum up latencies
     for(std::deque<sc_time>::const_iterator it = stopTimes.begin(); it != stopTimes.end(); ++it){
       const sc_time& start = startTimes[count];
       const sc_time& stop  = *it;
-      last_trip = stop - start;
-      result << last_trip.to_default_time_units() << std::endl;
-      count++;
+      if(count < startTimes.size() && count < stopTimes.size()){
+        last_trip = stop - start;
+        result << start.to_default_time_units()  <<"\t" << stop.to_default_time_units()  << "\t" << last_trip.to_default_time_units() << std::endl;
+        count++;
+      }
     }
-  }
     std::ofstream thr((getName() + ".RAW").c_str());
     thr<<result.str();
     thr.close();
+  }
     return result.str();
 }
 
