@@ -230,7 +230,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\..\pkginclude"
+				AdditionalIncludeDirectories="..\..\..\pkginclude;..\..\config"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;XML_LIBRARY"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
