@@ -67,7 +67,7 @@ void PtpTracer::createCsvReport(std::ostream &result,
 
   if (!stopTimes.empty()) {
     if(startTimes.empty()){
-      result << "Something very strange happened... PtpTracer has no startTimes, but stopTimes!" << std::endl;
+      result << this->name << " - Something very strange happened... PtpTracer has no startTimes, but stopTimes!" << std::endl;
     }else{
 
       // filter missing end times
