@@ -40,10 +40,6 @@
 
 namespace CoSupport { namespace Tracing {
 
-/**
- *
- */
-std::auto_ptr<TracingFactory> TracingFactory::singleton(new TracingFactory());
 
 /**
  *
@@ -55,13 +51,16 @@ TracingFactory::TracingFactory()
  *
  */
 TracingFactory& TracingFactory::getInstance(){
-  return *singleton;
+	/**
+   * Singleton design pattern
+   */
+	static std::auto_ptr<TracingFactory> singleton(new TracingFactory());
+	return *singleton;
 }
 
 //
 void TracingFactory::setTraceFile(std::string fileName){
-  this->traceStream.close();
-  this->traceStream.open(fileName.c_str());
+  filename = fileName;
 }
 
 //
@@ -79,9 +78,9 @@ PtpTracer::Ptr TracingFactory::createPtpTracer(std::string key){
  */
 TracingFactory::~TracingFactory(){
   //assert(startTimes.size() == stopTimes.size());
+  std::ofstream traceStream(filename.c_str());
   if( traceStream.good() ){
-
-    this->traceStream << "#\n" << "# PtpTacer";
+    traceStream << "#\n" << "# PtpTacer";
     std::vector<std::string> sequence;
     sequence.push_back(Tracer::AVG_LATENCY);
     sequence.push_back(Tracer::MIN_LATENCY);
@@ -92,15 +91,15 @@ TracingFactory::~TracingFactory(){
     // write header
     for (std::vector<std::string>::const_iterator iter = sequence.begin();
         iter!= sequence.end(); ++iter){
-      this->traceStream << "\t" << *iter;
+      traceStream << "\t" << *iter;
     }
-    this->traceStream << std::endl;
+    traceStream << std::endl;
 
     // for each PtpTracer: write data
     for(PtpMap::const_iterator it = ptpMap.begin(); it != ptpMap.end(); ++it) {
-      it->second->createCsvReport(this->traceStream, sequence);
+      it->second->createCsvReport(traceStream, sequence);
     }
-    this->traceStream.close();
+    traceStream.close();
   }
 
   ptpMap.clear();

@@ -60,14 +60,7 @@ private:
   /**
    * Singleton design pattern
    */
-  static std::auto_ptr<TracingFactory> singleton;
-
-  /**
-   * Singleton design pattern
-   */
   TracingFactory();
-
-
 
   // TODO: we may need a map for all (different types) of tracer
   //std::map<std::string, Trace*> traceMap;
@@ -75,7 +68,8 @@ private:
   // contains all PtpTracer
   typedef std::map<std::string, PtpTracer::Ptr> PtpMap;
   PtpMap ptpMap;
-  std::ofstream traceStream;
+  //std::ofstream traceStream;
+  std::string filename;
 
 
 public:
