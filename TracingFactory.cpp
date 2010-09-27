@@ -35,6 +35,8 @@
  */
 
 #include <CoSupport/Tracing/TracingFactory.hpp>
+#include <CoSupport/Tracing/TaskTracer.hpp>
+#include <CoSupport/Tracing/PtpTracer.hpp>
 #include <fstream>
 #include <vector>
 
@@ -72,6 +74,17 @@ PtpTracer::Ptr TracingFactory::createPtpTracer(std::string key){
   return ptpMap[key];
 }
 
+TaskTracer::Ptr TracingFactory::createTaskTracer(std::string task,
+    std::string resource)
+{
+  TaskTracerMap &taskTracerMap = resourceMap[resource];
+  if (taskTracerMap.find(task) == taskTracerMap.end()) {
+    TaskTracer::Ptr tracer = TaskTracer::Ptr(new TaskTracer(task, resource));
+    taskTracerMap[task] = tracer;
+  }
+  return taskTracerMap[task];
+}
+
 
 /**
  * Destructor - generates the report for every Trace-Object and extracts the RAW-Data
@@ -99,6 +112,18 @@ TracingFactory::~TracingFactory(){
     for(PtpMap::const_iterator it = ptpMap.begin(); it != ptpMap.end(); ++it) {
       it->second->createCsvReport(traceStream, sequence);
     }
+
+    // for each TaskTracer: write data
+    for(ResourceMap::const_iterator resIter = resourceMap.begin();
+        resIter != resourceMap.end();
+        ++resIter) {
+      const TaskTracerMap &taskTracerMap = resIter->second;
+      for (TaskTracerMap::const_iterator it = taskTracerMap.begin(); it
+          != taskTracerMap.end(); ++it) {
+        it->second->createCsvReport(traceStream, sequence);
+      }
+    }
+
     traceStream.close();
   }
 

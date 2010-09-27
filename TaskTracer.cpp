@@ -34,76 +34,19 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_TRACING_TRACINGFACTORY_HPP
-#define _INCLUDED_COSUPPORT_TRACING_TRACINGFACTORY_HPP
-
-#include <systemc.h>
-
-#include <memory>
-#include <iostream>
-#include <fstream>
-#include <CoSupport/Tracing/Tracer.hpp>
-#include <CoSupport/Tracing/PtpTracer.hpp>
 #include <CoSupport/Tracing/TaskTracer.hpp>
+#include <fstream>
+#include <sstream>
+#include <vector>
 #include <map>
 
-#include <deque>
+namespace CoSupport
+{
+namespace Tracing
+{
+void TaskTracer::createCsvReport(std::ostream &stream, const std::vector<
+    std::string> &sequence);
 
-namespace CoSupport { namespace Tracing {
+} // namespace Tracing
+} // namespace CoSupport
 
-/**
- * \brief Enables logging of simulation times
- * @author graf
- */
-class TracingFactory {
-
-private:
-  /**
-   * Singleton design pattern
-   */
-  TracingFactory();
-
-  // TODO: we may need a map for all (different types) of tracer
-  //std::map<std::string, Trace*> traceMap;
-
-  // contains all PtpTracer
-  typedef std::map<std::string, PtpTracer::Ptr> PtpMap;
-  PtpMap ptpMap;
-
-  typedef std::map<std::string, TaskTracer::Ptr> TaskTracerMap;
-  typedef std::map<std::string, TaskTracerMap> ResourceMap;
-  ResourceMap resourceMap;
-
-  //std::ofstream traceStream;
-  std::string filename;
-
-
-public:
-
-  //TracingFactory(std::string id);
-
-  /**
-    * Singleton design pattern
-    */
-   static TracingFactory& getInstance();
-
-  /**
-   *
-   */
-  virtual ~TracingFactory();
-
-  /**
-   * set file name for trace output
-   * setting a file name is required, no trace output will be written otherwise
-   */
-  void setTraceFile(std::string fileName);
-
-  PtpTracer::Ptr createPtpTracer(std::string id);
-
-  TaskTracer::Ptr createTaskTracer(std::string task, std::string resource);
-
-};
-
-} } // namespace CoSupport::Tracing
-
-#endif // _INCLUDED_COSUPPORT_TRACING_TRACINGFACTORY_HPP
