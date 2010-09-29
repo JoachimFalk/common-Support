@@ -93,6 +93,7 @@ nobase_include_HEADERS = \
 	CoSupport/String/UniquePool.hpp \
 	CoSupport/String/convert.hpp \
 	CoSupport/Tracing/PtpTracer.hpp	\
+	CoSupport/Tracing/TaskTracer.hpp	\
 	CoSupport/Tracing/Tracer.hpp \
 	CoSupport/Tracing/TracingFactory.hpp \
 	CoSupport/Type/STLIteratorSelector.hpp \

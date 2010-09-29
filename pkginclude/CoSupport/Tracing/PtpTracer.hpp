@@ -38,16 +38,10 @@
 #define _INCLUDED_COSUPPORT_TRACING_PTPTRACER_HPP
 
 #include <CoSupport/Tracing/Tracer.hpp>
-
 #include <systemc.h>
-
 #include <memory>
-#include <iostream>
-#include <fstream>
-
 #include <deque>
-#include <vector>
-
+#include <string>
 #include <boost/shared_ptr.hpp>
 
 namespace CoSupport { namespace Tracing {
@@ -74,7 +68,6 @@ namespace CoSupport { namespace Tracing {
  * ptpTracer->stopOoo(ticket0)            #0
  */
 class PtpTracer : public Tracer {
-  friend class TracingFactory;
 public:
   typedef boost::shared_ptr<PtpTracer>  Ptr;
   typedef size_t                        Ticket;

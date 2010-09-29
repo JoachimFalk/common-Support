@@ -355,6 +355,10 @@
 			>
 		</File>
 		<File
+			RelativePath="$(OutDir)\libcosupport-tracing.lib"
+			>
+		</File>
+		<File
 			RelativePath="$(OutDir)\libcosupport-xerces.lib"
 			>
 		</File>

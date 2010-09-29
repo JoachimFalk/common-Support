@@ -47,6 +47,7 @@
 #define _INCLUDED_COMMONDEFS_H
 
 #include <limits.h>
+#include <CoSupport/cosupport_config.h>
 
 #define PE_PTROK(x)		( ((unsigned long) (x)) >= 0x400 )
 #define PE_PTRERROR(x)		((void *) (x))
@@ -77,7 +78,7 @@
 #define GNUC_EXPLICIT_TEMPLATE(x) \
   extern template x
 
-#ifdef NDEBUG
+#ifndef COSUPPORT_ENABLE_DEBUG
 # define GROWALGO(x)    ( (x) + ((x) >> 1) + 256 )
 # define SHRINKALGO(x)  ( (x) / 3 * 2 )
 #else

@@ -34,76 +34,64 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_TRACING_TRACINGFACTORY_HPP
-#define _INCLUDED_COSUPPORT_TRACING_TRACINGFACTORY_HPP
+#ifndef TASKTRACER_HPP_
+#define TASKTRACER_HPP_
 
-#include <systemc.h>
-
-#include <memory>
-#include <iostream>
-#include <fstream>
-#include <CoSupport/Tracing/Tracer.hpp>
 #include <CoSupport/Tracing/PtpTracer.hpp>
-#include <CoSupport/Tracing/TaskTracer.hpp>
-#include <map>
+#include <string>
 
-#include <deque>
-
-namespace CoSupport { namespace Tracing {
-
-/**
- * \brief Enables logging of simulation times
- * @author graf
+namespace CoSupport
+{
+namespace Tracing
+{
+/*
+ * TaskTracer
+ *      Author: streubuehr
  */
-class TracingFactory {
-
-private:
-  /**
-   * Singleton design pattern
-   */
-  TracingFactory();
-
-  // TODO: we may need a map for all (different types) of tracer
-  //std::map<std::string, Trace*> traceMap;
-
-  // contains all PtpTracer
-  typedef std::map<std::string, PtpTracer::Ptr> PtpMap;
-  PtpMap ptpMap;
-
-  typedef std::map<std::string, TaskTracer::Ptr> TaskTracerMap;
-  typedef std::map<std::string, TaskTracerMap> ResourceMap;
-  ResourceMap resourceMap;
-
-  //std::ofstream traceStream;
-  std::string filename;
-
-
+class TaskTracer: private PtpTracer
+{
 public:
+  typedef boost::shared_ptr<TaskTracer> Ptr;
+  typedef PtpTracer::Ticket Ticket;
 
-  //TracingFactory(std::string id);
+  TaskTracer(std::string task, std::string resource) :
+    PtpTracer(task), resource_(resource)
+  {
+  }
 
-  /**
-    * Singleton design pattern
-    */
-   static TracingFactory& getInstance();
+  void createCsvReport(std::ostream &stream,
+      const std::vector<std::string> &sequence)
+  {
+    stream << resource_ << "/";
+    PtpTracer::createCsvReport(stream, sequence);
+  }
 
-  /**
-   *
-   */
-  virtual ~TracingFactory();
+  Ticket releaseTask()
+  {
+    return this->startOoo();
+  }
 
-  /**
-   * set file name for trace output
-   * setting a file name is required, no trace output will be written otherwise
-   */
-  void setTraceFile(std::string fileName);
+  void finishTaskLatency(const Ticket& ticket)
+  {
+    this->stopOoo(ticket);
+  }
 
-  PtpTracer::Ptr createPtpTracer(std::string id);
+  std::string getRAWData()
+  {
+    return PtpTracer::getRAWData();
+  }
 
-  TaskTracer::Ptr createTaskTracer(std::string task, std::string resource);
-
+  std::string getName()
+  {
+    std::stringstream result;
+    result << PtpTracer::getName() << "@" << resource_;
+    return result.str();
+  }
+private:
+  std::string resource_;
 };
 
-} } // namespace CoSupport::Tracing
+} // namespace Tracing
+} // namespace CoSupport
 
-#endif // _INCLUDED_COSUPPORT_TRACING_TRACINGFACTORY_HPP
+#endif /* TASKTRACER_HPP_ */

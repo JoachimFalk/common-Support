@@ -35,15 +35,13 @@
  */
 
 #include <CoSupport/Tracing/TracingFactory.hpp>
+#include <CoSupport/Tracing/TaskTracer.hpp>
+#include <CoSupport/Tracing/PtpTracer.hpp>
 #include <fstream>
 #include <vector>
 
 namespace CoSupport { namespace Tracing {
 
-/**
- *
- */
-std::auto_ptr<TracingFactory> TracingFactory::singleton(new TracingFactory());
 
 /**
  *
@@ -55,7 +53,16 @@ TracingFactory::TracingFactory()
  *
  */
 TracingFactory& TracingFactory::getInstance(){
-  return *singleton;
+	/**
+   * Singleton design pattern
+   */
+	static std::auto_ptr<TracingFactory> singleton(new TracingFactory());
+	return *singleton;
+}
+
+//
+void TracingFactory::setTraceFile(std::string fileName){
+  filename = fileName;
 }
 
 //
@@ -67,37 +74,59 @@ PtpTracer::Ptr TracingFactory::createPtpTracer(std::string key){
   return ptpMap[key];
 }
 
+TaskTracer::Ptr TracingFactory::createTaskTracer(std::string task,
+    std::string resource)
+{
+  TaskTracerMap &taskTracerMap = resourceMap[resource];
+  if (taskTracerMap.find(task) == taskTracerMap.end()) {
+    TaskTracer::Ptr tracer = TaskTracer::Ptr(new TaskTracer(task, resource));
+    taskTracerMap[task] = tracer;
+  }
+  return taskTracerMap[task];
+}
+
 
 /**
  * Destructor - generates the report for every Trace-Object and extracts the RAW-Data
  */
 TracingFactory::~TracingFactory(){
   //assert(startTimes.size() == stopTimes.size());
-  std::ofstream stream("tracing.log");
+  std::ofstream traceStream(filename.c_str());
+  if( traceStream.good() ){
+    traceStream << "#\n" << "# PtpTacer";
+    std::vector<std::string> sequence;
+    sequence.push_back(Tracer::AVG_LATENCY);
+    sequence.push_back(Tracer::MIN_LATENCY);
+    sequence.push_back(Tracer::MAX_LATENCY);
+    sequence.push_back(Tracer::START_STOP);
+    //TODO: sequence.push_back(throughput);
 
-  stream << "#\n"
-         << "# PtpTacer";
-  std::vector<std::string> sequence;
-  sequence.push_back(Tracer::AVG_LATENCY);
-  sequence.push_back(Tracer::MIN_LATENCY);
-  sequence.push_back(Tracer::MAX_LATENCY);
-  sequence.push_back(Tracer::START_STOP);
-  //TODO: sequence.push_back(throughput);
+    // write header
+    for (std::vector<std::string>::const_iterator iter = sequence.begin();
+        iter!= sequence.end(); ++iter){
+      traceStream << "\t" << *iter;
+    }
+    traceStream << std::endl;
 
-  for (std::vector<std::string>::const_iterator iter = sequence.begin(); iter
-          != sequence.end(); ++iter){
-    stream << "\t" << *iter;
-  }
-  stream << std::endl;
-    for(PtpMap::const_iterator it = ptpMap.begin(); it != ptpMap.end(); ++it)
-      {
-          //std::string name =(it->second->getName());
-          //name +="result.inversethroughput";
-          it->second->createCsvReport(stream, sequence);
+    // for each PtpTracer: write data
+    for(PtpMap::const_iterator it = ptpMap.begin(); it != ptpMap.end(); ++it) {
+      it->second->createCsvReport(traceStream, sequence);
+    }
 
-          //it->second->getRAWData();
+    // for each TaskTracer: write data
+    for(ResourceMap::const_iterator resIter = resourceMap.begin();
+        resIter != resourceMap.end();
+        ++resIter) {
+      const TaskTracerMap &taskTracerMap = resIter->second;
+      for (TaskTracerMap::const_iterator it = taskTracerMap.begin(); it
+          != taskTracerMap.end(); ++it) {
+        it->second->createCsvReport(traceStream, sequence);
       }
-    stream.close();
+    }
+
+    traceStream.close();
+  }
+
   ptpMap.clear();
 }
 
