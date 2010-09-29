@@ -42,5 +42,6 @@ namespace CoSupport { namespace Tracing {
   const std::string Tracer::AVG_LATENCY("AVG_LATENCY");
   const std::string Tracer::MIN_LATENCY("MIN_LATENCY");
   const std::string Tracer::MAX_LATENCY("MAX_LATENCY");
+  const std::string Tracer::START_STOP("START_STOP");
 
 } } // namespace CoSupport::SystemC

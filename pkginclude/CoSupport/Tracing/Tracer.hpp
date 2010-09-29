@@ -60,6 +60,7 @@ public:
   static const std::string AVG_LATENCY;
   static const std::string MIN_LATENCY;
   static const std::string MAX_LATENCY;
+  static const std::string START_STOP;
 
   virtual ~Tracer() {}
   /*
