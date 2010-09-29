@@ -81,6 +81,7 @@ TracingFactory::~TracingFactory(){
   sequence.push_back(Tracer::AVG_LATENCY);
   sequence.push_back(Tracer::MIN_LATENCY);
   sequence.push_back(Tracer::MAX_LATENCY);
+  sequence.push_back(Tracer::START_STOP);
   //TODO: sequence.push_back(throughput);
 
   for (std::vector<std::string>::const_iterator iter = sequence.begin(); iter

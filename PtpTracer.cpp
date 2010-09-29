@@ -80,6 +80,8 @@ void PtpTracer::createCsvReport(std::ostream &result,
       sc_time lastSample = measureStart;
       size_t sampleCount = 0;
 
+      std::string start_stop = "";
+
       // sum up latencies
       for(size_t count = 0; count < stopTimes.size(); ++count){
         const sc_time& start = startTimes[count];
@@ -94,6 +96,12 @@ void PtpTracer::createCsvReport(std::ostream &result,
         averageLatency  += last_trip;
         if(last_trip < min_trip) min_trip = last_trip;
         if(last_trip > max_trip) max_trip = last_trip;
+
+        start_stop = start_stop + toString(last_trip.to_default_time_units());
+        if(count < stopTimes.size()-1){
+          start_stop = start_stop + ",";
+        }
+
       }
 
       // calculate inverse throughput
@@ -105,6 +113,8 @@ void PtpTracer::createCsvReport(std::ostream &result,
       resultMap[Tracer::AVG_LATENCY] = toString(averageLatency.to_default_time_units());
       resultMap[Tracer::MAX_LATENCY] = toString(max_trip.to_default_time_units());
       resultMap[Tracer::MIN_LATENCY] = toString(min_trip.to_default_time_units());
+      resultMap[Tracer::START_STOP] = start_stop;
+
 
       // write the csv line
       result << this->name;
