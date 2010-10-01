@@ -36,6 +36,7 @@ SUBDIRS=
 #	touch "$@"
 
 nobase_include_HEADERS = \
+	CoSupport/cosupport_config.h \
 	CoSupport/Allocators/IdAllocRequest.hpp \
 	CoSupport/Allocators/IdPool.hpp \
 	CoSupport/DataTypes/ArrayFifo.hpp \
