@@ -172,7 +172,6 @@ libcosupport_allocators_la_LIBADD =
 
 libcosupport_tracing_la_SOURCES =		\
 	PtpTracer.cpp						\
-	TaskTracer							\
 	Tracer.cpp							\
 	TracingFactory.cpp
 
