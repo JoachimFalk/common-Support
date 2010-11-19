@@ -34,16 +34,14 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef TASKTRACER_HPP_
-#define TASKTRACER_HPP_
+#ifndef _INCLUDED_COSUPPORT_TRACING_TASKTRACER_HPP
+#define _INCLUDED_COSUPPORT_TRACING_TASKTRACER_HPP
 
 #include <CoSupport/Tracing/PtpTracer.hpp>
 #include <string>
 
-namespace CoSupport
-{
-namespace Tracing
-{
+namespace CoSupport { namespace Tracing {
+
 /*
  * TaskTracer
  *      Author: streubuehr
@@ -91,7 +89,6 @@ private:
   std::string resource_;
 };
 
-} // namespace Tracing
-} // namespace CoSupport
+} } // namespace CoSupport::Tracing
 
-#endif /* TASKTRACER_HPP_ */
+#endif /* _INCLUDED_COSUPPORT_TRACING_TASKTRACER_HPP */
