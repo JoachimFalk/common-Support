@@ -107,7 +107,9 @@ nobase_include_HEADERS = \
 	CoSupport/compatibility-glue/integertypes.h \
 	CoSupport/compatibility-glue/snprintf.h \
 	CoSupport/endianess.h \
-	CoSupport/sassert.h
+	CoSupport/sassert.h \
+	CoSupport/boost/graph/undirect_graph.hpp \
+	CoSupport/boost/init_namespace.hpp
 
 if COSUPPORT_ENABLE_XERCES
 nobase_include_HEADERS += \
