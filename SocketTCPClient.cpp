@@ -49,6 +49,7 @@
 #include <netdb.h>
 
 #include <boost/asio.hpp>
+#include <boost/version.hpp>
 
 namespace CoSupport { namespace Streams {
 
@@ -93,8 +94,15 @@ SocketTCPClient::SocketTCPClient(const char *host, uint16_t port)
   }
   if (sockClient < 0)
     throw  boost::system::system_error(boost::asio::error::host_not_found);
+#if BOOST_VERSION >= 104500
+  in.open(boost::iostreams::file_descriptor_source(sockClient,
+    boost::iostreams::never_close_handle));
+  out.open(boost::iostreams::file_descriptor_sink(sockClient,
+    boost::iostreams::never_close_handle));
+#else
   in.open(boost::iostreams::file_descriptor_source(sockClient));
   out.open(boost::iostreams::file_descriptor_sink(sockClient));
+#endif
 }
 
 void SocketTCPClient::shutdownWrite() {
