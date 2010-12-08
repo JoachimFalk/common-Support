@@ -42,6 +42,12 @@
 #include <boost/utility.hpp>
 #include <boost/type_traits.hpp>
 
+#include <boost/type_traits/add_reference.hpp>
+#include <boost/type_traits/remove_reference.hpp>
+
+#include <boost/type_traits/add_pointer.hpp>
+#include <boost/type_traits/remove_pointer.hpp>
+
 namespace CoSupport { namespace DataTypes {
 
 template <class D, typename T, typename R = T const &>
@@ -144,6 +150,31 @@ namespace Detail {
     D const *getDerived() const
       { return static_cast<D const *>(this); }
   public:
+  };
+
+  struct value_type_plain_pointer_t {};
+
+  template <typename T>
+  struct ValueTypeClassifier<T *> { typedef value_type_plain_pointer_t tag; };
+
+  template <class D, typename T, typename R>
+  class ValueTypeDecorator<value_type_plain_pointer_t, D, T, R> {
+    typedef ValueTypeDecorator<value_type_plain_pointer_t, D, T, R> this_type;
+  private:
+    typedef T                                                 value_type;
+    typedef typename boost::add_reference<
+      typename boost::remove_pointer<value_type>::type>::type deref_type;
+  protected:
+    D       *getDerived()
+      { return static_cast<D *>(this); }
+
+    D const *getDerived() const
+      { return static_cast<D const *>(this); }
+  public:
+    value_type operator ->() const
+      { return getDerived()->get(); }
+    deref_type operator *() const
+      { return *getDerived()->get(); }
   };
 
 #undef COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION

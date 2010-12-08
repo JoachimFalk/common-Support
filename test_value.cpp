@@ -66,7 +66,7 @@ struct C: public A {
 };
 
 
-
+volatile int sink;
 
 using namespace CoSupport::DataTypes;
 
@@ -278,7 +278,10 @@ int main(int argc, char *argv[]) {
     Value<A *> pa1(&a);
     Value<B *> pb1(&b);
     Value<C *> pc1(&c);
-
+    
+    sink = pa1->a + pb1->a + pb1->b + pc1->a + pc1->c;
+    sink = (*pa1).a + (*pb1).a + (*pb1).b + (*pc1).a + (*pc1).c;
+    
     CHECK_OP_WW(pa1,==,pan); CHECK_OP_WW(pa1,==,pb1); CHECK_OP_WW(pa1,==,pc1);
     CHECK_OP_WW(pa1,!=,pan); CHECK_OP_WW(pa1,!=,pb1); CHECK_OP_WW(pa1,!=,pc1);
     CHECK_OP_WW(pa1,< ,pan); CHECK_OP_WW(pa1,< ,pb1); CHECK_OP_WW(pa1,< ,pc1);
