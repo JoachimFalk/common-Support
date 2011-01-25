@@ -37,103 +37,103 @@
 #define INCLUDED_COSUPPORT_STREAMS_HEXOUTPUT_HPP
 
 #include <ostream>
+#include <sstream>
 
 namespace CoSupport { namespace Streams {
 
 namespace Detail {
-  /**
-   * @brief Conversion types for printHex function
-   */
-  template<class T>
-  struct PrintHexTraits {
-    /// @brief Type used to determine number of digits
-    typedef T unsigned_type;
-    /// @brief Type used to print number
-    typedef T print_type;
-  };
 
-  /**
-   * @brief Specialization of PrintHexTraits for uint8_t
-   */
-  template<>
-  struct PrintHexTraits<uint8_t> {
-    /// @brief Type used to determine number of digits
-    typedef uint8_t unsigned_type;
-    /// @brief Type used to print number
-    typedef uint16_t print_type;
-  };
+/// @brief Prints integer as hex number
+template<class T>
+void printHex(std::ostream &os, T t, bool prefix, bool plz, size_t bits) {
+  size_t d = bits / 8;
+  size_t m = bits % 8;
 
-  /**
-   * @brief Specialization of PrintHexTraits for char
-   */
-  template<>
-  struct PrintHexTraits<char> {
-    /// @brief Type used to determine number of digits
-    typedef uint8_t unsigned_type;
-    /// @brief Type used to print number
-    typedef uint16_t print_type;
-  };
+  static char lut[] = {'0','1','2','3','4','5','6','7',
+                       '8','9','A','B','C','D','E','F'};
 
-  /// @brief Prints integer as hex number
-  /// @param[in] os Target ostream
-  /// @param[in] t Number
-  template<class T>
-  void printHex(std::ostream &os, const T& t) {
-    std::ios_base::fmtflags f = os.flags();
-    os.setf(os.hex, os.basefield);
-    os.setf(os.uppercase);
+  const unsigned char* x = (const unsigned char*)&t;
+  unsigned char p;
 
-    std::streamsize w = os.width();
-    os.width(std::numeric_limits<
-        typename PrintHexTraits<T>::unsigned_type>::digits >> 2);
+  if(prefix)
+    os << "0x";
 
-    char fl = os.fill();
-    os.fill('0');
-
-    os <<
-      static_cast<typename PrintHexTraits<T>::print_type>(
-      static_cast<typename PrintHexTraits<T>::unsigned_type>(t));
-
-    os.flags(f);
-    os.width(w);
-    os.fill(fl);
+  if(m > 4) {
+    p = (x[d] >> 4) & ((1 << (m-4)) - 1);
+    if(p || plz) {
+      os << lut[p];
+      plz = true;
+    }
+    p = x[d] & 0xF;
+    if(p || plz) {
+      os << lut[p];
+      plz = true;
+    }
+  }
+  else if(m) {
+    p = x[d] & ((1 << m) - 1);
+    if(p || plz) {
+      os << lut[p];
+      plz = true;
+    }
   }
 
-  /**
-   * @brief Hex output manipulator class
-   * @param T Integer type (short, long, etc.)
-   */
-  template<class T>
-  struct hexManip {
-    /// @brief Number
-    T t;
+  for(size_t i = d; i; --i) {
+    p = x[i-1] >> 4;
+    if(p || plz) {
+      os << lut[p];
+      plz = true;
+    }
+    p = x[i-1] & 0xF;
+    if(p || plz) {
+      os << lut[p];
+      plz = true;
+    }
+  }
+}
 
-    /// @brief True, if "0x" should be printed
-    bool prefix;
+/**
+ * @brief Hex output manipulator class
+ */
+template<class T>
+struct hexManip {
+  /// @brief Number
+  T t;
 
-    /// @brief Constructor
-    /// @param[in] t Number
-    /// @param[in] prefix True, if "0x" should be printed
-    hexManip(const T& t, bool prefix = true) :
-      t(t), prefix(prefix)
-    {}
-  };
+  /// @brief True, if "0x" should be printed
+  bool prefix;
 
-  /// @brief Output operator for hexManip
-  /// @param[in] os Target ostream
-  /// @param[in] m Hex output manipulator
-  template<class T>
-  std::ostream& operator<<(std::ostream& os, const hexManip<T>& m)
-    { if(m.prefix) os << "0x"; printHex<T>(os, m.t); return os; }
+  /// @brief True, if leading zeros should be printed
+  bool plz;
+  
+  /// @brief Number of ls. bits to be printed
+  size_t bits;
+
+  /// @brief Constructor
+  hexManip(T t, bool prefix, bool plz, size_t bits)
+    : t(t), prefix(prefix), plz(plz), bits(bits)
+  {}
+};
+
+/// @brief Output operator for hexManip
+template<class T>
+std::ostream& operator<<(std::ostream& os, const hexManip<T>& m)
+  { printHex<T>(os, m.t, m.prefix, m.plz, m.bits); return os; }
+
 } // namespace Detail
 
 /// @brief Convenience function for creating an hex output manipulator
-/// @param[in] t Number
-/// @param[in] prefix True, if "0x" should be printed
-/// @return Corresponding hex output manipulator object
 template<class T>
-Detail::hexManip<T> hex(T t, bool prefix = true)
-  { return Detail::hexManip<T>(t, prefix); }
+Detail::hexManip<T> hex(
+    T t, bool prefix = true, bool plz = true, size_t bits = sizeof(T) * 8)
+  { return Detail::hexManip<T>(t, prefix, plz, bits); }
+
+template<class T>
+std::string asHexStr(const T& t, bool prefix = true, bool plz = true, size_t bits = sizeof(T) * 8) {
+  std::ostringstream os;
+  Detail::printHex(os, t, prefix, plz, bits);
+  return os.str();
+}
 
 } } // namespace CoSupport::Streams
 
