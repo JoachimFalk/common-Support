@@ -109,6 +109,7 @@ nobase_include_HEADERS = \
 	CoSupport/endianess.h \
 	CoSupport/sassert.h \
 	CoSupport/boost/graph/undirect_graph.hpp \
+	CoSupport/boost/graph/graph_traits.hpp \
 	CoSupport/boost/init_namespace.hpp
 
 if COSUPPORT_ENABLE_XERCES
