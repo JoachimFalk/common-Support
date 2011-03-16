@@ -62,13 +62,13 @@ namespace CoSupport { namespace SystemC {
     }else{
       std::string msg("Parsing Error: Unknown argument: <");
       msg += timeString;
-      msg += "> How to creating a sc_time from?";
+      msg += "> How to create a sc_time from?";
       throw msg;
     }
     if( data.fail() ){
       std::string msg("Parsing Error: Unknown argument: <");
       msg += timeString;
-      msg += "> How to creating a sc_time from?";
+      msg += "> How to create a sc_time from?";
       throw msg;
     }
     if(data.good()){
