@@ -45,14 +45,24 @@
 
 namespace CoSupport {
 
-// Returns number of bits up to highest bit set in a number
-// e.g. flog2(7) == 3 ("00...000111")
-//      flog2(8) == 4 ("00...001000")
-// (To obtain log2(m), one must calculate n = m - 1,
-//  i.e. log2(m) == flog2(m - 1) !!!)
+// Returns the log base 2 of an integer (floor variant)
+// e.g. flog2f(1) == 0
+//      ...
+//      flog2f(7) == 2
+//      flog2f(8) == 3
+//      flog2f(9) == 3
 
-size_t flog2(uint32_t n);
-size_t flog2(uint64_t n);
+size_t flog2f(uint32_t n);
+size_t flog2f(uint64_t n);
+
+// Returns the log base 2 of an integer (ceil variant)
+// e.g. flog2c(7) == 3
+//      flog2c(8) == 3
+//      flog2c(9) == 4
+//      (Special case: flog2c(1) == 1)
+
+size_t flog2c(uint32_t n);
+size_t flog2c(uint64_t n);
 
 } // namespace CoSupport
 
