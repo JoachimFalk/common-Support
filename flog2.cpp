@@ -42,8 +42,8 @@ namespace CoSupport {
 // if someone can come up with something better,
 // a) benchmark it and b) if it's faster, put it below!!!
 
-size_t flog2(uint32_t n) {
-  assert(n);
+size_t flog2f(uint32_t n) {
+  assert(n >= 1);
 
   // does five "&"-Operations per number = log2(32)
 
@@ -52,33 +52,33 @@ size_t flog2(uint32_t n) {
       if(n & 0xF0000000) {
         if(n & 0xC0000000) {
           if(n & 0x80000000) {
-            return 32;
+            return 31;
           }
           else {
-            return 31;
+            return 30;
           }
         } else {
           if(n & 0x20000000) {
-            return 30;
+            return 29;
           }
           else {
-            return 29;
+            return 28;
           }
         }
       } else {
         if(n & 0x0C000000) {
           if(n & 0x08000000) {
-            return 28;
+            return 27;
           }
           else {
-            return 27;
+            return 26;
           }
         } else {
           if(n & 0x02000000) {
-            return 26;
+            return 25;
           }
           else {
-            return 25;
+            return 24;
           }
         }
       }
@@ -86,33 +86,33 @@ size_t flog2(uint32_t n) {
       if(n & 0x00F00000) {
         if(n & 0x00C00000) {
           if(n & 0x00800000) {
-            return 24;
+            return 23;
           }
           else {
-            return 23;
+            return 22;
           }
         } else {
           if(n & 0x00200000) {
-            return 22;
+            return 21;
           }
           else {
-            return 21;
+            return 20;
           }
         }
       } else {
         if(n & 0x000C0000) {
           if(n & 0x00080000) {
-            return 20;
+            return 19;
           }
           else {
-            return 19;
+            return 18;
           }
         } else {
           if(n & 0x00020000) {
-            return 18;
+            return 17;
           }
           else {
-            return 17;
+            return 16;
           }
         }
       }
@@ -122,33 +122,33 @@ size_t flog2(uint32_t n) {
       if(n & 0x0000F000) {
         if(n & 0x0000C000) {
           if(n & 0x00008000) {
-            return 16;
+            return 15;
           }
           else {
-            return 15;
+            return 14;
           }
         } else {
           if(n & 0x00002000) {
-            return 14;
+            return 13;
           }
           else {
-            return 13;
+            return 12;
           }
         }
       } else {
         if(n & 0x00000C00) {
           if(n & 0x00000800) {
-            return 12;
+            return 11;
           }
           else {
-            return 11;
+            return 10;
           }
         } else {
           if(n & 0x00000200) {
-            return 10;
+            return 9;
           }
           else {
-            return 9;
+            return 8;
           }
         }
       }
@@ -156,33 +156,33 @@ size_t flog2(uint32_t n) {
       if(n & 0x000000F0) {
         if(n & 0x000000C0) {
           if(n & 0x00000080) {
-            return 8;
+            return 7;
           }
           else {
-            return 7;
+            return 6;
           }
         } else {
           if(n & 0x00000020) {
-            return 6;
+            return 5;
           }
           else {
-            return 5;
+            return 4;
           }
         }
       } else {
         if(n & 0x0000000C) {
           if(n & 0x00000008) {
-            return 4;
+            return 3;
           }
           else {
-            return 3;
+            return 2;
           }
         } else {
           if(n & 0x00000002) {
-            return 2;
+            return 1;
           }
           else {
-            return 1;
+            return 0;
           }
         }
       }
@@ -190,8 +190,8 @@ size_t flog2(uint32_t n) {
   }
 }
 
-size_t flog2(uint64_t n) {
-  assert(n);
+size_t flog2f(uint64_t n) {
+  assert(n >= 1);
 
   // does six "&"-Operations per number = log2(64)
 
@@ -201,33 +201,33 @@ size_t flog2(uint64_t n) {
         if(n & 0xF000000000000000ull) {
           if(n & 0xC000000000000000ull) {
             if(n & 0x8000000000000000ull) {
-              return 64;
+              return 63;
             }
             else {
-              return 63;
+              return 62;
             }
           } else {
             if(n & 0x2000000000000000ull) {
-              return 62;
+              return 61;
             }
             else {
-              return 61;
+              return 60;
             }
           }
         } else {
           if(n & 0x0C00000000000000ull) {
             if(n & 0x0800000000000000ull) {
-              return 60;
+              return 59;
             }
             else {
-              return 59;
+              return 58;
             }
           } else {
             if(n & 0x0200000000000000ull) {
-              return 58;
+              return 57;
             }
             else {
-              return 57;
+              return 56;
             }
           }
         }
@@ -235,33 +235,33 @@ size_t flog2(uint64_t n) {
         if(n & 0x00F0000000000000ull) {
           if(n & 0x00C0000000000000ull) {
             if(n & 0x0080000000000000ull) {
-              return 56;
+              return 55;
             }
             else {
-              return 55;
+              return 54;
             }
           } else {
             if(n & 0x0020000000000000ull) {
-              return 54;
+              return 53;
             }
             else {
-              return 53;
+              return 52;
             }
           }
         } else {
           if(n & 0x000C000000000000ull) {
             if(n & 0x0008000000000000ull) {
-              return 52;
+              return 51;
             }
             else {
-              return 51;
+              return 50;
             }
           } else {
             if(n & 0x0002000000000000ull) {
-              return 50;
+              return 49;
             }
             else {
-              return 49;
+              return 48;
             }
           }
         }
@@ -271,33 +271,33 @@ size_t flog2(uint64_t n) {
         if(n & 0x0000F00000000000ull) {
           if(n & 0x0000C00000000000ull) {
             if(n & 0x0000800000000000ull) {
-              return 48;
+              return 47;
             }
             else {
-              return 47;
+              return 46;
             }
           } else {
             if(n & 0x0000200000000000ull) {
-              return 46;
+              return 45;
             }
             else {
-              return 45;
+              return 44;
             }
           }
         } else {
           if(n & 0x00000C0000000000ull) {
             if(n & 0x0000080000000000ull) {
-              return 44;
+              return 43;
             }
             else {
-              return 43;
+              return 42;
             }
           } else {
             if(n & 0x0000020000000000ull) {
-              return 42;
+              return 41;
             }
             else {
-              return 41;
+              return 40;
             }
           }
         }
@@ -305,33 +305,33 @@ size_t flog2(uint64_t n) {
         if(n & 0x000000F000000000ull) {
           if(n & 0x000000C000000000ull) {
             if(n & 0x0000008000000000ull) {
-              return 40;
+              return 39;
             }
             else {
-              return 39;
+              return 38;
             }
           } else {
             if(n & 0x0000002000000000ull) {
-              return 38;
+              return 37;
             }
             else {
-              return 37;
+              return 36;
             }
           }
         } else {
           if(n & 0x0000000C00000000ull) {
             if(n & 0x0000000800000000ull) {
-              return 36;
+              return 35;
             }
             else {
-              return 35;
+              return 34;
             }
           } else {
             if(n & 0x0000000200000000ull) {
-              return 34;
+              return 33;
             }
             else {
-              return 33;
+              return 32;
             }
           }
         }
@@ -343,33 +343,33 @@ size_t flog2(uint64_t n) {
         if(n & 0x00000000F0000000ull) {
           if(n & 0x00000000C0000000ull) {
             if(n & 0x0000000080000000ull) {
-              return 32;
+              return 31;
             }
             else {
-              return 31;
+              return 30;
             }
           } else {
             if(n & 0x0000000020000000ull) {
-              return 30;
+              return 29;
             }
             else {
-              return 29;
+              return 28;
             }
           }
         } else {
           if(n & 0x000000000C000000ull) {
             if(n & 0x0000000008000000ull) {
-              return 28;
+              return 27;
             }
             else {
-              return 27;
+              return 26;
             }
           } else {
             if(n & 0x0000000002000000ull) {
-              return 26;
+              return 25;
             }
             else {
-              return 25;
+              return 24;
             }
           }
         }
@@ -377,33 +377,33 @@ size_t flog2(uint64_t n) {
         if(n & 0x0000000000F00000ull) {
           if(n & 0x0000000000C00000ull) {
             if(n & 0x0000000000800000ull) {
-              return 24;
+              return 23;
             }
             else {
-              return 23;
+              return 22;
             }
           } else {
             if(n & 0x0000000000200000ull) {
-              return 22;
+              return 21;
             }
             else {
-              return 21;
+              return 20;
             }
           }
         } else {
           if(n & 0x00000000000C0000ull) {
             if(n & 0x0000000000080000ull) {
-              return 20;
+              return 19;
             }
             else {
-              return 19;
+              return 18;
             }
           } else {
             if(n & 0x0000000000020000ull) {
-              return 18;
+              return 17;
             }
             else {
-              return 17;
+              return 16;
             }
           }
         }
@@ -413,33 +413,33 @@ size_t flog2(uint64_t n) {
         if(n & 0x000000000000F000ull) {
           if(n & 0x000000000000C000ull) {
             if(n & 0x0000000000008000ull) {
-              return 16;
+              return 15;
             }
             else {
-              return 15;
+              return 14;
             }
           } else {
             if(n & 0x0000000000002000ull) {
-              return 14;
+              return 13;
             }
             else {
-              return 13;
+              return 12;
             }
           }
         } else {
           if(n & 0x0000000000000C00ull) {
             if(n & 0x0000000000000800ull) {
-              return 12;
+              return 11;
             }
             else {
-              return 11;
+              return 10;
             }
           } else {
             if(n & 0x0000000000000200ull) {
-              return 10;
+              return 9;
             }
             else {
-              return 9;
+              return 8;
             }
           }
         }
@@ -447,39 +447,51 @@ size_t flog2(uint64_t n) {
         if(n & 0x00000000000000F0ull) {
           if(n & 0x00000000000000C0ull) {
             if(n & 0x0000000000000080ull) {
-              return 8;
+              return 7;
             }
             else {
-              return 7;
+              return 6;
             }
           } else {
             if(n & 0x0000000000000020ull) {
-              return 6;
+              return 5;
             }
             else {
-              return 5;
+              return 4;
             }
           }
         } else {
           if(n & 0x000000000000000Cull) {
             if(n & 0x0000000000000008ull) {
-              return 4;
+              return 3;
             }
             else {
-              return 3;
+              return 2;
             }
           } else {
             if(n & 0x0000000000000002ull) {
-              return 2;
+              return 1;
             }
             else {
-              return 1;
+              return 0;
             }
           }
         }
       }
     }
   }    
+}
+
+size_t flog2c(uint32_t n) {
+  if(n == 1)
+    return 1;
+  return flog2f(n-1)+1;
+}
+
+size_t flog2c(uint64_t n) {
+  if(n == 1)
+    return 1;
+  return flog2f(n-1)+1;
 }
 
 } // namespace CoSupport
