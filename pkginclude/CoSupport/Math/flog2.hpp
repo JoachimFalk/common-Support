@@ -37,6 +37,7 @@
 
 
 #include <stddef.h>
+#include "../commondefs.h"
 #ifdef _MSC_VER
 #include "../compatibility-glue/integertypes.h"
 #else
@@ -63,6 +64,16 @@ size_t flog2f(uint64_t n);
 
 size_t flog2c(uint32_t n);
 size_t flog2c(uint64_t n);
+
+COSUPPORT_ATTRIBUTE_DEPRECATED
+static inline
+size_t flog2(uint32_t n)
+  { return flog2c(n); }
+
+COSUPPORT_ATTRIBUTE_DEPRECATED
+static inline
+size_t flog2(uint64_t n)
+  { return flog2c(n); }
 
 } // namespace CoSupport
 
