@@ -39,6 +39,7 @@
 
 #include <CoSupport/Tracing/PtpTracer.hpp>
 #include <string>
+#include <sstream>
 
 namespace CoSupport { namespace Tracing {
 
