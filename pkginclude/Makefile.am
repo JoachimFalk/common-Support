@@ -51,6 +51,7 @@ nobase_include_HEADERS = \
 	CoSupport/DataTypes/Value.hpp \
 	CoSupport/DataTypes/bit_buffer.hpp \
 	CoSupport/DataTypes/container_insert.hpp \
+	CoSupport/DataTypes/container_retrieve.hpp \
 	CoSupport/DataTypes/oneof.hpp \
 	CoSupport/Initializer/BasicInitializer.hpp \
 	CoSupport/Lambda/function_objects.hpp \
