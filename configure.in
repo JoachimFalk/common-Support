@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_INIT(
-  [HscdSupport Devel Branch], [0.8],
+  [HscdSupport Devel Branch], [0.9],
   [joachim.falk@informatik.uni-erlangen.de christian.zebelein@informatik.uni-erlangen.de],
   [HscdSupport--devel-])
 
@@ -30,10 +30,12 @@ AC_PROG_CPP
 #AC_PROG_LN_S
 #AC_PROG_MAKE_SET
 
-AC_DISABLE_SHARED
-AC_PROG_LIBTOOL
-
 AM_INIT_AUTOMAKE
+AM_PROG_LIBTOOL
+
+dnl AC_DISABLE_STATIC
+# We need AC_ENABLE_SHARED for the libsgx python bindings
+AC_ENABLE_SHARED
 
 ACJF_ARG_DEBUG([yes], [], [-DNDEBUG])
 if test x"$enable_debug" = x"yes"; then
@@ -387,6 +389,7 @@ AM_CONDITIONAL([COSUPPORT_ENABLE_SYSTEMC], [test x"$acjf_cosupport_found_pkg_sys
 # consistency for Examples and Testcases
 if test x"$acjf_cosupport_found_pkg_systemc" = x"yes"; then
   AC_DEFINE([COSUPPORT_ENABLE_SYSTEMC], [yes], [Defined if SystemC support is enabled])
+  AC_CONFIG_FILES([libcosupport-systemc.pc])
 fi
 
 ACJF_CHECK_LIB_XERCES(
@@ -396,8 +399,9 @@ ACJF_CHECK_LIB_XERCES(
 AM_CONDITIONAL([COSUPPORT_ENABLE_XERCES], [test x"$acjf_cosupport_found_pkg_xerces" = x"yes"])
 # This is a define for pkginclude/CoSupport/cosupport_config.h to guarantee
 # consistency for Examples and Testcases
-if test x"$acjf_cosupport_found_pkg_systemc" = x"yes"; then
+if test x"$acjf_cosupport_found_pkg_xerces" = x"yes"; then
   AC_DEFINE([COSUPPORT_ENABLE_XERCES], [yes], [Defined if xerces support is enabled])
+  AC_CONFIG_FILES([libcosupport-xerces.pc])
 fi
 
 ACJF_CHECK_LIB_XALAN(
@@ -409,14 +413,23 @@ AM_CONDITIONAL([COSUPPORT_ENABLE_XALAN], [test x"$acjf_cosupport_found_pkg_xalan
 # consistency for Examples and Testcases
 if test x"$acjf_cosupport_found_pkg_systemc" = x"yes"; then
   AC_DEFINE([COSUPPORT_ENABLE_XALAN], [yes], [Defined if xalan support is enabled])
+  AC_CONFIG_FILES([libcosupport-xalan.pc])
 fi
 
 SUBDIRS="$subdirs"
 AC_SUBST(SUBDIRS)
 
 AC_CONFIG_FILES([
-  Makefile
   pkginclude/Makefile
+  Makefile
+  libcosupport.pc
+  libcosupport-initializer.pc
+  libcosupport-smartptr.pc
+  libcosupport-streams.pc
+  libcosupport-string.pc
+  libcosupport-math.pc
+  libcosupport-allocators.pc
+  libcosupport-tracing.pc
 ])
 
 ACJF_DONE

@@ -130,6 +130,8 @@ if COSUPPORT_ENABLE_SYSTEMC
 libcosupport_systemc_la_SOURCES =		\
 	par_manager.cpp				\
 	PerformanceEvaluation.cpp
+libcosupport_systemc_la_LDFLAGS=		\
+	$(AM_LDFLAGS) -static
 libcosupport_systemc_la_LIBADD =		\
 	-lboost_thread$(BOOST_LIBMTPOSTFIX)	\
 	-lsystemc

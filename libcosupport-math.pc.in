@@ -1,0 +1,17 @@
+# This is a comment
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+# human-readable name
+Name: libcosupport-math
+# human-readable description
+Description: Library of supporting infrastructure of the chair of HW/SW CoDesign at Uni Erlangen
+Version: @PACKAGE_VERSION@
+URL: http://www12.informatik.uni-erlangen.de/research/systemoc
+#Requires: glib-2.0 = 1.3.1
+#Conflicts: foobar <= 4.5
+Libs: -L${libdir} -lcosupport-math
+#Libs.private: -lm
+Cflags: -I${includedir}
