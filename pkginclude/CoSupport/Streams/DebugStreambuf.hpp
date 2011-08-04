@@ -62,6 +62,8 @@ struct Debug {
   /// constructs a new object with the specified debug
   /// level and prefix
   Debug(size_t level, const std::string& prefix);
+
+  bool isVisible(Debug const &dbg) const;
   
   /// predefined debug levels
   static const Debug Low;

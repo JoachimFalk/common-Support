@@ -373,6 +373,9 @@ Debug::Debug(size_t level, const std::string& prefix) :
   level(level), prefix(prefix)
 {}
 
+bool Debug::isVisible(Debug const &dbg) const
+  { return dbg.level >= level; }
+
 const Debug Debug::Low(0);
 const Debug Debug::Medium(1);
 const Debug Debug::High(2);
@@ -389,10 +392,10 @@ DebugStreambuf::DebugStreambuf(
 {}
 
 void DebugStreambuf::setLevel(const Debug &dbg)
-{ level = dbg.level; }
+  { level = dbg.level; }
 
 void DebugStreambuf::setVisibility(const Debug &dbg) {
-  visible = dbg.level >= level;
+  visible = Debug(level).isVisible(dbg);
   prefix = dbg.prefix;
 }
 
