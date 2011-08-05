@@ -39,6 +39,7 @@
 #include <stddef.h>
 
 #include "FilterStreambuf.hpp"
+#include "FilterOStream.hpp"
 
 namespace CoSupport { namespace Streams {
 
@@ -63,6 +64,34 @@ struct Indent {
  */
 class IndentStreambuf
 : public FilterStreambuf {
+public:
+  template <class Base = FilterOStream> class Stream;
+public:
+  /// constructs a new object with the specified delta and
+  /// initial indentation
+  IndentStreambuf(
+      size_t delta = 2,
+      size_t indent = 0,
+      std::streambuf *next = 0);
+
+  /// modify the indentation (absolute value)
+  void setIndentation(int value);
+
+  /// modify the indentation (delta)
+  void setDeltaLevel(int value);
+
+#ifndef KASCPAR_PARSING
+  /// index obtained with std::ostream::xalloc
+  static const int index;
+#endif
+protected:
+  int overflow(int c);
+
+  /// see Indent
+  bool hasManip() const;
+
+  /// returns the (static) index
+  int getIndex() const;
 private:
   /// number of spaces to add for each indentation
   /// level
@@ -73,39 +102,21 @@ private:
 
   /// indicator if newline was encountered
   bool newline;
+};
 
+template <class Base>
+class IndentStreambuf::Stream: public Base {
 public:
-  /// constructs a new object with the specified delta and
-  /// initial indentation
-  IndentStreambuf(
-      size_t delta = 2,
-      size_t indent = 0,
-      std::streambuf *next = 0);
-  
-  /// modify the indentation (absolute value)
-  void setIndentation(int value);
-  
-  /// modify the indentation (delta)
-  void setDeltaLevel(int value);
-  
-protected:
-  int overflow(int c);
-  
-public:
-#ifndef KASCPAR_PARSING
-  /// index obtained with std::ostream::xalloc
-  static const int index;
-#endif
-  
-  /// see Indent
-  bool hasManip() const;
-  
-  /// returns the (static) index
-  int getIndex() const;
+  /// construct a new object which uses the streambuffer
+  /// of the specified stream as initial target
+  Stream(std::ostream &os)
+    : Base(os) { this->insert(indenter); }
+private:
+  IndentStreambuf indenter;
 };
 
 /// output operator for the Indent manipulator
-std::ostream &operator<<(std::ostream &os, const Indent &i);
+std::ostream &operator << (std::ostream &os, const Indent &i);
 
 /**
  * indents specified stream at the point of instantiation;
@@ -118,7 +129,7 @@ private:
 public:
   // constructs a new object wich indents the specified stream
   ScopedIndent(std::ostream &out, const Indent &indent = Indent::Up);
-  
+
   // destructor reverses indentation
   ~ScopedIndent();
 };

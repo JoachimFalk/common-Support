@@ -1,6 +1,6 @@
 // vim: set sw=2 ts=8:
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2011 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -33,53 +33,70 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_STREAMS_FILTERSTREAMBUF_HPP
-#define _INCLUDED_COSUPPORT_STREAMS_FILTERSTREAMBUF_HPP
+#include <CoSupport/Streams/TranslationStreambuf.hpp>
 
-#include <streambuf>
-#include <ostream>
+#include <cstring>
 
 namespace CoSupport { namespace Streams {
 
-/// forward declarations 
-class FilterOStream;
+TranslationStreambuf::TranslationStreambuf(const TranslationMap& tm)
+  : tm(tm) {}
 
-/**
- * the base class for all custom streambuffers
- */  
-class FilterStreambuf
-: public std::streambuf {
-protected:
-  /// pointer to the next streambuffer in the buffer chain
-  std::streambuf *next;
+void TranslationStreambuf::setTranslationMap(const TranslationMap& value)
+  { tm = value; }
+
+int TranslationStreambuf::overflow(int c) {
+  if (const char* t = tm.get(c)) {
+    next->sputn(t, std::strlen(t));
+    return 1;
+  }
+  else {
+    return next->sputc(c);
+  }
+}
+
+bool TranslationStreambuf::hasManip() const
+{ return true; }
   
-  /// must be able to set next
-  friend class FilterOStream;
+int TranslationStreambuf::getIndex() const
+{ return index; }
 
-  /// See std::streambuf
-  virtual int sync();
+const int TranslationStreambuf::index(std::ostream::xalloc());
 
-public:  
-  /// constructs a new object, optionally with a target
-  /// streambuffer
-  FilterStreambuf(std::streambuf *next = 0);
+std::ostream &operator<<(std::ostream &os, const TranslationMap &t) {
+  TranslationStreambuf *buf = static_cast<TranslationStreambuf *>(os.pword(TranslationStreambuf::index));
+  if (buf) buf->setTranslationMap(t);
+  return os;
+}
 
-  /// Sets a new target for this buffer
-  void setTarget(std::streambuf *os);
-
-public:
-  /// should be reimplemented in derived classes: return true
-  /// if stream manipulators are available
-  virtual bool hasManip() const;
+TranslationMap::TranslationMap() {}
   
-  /// returns the index for the ostream extensible array
-  /// (obtained with std::ostream::xalloc())
-  virtual int getIndex() const;
-  
-  /// virtual destructor
-  virtual ~FilterStreambuf();
-};
+TranslationMap::TranslationMap(TranslationOp o[], size_t count) {
+  for(size_t i = 0; i < count; ++i) {
+    tm[o[i].from] = o[i].to;
+  }
+}
+
+const char* TranslationMap::get(char c) const {
+  std::map<char,const char*>::const_iterator i = tm.find(c);
+  if (i == tm.end()) return 0;
+  return i->second;
+}
+
+const TranslationMap& TranslationMap::XMLAttr() {
+  static TranslationOp o[] =
+    { {'&'  , "&amp;" },
+      {'<'  , "&lt;"  },
+      {'>'  , "&gt;"  },
+      {'\"' , "&quot;"},
+      {'\'' , "&apos;"} };
+  static TranslationMap t(o, sizeof(o) / sizeof(TranslationOp));
+  return t;
+}
+
+const TranslationMap& TranslationMap::None() {
+  static TranslationMap t;
+  return t;
+}
 
 } } // namespace CoSupport::Streams
-
-#endif // _INCLUDED_COSUPPORT_STREAMS_FILTERSTREAMBUF_HPP

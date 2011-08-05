@@ -1,6 +1,7 @@
 
 #include <stdlib.h>
 
+#include <iostream>
 #include <fstream>
 
 #include <CoSupport/Streams/DebugOStream.hpp>

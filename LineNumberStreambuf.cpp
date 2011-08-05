@@ -1,6 +1,6 @@
 // vim: set sw=2 ts=8:
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2011 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -33,53 +33,31 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_STREAMS_FILTERSTREAMBUF_HPP
-#define _INCLUDED_COSUPPORT_STREAMS_FILTERSTREAMBUF_HPP
+#include <CoSupport/Streams/LineNumberStreambuf.hpp>
 
-#include <streambuf>
-#include <ostream>
+#include <CoSupport/String/convert.hpp>
 
 namespace CoSupport { namespace Streams {
 
-/// forward declarations 
-class FilterOStream;
-
-/**
- * the base class for all custom streambuffers
- */  
-class FilterStreambuf
-: public std::streambuf {
-protected:
-  /// pointer to the next streambuffer in the buffer chain
-  std::streambuf *next;
+using String::asStr;
+using String::strAs;
   
-  /// must be able to set next
-  friend class FilterOStream;
+LineNumberStreambuf::LineNumberStreambuf(std::streambuf *next)
+  : FilterStreambuf(next),
+    line(1),
+    newline(true) {}
 
-  /// See std::streambuf
-  virtual int sync();
-
-public:  
-  /// constructs a new object, optionally with a target
-  /// streambuffer
-  FilterStreambuf(std::streambuf *next = 0);
-
-  /// Sets a new target for this buffer
-  void setTarget(std::streambuf *os);
-
-public:
-  /// should be reimplemented in derived classes: return true
-  /// if stream manipulators are available
-  virtual bool hasManip() const;
-  
-  /// returns the index for the ostream extensible array
-  /// (obtained with std::ostream::xalloc())
-  virtual int getIndex() const;
-  
-  /// virtual destructor
-  virtual ~FilterStreambuf();
-};
+int LineNumberStreambuf::overflow(int c) {
+  if (newline) {
+    std::string tmp = asStr(line) + ": ";
+    next->sputn(tmp.c_str(), tmp.size());
+    newline = false;
+  }
+  if (!newline && c == '\n') {
+    line++;
+    newline = true;
+  }
+  return next->sputc(c);
+}
 
 } } // namespace CoSupport::Streams
-
-#endif // _INCLUDED_COSUPPORT_STREAMS_FILTERSTREAMBUF_HPP

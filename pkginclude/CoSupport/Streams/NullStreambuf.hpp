@@ -37,6 +37,7 @@
 #define _INCLUDED_COSUPPORT_STREAMS_NULLSTREAMBUF_HPP
 
 #include "FilterStreambuf.hpp"
+#include "FilterOStream.hpp"
 
 namespace CoSupport { namespace Streams {
 
@@ -46,12 +47,45 @@ namespace CoSupport { namespace Streams {
 class NullStreambuf
 : public FilterStreambuf {
 public:
-  /// constructs a new object with the specified debug
-  /// level
+  template <class Base = FilterOStream> class Stream;
+public:
+  /// constructs a new FilterStreambuf discarding all output
   NullStreambuf(std::streambuf *next = 0);
-  
 protected:
   int overflow(int c);
+};
+
+template <class Base>
+class NullStreambuf::Stream: public Base {
+  typedef Stream<Base> this_type;
+public:
+  /// construct a new object which uses the streambuffer
+  /// of the specified stream as initial target
+  Stream(std::ostream &os)
+    : Base(os) { this->insert(devnull); }
+
+  /// discard output for any type
+  template<class T>
+  inline
+  const this_type &operator<<(const T &t) const
+    { return *this; }
+
+  /// discard output for stream manipulators
+  inline
+  const this_type &operator<<(std::ostream &(*manip)(std::ostream &)) const
+    { return *this; }
+
+  /// discard output for stream manipulators
+  inline
+  const this_type &operator<<(std::ios &(*manip)(std::ios &)) const
+    { return *this; }
+
+  /// discard output for stream manipulators
+  inline
+  const this_type &operator<<(std::ios_base &(*manip)(std::ios_base &)) const
+    { return *this; }
+private:
+  NullStreambuf devnull;
 };
 
 } } // namespace CoSupport::Streams

@@ -94,22 +94,8 @@ struct Footer {
  */
 class HeaderFooterStreambuf
 : public FilterStreambuf {
-private:
-  /// currently used header string
-  std::string header;
-
-  /// currently used footer string
-  std::string footer;
-  
-  /// indicator if chars should be added to header
-  bool add_header;
-
-  /// indicator if chars should be added to footer
-  bool add_footer;
-  
-  /// indicator if newline was encountered 
-  bool newline;
-  
+public:
+  template <class Base = FilterOStream> class Stream;
 public:
   /// constructs a new object with the specified header
   /// and footer
@@ -140,20 +126,45 @@ public:
   /// to the current footer
   void setAddFooter(bool value);
   
-protected:
-  int overflow(int c);
-  
-public:
 #ifndef KASCPAR_PARSING
   /// index obtained with std::ostream::xalloc
   static const int index;
 #endif
-   
+protected:
+  int overflow(int c);
+  
   /// see Header and Footer
   bool hasManip() const;
   
   /// returns the (static) index
   int getIndex() const;
+
+private:
+  /// currently used header string
+  std::string header;
+
+  /// currently used footer string
+  std::string footer;
+  
+  /// indicator if chars should be added to header
+  bool add_header;
+
+  /// indicator if chars should be added to footer
+  bool add_footer;
+  
+  /// indicator if newline was encountered 
+  bool newline;
+};
+
+template <class Base>
+class HeaderFooterStreambuf::Stream: public Base {
+public:
+  /// construct a new object which uses the streambuffer
+  /// of the specified stream as initial target
+  Stream(std::ostream &os)
+    : Base(os) { this->insert(headerFooter); }
+private:
+  HeaderFooterStreambuf headerFooter;
 };
 
 /// output operator for the Header manipulator

@@ -33,20 +33,81 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#include <CoSupport/Streams/FilterOStream.hpp>
+#include <CoSupport/Streams/IndentStreambuf.hpp>
+
+#include <cassert>
 
 namespace CoSupport { namespace Streams {
 
-FilterOStream::FilterOStream(std::ostream &os) :
-  std::ostream(os.rdbuf())
-{}
+Indent::Indent(int delta_level)
+  : delta_level(delta_level) {}
   
-void FilterOStream::insert(FilterStreambuf &head)
-{
-  head.next = rdbuf();
-  rdbuf(&head);
-  if (head.hasManip())
-    pword(head.getIndex()) = &head;
+const Indent Indent::Up(1);
+const Indent Indent::Down(-1);
+
+std::ostream &operator << (std::ostream &os, const Indent &i) {
+  IndentStreambuf *buf = static_cast<IndentStreambuf *>(os.pword(IndentStreambuf::index));
+  if (buf) buf->setDeltaLevel(i.delta_level);
+  return os;
 }
+
+ScopedIndent::ScopedIndent(std::ostream &out, const Indent &indent)
+  : out(out << indent), delta(indent.delta_level) {}
+
+ScopedIndent::~ScopedIndent()
+  { out << Indent(-delta); }
+
+IndentStreambuf::IndentStreambuf(
+    size_t delta,
+    size_t indent,
+    std::streambuf *next) :
+  FilterStreambuf(next),
+  delta(delta),
+  indent(indent),
+  newline(true)
+{
+  // std::cerr << "Enter IndentStreambuf::IndentStreambuf" << std::endl;
+  // std::cerr << "Leave IndentStreambuf::IndentStreambuf" << std::endl;
+}
+
+void IndentStreambuf::setIndentation(int value)
+{
+  if (value < 0)
+    assert(!"Negative indention not allowed!");
+  indent = value;
+}
+
+void IndentStreambuf::setDeltaLevel(int value)
+{
+  if (value < 0 && indent < -(value * delta))
+    assert(!"Too much negative delta indentation!");
+  indent += value * delta;
+}
+
+int IndentStreambuf::overflow(int c)
+{
+  static const char ws[] = "                ";
+  static const size_t WS = sizeof(ws) - 1;
+  
+  if (newline) {
+    for(size_t i=0; i<indent/WS; ++i) {
+      next->sputn(ws, WS);
+    }
+    next->sputn(ws, indent % WS);     
+    newline = false;
+  }
+  if (!newline && c == '\n') {
+    newline = true;
+  } 
+  return next->sputc(c);
+}
+
+bool IndentStreambuf::hasManip() const
+{ return true; }
+
+int IndentStreambuf::getIndex() const
+{ return index; }
+
+const int IndentStreambuf::index(std::ostream::xalloc());
 
 } } // namespace CoSupport::Streams

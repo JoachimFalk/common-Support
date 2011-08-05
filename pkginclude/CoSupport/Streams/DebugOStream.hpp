@@ -36,41 +36,19 @@
 #ifndef _INCLUDED_COSUPPORT_STREAMS_DEBUGOSTREAM_HPP
 #define _INCLUDED_COSUPPORT_STREAMS_DEBUGOSTREAM_HPP
 
-#include "FilterOStream.hpp"
-#include "IndentStreambuf.hpp"
-#include "HeaderFooterStreambuf.hpp"
-#include "ColorStreambuf.hpp"
 #include "DebugStreambuf.hpp"
-#include <iostream>
+#include "ColorStreambuf.hpp"
+#include "HeaderFooterStreambuf.hpp"
+#include "IndentStreambuf.hpp"
 
 namespace CoSupport { namespace Streams {
 
-class DebugOStream: public FilterOStream {
-public:
-  IndentStreambuf        indenter;
-  HeaderFooterStreambuf  headerFooter;
-  ColorStreambuf         colorer;
-  DebugStreambuf         debuglevel;
-
-  /// construct a new object which uses the streambuffer
-  /// of the specified stream as initial target
-  DebugOStream(std::ostream &os, const Debug &dbg = Debug::Low)
-    : FilterOStream(os),
-      debuglevel(dbg)
-  {
-    //std::cerr << "Enter DebugOStream(std::ostream &os, const Debug &dbg)" << std::endl;
-    insert(indenter);
-    insert(headerFooter);
-    insert(colorer);
-    insert(debuglevel);
-    //std::cerr << "Leave DebugOStream(std::ostream &os, const Debug &dbg)" << std::endl;
-  }
-
-  /// set a new debug level
-  void setLevel(const Debug &dbg)
-    { return debuglevel.setLevel(dbg); }
-
-};
+typedef DebugStreambuf::Stream<
+          ColorStreambuf::Stream<
+            HeaderFooterStreambuf::Stream<
+              IndentStreambuf::Stream<
+        > > > >
+  DebugOStream;
 
 extern DebugOStream dout;
 
