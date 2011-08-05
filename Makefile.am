@@ -149,6 +149,14 @@ endif
 libcosupport_streams_la_SOURCES =		\
 	DebugOStream.cpp			\
 	FilterOStream.cpp			\
+	ColorStreambuf.cpp			\
+	DebugStreambuf.cpp			\
+	FilterStreambuf.cpp			\
+	HeaderFooterStreambuf.cpp		\
+	IndentStreambuf.cpp			\
+	LineNumberStreambuf.cpp			\
+	NullStreambuf.cpp			\
+	TranslationStreambuf.cpp		\
 	SocketTCPClient.cpp
 libcosupport_streams_la_LIBADD =		\
 	-lboost_iostreams$(BOOST_LIBMTPOSTFIX)	\
@@ -179,6 +187,7 @@ libcosupport_tracing_la_SOURCES =		\
 
 test_dbgstream_SOURCES		  = test_dbgstream.cpp
 test_dbgstream_LDADD		  = libcosupport-streams.la
+test_dbgstream_LDFLAGS		  = $(AM_LDFLAGS) -static
 
 test_maybevalue_SOURCES		  = test_maybevalue.cpp
 test_maybevalue_LDADD		  =

@@ -60,9 +60,9 @@ struct Color {
   /// (no change to the foreground color)
   Color(size_t attr);
 
-  // Color(const Color& c)
+  // Color(const Color &c)
   // {
-  //   std::cerr << "Enter Color(const Color& c)" << std::endl;
+  //   std::cerr << "Enter Color(const Color &c)" << std::endl;
   //   std::cerr << escape << std::endl;
   //   std::cerr.flush();
   //   std::cerr << "&c = " << &c << std::endl;
@@ -70,29 +70,29 @@ struct Color {
   //   escape = c.escape;
   //   std::cerr << escape << std::endl;
   //   std::cerr.flush();
-  //   std::cerr << "Leave Color(const Color& c)" << std::endl;
+  //   std::cerr << "Leave Color(const Color &c)" << std::endl;
   // }
 
 
   /// predefined colors 
   /// We do not use static variables in order to avoid racing conditions
   /// when initializing global variables.
-  static const Color& Auto()         { static Color c(0)    ; return c; }
-  static const Color& Black()        { static Color c(30, 0); return c; }
-  static const Color& Red()          { static Color c(31, 0); return c; }
-  static const Color& BrightRed()    { static Color c(31, 1); return c; }
-  static const Color& Green()        { static Color c(32, 0); return c; }
-  static const Color& BrightGreen()  { static Color c(32, 1); return c; }
-  static const Color& Brown()        { static Color c(33, 0); return c; }
-  static const Color& BrightBrown()  { static Color c(33, 1); return c; }
-  static const Color& Blue()         { static Color c(34, 0); return c; }
-  static const Color& BrightBlue()   { static Color c(34, 1); return c; }
-  static const Color& Purple()       { static Color c(35, 0); return c; }
-  static const Color& BrightPurple() { static Color c(35, 1); return c; }
-  static const Color& Cyan()         { static Color c(36, 0); return c; }
-  static const Color& BrightCyan()   { static Color c(36, 1); return c; }
-  static const Color& Gray()         { static Color c(37, 0); return c; }
-  static const Color& BrightGray()   { static Color c(37, 1); return c; }
+  static const Color &Auto()         { static Color c(0)    ; return c; }
+  static const Color &Black()        { static Color c(30, 0); return c; }
+  static const Color &Red()          { static Color c(31, 0); return c; }
+  static const Color &BrightRed()    { static Color c(31, 1); return c; }
+  static const Color &Green()        { static Color c(32, 0); return c; }
+  static const Color &BrightGreen()  { static Color c(32, 1); return c; }
+  static const Color &Brown()        { static Color c(33, 0); return c; }
+  static const Color &BrightBrown()  { static Color c(33, 1); return c; }
+  static const Color &Blue()         { static Color c(34, 0); return c; }
+  static const Color &BrightBlue()   { static Color c(34, 1); return c; }
+  static const Color &Purple()       { static Color c(35, 0); return c; }
+  static const Color &BrightPurple() { static Color c(35, 1); return c; }
+  static const Color &Cyan()         { static Color c(36, 0); return c; }
+  static const Color &BrightCyan()   { static Color c(36, 1); return c; }
+  static const Color &Gray()         { static Color c(37, 0); return c; }
+  static const Color &BrightGray()   { static Color c(37, 1); return c; }
 };
 
 /**
@@ -100,16 +100,8 @@ struct Color {
  */
 class ColorStreambuf
 : public FilterStreambuf {
-private:
-  /// color of the printed chars
-  Color color;
-
-  /// color to set after newline
-  Color reset;
-  
-  /// indicator if newline was encountered
-  bool newline;
-  
+public:
+  template <class Base = FilterOStream> class Stream;
 public:
   /// constructs a new object with the specified
   /// colors
@@ -117,31 +109,50 @@ public:
                  const Color &color = Color::Auto(),
                  const Color &reset = Color::Auto(),
                  std::streambuf *next = 0);
-  
+
   /// set a new line color
   void setColor(const Color &c);
-  
+ 
   /// set a new reset color
   void setReset(const Color &c);
-  
-protected:
-  int overflow(int c);
-  
-public:
+ 
 #ifndef KASCPAR_PARSING
   /// index obtained with std::ostream::xalloc
   static const int index;
 #endif
- 
+protected:
+  int overflow(int c);
+  
   /// see Color 
   bool hasManip() const;
   
   /// returns the (static) index
   int getIndex() const;
+
+private:
+  /// color of the printed chars
+  Color color;
+
+  /// color to set after newline
+  Color reset;
+
+  /// indicator if newline was encountered
+  bool newline;
+};
+
+template <class Base>
+class ColorStreambuf::Stream: public Base {
+public:
+  /// construct a new object which uses the streambuffer
+  /// of the specified stream as initial target
+  Stream(std::ostream &os)
+    : Base(os) { this->insert(colorer); }
+private:
+  ColorStreambuf colorer;
 };
 
 /// output operator for the Color manipulator
-std::ostream &operator<<(std::ostream &os, const Color &c);
+std::ostream &operator << (std::ostream &os, const Color &c);
 
 } } // namespace CoSupport::Streams
 

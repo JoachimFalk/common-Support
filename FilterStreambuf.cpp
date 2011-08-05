@@ -1,6 +1,6 @@
 // vim: set sw=2 ts=8:
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2011 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -33,53 +33,35 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_STREAMS_FILTERSTREAMBUF_HPP
-#define _INCLUDED_COSUPPORT_STREAMS_FILTERSTREAMBUF_HPP
+#include <CoSupport/Streams/FilterStreambuf.hpp>
 
-#include <streambuf>
-#include <ostream>
+#include <cassert>
 
 namespace CoSupport { namespace Streams {
 
-/// forward declarations 
-class FilterOStream;
+FilterStreambuf::FilterStreambuf(std::streambuf *next) :
+  next(next)
+{
+  //std::cerr << "Enter FilterStreambuf::FilterStreambuf" << std::endl;
+  //std::cerr << "Leave FilterStreambuf::FilterStreambuf" << std::endl;
+}
 
-/**
- * the base class for all custom streambuffers
- */  
-class FilterStreambuf
-: public std::streambuf {
-protected:
-  /// pointer to the next streambuffer in the buffer chain
-  std::streambuf *next;
+int FilterStreambuf::sync() {
+  assert(next != NULL && "WTF?! No real streambuf at end of FilterStreambuf chain?");
+  return next->pubsync();
+}
   
-  /// must be able to set next
-  friend class FilterOStream;
+void FilterStreambuf::setTarget(std::streambuf* os) {
+  next = os;
+}
 
-  /// See std::streambuf
-  virtual int sync();
+bool FilterStreambuf::hasManip() const
+  { return false; }
 
-public:  
-  /// constructs a new object, optionally with a target
-  /// streambuffer
-  FilterStreambuf(std::streambuf *next = 0);
+int FilterStreambuf::getIndex() const
+  { return -1; }
 
-  /// Sets a new target for this buffer
-  void setTarget(std::streambuf *os);
-
-public:
-  /// should be reimplemented in derived classes: return true
-  /// if stream manipulators are available
-  virtual bool hasManip() const;
-  
-  /// returns the index for the ostream extensible array
-  /// (obtained with std::ostream::xalloc())
-  virtual int getIndex() const;
-  
-  /// virtual destructor
-  virtual ~FilterStreambuf();
-};
+FilterStreambuf::~FilterStreambuf()
+  {}
 
 } } // namespace CoSupport::Streams
-
-#endif // _INCLUDED_COSUPPORT_STREAMS_FILTERSTREAMBUF_HPP

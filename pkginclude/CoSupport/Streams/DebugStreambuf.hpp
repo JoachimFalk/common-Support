@@ -41,6 +41,8 @@
 #include <string>
 
 #include "FilterStreambuf.hpp"
+#include "FilterOStream.hpp"
+#include "../commondefs.h"
 
 namespace CoSupport { namespace Streams {
 
@@ -54,17 +56,15 @@ struct Debug {
 
   /// new line will be prefixed with msg
   std::string prefix;
-  
+
   /// constructs a new object with the specified debug
   /// level
   Debug(size_t level);
 
   /// constructs a new object with the specified debug
   /// level and prefix
-  Debug(size_t level, const std::string& prefix);
+  Debug(size_t level, const std::string &prefix);
 
-  bool isVisible(Debug const &dbg) const;
-  
   /// predefined debug levels
   static const Debug Low;
   static const Debug Medium;
@@ -78,52 +78,96 @@ struct Debug {
  */
 class DebugStreambuf
 : public FilterStreambuf {
-private:
-  /// current debug level
-  size_t level;
-
-  /// line prefix
-  std::string prefix;
-
-  /// flag if output will be printend or not
-  bool visible;
-
-  /// indicator if newline was encountered 
-  bool newline;
-
 public:
-  /// constructs a new object with the specified debug
-  /// level
+  template <class Base = FilterOStream> class Stream;
+public:
+  /// constructs a new object with the specified debug level
   DebugStreambuf(
       const Debug &dbg = Debug::Low,
       bool visible = true,
       std::streambuf *next = 0);
-  
-  /// set a new debug level
-  void setLevel(const Debug &dbg);
-  
-  /// set the visibility based on the current debug
-  /// level
-  void setVisibility(const Debug &dbg);
-  
-protected:
-  int overflow(int c);
-  
-public:
+
+  void setLevel(const Debug &dbg) COSUPPORT_ATTRIBUTE_DEPRECATED
+    { setStreamLevel(dbg); }
+  /// Set a new stream debug level.
+  void setStreamLevel(const Debug &dbg);
+  /// Set a new output debug level.
+  /// \param dbg
+  ///   A debug level to check against the debug level set via setStreamLevel.
+  ///   If dbg is greater than the debug level set via setLevel show output.
+  void setOutputLevel(const Debug &dbg);
+  /// Swap in a new output debug level.
+  /// \param dbg
+  ///   A new output debug level.
+  /// \return
+  ///   The old output debug level.
+  Debug swapOutputLevel(const Debug &dbg);
+
+  /// Would the output debug level dbg be visible on the stream?
+  bool isVisible(Debug const &dbg) const;
+
 #ifndef KASCPAR_PARSING
   /// index obtained with std::ostream::xalloc
   static const int index;
 #endif
- 
+protected:
+  int overflow(int c);
+
   /// see Debug 
   bool hasManip() const;
-  
+
   /// returns the (static) index
   int getIndex() const;
+private:
+  /// current stream debug level
+  int streamLevel;
+  /// current output debug level
+  int outputLevel;
+
+  /// line prefix
+  std::string prefix;
+
+  /// indicator if newline was encountered 
+  bool newline;
+};
+
+template <class Base>
+class DebugStreambuf::Stream: public Base {
+public:
+  /// construct a new object which uses the streambuffer
+  /// of the specified stream as initial target
+  Stream(std::ostream &os, const Debug &dbg = Debug::Low)
+    : Base(os), debuglevel(dbg) { this->insert(debuglevel); }
+
+  /// set a new debug level
+  void setLevel(const Debug &dbg)
+    { return debuglevel.setStreamLevel(dbg); }
+
+  /// Would the output debug level dbg be visible on the stream?
+  bool isVisible(Debug const &dbg) const
+    { return debuglevel.isVisible(dbg); }
+private:
+  DebugStreambuf debuglevel;
 };
 
 /// output operator for the Debug manipulator
-std::ostream &operator<<(std::ostream &os, const Debug &d);
+std::ostream &operator << (std::ostream &os, const Debug &d);
+
+/**
+ * Sets output debug level dbg for stream out;
+ * reverses debug level if it goes out of scope
+ */
+class ScopedDebug {
+private:
+  DebugStreambuf *dbgBuf;
+  Debug           oldDbg;
+public:
+  // constructs a new object wich sets output debug level.
+  ScopedDebug(std::ostream &out, const Debug &dbg);
+
+  // destructor reverses debug level
+  ~ScopedDebug();
+};
 
 } } // namespace CoSupport::Streams
 
