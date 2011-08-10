@@ -128,6 +128,7 @@ if COSUPPORT_ENABLE_SYSTEMC
 nobase_include_HEADERS += \
 	CoSupport/SystemC/ChannelModificationListener.hpp \
 	CoSupport/SystemC/PerformanceEvaluation.hpp \
+	CoSupport/SystemC/VcdFile.hpp \
 	CoSupport/SystemC/algorithm.hpp \
 	CoSupport/SystemC/par_manager.hpp \
 	CoSupport/SystemC/systemc_support.hpp \
