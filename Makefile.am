@@ -131,7 +131,7 @@ libcosupport_systemc_la_SOURCES =		\
 	par_manager.cpp				\
 	PerformanceEvaluation.cpp
 libcosupport_systemc_la_LDFLAGS=		\
-	$(AM_LDFLAGS) -static
+	$(AM_LDFLAGS)
 libcosupport_systemc_la_LIBADD =		\
 	-lboost_thread$(BOOST_LIBMTPOSTFIX)	\
 	-lsystemc
@@ -187,7 +187,6 @@ libcosupport_tracing_la_SOURCES =		\
 
 test_dbgstream_SOURCES		  = test_dbgstream.cpp
 test_dbgstream_LDADD		  = libcosupport-streams.la
-test_dbgstream_LDFLAGS		  = $(AM_LDFLAGS) -static
 
 test_maybevalue_SOURCES		  = test_maybevalue.cpp
 test_maybevalue_LDADD		  =
