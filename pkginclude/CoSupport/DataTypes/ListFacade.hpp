@@ -35,92 +35,11 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_LISTFACADE_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_LISTFACADE_HPP
 
-#include <boost/iterator/iterator_facade.hpp>
-#include <boost/type_traits/make_unsigned.hpp>
-#include <boost/type_traits/add_const.hpp>
-#include <boost/type_traits/remove_const.hpp>
-#include <boost/type_traits/add_reference.hpp>
-#include <boost/type_traits/add_pointer.hpp>
-
-#include "../Type/STLReferenceSelector.hpp"
-#include "../Type/STLPointerSelector.hpp"
+#include "ListInterface.hpp"
 
 namespace CoSupport { namespace DataTypes {
 
-  namespace Detail {
-
-    struct IterTemplateAccess;
-
-    template <typename LISTFACADE>
-    class IterTemplate
-    : public boost::iterator_facade<
-        IterTemplate<LISTFACADE>,
-        typename LISTFACADE::value_type,
-        boost::bidirectional_traversal_tag,
-        typename Type::STLReferenceSelector<LISTFACADE>::type,
-        typename LISTFACADE::difference_type> {
-      typedef IterTemplate this_type;
-
-      friend class IterTemplate<typename boost::remove_const<LISTFACADE>::type>;
-      friend class IterTemplate<typename boost::add_const<LISTFACADE>::type>;
-      friend class boost::iterator_core_access;
-      friend struct IterTemplateAccess;
-    private:
-      typedef typename LISTFACADE::IterImpl IterImpl;
-    public:
-      // overwrite pointer type from boost which thinks it knows best
-      typedef typename Type::STLPointerSelector<LISTFACADE>::type pointer;
-    private:
-      IterImpl iter;
-
-      IterTemplate(const IterImpl &iter)
-        : iter(iter) {}
-    public:
-      IterTemplate() {}
-
-      IterTemplate(const IterTemplate<typename boost::remove_const<LISTFACADE>::type> &iter)
-        : iter(iter.iter) {}
-
-      // overwrite operator -> from boost which thinks it knows best
-      pointer operator->() const {
-        typename this_type::reference ref = dereference();
-        return &ref;
-      }
-    protected:
-      bool equal(const IterTemplate<typename boost::remove_const<LISTFACADE>::type> &n) const
-        { return iter.equal(n.iter); }
-      bool equal(const IterTemplate<typename boost::add_const<LISTFACADE>::type> &n) const
-        { return iter.equal(n.iter); }
-      void increment()
-        { iter.next(); }
-      void decrement()
-        { iter.prev(); }
-      typename this_type::reference dereference() const
-        { return iter.deref(); }
-    };
-
-    struct IterTemplateAccess {
-      template <class ITERTEMPLATE>
-      static
-      ITERTEMPLATE construct(const typename ITERTEMPLATE::IterImpl &iter)
-        { return ITERTEMPLATE(iter); }
-      template <class ITERTEMPLATE>
-      static
-      typename ITERTEMPLATE::IterImpl &retrieve(ITERTEMPLATE &iter)
-        { return iter.iter; }
-      template <class ITERTEMPLATE>
-      static
-      const typename ITERTEMPLATE::IterImpl &retrieve(const ITERTEMPLATE &iter)
-        { return iter.iter; }
-    };
-
-  } // namespace Detail
-
-  /// ListFacade is used as a public base class for defining new
-  /// standard-conforming, e.g., std::list<VALUE>, list containers.
-  /// The derived class DERIVED must implement first(), last(),
-  /// add(), and del() as protected methods. These will be used
-  /// by this class to implement the std::list interface.
+  // This is obsolete use ListInterface instead.
   template <
     class DERIVED, // The derived list container being constructed
     class ITER_,
@@ -130,15 +49,13 @@ namespace CoSupport { namespace DataTypes {
     class PTR_ = typename boost::add_pointer<VALUE>::type,
     class CONSTPTR_ = typename boost::add_pointer<typename boost::add_const<VALUE>::type>::type
   >
-  class ListFacade: protected Detail::IterTemplateAccess {
-    typedef ListFacade                  this_type;
-    typedef Detail::IterTemplateAccess  base_type;
-
-    friend class Detail::IterTemplate<this_type>;
-    friend class Detail::IterTemplate<const this_type>;
+  class  COSUPPORT_ATTRIBUTE_DEPRECATED ListFacade
+  : public ListInterface<DERIVED, ITER_, VALUE, REFERENCE, CONSTREFERENCE, PTR_, CONSTPTR_>
+  {
+    typedef ListFacade                                                    this_type;
+    typedef ListInterface
+      <DERIVED, ITER_, VALUE, REFERENCE, CONSTREFERENCE, PTR_, CONSTPTR_> base_type;
   private:
-    // This is not a standard container type definition => hide it!
-    typedef ITER_  IterImpl;      // for usage by Detail::IterTemplate
     //
     // Curiously Recurring Template interface.
     //
@@ -148,107 +65,27 @@ namespace CoSupport { namespace DataTypes {
     DERIVED const &derived() const
       { return *static_cast<DERIVED const *>(this); }
   public:
-
-    typedef VALUE           value_type;
-    typedef REFERENCE       reference;
-    typedef CONSTREFERENCE  const_reference;
-    typedef PTR_            pointer;
-    typedef CONSTPTR_       const_pointer;
-
-    typedef Detail::IterTemplate<this_type>       iterator;
-    typedef Detail::IterTemplate<const this_type> const_iterator;
-
-    typedef std::ptrdiff_t                                        difference_type;
-    typedef typename boost::make_unsigned<difference_type>::type  size_type;
+    typedef typename base_type::iterator        iterator;
+    typedef typename base_type::const_iterator  const_iterator;
 
     iterator begin()
-      { return base_type::construct<iterator>(derived().first()); }
+      { return base_type::template construct<iterator>(this->derived().first()); }
     const_iterator begin() const
-      { return base_type::construct<const_iterator>(derived().first()); }
+      { return base_type::template construct<const_iterator>(this->derived().first()); }
 
     iterator end()
-      { return base_type::construct<iterator>(derived().last()); }
+      { return base_type::template construct<iterator>(this->derived().last()); }
     const_iterator end() const
-      { return base_type::construct<const_iterator>(derived().last()); }
-
-    bool empty() const
-      { return begin() == end(); }
-
-    reference front()
-      { return *begin(); }
-    const_reference front() const
-      { return *begin(); }
-
-    reference back()
-      { return *--end(); }
-    const_reference back() const
-      { return *--end(); }
+      { return base_type::template construct<const_iterator>(this->derived().last()); }
 
     iterator erase(const iterator &iter) {
-      return base_type::construct<iterator>
-        (derived().del(base_type::retrieve(iter)));
+      return base_type::template construct<iterator>
+        (this->derived().del(base_type::template retrieve(iter)));
     }
-    // const value_type &v is correct here this is also used by std::list
-    iterator insert(const iterator &iter, const value_type &v) {
-      return base_type::construct<iterator>
-        (derived().add(base_type::retrieve(iter), v));
+    iterator insert(const iterator &iter, const typename this_type::value_type &v) {
+      return base_type::template construct<iterator>
+        (this->derived().add(base_type::template retrieve(iter), v));
     }
-
-    // const value_type &v is correct here this is also used by std::list
-    void push_back(const value_type &v)
-      { insert(end(), v); }
-    // const value_type &v is correct here this is also used by std::list
-    void push_front(const value_type &v) 
-      { insert(begin(), v); }
-
-    void pop_back()
-      { erase(--end()); }
-    void pop_front()
-      { erase(begin()); }
-
-    size_t size() const {
-      size_t retval = 0;
-      
-      for (const_iterator iter = begin(); iter != end(); ++iter)
-        ++retval;
-      return retval;
-    }
-/*
-    template<class Predicate>
-    const_iterator find_if(Predicate pred) const
-      { return std::find_if(begin(), end(), pred); }
-    
-    template<class Predicate>
-    iterator find_if(Predicate pred)
-      { return std::find_if(begin(), end(), pred); }
-    
-    template<class Predicate>
-    bool erase_if(Predicate pred) {
-      iterator i = find_if(pred);
-      if(i == end())
-        return false;
-      erase(i);
-      return true;
-    }
-    
-    template<class Predicate>
-    typename Type::Const<pointer_type>::type lookup(Predicate pred) const {
-      const_iterator i = find_if(pred);
-      if(i == end())
-        return NULL;
-      typename Type::Const<reference_type>::type ref = *i;
-      return &ref;
-    }
-    
-    template<class Predicate>
-    pointer_type lookup(Predicate pred) {
-      iterator i = find_if(pred);
-      if(i == end())
-        return NULL;
-      reference_type ref = *i;
-      return &ref;
-    }
- */
   };
 
 } } // namespace CoSupport::DataTypes

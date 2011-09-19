@@ -1,5 +1,3 @@
-//  -*- tab-width:8; intent-tabs-mode:nil; c-basic-offset:2; -*-
-// vim: set sw=2 ts=8 sts=2 expandtab:
 /*
  * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
@@ -34,55 +32,10 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_DATATYPES_MAYBEVALUE_HPP
-#define _INCLUDED_COSUPPORT_DATATYPES_MAYBEVALUE_HPP
+#include <CoSupport/DataTypes/List.hpp>
 
-#include "MaybeValueInterface.hpp"
+int main(int argc, char *argv[]) {
+  CoSupport::DataTypes::List<int> list;
 
-namespace CoSupport { namespace DataTypes {
-
-template <class T>
-class MaybeValue
-: public MaybeValueInterface<MaybeValue<T>, T> {
-  typedef MaybeValue<T>                      this_type;
-  typedef MaybeValueInterface<this_type, T>  base_type;
-
-  friend class MaybeValueInterface<this_type, T>;
-private:
-  typedef boost::variant<boost::blank, T>    storage_type;
-
-  storage_type value;
-protected:
-  void setImpl(const T &val)
-    { value = val; }
-  T const &getImpl() const
-    { return boost::get<T>(value); }
-  void undefImpl()
-    { value = boost::blank(); }
-  bool isDefinedImpl() const
-    { return boost::get<boost::blank>(&value) == NULL; }
-public:
-  MaybeValue()
-    : value(boost::blank()) {}
-  MaybeValue(boost::blank)
-    : value(boost::blank()) {}
-  MaybeValue(T const &val)
-    : value(val) {}
-  template <class DD, typename TT, typename RR>
-  MaybeValue(MaybeValueInterface<DD,TT,RR> const &val)
-    : value(val.isDefined()
-        ? storage_type(val.get())
-        : storage_type(boost::blank())) {}
-
-//You may need this if you can't rely on the default
-//assignment operator to do the job correctly!
-//Here we can rely on storage_type::operator = of value.
-//this_type &operator = (const this_type &val)
-//  { return base_type::operator =(val); }
-
-  using base_type::operator =;
-};
-
-} } // namespace CoSupport::DataTypes
-
-#endif // _INCLUDED_COSUPPORT_DATATYPES_MAYBEVALUE_HPP
+  return 0;
+}
