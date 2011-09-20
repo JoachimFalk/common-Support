@@ -235,7 +235,7 @@ bool operator == (
  *  @return  True iff @a x is lexicographically less than @a y.
  *
  *  This is a total ordering relation.  It is linear in the size of the
- *  ListInterfaces.  The elements must be comparable with @c <.
+ *  list. The elements must be comparable with @c <.
  *
  *  See std::lexicographical_compare() for how the determination is made.
  */
