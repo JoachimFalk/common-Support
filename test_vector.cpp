@@ -35,37 +35,37 @@
 #include <iostream>
 #include <cassert>
 
-#include <CoSupport/DataTypes/List.hpp>
+#include <CoSupport/DataTypes/Vector.hpp>
 
 int main(int argc, char *argv[]) {
-  CoSupport::DataTypes::List<int> list;
+  CoSupport::DataTypes::Vector<int> vector;
 
-  list.push_back(1);
-  list.push_back(2);
-  list.push_front(0);
-  list.push_front(-1);
+  vector.push_back(1);
+  vector.push_back(2);
+  vector.insert(vector.begin(), 0);
+  vector.insert(vector.begin(), -1);
 
-  std::cout << list.size() << std::endl;
+  std::cout << vector.size() << std::endl;
 
-  for(CoSupport::DataTypes::List<int>::iterator iter = list.begin();
-      iter != list.end();
+  for(CoSupport::DataTypes::Vector<int>::iterator iter = vector.begin();
+      iter != vector.end();
       ++iter) {
-    if (iter != list.begin())
+    if (iter != vector.begin())
       std::cout << ", ";
     std::cout << *iter;
     int v = *iter;
-    iter = list.insert(list.erase(iter), 2*v);
+    iter = vector.insert(vector.erase(iter), 2*v);
   }
   std::cout << std::endl;
-  for(CoSupport::DataTypes::List<int>::const_iterator iter = list.begin();
-      iter != list.end();
+  for(CoSupport::DataTypes::Vector<int>::const_iterator iter = vector.begin();
+      iter != vector.end();
       ++iter) {
-    if (iter != list.begin())
+    if (iter != vector.begin())
       std::cout << ", ";
     std::cout << *iter;
   }
   std::cout << std::endl;
-  list.erase(list.begin(), list.end());
-  assert(list.empty());
+  vector.erase(vector.begin(), vector.end());
+  assert(vector.empty());
   return 0;
 }

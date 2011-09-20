@@ -32,8 +32,8 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_DATATYPES_DETAIL_BIDIRECTIONALTRAVERSALITERTEMPLATE_HPP
-#define _INCLUDED_COSUPPORT_DATATYPES_DETAIL_BIDIRECTIONALTRAVERSALITERTEMPLATE_HPP
+#ifndef _INCLUDED_COSUPPORT_DATATYPES_DETAIL_RANDOMACCESSTRAVERSALITERTEMPLATE_HPP
+#define _INCLUDED_COSUPPORT_DATATYPES_DETAIL_RANDOMACCESSTRAVERSALITERTEMPLATE_HPP
 
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/type_traits/add_const.hpp>
@@ -44,36 +44,36 @@
 
 namespace CoSupport { namespace DataTypes { namespace Detail {
 
-  struct BidirectionalTraversalIterTemplateAccess;
+  struct RandomAccessTraversalIterTemplateAccess;
 
   template <typename CONTAINERIF>
-  class BidirectionalTraversalIterTemplate
+  class RandomAccessTraversalIterTemplate
   : public boost::iterator_facade<
-      BidirectionalTraversalIterTemplate<CONTAINERIF>,
+      RandomAccessTraversalIterTemplate<CONTAINERIF>,
       typename CONTAINERIF::value_type,
-      boost::bidirectional_traversal_tag,
+      boost::random_access_traversal_tag,
       typename Type::STLReferenceSelector<CONTAINERIF>::type,
       typename CONTAINERIF::difference_type> {
-    typedef BidirectionalTraversalIterTemplate this_type;
+    typedef RandomAccessTraversalIterTemplate this_type;
 
-    friend class BidirectionalTraversalIterTemplate<typename boost::remove_const<CONTAINERIF>::type>;
-    friend class BidirectionalTraversalIterTemplate<typename boost::add_const<CONTAINERIF>::type>;
+    friend class RandomAccessTraversalIterTemplate<typename boost::remove_const<CONTAINERIF>::type>;
+    friend class RandomAccessTraversalIterTemplate<typename boost::add_const<CONTAINERIF>::type>;
     friend class boost::iterator_core_access;
-    friend struct BidirectionalTraversalIterTemplateAccess;
+    friend struct RandomAccessTraversalIterTemplateAccess;
   private:
-    typedef typename CONTAINERIF::IterImpl IterImpl;
+    typedef typename CONTAINERIF::IterImpl        IterImpl;
   public:
     // overwrite pointer type from boost which thinks it knows best
     typedef typename Type::STLPointerSelector<CONTAINERIF>::type pointer;
   private:
     IterImpl iter;
 
-    BidirectionalTraversalIterTemplate(const IterImpl &iter)
+    RandomAccessTraversalIterTemplate(const IterImpl &iter)
       : iter(iter) {}
   public:
-    BidirectionalTraversalIterTemplate() {}
+    RandomAccessTraversalIterTemplate() {}
 
-    BidirectionalTraversalIterTemplate(const BidirectionalTraversalIterTemplate<typename boost::remove_const<CONTAINERIF>::type> &iter)
+    RandomAccessTraversalIterTemplate(const RandomAccessTraversalIterTemplate<typename boost::remove_const<CONTAINERIF>::type> &iter)
       : iter(iter.iter) {}
 
     // overwrite operator -> from boost which thinks it knows best
@@ -82,19 +82,25 @@ namespace CoSupport { namespace DataTypes { namespace Detail {
       return &ref;
     }
   protected:
-    bool equal(const BidirectionalTraversalIterTemplate<typename boost::remove_const<CONTAINERIF>::type> &n) const
+    bool equal(const RandomAccessTraversalIterTemplate<typename boost::remove_const<CONTAINERIF>::type> &n) const
       { return iter.equal(n.iter); }
-    bool equal(const BidirectionalTraversalIterTemplate<typename boost::add_const<CONTAINERIF>::type> &n) const
+    bool equal(const RandomAccessTraversalIterTemplate<typename boost::add_const<CONTAINERIF>::type> &n) const
       { return iter.equal(n.iter); }
     void increment()
-      { iter.next(); }
+      { advance(1); }
     void decrement()
-      { iter.prev(); }
+      { advance(-1); }
+
+    void advance(typename this_type::difference_type d)
+      { iter.advance(d); }
+    typename this_type::difference_type distance_to(const this_type &rhs) const
+      { return iter.distance_to(rhs.iter); }
+
     typename this_type::reference dereference() const
       { return iter.deref(); }
   };
 
-  struct BidirectionalTraversalIterTemplateAccess {
+  struct RandomAccessTraversalIterTemplateAccess {
     template <class ITERTEMPLATE>
     static
     ITERTEMPLATE construct(const typename ITERTEMPLATE::IterImpl &iter)
@@ -111,4 +117,4 @@ namespace CoSupport { namespace DataTypes { namespace Detail {
 
 } } } // namespace CoSupport::DataTypes::Detail
 
-#endif // _INCLUDED_COSUPPORT_DATATYPES_DETAIL_BIDIRECTIONALTRAVERSALITERTEMPLATE_HPP
+#endif // _INCLUDED_COSUPPORT_DATATYPES_DETAIL_RANDOMACCESSTRAVERSALITERTEMPLATE_HPP
