@@ -58,7 +58,7 @@ namespace Detail {
     void prev() { --iter; }
     bool equal(const this_type &rhs) const { return iter == rhs.iter; }
 
-    typename ITER::reference_type deref() const { return *iter; }
+    typename std::iterator_traits<ITER>::reference deref() const { return *iter; }
   };
 
 } // namespace Detail
@@ -72,9 +72,9 @@ protected:
   std::list<T> list;
 
   Detail::NodeIter<typename std::list<T>::iterator> first() const
-    { return list.begin(); }
+    { return const_cast<this_type *>(this)->list.begin(); }
   Detail::NodeIter<typename std::list<T>::iterator> last() const
-    { return list.end(); }
+    { return const_cast<this_type *>(this)->list.end(); }
 
   Detail::NodeIter<typename std::list<T>::iterator> del(const Detail::NodeIter<typename std::list<T>::iterator> &iter)
     { return list.erase(iter.iter); }

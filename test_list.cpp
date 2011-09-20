@@ -32,10 +32,37 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
+#include <iostream>
+
 #include <CoSupport/DataTypes/List.hpp>
 
 int main(int argc, char *argv[]) {
   CoSupport::DataTypes::List<int> list;
 
+  list.push_back(1);
+  list.push_back(2);
+  list.push_front(0);
+  list.push_front(-1);
+
+  std::cout << list.size() << std::endl;
+
+  for(CoSupport::DataTypes::List<int>::iterator iter = list.begin();
+      iter != list.end();
+      ++iter) {
+    if (iter != list.begin())
+      std::cout << ", ";
+    std::cout << *iter;
+    int v = *iter;
+    iter = list.insert(list.erase(iter), 2*v);
+  }
+  std::cout << std::endl;
+  for(CoSupport::DataTypes::List<int>::const_iterator iter = list.begin();
+      iter != list.end();
+      ++iter) {
+    if (iter != list.begin())
+      std::cout << ", ";
+    std::cout << *iter;
+  }
+  std::cout << std::endl;
   return 0;
 }
