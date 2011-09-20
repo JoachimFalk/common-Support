@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2011 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2011-2011 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -32,8 +32,8 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_DATATYPES_LISTINTERFACE_HPP
-#define _INCLUDED_COSUPPORT_DATATYPES_LISTINTERFACE_HPP
+#ifndef _INCLUDED_COSUPPORT_DATATYPES_VECTORINTERFACE_HPP
+#define _INCLUDED_COSUPPORT_DATATYPES_VECTORINTERFACE_HPP
 
 #include <boost/type_traits/make_unsigned.hpp>
 #include <boost/type_traits/add_const.hpp>
@@ -41,17 +41,16 @@
 #include <boost/type_traits/add_reference.hpp>
 #include <boost/type_traits/add_pointer.hpp>
 
-#include "Detail/BidirectionalTraversalIterTemplate.hpp"
+#include "Detail/RandomAccessTraversalIterTemplate.hpp"
 
 namespace CoSupport { namespace DataTypes {
 
-/// ListInterface is used as a public base class for defining new
-/// standard-conforming, e.g., std::list<VALUE>, list containers.
-/// The derived class DERIVED must implement first(), last(),
-/// add(), and del() as protected methods. These will be used
-/// by this template to implement the std::list interface.
-template <
-  class DERIVED, // The derived list container being constructed
+/// VectorInterface is used as a public base class for defining new
+/// standard-conforming, e.g., std::vector<VALUE>, vector containers.
+/// The derived class DERIVED must implement .... FIXME.
+/// These will be used by this template to implement the std::vector interface.
+template<
+  class DERIVED, // The derived vector container being constructed
   class ITER_,
   class VALUE,
   class REFERENCE = typename boost::add_reference<VALUE>::type,
@@ -59,12 +58,12 @@ template <
   class PTR_ = typename boost::add_pointer<VALUE>::type,
   class CONSTPTR_ = typename boost::add_pointer<typename boost::add_const<VALUE>::type>::type
 >
-class ListInterface: protected Detail::BidirectionalTraversalIterTemplateAccess {
-  typedef ListInterface                                     this_type;
-  typedef Detail::BidirectionalTraversalIterTemplateAccess  base_type;
+class VectorInterface: protected Detail::RandomAccessTraversalIterTemplateAccess {
+  typedef VectorInterface                                 this_type;
+  typedef Detail::RandomAccessTraversalIterTemplateAccess base_type;
 
-  friend class Detail::BidirectionalTraversalIterTemplate<this_type>;
-  friend class Detail::BidirectionalTraversalIterTemplate<const this_type>;
+  friend class Detail::RandomAccessTraversalIterTemplate<this_type>;
+  friend class Detail::RandomAccessTraversalIterTemplate<const this_type>;
 private:
   // This is not a standard container type definition => hide it!
   typedef ITER_  IterImpl;      // for usage by Detail::BidirectionalTraversalIterTemplate
@@ -76,6 +75,7 @@ private:
 
   DERIVED const &derived() const
     { return *static_cast<DERIVED const *>(this); }
+  template<class P, class V, class R> class Iterator;
 public:
 
   typedef VALUE           value_type;
@@ -84,8 +84,8 @@ public:
   typedef PTR_            pointer;
   typedef CONSTPTR_       const_pointer;
 
-  typedef Detail::BidirectionalTraversalIterTemplate<this_type>       iterator;
-  typedef Detail::BidirectionalTraversalIterTemplate<const this_type> const_iterator;
+  typedef Detail::RandomAccessTraversalIterTemplate<this_type>       iterator;
+  typedef Detail::RandomAccessTraversalIterTemplate<const this_type> const_iterator;
 
   typedef std::ptrdiff_t                                        difference_type;
   typedef typename boost::make_unsigned<difference_type>::type  size_type;
@@ -100,18 +100,21 @@ public:
   const_iterator end() const
     { return base_type::construct<const_iterator>(derived().last()); }
 
-  bool empty() const
-    { return derived().begin() == derived().end(); }
-
   reference front()
-    { return *derived().begin(); }
+    { return *begin(); }
   const_reference front() const
-    { return *derived().begin(); }
+    { return *begin(); }
 
   reference back()
-    { return *--derived().end(); }
+    { return *end(); }
   const_reference back() const
-    { return *--derived().end(); }
+    { return *end(); }
+
+  size_type size() const  { return end() - begin(); }
+  bool      empty() const { return begin() == end(); }
+
+  const_reference operator[](size_t i) const { return *(begin()+i); }
+  reference       operator[](size_t i)       { return *(begin()+i); }
 
   iterator erase(const iterator &iter) {
     return base_type::construct<iterator>
@@ -131,69 +134,19 @@ public:
   void clear() { erase(begin(), end()); }
 
   // const value_type &v is correct here this is also used by std::list
-  void push_back(const value_type &v)
-    { derived().insert(derived().end(), v); }
-  // const value_type &v is correct here this is also used by std::list
-  void push_front(const value_type &v) 
-    { derived().insert(derived().begin(), v); }
-
-  void pop_back()
-    { derived().erase(--derived().end()); }
-  void pop_front()
-    { derived().erase(derived().begin()); }
-
-  size_t size() const {
-    size_t retval = 0;
-    
-    for (const_iterator iter = derived().begin(); iter != derived().end(); ++iter)
-      ++retval;
-    return retval;
-  }
-/*
-  template<class Predicate>
-  const_iterator find_if(Predicate pred) const
-    { return std::find_if(begin(), end(), pred); }
-  
-  template<class Predicate>
-  iterator find_if(Predicate pred)
-    { return std::find_if(begin(), end(), pred); }
-  
-  template<class Predicate>
-  bool erase_if(Predicate pred) {
-    iterator i = find_if(pred);
-    if(i == end())
-      return false;
-    erase(i);
-    return true;
-  }
-  
-  template<class Predicate>
-  typename Type::Const<pointer_type>::type lookup(Predicate pred) const {
-    const_iterator i = find_if(pred);
-    if(i == end())
-      return NULL;
-    typename Type::Const<reference_type>::type ref = *i;
-    return &ref;
-  }
-  
-  template<class Predicate>
-  pointer_type lookup(Predicate pred) {
-    iterator i = find_if(pred);
-    if(i == end())
-      return NULL;
-    reference_type ref = *i;
-    return &ref;
-  }
-*/
+  void push_back(const value_type &v) { insert(end(), v); }
+  void pop_back()                     { erase(--end()); }
 protected:
-  // Default implementation.
-  IterImpl delRange(IterImpl iter1, const IterImpl &iter2) {
-    while (!iter1.equal(iter2))
-      iter1 = derived().del(iter1);
+  // Default implementation. This should be overwritten for
+  // efficiency reasons in DERIVED.
+  IterImpl delRange(const IterImpl iter1, IterImpl iter2) {
+    while (!iter1.equal(iter2)) {
+      iter2.advance(-1); iter2 = derived().del(iter2);
+    }
     return iter1;
   }
 };
 
 } } // namespace CoSupport::DataTypes
 
-#endif // _INCLUDED_COSUPPORT_DATATYPES_LISTINTERFACE_HPP
+#endif // _INCLUDED_COSUPPORT_DATATYPES_VECTORINTERFACE_HPP

@@ -33,29 +33,29 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_DATATYPES_LIST_HPP
-#define _INCLUDED_COSUPPORT_DATATYPES_LIST_HPP
+#ifndef _INCLUDED_COSUPPORT_DATATYPES_VECTOR_HPP
+#define _INCLUDED_COSUPPORT_DATATYPES_VECTOR_HPP
 
-#include "ListInterface.hpp"
+#include "VectorInterface.hpp"
 
-#include <list>
+#include <vector>
 
 namespace CoSupport { namespace DataTypes {
 
 namespace Detail {
 
   template <typename ITER>
-  class BidirectionalTraversalIter {
-    typedef BidirectionalTraversalIter<ITER> this_type;
+  class RandomAccessTraversalIter {
+    typedef RandomAccessTraversalIter<ITER> this_type;
   public:
     ITER iter;
 
-    BidirectionalTraversalIter(const ITER &iter): iter(iter) {}
+    RandomAccessTraversalIter(const ITER &iter): iter(iter) {}
 
     this_type &operator =(const this_type &rhs) { iter = rhs.iter; return *this; }
 
-    void next() { ++iter; }
-    void prev() { --iter; }
+    void advance(int n) { iter += n; }
+    int  distance_to(const this_type &rhs) const { return rhs.iter - iter; }
     bool equal(const this_type &rhs) const { return iter == rhs.iter; }
 
     typename std::iterator_traits<ITER>::reference deref() const { return *iter; }
@@ -64,24 +64,24 @@ namespace Detail {
 } // namespace Detail
 
 template <typename T>
-class List: public ListInterface<List<T>, Detail::BidirectionalTraversalIter<typename std::list<T>::iterator>, T> {
-  typedef List<T> this_type;
+class Vector: public VectorInterface<Vector<T>, Detail::RandomAccessTraversalIter<typename std::vector<T>::iterator>, T> {
+  typedef Vector<T> this_type;
 private:
-  friend class ListInterface<List<T>, Detail::BidirectionalTraversalIter<typename std::list<T>::iterator>, T>;
+  friend class VectorInterface<Vector<T>, Detail::RandomAccessTraversalIter<typename std::vector<T>::iterator>, T>;
 protected:
-  std::list<T> list;
+  std::vector<T> vector;
 
-  Detail::BidirectionalTraversalIter<typename std::list<T>::iterator> first() const
-    { return const_cast<this_type *>(this)->list.begin(); }
-  Detail::BidirectionalTraversalIter<typename std::list<T>::iterator> last() const
-    { return const_cast<this_type *>(this)->list.end(); }
+  Detail::RandomAccessTraversalIter<typename std::vector<T>::iterator> first() const
+    { return const_cast<this_type *>(this)->vector.begin(); }
+  Detail::RandomAccessTraversalIter<typename std::vector<T>::iterator> last() const
+    { return const_cast<this_type *>(this)->vector.end(); }
 
-  Detail::BidirectionalTraversalIter<typename std::list<T>::iterator> del(const Detail::BidirectionalTraversalIter<typename std::list<T>::iterator> &iter)
-    { return list.erase(iter.iter); }
-  Detail::BidirectionalTraversalIter<typename std::list<T>::iterator> add(const Detail::BidirectionalTraversalIter<typename std::list<T>::iterator> &iter, const typename this_type::value_type &value)
-    { return list.insert(iter.iter, value); }
+  Detail::RandomAccessTraversalIter<typename std::vector<T>::iterator> del(const Detail::RandomAccessTraversalIter<typename std::vector<T>::iterator> &iter)
+    { return vector.erase(iter.iter); }
+  Detail::RandomAccessTraversalIter<typename std::vector<T>::iterator> add(const Detail::RandomAccessTraversalIter<typename std::vector<T>::iterator> &iter, const typename this_type::value_type &value)
+    { return vector.insert(iter.iter, value); }
 };
 
 } } // namespace CoSupport::DataTypes
 
-#endif // _INCLUDED_COSUPPORT_DATATYPES_LIST_HPP
+#endif // _INCLUDED_COSUPPORT_DATATYPES_VECTOR_HPP
