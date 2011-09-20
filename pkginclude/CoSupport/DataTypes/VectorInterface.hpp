@@ -148,6 +148,130 @@ protected:
   }
 };
 
+/**
+ *  @brief  Vector equality comparison.
+ *  @param  lhs A %VectorInterface.
+ *  @param  rhs A %VectorInterface of the same type as @a x.
+ *  @return  True iff the size and elements of the VectorInterfaces are equal.
+ *
+ *  This is an equivalence relation. It is linear in the size of
+ *  the vecto. Vectors are considered equivalent if their sizes are
+ *  equal, and if corresponding elements compare equal.
+ */
+template <
+  class D1, class D2,
+  class I1, class I2,
+  class V,
+  class R1, class R2,
+  class CR1, class CR2,
+  class P1, class P2,
+  class CP1, class CP2
+>
+inline
+bool operator == (
+    const VectorInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
+    const VectorInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+{
+  typename VectorInterface<D1,I1,V,R1,CR1,P1,CP1>::const_iterator iter = lhs.begin();
+  typename VectorInterface<D1,I1,V,R1,CR1,P1,CP1>::const_iterator iend = lhs.end();
+  typename VectorInterface<D2,I2,V,R2,CR2,P2,CP2>::const_iterator jter = rhs.begin();
+  typename VectorInterface<D2,I2,V,R2,CR2,P2,CP2>::const_iterator jend = rhs.end();
+  while (iter != iend && jter != jend && *iter == *jter) {
+    ++iter; ++jter;
+  }
+  return iter == iend && jter == jend;
+}
+
+/**
+ *  @brief  Vector ordering relation.
+ *  @param  x  A %VectorInterface.
+ *  @param  y  A %VectorInterface of the same type as @a x.
+ *  @return  True iff @a x is lexicographically less than @a y.
+ *
+ *  This is a total ordering relation.  It is linear in the size of the
+ *  vector. The elements must be comparable with @c <.
+ *
+ *  See std::lexicographical_compare() for how the determination is made.
+ */
+template <
+  class D1, class D2,
+  class I1, class I2,
+  class V,
+  class R1, class R2,
+  class CR1, class CR2,
+  class P1, class P2,
+  class CP1, class CP2
+>
+inline
+bool operator < (
+    const VectorInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
+    const VectorInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+  { return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()); }
+
+/// Based on operator==
+template <
+  class D1, class D2,
+  class I1, class I2,
+  class V,
+  class R1, class R2,
+  class CR1, class CR2,
+  class P1, class P2,
+  class CP1, class CP2
+>
+inline
+bool operator != (
+    const VectorInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
+    const VectorInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+  { return !(lhs == rhs); }
+
+/// Based on operator<
+template <
+  class D1, class D2,
+  class I1, class I2,
+  class V,
+  class R1, class R2,
+  class CR1, class CR2,
+  class P1, class P2,
+  class CP1, class CP2
+>
+inline
+bool operator > (
+    const VectorInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
+    const VectorInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+  { return rhs < lhs; }
+
+/// Based on operator<
+template <
+  class D1, class D2,
+  class I1, class I2,
+  class V,
+  class R1, class R2,
+  class CR1, class CR2,
+  class P1, class P2,
+  class CP1, class CP2
+>
+inline
+bool operator <= (
+    const VectorInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
+    const VectorInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+  { return !(rhs < lhs); }
+
+/// Based on operator<
+template <
+  class D1, class D2,
+  class I1, class I2,
+  class V,
+  class R1, class R2,
+  class CR1, class CR2,
+  class P1, class P2,
+  class CP1, class CP2
+>
+inline
+bool operator >= (
+    const VectorInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
+    const VectorInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+  { return !(lhs < rhs); }
+
 } } // namespace CoSupport::DataTypes
 
 #endif // _INCLUDED_COSUPPORT_DATATYPES_VECTORINTERFACE_HPP

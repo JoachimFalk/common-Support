@@ -35,10 +35,16 @@
 #include <iostream>
 #include <cassert>
 
+#include <map>
+
 #include <CoSupport/DataTypes/Vector.hpp>
 
+typedef CoSupport::DataTypes::Vector<int> TVector;
+typedef std::map<TVector, int>            TMap;
+
 int main(int argc, char *argv[]) {
-  CoSupport::DataTypes::Vector<int> vector;
+  TVector vector;
+  TMap    map;
 
   vector.push_back(1);
   vector.push_back(2);
@@ -47,7 +53,8 @@ int main(int argc, char *argv[]) {
 
   std::cout << vector.size() << std::endl;
 
-  for(CoSupport::DataTypes::Vector<int>::iterator iter = vector.begin();
+  map.insert(std::make_pair(vector, 13));
+  for(TVector::iterator iter = vector.begin();
       iter != vector.end();
       ++iter) {
     if (iter != vector.begin())
@@ -55,9 +62,10 @@ int main(int argc, char *argv[]) {
     std::cout << *iter;
     int v = *iter;
     iter = vector.insert(vector.erase(iter), 2*v);
+    map.insert(std::make_pair(vector, 13));
   }
   std::cout << std::endl;
-  for(CoSupport::DataTypes::Vector<int>::const_iterator iter = vector.begin();
+  for(TVector::const_iterator iter = vector.begin();
       iter != vector.end();
       ++iter) {
     if (iter != vector.begin())
@@ -67,5 +75,6 @@ int main(int argc, char *argv[]) {
   std::cout << std::endl;
   vector.erase(vector.begin(), vector.end());
   assert(vector.empty());
+  map.insert(std::make_pair(vector, 13));
   return 0;
 }
