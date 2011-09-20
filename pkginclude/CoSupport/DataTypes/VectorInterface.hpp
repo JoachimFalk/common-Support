@@ -47,8 +47,9 @@ namespace CoSupport { namespace DataTypes {
 
 /// VectorInterface is used as a public base class for defining new
 /// standard-conforming, e.g., std::vector<VALUE>, vector containers.
-/// The derived class DERIVED must implement .... FIXME.
-/// These will be used by this template to implement the std::vector interface.
+/// The derived class DERIVED must implement first, last, add, del,
+/// and possibly delRange. These will be used by this template to
+/// implement the std::vector interface.
 template<
   class DERIVED, // The derived vector container being constructed
   class ITER_,
@@ -125,7 +126,7 @@ public:
       (derived().delRange(base_type::retrieve(iter1), base_type::retrieve(iter2)));
   }
 
-  // const value_type &v is correct here this is also used by std::list
+  // const value_type &v is correct here this is also used by std::vector
   iterator insert(const iterator &iter, const value_type &v) {
     return base_type::construct<iterator>
       (derived().add(base_type::retrieve(iter), v));
@@ -133,7 +134,7 @@ public:
 
   void clear() { erase(begin(), end()); }
 
-  // const value_type &v is correct here this is also used by std::list
+  // const value_type &v is correct here this is also used by std::vector
   void push_back(const value_type &v) { insert(end(), v); }
   void pop_back()                     { erase(--end()); }
 protected:
