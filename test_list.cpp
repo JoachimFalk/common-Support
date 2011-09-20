@@ -35,10 +35,16 @@
 #include <iostream>
 #include <cassert>
 
+#include <map>
+
 #include <CoSupport/DataTypes/List.hpp>
 
+typedef CoSupport::DataTypes::List<int> TList;
+typedef std::map<TList, int>            TMap;
+
 int main(int argc, char *argv[]) {
-  CoSupport::DataTypes::List<int> list;
+  TList list;
+  TMap  map;
 
   list.push_back(1);
   list.push_back(2);
@@ -47,7 +53,8 @@ int main(int argc, char *argv[]) {
 
   std::cout << list.size() << std::endl;
 
-  for(CoSupport::DataTypes::List<int>::iterator iter = list.begin();
+  map.insert(std::make_pair(list, 13));
+  for(TList::iterator iter = list.begin();
       iter != list.end();
       ++iter) {
     if (iter != list.begin())
@@ -55,9 +62,10 @@ int main(int argc, char *argv[]) {
     std::cout << *iter;
     int v = *iter;
     iter = list.insert(list.erase(iter), 2*v);
+    map.insert(std::make_pair(list, 13));
   }
   std::cout << std::endl;
-  for(CoSupport::DataTypes::List<int>::const_iterator iter = list.begin();
+  for(TList::const_iterator iter = list.begin();
       iter != list.end();
       ++iter) {
     if (iter != list.begin())
@@ -67,5 +75,6 @@ int main(int argc, char *argv[]) {
   std::cout << std::endl;
   list.erase(list.begin(), list.end());
   assert(list.empty());
+  map.insert(std::make_pair(list, 33));
   return 0;
 }

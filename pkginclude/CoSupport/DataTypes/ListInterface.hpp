@@ -194,6 +194,130 @@ protected:
   }
 };
 
+/**
+ *  @brief  List equality comparison.
+ *  @param  lhs A %ListInterface.
+ *  @param  rhs A %ListInterface of the same type as @a x.
+ *  @return  True iff the size and elements of the ListInterfaces are equal.
+ *
+ *  This is an equivalence relation. It is linear in the size of
+ *  the list. Lists are considered equivalent if their sizes are
+ *  equal, and if corresponding elements compare equal.
+ */
+template <
+  class D1, class D2,
+  class I1, class I2,
+  class V,
+  class R1, class R2,
+  class CR1, class CR2,
+  class P1, class P2,
+  class CP1, class CP2
+>
+inline
+bool operator == (
+    const ListInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
+    const ListInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+{
+  typename ListInterface<D1,I1,V,R1,CR1,P1,CP1>::const_iterator iter = lhs.begin();
+  typename ListInterface<D1,I1,V,R1,CR1,P1,CP1>::const_iterator iend = lhs.end();
+  typename ListInterface<D2,I2,V,R2,CR2,P2,CP2>::const_iterator jter = rhs.begin();
+  typename ListInterface<D2,I2,V,R2,CR2,P2,CP2>::const_iterator jend = rhs.end();
+  while (iter != iend && jter != jend && *iter == *jter) {
+    ++iter; ++jter;
+  }
+  return iter == iend && jter == jend;
+}
+
+/**
+ *  @brief  List ordering relation.
+ *  @param  x  A %ListInterface.
+ *  @param  y  A %ListInterface of the same type as @a x.
+ *  @return  True iff @a x is lexicographically less than @a y.
+ *
+ *  This is a total ordering relation.  It is linear in the size of the
+ *  ListInterfaces.  The elements must be comparable with @c <.
+ *
+ *  See std::lexicographical_compare() for how the determination is made.
+ */
+template <
+  class D1, class D2,
+  class I1, class I2,
+  class V,
+  class R1, class R2,
+  class CR1, class CR2,
+  class P1, class P2,
+  class CP1, class CP2
+>
+inline
+bool operator < (
+    const ListInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
+    const ListInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+  { return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()); }
+
+/// Based on operator==
+template <
+  class D1, class D2,
+  class I1, class I2,
+  class V,
+  class R1, class R2,
+  class CR1, class CR2,
+  class P1, class P2,
+  class CP1, class CP2
+>
+inline
+bool operator != (
+    const ListInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
+    const ListInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+  { return !(lhs == rhs); }
+
+/// Based on operator<
+template <
+  class D1, class D2,
+  class I1, class I2,
+  class V,
+  class R1, class R2,
+  class CR1, class CR2,
+  class P1, class P2,
+  class CP1, class CP2
+>
+inline
+bool operator > (
+    const ListInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
+    const ListInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+  { return rhs < lhs; }
+
+/// Based on operator<
+template <
+  class D1, class D2,
+  class I1, class I2,
+  class V,
+  class R1, class R2,
+  class CR1, class CR2,
+  class P1, class P2,
+  class CP1, class CP2
+>
+inline
+bool operator <= (
+    const ListInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
+    const ListInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+  { return !(rhs < lhs); }
+
+/// Based on operator<
+template <
+  class D1, class D2,
+  class I1, class I2,
+  class V,
+  class R1, class R2,
+  class CR1, class CR2,
+  class P1, class P2,
+  class CP1, class CP2
+>
+inline
+bool operator >= (
+    const ListInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
+    const ListInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+  { return !(lhs < rhs); }
+
 } } // namespace CoSupport::DataTypes
 
 #endif // _INCLUDED_COSUPPORT_DATATYPES_LISTINTERFACE_HPP
