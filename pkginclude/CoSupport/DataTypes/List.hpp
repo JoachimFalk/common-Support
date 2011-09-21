@@ -52,8 +52,6 @@ namespace Detail {
 
     BidirectionalTraversalIter(const ITER &iter): iter(iter) {}
 
-    this_type &operator =(const this_type &rhs) { iter = rhs.iter; return *this; }
-
     void next() { ++iter; }
     void prev() { --iter; }
     bool equal(const this_type &rhs) const { return iter == rhs.iter; }

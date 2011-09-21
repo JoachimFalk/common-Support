@@ -52,8 +52,6 @@ namespace Detail {
 
     RandomAccessTraversalIter(const ITER &iter): iter(iter) {}
 
-    this_type &operator =(const this_type &rhs) { iter = rhs.iter; return *this; }
-
     void advance(int n) { iter += n; }
     int  distance_to(const this_type &rhs) const { return rhs.iter - iter; }
     bool equal(const this_type &rhs) const { return iter == rhs.iter; }
@@ -66,7 +64,6 @@ namespace Detail {
 template <typename T>
 class Vector: public VectorInterface<Vector<T>, Detail::RandomAccessTraversalIter<typename std::vector<T>::iterator>, T> {
   typedef Vector<T> this_type;
-private:
   friend class VectorInterface<Vector<T>, Detail::RandomAccessTraversalIter<typename std::vector<T>::iterator>, T>;
 protected:
   std::vector<T> vector;
