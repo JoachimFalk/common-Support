@@ -39,21 +39,30 @@
 
 #include <CoSupport/Math/Tuple/POVector.hpp>
 
-typedef CoSupport::Math::Tuple::POVector<int> TVector;
-//typedef std::map<TVector, int>            TMap;
+//typedef CoSupport::Math::Tuple::POVector<int> TVector;
+typedef CoSupport::Math::Tuple::POVector<int>::type TVector;
+typedef std::map<TVector, int>                      TMap;
 
 int main(int argc, char *argv[]) {
   TVector vector;
-//TMap    map;
+  TMap    map;
 
   vector.push_back(1);
   vector.push_back(2);
   vector.insert(vector.begin(), 0);
   vector.insert(vector.begin(), -1);
 
+  TVector vector2;
+  vector2.push_back(1);
+  vector2.push_back(2);
+  vector2.push_back(3);
+  vector2.push_back(4);
+
+  TVector vector3 = vector + vector2;
+
   std::cout << vector.size() << std::endl;
 
-//map.insert(std::make_pair(vector, 13));
+  map.insert(std::make_pair(vector, 13));
   for(TVector::iterator iter = vector.begin();
       iter != vector.end();
       ++iter) {
@@ -62,7 +71,7 @@ int main(int argc, char *argv[]) {
     std::cout << *iter;
     int v = *iter;
     iter = vector.insert(vector.erase(iter), 2*v);
-//  map.insert(std::make_pair(vector, 13));
+    map.insert(std::make_pair(vector, 13));
   }
   std::cout << std::endl;
   for(TVector::const_iterator iter = vector.begin();
@@ -75,6 +84,11 @@ int main(int argc, char *argv[]) {
   std::cout << std::endl;
   vector.erase(vector.begin(), vector.end());
   assert(vector.empty());
-//map.insert(std::make_pair(vector, 13));
+  map.insert(std::make_pair(vector, 13));
+  for (TMap::const_iterator iter = map.begin();
+       iter != map.end();
+       ++iter) {
+    std::cout << iter->first << std::endl;
+  }
   return 0;
 }

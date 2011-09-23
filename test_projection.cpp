@@ -35,16 +35,17 @@
 #include <iostream>
 #include <cassert>
 
-#include <CoSupport/DataTypes/Projection.hpp>
+#include <CoSupport/Math/Tuple/POVector.hpp>
+#include <CoSupport/Math/Tuple/Projection.hpp>
 
 #include <map>
 #include <vector>
 
-typedef CoSupport::DataTypes::Projection<std::vector<std::string> &, std::vector<size_t> const &> TVector;
+typedef CoSupport::Math::Tuple::PO<CoSupport::Math::Tuple::Projection<std::vector<std::string> &, std::vector<size_t> const &> > TVector;
 typedef std::map<TVector, int>            TMap;
 
 int main(int argc, char *argv[]) {
-  std::vector<std::string> v1;
+  CoSupport::Math::Tuple::PO<std::vector<std::string> > v1;
   v1.push_back("a");
   v1.push_back("b");
   v1.push_back("c");

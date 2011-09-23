@@ -43,17 +43,18 @@
 namespace CoSupport { namespace Math { namespace Tuple {
 
 template <class T, class A = std::allocator<T> >
-class POVector: public PO<std::vector<T,A> > {
-
-
-
-};
+struct POVector { typedef PO<std::vector<T,A> > type; };
 
 // specialize PO
-template <class T, class A> class PO<std::vector<T,A> >: public std::vector<T,A> {
+template <class T, class A>
+class PO<std::vector<T,A> >: public std::vector<T,A> {
+public:
+  // Default constructor
+  PO(): std::vector<T,A>() {}
 
-
-
+  // General copy constructor
+  template <class B>
+  PO(PO<B> const &v): std::vector<T,A>(v.begin(), v.end()) {}
 };
 
 } } } // namespace CoSupport::Math::Tuple

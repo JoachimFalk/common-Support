@@ -32,14 +32,14 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_DATATYPES_PROJECTION_HPP
-#define _INCLUDED_COSUPPORT_DATATYPES_PROJECTION_HPP
+#ifndef _INCLUDED_COSUPPORT_MATH_TUPLE_PROJECTION_HPP
+#define _INCLUDED_COSUPPORT_MATH_TUPLE_PROJECTION_HPP
 
-#include "VectorInterface.hpp"
+#include "../../DataTypes/VectorInterface.hpp"
 
 #include <boost/type_traits/remove_reference.hpp>
 
-namespace CoSupport { namespace DataTypes {
+namespace CoSupport { namespace Math { namespace Tuple {
 
 namespace Detail {
 
@@ -63,7 +63,7 @@ namespace Detail {
 } // namespace Detail
 
 template<class V, class I>
-class Projection: public VectorInterface<
+class Projection: public DataTypes::VectorInterface<
     Projection<V, I>,
     Detail::ProjectionRandomAccessTraversalIter<
       typename boost::remove_reference<V>::type::iterator,
@@ -76,7 +76,7 @@ class Projection: public VectorInterface<
   >
 {
   typedef Projection<V,I> this_type;
-  friend class VectorInterface<
+  friend class DataTypes::VectorInterface<
     Projection<V, I>,
     Detail::ProjectionRandomAccessTraversalIter<
       typename boost::remove_reference<V>::type::iterator,
@@ -108,15 +108,6 @@ protected:
     { return vector.insert(iter.iter, value); }*/
 };
 
-} } // namespace CoSupport::DataTypes
+} } } // namespace CoSupport::Math::Tuple
 
-template<class V, class I>
-inline
-CoSupport::DataTypes::Projection<const V &, const I &> proj(const V &v, const I &i)
-  { return CoSupport::DataTypes::Projection<const V &, const I &>(v,i); }
-template<class V, class I>
-inline
-CoSupport::DataTypes::Projection<V       &, const I &> proj(V       &v, const I &i)
-  { return CoSupport::DataTypes::Projection<V       &, const I &>(v,i); }
-
-#endif // _INCLUDED_COSUPPORT_DATATYPES_PROJECTION_HPP
+#endif // _INCLUDED_COSUPPORT_MATH_TUPLE_PROJECTION_HPP
