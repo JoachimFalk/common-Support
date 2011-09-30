@@ -38,6 +38,8 @@
 
 #include "../../DataTypes/VectorInterface.hpp"
 
+#include "exceptions.hpp"
+
 #include <boost/type_traits/remove_reference.hpp>
 #include <boost/typeof/typeof.hpp>
 
@@ -137,7 +139,10 @@ class BinOpVector: public DataTypes::VectorInterface<
       typename boost::remove_reference<V1>::type::const_pointer // FIXME
     >;
 public:
-  BinOpVector(V1 v1, V2 v2): v1(v1), v2(v2) {}
+  BinOpVector(V1 v1, V2 v2): v1(v1), v2(v2) {
+    if (v1.size() != v2.size())
+      throw Exception::DifferentSize();
+  }
 protected:
   typedef Detail::BinOpRandomAccessTraversalIter<
     typename boost::remove_reference<V1>::type::const_iterator,
