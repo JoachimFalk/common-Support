@@ -1,7 +1,6 @@
-//  -*- tab-width:8; intent-tabs-mode:nil; c-basic-offset:2; -*-
-// vim: set sw=2 ts=8 sts=2 expandtab:
+/* vim: set sw=2 ts=8: */
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2011 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -34,55 +33,30 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_DATATYPES_MAYBEVALUE_HPP
-#define _INCLUDED_COSUPPORT_DATATYPES_MAYBEVALUE_HPP
+#ifndef _INCLUDED_COSUPPORT_MATH_TUPLE_POVECTOR_HPP
+#define _INCLUDED_COSUPPORT_MATH_TUPLE_POVECTOR_HPP
 
-#include "MaybeValueInterface.hpp"
+#include "PO.hpp"
 
-namespace CoSupport { namespace DataTypes {
+#include <vector>
 
-template <class T>
-class MaybeValue
-: public MaybeValueInterface<MaybeValue<T>, T> {
-  typedef MaybeValue<T>                      this_type;
-  typedef MaybeValueInterface<this_type, T>  base_type;
+namespace CoSupport { namespace Math { namespace Tuple {
 
-  friend class MaybeValueInterface<this_type, T>;
-private:
-  typedef boost::variant<boost::blank, T>    storage_type;
+template <class T, class A = std::allocator<T> >
+struct POVector { typedef PO<std::vector<T,A> > type; };
 
-  storage_type value;
-protected:
-  void setImpl(const T &val)
-    { value = val; }
-  T const &getImpl() const
-    { return boost::get<T>(value); }
-  void undefImpl()
-    { value = boost::blank(); }
-  bool isDefinedImpl() const
-    { return boost::get<boost::blank>(&value) == NULL; }
+// specialize PO
+template <class T, class A>
+class PO<std::vector<T,A> >: public std::vector<T,A> {
 public:
-  MaybeValue()
-    : value(boost::blank()) {}
-  MaybeValue(boost::blank)
-    : value(boost::blank()) {}
-  MaybeValue(T const &val)
-    : value(val) {}
-  template <class DD, typename TT, typename RR>
-  MaybeValue(MaybeValueInterface<DD,TT,RR> const &val)
-    : value(val.isDefined()
-        ? storage_type(val.get())
-        : storage_type(boost::blank())) {}
+  // Default constructor
+  PO(): std::vector<T,A>() {}
 
-//You may need this if you can't rely on the default
-//assignment operator to do the job correctly!
-//Here we can rely on storage_type::operator = of value.
-//this_type &operator = (const this_type &val)
-//  { return base_type::operator =(val); }
-
-  using base_type::operator =;
+  // General copy constructor
+  template <class B>
+  PO(PO<B> const &v): std::vector<T,A>(v.begin(), v.end()) {}
 };
 
-} } // namespace CoSupport::DataTypes
+} } } // namespace CoSupport::Math::Tuple
 
-#endif // _INCLUDED_COSUPPORT_DATATYPES_MAYBEVALUE_HPP
+#endif // _INCLUDED_COSUPPORT_MATH_TUPLE_POVECTOR_HPP

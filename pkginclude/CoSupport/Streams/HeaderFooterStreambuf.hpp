@@ -163,7 +163,10 @@ public:
   /// of the specified stream as initial target
   Stream(std::ostream &os)
     : Base(os) { this->insert(headerFooter); }
-private:
+
+  // FIXME: changing the interface broke our stuff; debugStream.setHeader(...) is not working
+  // though, back to public
+  //private:
   HeaderFooterStreambuf headerFooter;
 };
 

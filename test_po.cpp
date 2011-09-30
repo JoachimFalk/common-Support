@@ -1,5 +1,3 @@
-//  -*- tab-width:8; intent-tabs-mode:nil; c-basic-offset:2; -*-
-// vim: set sw=2 ts=8 sts=2 expandtab:
 /*
  * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
@@ -34,55 +32,63 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_DATATYPES_MAYBEVALUE_HPP
-#define _INCLUDED_COSUPPORT_DATATYPES_MAYBEVALUE_HPP
+#include <iostream>
+#include <cassert>
 
-#include "MaybeValueInterface.hpp"
+#include <map>
 
-namespace CoSupport { namespace DataTypes {
+#include <CoSupport/Math/Tuple/POVector.hpp>
 
-template <class T>
-class MaybeValue
-: public MaybeValueInterface<MaybeValue<T>, T> {
-  typedef MaybeValue<T>                      this_type;
-  typedef MaybeValueInterface<this_type, T>  base_type;
+//typedef CoSupport::Math::Tuple::POVector<int> TVector;
+typedef CoSupport::Math::Tuple::POVector<int>::type TVector;
+typedef std::map<TVector, int>                      TMap;
 
-  friend class MaybeValueInterface<this_type, T>;
-private:
-  typedef boost::variant<boost::blank, T>    storage_type;
+int main(int argc, char *argv[]) {
+  TVector vector;
+  TMap    map;
 
-  storage_type value;
-protected:
-  void setImpl(const T &val)
-    { value = val; }
-  T const &getImpl() const
-    { return boost::get<T>(value); }
-  void undefImpl()
-    { value = boost::blank(); }
-  bool isDefinedImpl() const
-    { return boost::get<boost::blank>(&value) == NULL; }
-public:
-  MaybeValue()
-    : value(boost::blank()) {}
-  MaybeValue(boost::blank)
-    : value(boost::blank()) {}
-  MaybeValue(T const &val)
-    : value(val) {}
-  template <class DD, typename TT, typename RR>
-  MaybeValue(MaybeValueInterface<DD,TT,RR> const &val)
-    : value(val.isDefined()
-        ? storage_type(val.get())
-        : storage_type(boost::blank())) {}
+  vector.push_back(1);
+  vector.push_back(2);
+  vector.insert(vector.begin(), 0);
+  vector.insert(vector.begin(), -1);
 
-//You may need this if you can't rely on the default
-//assignment operator to do the job correctly!
-//Here we can rely on storage_type::operator = of value.
-//this_type &operator = (const this_type &val)
-//  { return base_type::operator =(val); }
+  TVector vector2;
+  vector2.push_back(1);
+  vector2.push_back(2);
+  vector2.push_back(3);
+  vector2.push_back(4);
 
-  using base_type::operator =;
-};
+  TVector vector3 = vector + vector2;
 
-} } // namespace CoSupport::DataTypes
+  std::cout << vector.size() << std::endl;
 
-#endif // _INCLUDED_COSUPPORT_DATATYPES_MAYBEVALUE_HPP
+  map.insert(std::make_pair(vector, 13));
+  for(TVector::iterator iter = vector.begin();
+      iter != vector.end();
+      ++iter) {
+    if (iter != vector.begin())
+      std::cout << ", ";
+    std::cout << *iter;
+    int v = *iter;
+    iter = vector.insert(vector.erase(iter), 2*v);
+    map.insert(std::make_pair(vector, 13));
+  }
+  std::cout << std::endl;
+  for(TVector::const_iterator iter = vector.begin();
+      iter != vector.end();
+      ++iter) {
+    if (iter != vector.begin())
+      std::cout << ", ";
+    std::cout << *iter;
+  }
+  std::cout << std::endl;
+  vector.erase(vector.begin(), vector.end());
+  assert(vector.empty());
+  map.insert(std::make_pair(vector, 13));
+  for (TMap::const_iterator iter = map.begin();
+       iter != map.end();
+       ++iter) {
+    std::cout << iter->first << std::endl;
+  }
+  return 0;
+}
