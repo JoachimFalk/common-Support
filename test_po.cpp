@@ -60,8 +60,19 @@ int main(int argc, char *argv[]) {
 
   TVector vector3 = vector + vector2;
 
+  vector3 -= vector;
+  assert(vector3 == vector2 && "vector3 == vector2");
+  vector3 += 13;
+  
+  assert(vector3 >= 13 && "vector3 >= 13");
+  assert(13 <= vector3 && "13 <= vector3");
+  assert(vector3 >  13 && "vector3 >  13");
+  assert(13 <  vector3 && "13 <  vector3");
+  
+  TVector vector4 = vector3 - vector;
+  
   std::cout << vector.size() << std::endl;
-
+  
   map.insert(std::make_pair(vector, 13));
   for(TVector::iterator iter = vector.begin();
       iter != vector.end();
