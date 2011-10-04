@@ -47,33 +47,12 @@
 #define _INCLUDED_COSUPPORT_DATATYPES_ARRAYFIFO_HPP
 
 #include <boost/iterator/iterator_facade.hpp>
-#include <boost/type_traits/is_convertible.hpp>
-#include <boost/utility/enable_if.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
 #include "../sassert.h"
 #include "../Math/modulo_arith.hpp"
 
 namespace CoSupport { namespace DataTypes {
-
-  namespace Detail {
-    template <typename X>
-    struct DiscardConst {
-      typedef X type;
-    };
-    template <typename X>
-    struct DiscardConst<const X> {
-      typedef X type;
-    };
-
-    template <typename X>
-    struct ToggleConst {
-      typedef const X type;
-    };
-    template <typename X>
-    struct ToggleConst<const X> {
-      typedef X type;
-    };
-  };
 
   /*
    * Fixed Array FIFO buffer
@@ -93,9 +72,8 @@ namespace CoSupport { namespace DataTypes {
         V,
         boost::random_access_traversal_tag> {
     private:
-      friend class IterTemplate<
-        typename Detail::ToggleConst<F>::type,
-        typename Detail::ToggleConst<V>::type>;
+      template <typename FF, typename VV>
+      friend class IterTemplate;
       friend class boost::iterator_core_access;
       friend class ArrayFifo<T,N>;
       
@@ -108,8 +86,8 @@ namespace CoSupport { namespace DataTypes {
       // Copy Constructor from const_iterator
       IterTemplate(
         IterTemplate<
-          typename Detail::DiscardConst<F>::type,
-          typename Detail::DiscardConst<V>::type> const &iter)
+          typename boost::remove_const<F>::type,
+          typename boost::remove_const<V>::type> const &iter)
         : f(iter.f), i(iter.i) {}
     protected:
       IterTemplate( F *f, ModuloInt<N+1> i )
