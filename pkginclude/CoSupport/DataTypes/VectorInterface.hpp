@@ -39,10 +39,16 @@
 #include <boost/type_traits/add_const.hpp>
 #include <boost/type_traits/add_reference.hpp>
 #include <boost/type_traits/add_pointer.hpp>
+#include <boost/type_traits/is_integral.hpp>
+
+#include <boost/utility/enable_if.hpp>
 
 #include "Detail/RandomAccessTraversalIterTemplate.hpp"
 
 namespace CoSupport { namespace DataTypes {
+
+// WARNING: If you change VectorInterface also adapt output operator in
+// stl_output_for_vector.hpp
 
 /// VectorInterface is used as a public base class for defining new
 /// standard-conforming, e.g., std::vector<VALUE>, vector containers.
@@ -129,6 +135,19 @@ public:
   iterator insert(const iterator &iter, const value_type &v) {
     return base_type::construct<iterator>
       (derived().add(base_type::retrieve(iter), v));
+  }
+  // const value_type &v is correct here this is also used by std::vector
+  void insert(iterator iter, size_type n, const value_type &v) {
+    for (;n > 0; --n)
+      iter = base_type::construct<iterator>
+        (derived().add(base_type::retrieve(iter), v));
+  }
+  template <class IITER>
+  typename boost::disable_if<boost::is_integral<IITER>, void>::type
+  insert(iterator iter, IITER first, IITER const &last) {
+    for (; first != last; ++first)
+      iter = base_type::construct<iterator>
+        (derived().add(base_type::retrieve(iter), *first));
   }
 
   void clear() { erase(begin(), end()); }
