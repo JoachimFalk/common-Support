@@ -39,65 +39,86 @@
 
 #include <CoSupport/Math/Tuple/POVector.hpp>
 
-//typedef CoSupport::Math::Tuple::POVector<int> TVector;
-typedef CoSupport::Math::Tuple::POVector<int>::type TVector;
-typedef std::map<TVector, int>                      TMap;
+typedef CoSupport::Math::Tuple::POVector<int>::type                 T1Vector;
+typedef CoSupport::Math::Tuple::POVector<unsigned long long>::type  T2Vector;
+typedef std::map<T1Vector, int>                                     T1Map;
+typedef std::map<T2Vector, int>                                     T2Map;
 
 int main(int argc, char *argv[]) {
-  TVector vector;
-  TMap    map;
+  T1Vector t1vector1;
+  t1vector1.push_back(1);
+  t1vector1.push_back(2);
+  std::cout << "t1vector1: " << t1vector1 << ", t1vector1.size(): " << t1vector1.size() << std::endl;
+  assert(t1vector1.size() == 2 && t1vector1[0] == 1 && t1vector1[1] == 2);
+  t1vector1.insert(t1vector1.begin(), 0);
+  std::cout << "t1vector1: " << t1vector1 << ", t1vector1.size(): " << t1vector1.size() << std::endl;
+  assert(t1vector1.size() == 3 && t1vector1[0] == 0 && t1vector1[1] == 1 && t1vector1[2] == 2);
+  t1vector1.insert(t1vector1.begin(), -1);
+  std::cout << "t1vector1: " << t1vector1 << ", t1vector1.size(): " << t1vector1.size() << std::endl;
+  assert(t1vector1.size() == 4 && t1vector1[0] ==-1 && t1vector1[1] == 0 && t1vector1[2] == 1 && t1vector1[3] == 2);
+  t1vector1.erase(--t1vector1.end());
+  std::cout << "t1vector1: " << t1vector1 << ", t1vector1.size(): " << t1vector1.size() << std::endl;
+  std::cout << "t1vector1: " << t1vector1 << ", t1vector1.size(): " << t1vector1.size() << std::endl;
+  assert(t1vector1.size() == 3 && t1vector1[0] ==-1 && t1vector1[1] == 0 && t1vector1[2] == 1);
+  t1vector1.erase(t1vector1.end()-2);
+  std::cout << "t1vector1: " << t1vector1 << ", t1vector1.size(): " << t1vector1.size() << std::endl;
+  assert(t1vector1.size() == 2 && t1vector1[0] ==-1 && t1vector1[1] == 1);
+  assert(t1vector1.front() == -1);
+  assert(t1vector1.back() == 1);
+  t1vector1.insert(++t1vector1.begin(), 2, 55);
+  std::cout << "t1vector1: " << t1vector1 << ", t1vector1.size(): " << t1vector1.size() << std::endl;
+  assert(t1vector1.size() == 4 && t1vector1[0] ==-1 && t1vector1[1] == 55 && t1vector1[2] == 55 && t1vector1[3] == 1);
 
-  vector.push_back(1);
-  vector.push_back(2);
-  vector.insert(vector.begin(), 0);
-  vector.insert(vector.begin(), -1);
+  T1Vector t1vector2;
+  t1vector2.push_back(1);
+  t1vector2.push_back(2);
+  t1vector2.push_back(3);
+  t1vector2.push_back(4);
 
-  TVector vector2;
-  vector2.push_back(1);
-  vector2.push_back(2);
-  vector2.push_back(3);
-  vector2.push_back(4);
+  std::cout << supremum(t1vector1, t1vector2) << std::endl;
+  std::cout << infimum(t1vector1, t1vector2) << std::endl;
 
-  TVector vector3 = vector + vector2;
+  T1Vector t1vector3 = t1vector1 + t1vector2;
 
-  vector3 -= vector;
-  assert(vector3 == vector2 && "vector3 == vector2");
-  vector3 += 13;
+  t1vector3 -= t1vector1;
+  assert(t1vector3 == t1vector2 && "t1vector3 == t1vector2");
+  t1vector3 += 13;
   
-  assert(vector3 >= 13 && "vector3 >= 13");
-  assert(13 <= vector3 && "13 <= vector3");
-  assert(vector3 >  13 && "vector3 >  13");
-  assert(13 <  vector3 && "13 <  vector3");
+  assert(t1vector3 >= 13 && "t1vector3 >= 13");
+  assert(13 <= t1vector3 && "13 <= t1vector3");
+  assert(t1vector3 >  13 && "t1vector3 >  13");
+  assert(13 <  t1vector3 && "13 <  t1vector3");
   
-  TVector vector4 = vector3 - vector;
+  T1Vector t1vector4 = t1vector3 - t1vector1;
   
-  std::cout << vector.size() << std::endl;
-  
-  map.insert(std::make_pair(vector, 13));
-  for(TVector::iterator iter = vector.begin();
-      iter != vector.end();
+  std::cout << t1vector1.size() << std::endl;
+
+  T1Map t1map;
+  t1map.insert(std::make_pair(t1vector1, 13));
+  for(T1Vector::iterator iter = t1vector1.begin();
+      iter != t1vector1.end();
       ++iter) {
-    if (iter != vector.begin())
+    if (iter != t1vector1.begin())
       std::cout << ", ";
     std::cout << *iter;
     int v = *iter;
-    iter = vector.insert(vector.erase(iter), 2*v);
-    map.insert(std::make_pair(vector, 13));
+    iter = t1vector1.insert(t1vector1.erase(iter), 2*v);
+    t1map.insert(std::make_pair(t1vector1, 13));
   }
   std::cout << std::endl;
-  for(TVector::const_iterator iter = vector.begin();
-      iter != vector.end();
+  for(T1Vector::const_iterator iter = t1vector1.begin();
+      iter != t1vector1.end();
       ++iter) {
-    if (iter != vector.begin())
+    if (iter != t1vector1.begin())
       std::cout << ", ";
     std::cout << *iter;
   }
   std::cout << std::endl;
-  vector.erase(vector.begin(), vector.end());
-  assert(vector.empty());
-  map.insert(std::make_pair(vector, 13));
-  for (TMap::const_iterator iter = map.begin();
-       iter != map.end();
+  t1vector1.erase(t1vector1.begin(), t1vector1.end());
+  assert(t1vector1.empty());
+  t1map.insert(std::make_pair(t1vector1, 13));
+  for (T1Map::const_iterator iter = t1map.begin();
+       iter != t1map.end();
        ++iter) {
     std::cout << iter->first << std::endl;
   }
