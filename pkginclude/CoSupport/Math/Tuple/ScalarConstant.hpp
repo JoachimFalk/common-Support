@@ -58,7 +58,7 @@ namespace Detail {
     int  distance_to(const this_type &rhs) const { return (int) rhs.n - n; }
     bool equal(const this_type &rhs) const { return n == rhs.n; }
 
-    T deref() const { return t; }
+    T const &deref() const { return t; }
   };
 
 } // namespace Detail
@@ -69,10 +69,10 @@ class ScalarConstant: public DataTypes::VectorInterface<
     Detail::ScalarConstantRandomAccessTraversalIter<
       typename boost::add_const<T>::type>,
     typename boost::add_const<T>::type,
-    typename boost::add_const<typename boost::add_reference<T>::type>::type,
-    typename boost::add_const<typename boost::add_reference<T>::type>::type,
-    typename boost::add_const<typename boost::add_pointer<typename boost::remove_reference<T>::type>::type>::type,
-    typename boost::add_const<typename boost::add_pointer<typename boost::remove_reference<T>::type>::type>::type
+    typename boost::add_reference<typename boost::add_const<T>::type>::type,
+    typename boost::add_reference<typename boost::add_const<T>::type>::type,
+    typename boost::add_pointer<typename boost::add_const<typename boost::remove_reference<T>::type>::type>::type,
+    typename boost::add_pointer<typename boost::add_const<typename boost::remove_reference<T>::type>::type>::type
   >
 {
   typedef ScalarConstant<T> this_type;
@@ -81,10 +81,10 @@ class ScalarConstant: public DataTypes::VectorInterface<
     Detail::ScalarConstantRandomAccessTraversalIter<
       typename boost::add_const<T>::type>,
     typename boost::add_const<T>::type,
-    typename boost::add_const<typename boost::add_reference<T>::type>::type,
-    typename boost::add_const<typename boost::add_reference<T>::type>::type,
-    typename boost::add_const<typename boost::add_pointer<typename boost::remove_reference<T>::type>::type>::type,
-    typename boost::add_const<typename boost::add_pointer<typename boost::remove_reference<T>::type>::type>::type
+    typename boost::add_reference<typename boost::add_const<T>::type>::type,
+    typename boost::add_reference<typename boost::add_const<T>::type>::type,
+    typename boost::add_pointer<typename boost::add_const<typename boost::remove_reference<T>::type>::type>::type,
+    typename boost::add_pointer<typename boost::add_const<typename boost::remove_reference<T>::type>::type>::type
   >;
 public:
   ScalarConstant(T t, size_t n = 1): t(t), n(n) {}
