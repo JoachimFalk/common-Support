@@ -41,12 +41,12 @@
 
 namespace std {
                                                                                 
-  template <typename T, class A> class set;
+  template <typename T, class C, class A> class set;
 
-  template <typename T, class A>
-  std::ostream &operator << (std::ostream &out, const std::set<T,A> &l) {
+  template <typename T, class C, class A>
+  std::ostream &operator << (std::ostream &out, const std::set<T,C,A> &l) {
     out << "[Set:";
-    for ( typename std::set<T,A>::const_iterator iter = l.begin();
+    for ( typename std::set<T,C,A>::const_iterator iter = l.begin();
           iter != l.end();
           ++iter )
       out << (iter == l.begin() ? "" : ", ") << *iter;
