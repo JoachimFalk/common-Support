@@ -36,21 +36,23 @@
 #ifndef _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_SET_HPP
 #define _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_SET_HPP
 
-#include <iostream>
-#include <set>
+#include <ostream>
+//#include <set>
 
 namespace std {
                                                                                 
-template <typename T, class A>
-std::ostream &operator << (std::ostream &out, const std::set<T,A> &l) {
-  out << "[Set:";
-  for ( typename std::set<T,A>::const_iterator iter = l.begin();
-        iter != l.end();
-        ++iter )
-    out << (iter == l.begin() ? "" : ", ") << *iter;
-  out << "]";
-  return out;
-}
+  template <typename T, class A> class set;
+
+  template <typename T, class A>
+  std::ostream &operator << (std::ostream &out, const std::set<T,A> &l) {
+    out << "[Set:";
+    for ( typename std::set<T,A>::const_iterator iter = l.begin();
+          iter != l.end();
+          ++iter )
+      out << (iter == l.begin() ? "" : ", ") << *iter;
+    out << "]";
+    return out;
+  }
 
 } // namespace std
 
