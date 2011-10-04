@@ -36,6 +36,7 @@
 #define _INCLUDED_COSUPPORT_MATH_TUPLE_PROJECTION_HPP
 
 #include "../../DataTypes/VectorInterface.hpp"
+#include "../../Type/STLIteratorSelector.hpp"
 
 #include <boost/type_traits/remove_reference.hpp>
 
@@ -66,7 +67,7 @@ template<class V, class I>
 class Projection: public DataTypes::VectorInterface<
     Projection<V, I>,
     Detail::ProjectionRandomAccessTraversalIter<
-      typename boost::remove_reference<V>::type::iterator,
+      typename Type::STLIteratorSelector<typename boost::remove_reference<V>::type>::type,
       typename boost::remove_reference<I>::type::const_iterator>,
     typename boost::remove_reference<V>::type::value_type,
     typename boost::remove_reference<V>::type::reference,
@@ -76,23 +77,22 @@ class Projection: public DataTypes::VectorInterface<
   >
 {
   typedef Projection<V,I> this_type;
+public:
+  Projection(V v, I idx): v(v), idx(idx) {}
+protected:
+  typedef Detail::ProjectionRandomAccessTraversalIter<
+    typename Type::STLIteratorSelector<typename boost::remove_reference<V>::type>::type,
+    typename boost::remove_reference<I>::type::const_iterator> IterImpl;
+
   friend class DataTypes::VectorInterface<
     Projection<V, I>,
-    Detail::ProjectionRandomAccessTraversalIter<
-      typename boost::remove_reference<V>::type::iterator,
-      typename boost::remove_reference<I>::type::const_iterator>,
+    IterImpl,
     typename boost::remove_reference<V>::type::value_type,
     typename boost::remove_reference<V>::type::reference,
     typename boost::remove_reference<V>::type::const_reference,
     typename boost::remove_reference<V>::type::pointer,
     typename boost::remove_reference<V>::type::const_pointer
   >;
-public:
-  Projection(V v, I idx): v(v), idx(idx) {}
-protected:
-  typedef Detail::ProjectionRandomAccessTraversalIter<
-    typename boost::remove_reference<V>::type::iterator,
-    typename boost::remove_reference<I>::type::const_iterator> IterImpl;
 
   V v;
   I idx;

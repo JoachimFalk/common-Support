@@ -37,18 +37,7 @@
 #define _INCLUDED_COSUPPORT_TYPE_STLITERATORSELECTOR_HPP
 
 #include <boost/mpl/if.hpp>
-
 #include <boost/type_traits/is_const.hpp>
-#include <boost/type_traits/add_const.hpp>
-#include <boost/type_traits/remove_const.hpp>
-
-#include <boost/type_traits/is_reference.hpp>
-#include <boost/type_traits/remove_reference.hpp>
-#include <boost/type_traits/add_reference.hpp>
-
-#include <boost/type_traits/is_pointer.hpp>
-#include <boost/type_traits/remove_pointer.hpp>
-#include <boost/type_traits/add_pointer.hpp>
 
 namespace CoSupport { namespace Type {
 
@@ -61,6 +50,15 @@ struct STLIteratorSelector {
       boost::is_const<Container>,
       typename Container::const_iterator,
       typename Container::iterator
+    >::type type;
+};
+
+template <typename Container>
+struct STLReverseIteratorSelector {
+  typedef typename boost::mpl::if_<
+      boost::is_const<Container>,
+      typename Container::const_reverse_iterator,
+      typename Container::reverse_iterator
     >::type type;
 };
 
