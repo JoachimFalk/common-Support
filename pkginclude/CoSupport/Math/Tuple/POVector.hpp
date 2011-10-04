@@ -48,9 +48,14 @@ struct POVector { typedef PO<std::vector<T,A> > type; };
 // specialize PO
 template <class T, class A>
 class PO<std::vector<T,A> >: public std::vector<T,A> {
+  typedef PO<std::vector<T,A> > this_type;
 public:
   // Default constructor
-  PO(): std::vector<T,A>() {}
+  PO(const A &a = A()): std::vector<T,A>(a) {}
+  PO(size_t n, const T &t = T(), const A &a = A()): std::vector<T,A>(n, t, a) {}
+
+  template <class ITER>
+  PO(ITER first, ITER last, const A &a = A()): std::vector<T,A>(first, last, a) {}
 
   // General copy constructor
   template <class B>
