@@ -36,21 +36,55 @@
 #ifndef _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_LIST_HPP
 #define _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_LIST_HPP
 
-#include <iostream>
-#include <list>
+#include <ostream>
+//#include <list>
+
+namespace CoSupport { namespace DataTypes {
+
+  template <
+    class DERIVED,
+    class ITER_,
+    class VALUE,
+    class REFERENCE,
+    class CONSTREFERENCE,
+    class PTR_,
+    class CONSTPTR_
+  >
+  class ListInterface;
+
+} } // namespace CoSupport::DataTypes
 
 namespace std {
 
-template <typename T, class A>
-std::ostream &operator << (std::ostream &out, const std::list<T,A> &l) {
-  out << "[List:";
-  for ( typename std::list<T,A>::const_iterator iter = l.begin();
-        iter != l.end();
-        ++iter )
-    out << (iter == l.begin() ? "" : ", ") << *iter;
-  out << "]";
-  return out;
-}
+  template <class T, class A> class list;
+
+  template <typename T, class A>
+  std::ostream &operator << (std::ostream &out, const std::list<T,A> &l) {
+    out << "[List:";
+    for (typename std::list<T,A>::const_iterator iter = l.begin();
+         iter != l.end();
+         ++iter )
+      out << (iter == l.begin() ? "" : ", ") << *iter;
+    out << "]";
+    return out;
+  }
+
+  template<
+    class D, class I,
+    class V, class R, class CR, class P, class CP
+  >
+  std::ostream &operator << (
+      std::ostream &out,
+      const CoSupport::DataTypes::ListInterface<D,I,V,R,CR,P,CP> &l)
+  {
+    out << "[List:";
+    for (typename CoSupport::DataTypes::ListInterface<D,I,V,R,CR,P,CP>::const_iterator iter = l.begin();
+         iter != l.end();
+         ++iter )
+      out << (iter == l.begin() ? "" : ", ") << *iter;
+    out << "]";
+    return out;
+  }
 
 } // namespace std
 
