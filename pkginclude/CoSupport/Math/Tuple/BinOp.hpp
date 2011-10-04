@@ -41,7 +41,9 @@
 #include "exceptions.hpp"
 
 #include <boost/type_traits/remove_reference.hpp>
+#include <boost/type_traits/is_same.hpp>
 #include <boost/typeof/typeof.hpp>
+#include <boost/static_assert.hpp>
 
 namespace CoSupport { namespace Math { namespace Tuple {
 
@@ -76,10 +78,10 @@ namespace Detail {
     BOOST_TYPEOF_NESTED_TYPEDEF_TPL(nested, (*(TA*)(NULL)) op (*(TB*)(NULL))) \
     typedef typename nested::type result_type;                                \
                                                                               \
-    template<class A, class B>                                                \
+    template<class ITERA, class ITERB>                                        \
     static inline                                                             \
-    result_type apply(const A &a, const B &b)                                 \
-      { return *a op *b; }                                                    \
+    result_type apply(const ITERA &aIter, const ITERB &bIter)                 \
+      { return *aIter op *bIter; }                                            \
   };
 
   MAKE_BIN_OP(OpAdd, +);
@@ -88,6 +90,30 @@ namespace Detail {
   MAKE_BIN_OP(OpDiv, /);
 
 #undef MAKE_BIN_OP
+
+  template<class TA, class TB>
+  struct OpMax {
+    BOOST_STATIC_ASSERT((boost::is_same<TA, TB>::value));
+    // Should be the same as TB. See BOOST_STATIC_ASSERT above.
+    typedef TA result_type;
+
+    template<class ITERA, class ITERB>
+    static inline
+    result_type apply(const ITERA &aIter, const ITERB &bIter)
+      { return std::max(*aIter, *bIter); }
+  };
+
+  template<class TA, class TB>
+  struct OpMin {
+    BOOST_STATIC_ASSERT((boost::is_same<TA, TB>::value));
+    // Should be the same as TB. See BOOST_STATIC_ASSERT above.
+    typedef TA result_type;
+
+    template<class ITERA, class ITERB>
+    static inline
+    result_type apply(const ITERA &aIter, const ITERB &bIter)
+      { return std::min(*aIter, *bIter); }
+  };
 
 } // namespace Detail
 
