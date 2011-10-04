@@ -56,11 +56,10 @@ int main(int argc, char *argv[]) {
   vector.insert(vector.begin(), -1);
   std::cout << "vector: " << vector << ", vector.size(): " << vector.size() << std::endl;
   assert(vector.size() == 4 && vector[0] ==-1 && vector[1] == 0 && vector[2] == 1 && vector[3] == 2);
-  vector.erase(--vector.end());
-  std::cout << "vector: " << vector << ", vector.size(): " << vector.size() << std::endl;
+  vector.pop_back();
   std::cout << "vector: " << vector << ", vector.size(): " << vector.size() << std::endl;
   assert(vector.size() == 3 && vector[0] ==-1 && vector[1] == 0 && vector[2] == 1);
-  vector.erase(vector.end()-2);
+  vector.erase(--vector.end()-1);
   std::cout << "vector: " << vector << ", vector.size(): " << vector.size() << std::endl;
   assert(vector.size() == 2 && vector[0] ==-1 && vector[1] == 1);
   assert(vector.front() == -1);

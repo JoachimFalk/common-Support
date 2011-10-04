@@ -56,11 +56,10 @@ int main(int argc, char *argv[]) {
   t1vector1.insert(t1vector1.begin(), -1);
   std::cout << "t1vector1: " << t1vector1 << ", t1vector1.size(): " << t1vector1.size() << std::endl;
   assert(t1vector1.size() == 4 && t1vector1[0] ==-1 && t1vector1[1] == 0 && t1vector1[2] == 1 && t1vector1[3] == 2);
-  t1vector1.erase(--t1vector1.end());
-  std::cout << "t1vector1: " << t1vector1 << ", t1vector1.size(): " << t1vector1.size() << std::endl;
+  t1vector1.pop_back();
   std::cout << "t1vector1: " << t1vector1 << ", t1vector1.size(): " << t1vector1.size() << std::endl;
   assert(t1vector1.size() == 3 && t1vector1[0] ==-1 && t1vector1[1] == 0 && t1vector1[2] == 1);
-  t1vector1.erase(t1vector1.end()-2);
+  t1vector1.erase(--t1vector1.end()-1);
   std::cout << "t1vector1: " << t1vector1 << ", t1vector1.size(): " << t1vector1.size() << std::endl;
   assert(t1vector1.size() == 2 && t1vector1[0] ==-1 && t1vector1[1] == 1);
   assert(t1vector1.front() == -1);
@@ -68,18 +67,20 @@ int main(int argc, char *argv[]) {
   t1vector1.insert(++t1vector1.begin(), 2, 55);
   std::cout << "t1vector1: " << t1vector1 << ", t1vector1.size(): " << t1vector1.size() << std::endl;
   assert(t1vector1.size() == 4 && t1vector1[0] ==-1 && t1vector1[1] == 55 && t1vector1[2] == 55 && t1vector1[3] == 1);
-
-  T1Vector t1vector2;
-  t1vector2.push_back(1);
-  t1vector2.push_back(2);
-  t1vector2.push_back(3);
-  t1vector2.push_back(4);
-
+  
+  T1Vector t1vector2(4);
+  t1vector2[0] = 1;
+  t1vector2[1] = 2;
+  t1vector2[2] = 3;
+  t1vector2[3] = 4;
+  
   std::cout << supremum(t1vector1, t1vector2) << std::endl;
   std::cout << infimum(t1vector1, t1vector2) << std::endl;
-
+  
   T1Vector t1vector3 = t1vector1 + t1vector2;
-
+  T1Vector t1vector4 = t1vector3 - t1vector1;
+  
+  assert(t1vector4 == t1vector2 && "t1vector4 == t1vector2");
   t1vector3 -= t1vector1;
   assert(t1vector3 == t1vector2 && "t1vector3 == t1vector2");
   t1vector3 += 13;
@@ -89,10 +90,31 @@ int main(int argc, char *argv[]) {
   assert(t1vector3 >  13 && "t1vector3 >  13");
   assert(13 <  t1vector3 && "13 <  t1vector3");
   
-  T1Vector t1vector4 = t1vector3 - t1vector1;
+  assert(t1vector1+t1vector1 == 2*t1vector1 && "t1vector1+t1vector1 = 2*t1vector1");
+  assert(t1vector1+t1vector1 == t1vector1*2 && "t1vector1+t1vector1 = t1vector1*2");
+  
+  t1vector2 = t1vector1;
+  t1vector2 *= 4;
+  assert(t1vector2/2 == t1vector1*2 && "t1vector2/2 == t1vector1*2");
+  t1vector2 /= 2;
+  assert(t1vector2 == t1vector1*2 && "t1vector2 == t1vector1*2");
   
   std::cout << t1vector1.size() << std::endl;
-
+  
+  std::vector<int> idx;
+  idx.push_back(3);
+  idx.push_back(2);
+  idx.push_back(1);
+  idx.push_back(0);
+  
+  t1vector4 = proj(t1vector1, idx);
+  t1vector4 = proj(t1vector1, static_cast<std::vector<int> const &>(idx));
+  t1vector4 = proj(static_cast<T1Vector const &>(t1vector1), idx);
+  t1vector4 = proj(static_cast<T1Vector const &>(t1vector1),
+                   static_cast<std::vector<int> const &>(idx));
+  
+  assert(proj(proj(t1vector1, idx), idx) == t1vector1 && "proj(proj(t1vector1, idx), idx) == t1vector1");
+  
   T1Map t1map;
   t1map.insert(std::make_pair(t1vector1, 13));
   for(T1Vector::iterator iter = t1vector1.begin();
