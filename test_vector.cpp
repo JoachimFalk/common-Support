@@ -38,21 +38,38 @@
 #include <map>
 
 #include <CoSupport/DataTypes/Vector.hpp>
+#include <CoSupport/Streams/stl_output_for_vector.hpp>
+
 
 typedef CoSupport::DataTypes::Vector<int> TVector;
 typedef std::map<TVector, int>            TMap;
 
 int main(int argc, char *argv[]) {
   TVector vector;
-  TMap    map;
-
   vector.push_back(1);
   vector.push_back(2);
+  std::cout << "vector: " << vector << ", vector.size(): " << vector.size() << std::endl;
+  assert(vector.size() == 2 && vector[0] == 1 && vector[1] == 2);
   vector.insert(vector.begin(), 0);
+  std::cout << "vector: " << vector << ", vector.size(): " << vector.size() << std::endl;
+  assert(vector.size() == 3 && vector[0] == 0 && vector[1] == 1 && vector[2] == 2);
   vector.insert(vector.begin(), -1);
+  std::cout << "vector: " << vector << ", vector.size(): " << vector.size() << std::endl;
+  assert(vector.size() == 4 && vector[0] ==-1 && vector[1] == 0 && vector[2] == 1 && vector[3] == 2);
+  vector.erase(--vector.end());
+  std::cout << "vector: " << vector << ", vector.size(): " << vector.size() << std::endl;
+  std::cout << "vector: " << vector << ", vector.size(): " << vector.size() << std::endl;
+  assert(vector.size() == 3 && vector[0] ==-1 && vector[1] == 0 && vector[2] == 1);
+  vector.erase(vector.end()-2);
+  std::cout << "vector: " << vector << ", vector.size(): " << vector.size() << std::endl;
+  assert(vector.size() == 2 && vector[0] ==-1 && vector[1] == 1);
+  assert(vector.front() == -1);
+  assert(vector.back() == 1);
+  vector.insert(++vector.begin(), 2, 55);
+  std::cout << "vector: " << vector << ", vector.size(): " << vector.size() << std::endl;
+  assert(vector.size() == 4 && vector[0] ==-1 && vector[1] == 55 && vector[2] == 55 && vector[3] == 1);
 
-  std::cout << vector.size() << std::endl;
-
+  TMap map;
   map.insert(std::make_pair(vector, 13));
   for(TVector::iterator iter = vector.begin();
       iter != vector.end();
