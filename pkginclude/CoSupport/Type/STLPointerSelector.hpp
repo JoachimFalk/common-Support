@@ -37,18 +37,7 @@
 #define _INCLUDED_COSUPPORT_TYPE_STLPOINTERSELECTOR_HPP
 
 #include <boost/mpl/if.hpp>
-
 #include <boost/type_traits/is_const.hpp>
-#include <boost/type_traits/add_const.hpp>
-#include <boost/type_traits/remove_const.hpp>
-
-#include <boost/type_traits/is_reference.hpp>
-#include <boost/type_traits/remove_reference.hpp>
-#include <boost/type_traits/add_reference.hpp>
-
-#include <boost/type_traits/is_pointer.hpp>
-#include <boost/type_traits/remove_pointer.hpp>
-#include <boost/type_traits/add_pointer.hpp>
 
 namespace CoSupport { namespace Type {
 

@@ -76,29 +76,26 @@ class ScalarConstant: public DataTypes::VectorInterface<
   >
 {
   typedef ScalarConstant<T> this_type;
+
   friend class DataTypes::VectorInterface<
     ScalarConstant<T>,
-    Detail::ScalarConstantRandomAccessTraversalIter<
-      typename boost::add_const<T>::type>,
-    typename boost::add_const<T>::type,
-    typename boost::add_reference<typename boost::add_const<T>::type>::type,
-    typename boost::add_reference<typename boost::add_const<T>::type>::type,
-    typename boost::add_pointer<typename boost::add_const<typename boost::remove_reference<T>::type>::type>::type,
-    typename boost::add_pointer<typename boost::add_const<typename boost::remove_reference<T>::type>::type>::type
+    typename this_type::IterImpl,
+    typename this_type::value_type,
+    typename this_type::reference,
+    typename this_type::const_reference,
+    typename this_type::pointer,
+    typename this_type::const_pointer
   >;
 public:
   ScalarConstant(T t, size_t n = 1): t(t), n(n) {}
 protected:
-  typedef Detail::ScalarConstantRandomAccessTraversalIter<
-      typename boost::add_const<T>::type>                   IterImpl;
-
   T      t;
   size_t n;
 
-  IterImpl first() const
-    { return IterImpl(t, 0); }
-  IterImpl last() const
-    { return IterImpl(t, n); }
+  typename this_type::IterImpl first() const
+    { return typename this_type::IterImpl(t, 0); }
+  typename this_type::IterImpl last() const
+    { return typename this_type::IterImpl(t, n); }
 
 /*Detail::ScalarConstantRandomAccessTraversalIter<typename std::vector<T>::iterator> del(const Detail::ScalarConstantRandomAccessTraversalIter<typename std::vector<T>::iterator> &iter)
     { ... }
