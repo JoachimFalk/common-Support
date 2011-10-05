@@ -37,7 +37,7 @@
 #define _INCLUDED_COSUPPORT_MATH_TUPLE_PO_HPP
 
 #include "exceptions.hpp"
-#include "Projection.hpp"
+#include "../../DataTypes/Projection.hpp"
 #include "ScalarConstant.hpp"
 #include "BinOp.hpp"
 //#include "../../DataTypes/EMPTY.hpp"
@@ -67,20 +67,28 @@ namespace CoSupport { namespace Math { namespace Tuple {
   }
 
   // Support for projection of POs
-  template <class B, class I>
-  class PO<Projection<B, I> >: public Projection<B, I> {
+  template <class V, class I>
+  class PO<DataTypes::Projection<V, I> >: public DataTypes::Projection<V, I> {
   public:
-    PO(B v, I i): Projection<B, I>(v,i) {}
+    PO(V v, I i): DataTypes::Projection<V, I>(v,i) {}
   };
 
-  template<class B, class I>
+  template<class V, class I>
   inline
-  PO<Projection<B const &, I const &> > proj(PO<B> const &v, I const &i)
-    { return PO<Projection<B const &, I const &> >(v,i); }
-  template<class B, class I>
+  PO<DataTypes::Projection<V const &, I const &> > proj(PO<V> const &v, I const &i)
+    { return PO<DataTypes::Projection<V const &, I const &> >(v,i); }
+  template<class V, class I>
   inline
-  PO<Projection<B       &, I const &> > proj(PO<B>       &v, I const &i)
-    { return PO<Projection<B       &, I const &> >(v,i); }
+  PO<DataTypes::Projection<V const &, I const &> > proj(PO<V> const &v, PO<I> const &i)
+    { return PO<DataTypes::Projection<V const &, I const &> >(v,i); }
+  template<class V, class I>
+  inline
+  PO<DataTypes::Projection<V       &, I const &> > proj(PO<V>       &v, I const &i)
+    { return PO<DataTypes::Projection<V       &, I const &> >(v,i); }
+  template<class V, class I>
+  inline
+  PO<DataTypes::Projection<V       &, I const &> > proj(PO<V>       &v, PO<I> const &i)
+    { return PO<DataTypes::Projection<V       &, I const &> >(v,i); }
 
   // FIXME: negative vectors?!
   template <class B1, class B2>

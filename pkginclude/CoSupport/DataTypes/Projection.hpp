@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2011 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -32,41 +32,16 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#include <iostream>
-#include <cassert>
+#ifndef _INCLUDED_COSUPPORT_DATATYPES_PROJECTION_HPP
+#define _INCLUDED_COSUPPORT_DATATYPES_PROJECTION_HPP
 
-#include <CoSupport/DataTypes/Projection.hpp>
+namespace CoSupport { namespace DataTypes {
 
-//#include <CoSupport/Math/Tuple/POVector.hpp>
+template<class V, class I>
+class Projection;
 
-#include <map>
-#include <vector>
+} } // namespace CoSupport::DataTypes
 
-typedef CoSupport::DataTypes::Projection<std::vector<std::string> &, std::vector<size_t> const &> TVector;
+#include "VectorProjection.hpp"
 
-int main(int argc, char *argv[]) {
-  std::vector<std::string> v1;
-  v1.push_back("a");
-  v1.push_back("b");
-  v1.push_back("c");
-  v1.push_back("d");
-  std::vector<size_t> v2;
-  v2.push_back(3);
-  v2.push_back(0);
-  v2.push_back(2);
-  v2.push_back(1);
-  TVector vector = proj(v1, v2);
-  
-  std::cout << vector.size() << std::endl;
-  
-  for(TVector::const_iterator iter = vector.begin();
-      iter != vector.end();
-      ++iter) {
-    if (iter != vector.begin())
-      std::cout << ", ";
-    std::cout << *iter;
-  }
-  std::cout << std::endl;
-
-  return 0;
-}
+#endif // _INCLUDED_COSUPPORT_DATATYPES_PROJECTION_HPP
