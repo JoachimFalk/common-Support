@@ -37,6 +37,8 @@
 
 #include "../../DataTypes/VectorInterface.hpp"
 #include "../../Type/STLIteratorSelector.hpp"
+#include "../../Type/STLReferenceSelector.hpp"
+#include "../../Type/STLPointerSelector.hpp"
 
 #include <boost/type_traits/remove_reference.hpp>
 
@@ -70,37 +72,33 @@ class Projection: public DataTypes::VectorInterface<
       typename Type::STLIteratorSelector<typename boost::remove_reference<V>::type>::type,
       typename boost::remove_reference<I>::type::const_iterator>,
     typename boost::remove_reference<V>::type::value_type,
-    typename boost::remove_reference<V>::type::reference,
+    typename Type::STLReferenceSelector<typename boost::remove_reference<V>::type>::type,
     typename boost::remove_reference<V>::type::const_reference,
-    typename boost::remove_reference<V>::type::pointer,
+    typename Type::STLPointerSelector<typename boost::remove_reference<V>::type>::type,
     typename boost::remove_reference<V>::type::const_pointer
   >
 {
   typedef Projection<V,I> this_type;
-public:
-  Projection(V v, I idx): v(v), idx(idx) {}
-protected:
-  typedef Detail::ProjectionRandomAccessTraversalIter<
-    typename Type::STLIteratorSelector<typename boost::remove_reference<V>::type>::type,
-    typename boost::remove_reference<I>::type::const_iterator> IterImpl;
 
   friend class DataTypes::VectorInterface<
     Projection<V, I>,
-    IterImpl,
-    typename boost::remove_reference<V>::type::value_type,
-    typename boost::remove_reference<V>::type::reference,
-    typename boost::remove_reference<V>::type::const_reference,
-    typename boost::remove_reference<V>::type::pointer,
-    typename boost::remove_reference<V>::type::const_pointer
+    typename this_type::IterImpl,
+    typename this_type::value_type,
+    typename this_type::reference,
+    typename this_type::const_reference,
+    typename this_type::pointer,
+    typename this_type::const_pointer
   >;
-
+public:
+  Projection(V v, I idx): v(v), idx(idx) {}
+protected:
   V v;
   I idx;
 
-  IterImpl first() const
-    { return IterImpl(const_cast<this_type *>(this)->v.begin(), idx.begin()); }
-  IterImpl last() const
-    { return IterImpl(const_cast<this_type *>(this)->v.begin(), idx.end()); }
+  typename this_type::IterImpl first() const
+    { return typename this_type::IterImpl(const_cast<this_type *>(this)->v.begin(), idx.begin()); }
+  typename this_type::IterImpl last() const
+    { return typename this_type::IterImpl(const_cast<this_type *>(this)->v.begin(), idx.end()); }
 
 /*Detail::ProjectionRandomAccessTraversalIter<typename std::vector<T>::iterator> del(const Detail::ProjectionRandomAccessTraversalIter<typename std::vector<T>::iterator> &iter)
     { return vector.erase(iter.iter); }

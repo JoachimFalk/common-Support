@@ -53,15 +53,6 @@ struct STLIteratorSelector {
     >::type type;
 };
 
-template <typename Container>
-struct STLReverseIteratorSelector {
-  typedef typename boost::mpl::if_<
-      boost::is_const<Container>,
-      typename Container::const_reverse_iterator,
-      typename Container::reverse_iterator
-    >::type type;
-};
-
 } } // namespace CoSupport::Type
 
 #endif // _INCLUDED_COSUPPORT_TYPE_STLITERATORSELECTOR_HPP

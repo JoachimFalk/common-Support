@@ -70,9 +70,10 @@ class VectorInterface: protected Detail::RandomAccessTraversalIterTemplateAccess
 
   friend class Detail::RandomAccessTraversalIterTemplate<this_type>;
   friend class Detail::RandomAccessTraversalIterTemplate<const this_type>;
-private:
+protected:
   // This is not a standard container type definition => hide it!
   typedef ITER_  IterImpl;      // for usage by Detail::BidirectionalTraversalIterTemplate
+private:
   //
   // Curiously Recurring Template interface.
   //
