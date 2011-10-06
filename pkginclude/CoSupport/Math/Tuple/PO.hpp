@@ -457,40 +457,65 @@ namespace CoSupport { namespace Math { namespace Tuple {
 
 } } } // namespace CoSupport::Math::Tuple
 
+//#include <iostream>
+
 namespace std {
 
   // we need this to be able to put PO<B> into std::map and std::set
   template<class B>
   struct less<CoSupport::Math::Tuple::PO<B> > {
     bool operator()(const CoSupport::Math::Tuple::PO<B> &lhs, const CoSupport::Math::Tuple::PO<B> &rhs) const {
-//    std::cout << "bool std::less<CoSupport::Math::Tuple::PO<B> >::operator()(a,b)" << std::endl;
-      return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+//    cout << "bool less<CoSupport::Math::Tuple::PO<B> >::operator()(lhs,rhs)" << endl;
+      return lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
     }
   };
 
+  // Disable operator < for std::pairs containing at least one PO element.
+  // The unmodified semantics of operator < defined in utility does not make
+  // any sense as it mixes partial order with lexigographical order.
+  // So disable operator < to warn of this conflict!
+
+  // Operator intentionally left unimplemented to force linker error!
   template<class B, class X>
-  struct less<std::pair<CoSupport::Math::Tuple::PO<B>, X> > {
+  bool
+  operator<(const pair<CoSupport::Math::Tuple::PO<B>,X> &, const pair<CoSupport::Math::Tuple::PO<B>,X> &);
+
+  // Operator intentionally left unimplemented to force linker error!
+  template<class X, class B>
+  bool
+  operator<(const pair<X,CoSupport::Math::Tuple::PO<B> > &, const pair<X,CoSupport::Math::Tuple::PO<B> > &);
+
+  // Operator intentionally left unimplemented to force linker error!
+  template<class B1, class B2>
+  bool
+  operator<(const pair<CoSupport::Math::Tuple::PO<B1>,CoSupport::Math::Tuple::PO<B2> > &,
+            const pair<CoSupport::Math::Tuple::PO<B1>,CoSupport::Math::Tuple::PO<B2> > &);
+
+/*template<class B, class X>
+  struct less<pair<CoSupport::Math::Tuple::PO<B>,X> > {
     bool operator()(
-        const std::pair<CoSupport::Math::Tuple::PO<B>, X> &lhs,
-        const std::pair<CoSupport::Math::Tuple::PO<B>, X> &rhs)
+        const pair<CoSupport::Math::Tuple::PO<B>,X> &lhs,
+        const pair<CoSupport::Math::Tuple::PO<B>,X> &rhs)
     {
-      return std::less<CoSupport::Math::Tuple::PO<B> >()(lhs.first, rhs.first) ||
-        (!std::less<CoSupport::Math::Tuple::PO<B> >()(rhs.first, lhs.first) &&
-          std::less<X>()(lhs.second, rhs.second));
+      cout << "bool less<pair<CoSupport::Math::Tuple::PO<B>,X> >::operator()(lhs,rhs)" << endl;
+      return less<CoSupport::Math::Tuple::PO<B> >()(lhs.first, rhs.first) ||
+        (!less<CoSupport::Math::Tuple::PO<B> >()(rhs.first, lhs.first) &&
+          less<X>()(lhs.second, rhs.second));
     }
   };
 
-  template<class B, class X>
-  struct less<std::pair<X, CoSupport::Math::Tuple::PO<B> > > {
+  template<class X, class B>
+  struct less<pair<X,CoSupport::Math::Tuple::PO<B> > > {
     bool operator()(
-        const std::pair<X, CoSupport::Math::Tuple::PO<B> > &lhs,
-        const std::pair<X, CoSupport::Math::Tuple::PO<B> > &rhs)
+        const pair<X,CoSupport::Math::Tuple::PO<B> > &lhs,
+        const pair<X,CoSupport::Math::Tuple::PO<B> > &rhs)
     {
-      return std::less<X>()(lhs.first, rhs.first) ||
-        (!std::less<X>()(rhs.first, lhs.first) &&
-          std::less<CoSupport::Math::Tuple::PO<B> >()(lhs.second, rhs.second));
+      cout << "bool less<pair<X,CoSupport::Math::Tuple::PO<B> >::operator()(lhs,rhs)" << endl;
+      return less<X>()(lhs.first, rhs.first) ||
+        (!less<X>()(rhs.first, lhs.first) &&
+          less<CoSupport::Math::Tuple::PO<B> >()(lhs.second, rhs.second));
     }
-  };
+  };*/
 
 };
 
