@@ -36,21 +36,55 @@
 #ifndef _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_VECTOR_HPP
 #define _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_VECTOR_HPP
 
-#include <iostream>
-#include <vector>
+#include <ostream>
+//#include <vector>
+
+namespace CoSupport { namespace DataTypes {
+
+  template<
+    class DERIVED,
+    class ITER_,
+    class VALUE,
+    class REFERENCE,
+    class CONSTREFERENCE,
+    class PTR_,
+    class CONSTPTR_
+  >
+  class VectorInterface;
+
+} } // namespace CoSupport::DataTypes
 
 namespace std {
-                                                                                
-template <typename T, class A>
-std::ostream &operator << (std::ostream &out, const std::vector<T,A> &l) {
-  out << "[Vector:";
-  for ( typename std::vector<T,A>::const_iterator iter = l.begin();
-        iter != l.end();
-        ++iter )
-    out << (iter == l.begin() ? "" : ", ") << *iter;
-  out << "]";
-  return out;
-}
+
+  template <class T, class A> class vector;
+                                                                                  
+  template <typename T, class A>
+  std::ostream &operator << (std::ostream &out, const std::vector<T,A> &l) {
+    out << "[Vector:";
+    for (typename std::vector<T,A>::const_iterator iter = l.begin();
+         iter != l.end();
+         ++iter )
+      out << (iter == l.begin() ? "" : ", ") << *iter;
+    out << "]";
+    return out;
+  }
+
+  template<
+    class D, class I,
+    class V, class R, class CR, class P, class CP
+  >
+  std::ostream &operator << (
+      std::ostream &out,
+      const CoSupport::DataTypes::VectorInterface<D,I,V,R,CR,P,CP> &l)
+  {
+    out << "[Vector:";
+    for (typename CoSupport::DataTypes::VectorInterface<D,I,V,R,CR,P,CP>::const_iterator iter = l.begin();
+         iter != l.end();
+         ++iter )
+      out << (iter == l.begin() ? "" : ", ") << *iter;
+    out << "]";
+    return out;
+  }
 
 } // namespace std
 

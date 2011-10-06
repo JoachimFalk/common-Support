@@ -35,17 +35,17 @@
 #include <iostream>
 #include <cassert>
 
-#include <CoSupport/Math/Tuple/POVector.hpp>
-#include <CoSupport/Math/Tuple/Projection.hpp>
+#include <CoSupport/DataTypes/Projection.hpp>
+
+//#include <CoSupport/Math/Tuple/POVector.hpp>
 
 #include <map>
 #include <vector>
 
-typedef CoSupport::Math::Tuple::PO<CoSupport::Math::Tuple::Projection<std::vector<std::string> &, std::vector<size_t> const &> > TVector;
-typedef std::map<TVector, int>            TMap;
+typedef CoSupport::DataTypes::Projection<std::vector<std::string> &, std::vector<size_t> const &> TVector;
 
 int main(int argc, char *argv[]) {
-  CoSupport::Math::Tuple::PO<std::vector<std::string> > v1;
+  std::vector<std::string> v1;
   v1.push_back("a");
   v1.push_back("b");
   v1.push_back("c");
@@ -68,39 +68,5 @@ int main(int argc, char *argv[]) {
   }
   std::cout << std::endl;
 
-
-/*TVector vector;
-  TMap    map;
-
-  vector.push_back(1);
-  vector.push_back(2);
-  vector.insert(vector.begin(), 0);
-  vector.insert(vector.begin(), -1);
-
-  std::cout << vector.size() << std::endl;
-
-  map.insert(std::make_pair(vector, 13));
-  for(TVector::iterator iter = vector.begin();
-      iter != vector.end();
-      ++iter) {
-    if (iter != vector.begin())
-      std::cout << ", ";
-    std::cout << *iter;
-    int v = *iter;
-    iter = vector.insert(vector.erase(iter), 2*v);
-    map.insert(std::make_pair(vector, 13));
-  }
-  std::cout << std::endl;
-  for(TVector::const_iterator iter = vector.begin();
-      iter != vector.end();
-      ++iter) {
-    if (iter != vector.begin())
-      std::cout << ", ";
-    std::cout << *iter;
-  }
-  std::cout << std::endl;
-  vector.erase(vector.begin(), vector.end());
-  assert(vector.empty());
-  map.insert(std::make_pair(vector, 13)); */
   return 0;
 }

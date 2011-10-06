@@ -1,4 +1,3 @@
-// vim: set sw=2 ts=8:
 /*
  * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
@@ -33,26 +32,29 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_TYPE_STLPOINTERSELECTOR_HPP
-#define _INCLUDED_COSUPPORT_TYPE_STLPOINTERSELECTOR_HPP
+#include <CoSupport/Streams/stl_output_for_list.hpp>
+#include <CoSupport/Streams/stl_output_for_vector.hpp>
+#include <CoSupport/Streams/stl_output_for_set.hpp>
+#include <CoSupport/Streams/stl_output_for_map.hpp>
 
-#include <boost/mpl/if.hpp>
-#include <boost/type_traits/is_const.hpp>
+#include <iostream>
 
-namespace CoSupport { namespace Type {
+#include <list>
+#include <vector>
+#include <set>
+#include <map>
 
-/// Map pointer to const_pointer if the container type is const itself.
-/// This behaviour is useful for generic programming if the implemented
-/// algorithm is independent of the constness of the provided STL container.
-template <typename Container>
-struct STLPointerSelector {
-  typedef typename boost::mpl::if_<
-      boost::is_const<Container>,
-      typename Container::const_pointer,
-      typename Container::pointer
-    >::type type;
-};
+#include <utility>
 
-} } // namespace CoSupport::Type
+int main(int argc, char *argv[]) {
+  std::list<int>              list;
+  std::vector<int>            vector;
+  std::set<int>               set;
+  std::map<int, std::string>  map;
 
-#endif // _INCLUDED_COSUPPORT_TYPE_STLPOINTERSELECTOR_HPP
+  list.push_back(1); list.push_back(2); std::cout << list << std::endl;
+  vector.push_back(1); vector.push_back(2); std::cout << vector << std::endl;
+  set.insert(1); set.insert(2); std::cout << set << std::endl;
+  map.insert(std::make_pair(1, "A")); map.insert(std::make_pair(2, "B")); std::cout << map << std::endl;
+  return 0;
+}

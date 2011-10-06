@@ -1,6 +1,5 @@
-// vim: set sw=2 ts=8:
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2011 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -33,26 +32,16 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_TYPE_STLPOINTERSELECTOR_HPP
-#define _INCLUDED_COSUPPORT_TYPE_STLPOINTERSELECTOR_HPP
+#ifndef _INCLUDED_COSUPPORT_DATATYPES_PROJECTION_HPP
+#define _INCLUDED_COSUPPORT_DATATYPES_PROJECTION_HPP
 
-#include <boost/mpl/if.hpp>
-#include <boost/type_traits/is_const.hpp>
+namespace CoSupport { namespace DataTypes {
 
-namespace CoSupport { namespace Type {
+template<class V, class I>
+class Projection;
 
-/// Map pointer to const_pointer if the container type is const itself.
-/// This behaviour is useful for generic programming if the implemented
-/// algorithm is independent of the constness of the provided STL container.
-template <typename Container>
-struct STLPointerSelector {
-  typedef typename boost::mpl::if_<
-      boost::is_const<Container>,
-      typename Container::const_pointer,
-      typename Container::pointer
-    >::type type;
-};
+} } // namespace CoSupport::DataTypes
 
-} } // namespace CoSupport::Type
+#include "VectorProjection.hpp"
 
-#endif // _INCLUDED_COSUPPORT_TYPE_STLPOINTERSELECTOR_HPP
+#endif // _INCLUDED_COSUPPORT_DATATYPES_PROJECTION_HPP

@@ -1,6 +1,6 @@
-// vim: set sw=2 ts=8:
+/* vim: map sw=2 ts=8: */
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2010 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -33,26 +33,27 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_TYPE_STLPOINTERSELECTOR_HPP
-#define _INCLUDED_COSUPPORT_TYPE_STLPOINTERSELECTOR_HPP
+#ifndef _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_MAP_HPP
+#define _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_MAP_HPP
 
-#include <boost/mpl/if.hpp>
-#include <boost/type_traits/is_const.hpp>
+#include <ostream>
+//#include <map>
 
-namespace CoSupport { namespace Type {
+namespace std {
 
-/// Map pointer to const_pointer if the container type is const itself.
-/// This behaviour is useful for generic programming if the implemented
-/// algorithm is independent of the constness of the provided STL container.
-template <typename Container>
-struct STLPointerSelector {
-  typedef typename boost::mpl::if_<
-      boost::is_const<Container>,
-      typename Container::const_pointer,
-      typename Container::pointer
-    >::type type;
-};
+  template <typename K, typename T, class C, class A> class map;
 
-} } // namespace CoSupport::Type
+  template <typename K, typename T, class C, class A>
+  std::ostream &operator << (std::ostream &out, const std::map<K,T,C,A> &l) {
+    out << "[Map:";
+    for ( typename std::map<K,T,C,A>::const_iterator iter = l.begin();
+          iter != l.end();
+          ++iter )
+      out << (iter == l.begin() ? "" : ", ") << iter->first << "=>" << iter->second;
+    out << "]";
+    return out;
+  }
 
-#endif // _INCLUDED_COSUPPORT_TYPE_STLPOINTERSELECTOR_HPP
+} // namespace std
+
+#endif // _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_MAP_HPP

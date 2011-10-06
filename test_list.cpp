@@ -37,6 +37,7 @@
 
 #include <map>
 
+#include <CoSupport/Streams/stl_output_for_list.hpp>
 #include <CoSupport/DataTypes/List.hpp>
 
 typedef CoSupport::DataTypes::List<int> TList;
@@ -44,15 +45,30 @@ typedef std::map<TList, int>            TMap;
 
 int main(int argc, char *argv[]) {
   TList list;
-  TMap  map;
-
   list.push_back(1);
   list.push_back(2);
-  list.push_front(0);
+  std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+//assert(list.size() == 2 && list[0] == 1 && list[1] == 2);
+  list.insert(list.begin(), 0);
+  std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+//assert(list.size() == 3 && list[0] == 0 && list[1] == 1 && list[2] == 2);
   list.push_front(-1);
+  std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+//assert(list.size() == 4 && list[0] ==-1 && list[1] == 0 && list[2] == 1 && list[3] == 2);
+  list.erase(--list.end());
+  std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+//assert(list.size() == 3 && list[0] ==-1 && list[1] == 0 && list[2] == 1);
+  list.erase(--(--list.end()));
+  std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+//assert(list.size() == 2 && list[0] ==-1 && list[1] == 1);
+  assert(list.front() == -1);
+  assert(list.back() == 1);
+  list.insert(++list.begin(), 2, 55);
+  std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+//assert(list.size() == 4 && list[0] ==-1 && list[1] == 55 && list[2] == 55 && list[3] == 1);
 
-  std::cout << list.size() << std::endl;
-
+  TMap  map;
   map.insert(std::make_pair(list, 13));
   for(TList::iterator iter = list.begin();
       iter != list.end();

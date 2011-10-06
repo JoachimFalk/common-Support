@@ -58,6 +58,7 @@ noinst_PROGRAMS=			\
 	test_arrayfifo			\
 	test_interval			\
 	test_idpool			\
+	test_stl_output_for_xxx		\
 	test_facade			\
 	test_typename			\
 	test_value			\
@@ -203,6 +204,9 @@ test_interval_LDADD	=
 
 test_idpool_SOURCES	= test_idpool.cpp
 test_idpool_LDADD	= libcosupport-allocators.la
+
+test_stl_output_for_xxx_SOURCES	= test_stl_output_for_xxx.cpp
+test_stl_output_for_xxx_LDADD	=
 
 test_facade_SOURCES	= test_facade.cpp test_facade_lib.cpp
 test_facade_LDADD	= libcosupport-smartptr.la
