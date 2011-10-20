@@ -40,6 +40,7 @@
 #include "../../DataTypes/Projection.hpp"
 #include "ScalarConstant.hpp"
 #include "BinOp.hpp"
+#include "UnOp.hpp"
 //#include "../../DataTypes/EMPTY.hpp"
 
 #include <utility>
@@ -253,6 +254,18 @@ namespace CoSupport { namespace Math { namespace Tuple {
     return PO<BinOpVector<B const &, ScalarConstant<typename B::value_type>, Detail::OpDiv> >
       (lhs, PO<ScalarConstant<typename B::value_type> >(rhs, lhs.size()));
   }
+
+  // Support for unary negation
+  template <class B, template<class> class OP>
+  class PO<UnOpVector<B,OP> >: public UnOpVector<B,OP> {
+  public:
+    PO(B tuple): UnOpVector<B,OP>(tuple) {}
+  };
+
+  template <class B>
+  inline
+  PO<UnOpVector<B const &, Detail::OpNeg> > operator -(PO<B> const &tuple)
+    { return PO<UnOpVector<B const &, Detail::OpNeg> >(tuple); }
 
   /*template<class B1, class B2>
   inline
