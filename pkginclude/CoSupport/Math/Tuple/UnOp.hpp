@@ -99,7 +99,7 @@ class UnOpVector: public DataTypes::VectorInterface<
   >
 {
   typedef UnOpVector<V, OP> this_type;
-  friend DataTypes::VectorInterface<
+  friend class DataTypes::VectorInterface<
       UnOpVector<V, OP>,
       Detail::UnOpRandomAccessTraversalIter<
         typename boost::remove_reference<V>::type::const_iterator,

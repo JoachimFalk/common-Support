@@ -100,6 +100,9 @@ int main(int argc, char *argv[]) {
   assert(t1vector2 == t1vector1*2 && "t1vector2 == t1vector1*2");
   
   std::cout << t1vector1.size() << std::endl;
+
+  t1vector3 = -t1vector1;
+  assert(t1vector3 + t1vector1 == 0);
   
   std::vector<int> idx;
   idx.push_back(3);
