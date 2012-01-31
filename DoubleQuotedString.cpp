@@ -37,6 +37,7 @@
 #include <string>
 #include <limits.h>
 #include <ctype.h>
+#include <cstdio>
 
 #include <CoSupport/String/DoubleQuotedString.hpp>
 

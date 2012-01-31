@@ -40,6 +40,7 @@
 
 #include <iostream>
 
+#define BOOST_IOSTREAMS_USE_DEPRECATED
 #include <boost/iostreams/device/file_descriptor.hpp>
 #include <boost/iostreams/stream_buffer.hpp>
 #include <boost/iostreams/stream.hpp>

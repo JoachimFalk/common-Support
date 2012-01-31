@@ -112,10 +112,10 @@ void TemplateProcessor::fillIn(
       // Append stuff before template match
       templateStringLineNew.append(
         templateStringLine.begin() + templateStringLinePos,
-        templateStringLine.begin() + iter->position(0));
+        templateStringLine.begin() + iter->position((std::size_t) 0));
       // Advance templateStringLinePos after "<@TEMPLATEVAR@>"
       templateStringLinePos =
-        iter->position(0) + iter->length(0);
+        iter->position((std::size_t) 0) + iter->length(0);
       // Find template variable definition
       std::map<std::string, std::string>::const_iterator viter =
         fields.find((*iter)[1]);
