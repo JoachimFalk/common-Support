@@ -22,16 +22,12 @@ ACJF_CHECK_CROSSTOOL([CXX], [c++])
 ACJF_CHECK_CROSSTOOL([AR], [ar])
 ACJF_CHECK_CROSSTOOL([RANLIB], [ranlib])
 ACJF_CHECK_CROSSTOOL([NM], [nm])
-AC_PROG_CXXCPP
-AC_PROG_CPP
-# Checks for programs.
-#AC_PROG_LIBTOOL
-#AC_PROG_INSTALL
-#AC_PROG_LN_S
-#AC_PROG_MAKE_SET
 
 AM_INIT_AUTOMAKE
-AM_PROG_LIBTOOL
+AC_PROG_CXXCPP
+AC_PROG_CPP
+AC_PROG_LIBTOOL
+PKG_PROG_PKG_CONFIG
 
 dnl AC_DISABLE_STATIC
 # We need AC_ENABLE_SHARED for the libsgx python bindings
@@ -417,7 +413,7 @@ if test x"$acjf_cosupport_found_pkg_systemc" = x"yes"; then
 fi
 
 SUBDIRS="$subdirs"
-AC_SUBST(SUBDIRS)
+AC_SUBST([SUBDIRS])
 
 AC_CONFIG_FILES([
   pkginclude/Makefile
