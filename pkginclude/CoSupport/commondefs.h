@@ -107,9 +107,9 @@
                             ((sizeof(unsigned long long)-sizeof(TYPE))*CHAR_BIT)))
 # define MIN_UTYPE(TYPE) ((unsigned long long) 0)
 
-# define LONGLONG_MAX  MAX_STYPE(long long)
-# define LONGLONG_MIN  MIN_STYPE(long long)
-# define ULONGLONG_MAX MAX_UTYPE(unsigned long long)
+//# define LONGLONG_MAX  MAX_STYPE(long long)
+//# define LONGLONG_MIN  MIN_STYPE(long long)
+//# define ULONGLONG_MAX MAX_UTYPE(unsigned long long)
 
 #else // !defined(HAVE_LONG_LONG)
 # define MAX_STYPE(TYPE) ((long) ((unsigned long) -1 >>					\
