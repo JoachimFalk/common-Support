@@ -40,6 +40,7 @@
 #include <sstream>
 #include <string>
 #include <exception>
+#include <typeinfo>
 
 #include "TypeName.hpp"
 
@@ -50,6 +51,11 @@ struct InvalidConversion: public std::exception {
 
 template <typename T>
 struct InvalidConversionTo: public InvalidConversion {
+  const char *what() const throw() {
+    std::stringstream str;
+    str << "CoSupport::String::InvalidConversionTo<" << typeid(T).name() << ">";
+    return str.str().c_str();
+  }
 };
 
 template <typename T>
