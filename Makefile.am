@@ -170,6 +170,7 @@ libcosupport_streams_la_LIBADD =		\
 libcosupport_string_la_SOURCES =		\
 	TemplateProcessor.cpp			\
 	UniquePool.cpp				\
+	UniqueCIdentifierPool.cpp		\
 	DoubleQuotedString.cpp			\
 	QuotedString.cpp			\
 	SingleQuotedString.cpp			\

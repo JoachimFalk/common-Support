@@ -93,6 +93,7 @@ nobase_include_HEADERS = \
 	CoSupport/String/TypeName.hpp \
 	CoSupport/String/UnQuotedString.hpp \
 	CoSupport/String/UniquePool.hpp \
+	CoSupport/String/UniqueCIdentifierPool.hpp \
 	CoSupport/String/convert.hpp \
 	CoSupport/Tracing/PtpTracer.hpp	\
 	CoSupport/Tracing/TaskTracer.hpp	\
