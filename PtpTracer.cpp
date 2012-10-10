@@ -83,9 +83,19 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
       std::string start_stop = "";
 
       // sum up latencies
-      for(size_t count = 0; count < stopTimes.size(); ++count){
+      int countMax = 0;
+      if(stopTimes.size() < startTimes.size()){
+        countMax = stopTimes.size();
+      }else{
+        countMax = startTimes.size();
+      }
+      for(size_t count = 0; count < countMax; ++count){
         const sc_time& start = startTimes[count];
         const sc_time& stop  = stopTimes[count];
+        if(&start == 0){
+          std::cout<<"strange error for " << this->name << " no startTime, but a stopTime (" << stop << "!" << " last start was: " << startTimes[count-1] << std::endl;
+          std::cout<<"and it has: " << startTimes.size() << " start and stop: " << stopTimes.size() << std::endl;
+        }
         if(start > stop) {
           continue;
         }
