@@ -98,6 +98,19 @@ namespace CoSupport { namespace boost {
         result_type operator()(const typename graph_traits<G>::in_edge_iterator &iter) const
           { return result_type(*iter, !IET); }
       };
+      struct IncrementVisit {
+        typedef bool result_type;
+
+        IterTemplate<IET> &i;
+
+        IncrementVisit(IterTemplate<IET> &i): i(i) {}
+
+        result_type operator()(typename graph_traits<G>::out_edge_iterator &iter) const
+          { return ++iter == i.iterOEnd; }
+        result_type operator()(typename graph_traits<G>::in_edge_iterator &iter) const
+          { ++iter; return false; }
+      };
+
     public:
       IterTemplate() {}
       IterTemplate(
@@ -126,14 +139,8 @@ namespace CoSupport { namespace boost {
 //      void advance( int n )
 //        { i += n; }
       void increment() {
-        if (boost::get<typename graph_traits<G>::out_edge_iterator>(&iterCurr) != NULL) {
-          if (++boost::get<typename graph_traits<G>::out_edge_iterator>(iterCurr) ==
-              iterOEnd)
-            iterCurr = iterIBegin;
-        } else {
-          assert(boost::get<typename graph_traits<G>::in_edge_iterator>(&iterCurr) != NULL);
-          ++boost::get<typename graph_traits<G>::in_edge_iterator>(iterCurr);
-        }
+        if (apply_visitor(IncrementVisit(*this), iterCurr))
+          iterCurr = iterIBegin;
       }
 //      void decrement()
 //        { i--; }
@@ -168,7 +175,9 @@ namespace CoSupport { namespace boost {
       typedef typename boost::graph_traits<G>::directed_category directed;
       BOOST_STATIC_ASSERT((boost::is_convertible<directed, boost::directed_tag>::value)); 
     }
-    
+
+    static
+    vertex_descriptor null_vertex() { return G::null_vertex(); }
   };
 
   template <class G>
