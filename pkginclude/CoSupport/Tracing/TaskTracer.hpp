@@ -58,11 +58,12 @@ public:
   {
   }
 
-  void createCsvReport(std::ostream &stream,
+  void createCsvReport(std::ostream &stream, std::ostream &absoluteStream,
       const std::vector<std::string> &sequence)
   {
     stream << resource_ << "/";
-    PtpTracer::createCsvReport(stream, sequence);
+    absoluteStream << resource_ << "/";
+    PtpTracer::createCsvReport(stream, absoluteStream, sequence);
   }
 
   Ticket releaseTask()

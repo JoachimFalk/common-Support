@@ -66,7 +66,7 @@ public:
   /*
    * creates a CVS-Report from the Simulation-results
    */
-  virtual void createCsvReport(std::ostream &stream,
+  virtual void createCsvReport(std::ostream &stream, std::ostream &absoluteStream,
        const std::vector<std::string> &sequence) = 0;
 
   /*

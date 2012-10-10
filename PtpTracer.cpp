@@ -60,7 +60,7 @@ std::string toString(const T& obj) {
 }
 
 //
-void PtpTracer::createCsvReport(std::ostream &result,
+void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStream,
     const std::vector<std::string> &sequence)
 {
   std::map<std::string, std::string> resultMap;
@@ -81,11 +81,22 @@ void PtpTracer::createCsvReport(std::ostream &result,
       size_t sampleCount = 0;
 
       std::string start_stop = "";
+      std::string absoluteStart_stop = "";
 
       // sum up latencies
-      for(size_t count = 0; count < stopTimes.size(); ++count){
+      int countMax = 0;
+      if(stopTimes.size() < startTimes.size()){
+        countMax = stopTimes.size();
+      }else{
+        countMax = startTimes.size();
+      }
+      for(size_t count = 0; count < countMax; ++count){
         const sc_time& start = startTimes[count];
         const sc_time& stop  = stopTimes[count];
+        if(&start == 0){
+          std::cout<<"strange error for " << this->name << " no startTime, but a stopTime (" << stop << "!" << " last start was: " << startTimes[count-1] << std::endl;
+          std::cout<<"and it has: " << startTimes.size() << " start and stop: " << stopTimes.size() << std::endl;
+        }
         if(start > stop) {
           continue;
         }
@@ -98,8 +109,10 @@ void PtpTracer::createCsvReport(std::ostream &result,
         if(last_trip > max_trip) max_trip = last_trip;
 
         start_stop = start_stop + toString(last_trip.to_default_time_units());
+        absoluteStart_stop = absoluteStart_stop + toString(start.to_default_time_units()) + "," + toString(stop.to_default_time_units());
         if(count < stopTimes.size()-1){
           start_stop = start_stop + ",";
+          absoluteStart_stop = absoluteStart_stop + ";";
         }
 
       }
@@ -118,12 +131,14 @@ void PtpTracer::createCsvReport(std::ostream &result,
 
       // write the csv line
       result << this->name;
+      absoluteStream << this->name;
       // write average, max and min latency starting with a tabulator
       for(std::vector<std::string>::const_iterator iter
           = sequence.begin(); iter != sequence.end(); ++iter){
         assert(resultMap.find(*iter) != resultMap.end());
         result << "\t" << resultMap[*iter];
       }
+      absoluteStream << absoluteStart_stop << std::endl;
       result << std::endl;
     }
   }
