@@ -385,7 +385,7 @@ AM_CONDITIONAL([COSUPPORT_ENABLE_SYSTEMC], [test x"$acjf_cosupport_found_pkg_sys
 # consistency for Examples and Testcases
 if test x"$acjf_cosupport_found_pkg_systemc" = x"yes"; then
   AC_DEFINE([COSUPPORT_ENABLE_SYSTEMC], [yes], [Defined if SystemC support is enabled])
-  AC_CONFIG_FILES([libcosupport-systemc.pc])
+  AC_CONFIG_FILES([pkgconfig/libcosupport-systemc.pc])
 fi
 
 ACJF_CHECK_LIB_XERCES(
@@ -397,7 +397,7 @@ AM_CONDITIONAL([COSUPPORT_ENABLE_XERCES], [test x"$acjf_cosupport_found_pkg_xerc
 # consistency for Examples and Testcases
 if test x"$acjf_cosupport_found_pkg_xerces" = x"yes"; then
   AC_DEFINE([COSUPPORT_ENABLE_XERCES], [yes], [Defined if xerces support is enabled])
-  AC_CONFIG_FILES([libcosupport-xerces.pc])
+  AC_CONFIG_FILES([pkgconfig/libcosupport-xerces.pc])
 fi
 
 ACJF_CHECK_LIB_XALAN(
@@ -409,7 +409,7 @@ AM_CONDITIONAL([COSUPPORT_ENABLE_XALAN], [test x"$acjf_cosupport_found_pkg_xalan
 # consistency for Examples and Testcases
 if test x"$acjf_cosupport_found_pkg_systemc" = x"yes"; then
   AC_DEFINE([COSUPPORT_ENABLE_XALAN], [yes], [Defined if xalan support is enabled])
-  AC_CONFIG_FILES([libcosupport-xalan.pc])
+  AC_CONFIG_FILES([pkgconfig/libcosupport-xalan.pc])
 fi
 
 SUBDIRS="$subdirs"
@@ -418,14 +418,14 @@ AC_SUBST([SUBDIRS])
 AC_CONFIG_FILES([
   pkginclude/Makefile
   Makefile
-  libcosupport.pc
-  libcosupport-initializer.pc
-  libcosupport-smartptr.pc
-  libcosupport-streams.pc
-  libcosupport-string.pc
-  libcosupport-math.pc
-  libcosupport-allocators.pc
-  libcosupport-tracing.pc
+  pkgconfig/libcosupport.pc
+  pkgconfig/libcosupport-initializer.pc
+  pkgconfig/libcosupport-smartptr.pc
+  pkgconfig/libcosupport-streams.pc
+  pkgconfig/libcosupport-string.pc
+  pkgconfig/libcosupport-math.pc
+  pkgconfig/libcosupport-allocators.pc
+  pkgconfig/libcosupport-tracing.pc
 ])
 
 ACJF_DONE
