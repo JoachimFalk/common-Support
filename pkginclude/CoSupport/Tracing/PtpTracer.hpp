@@ -107,7 +107,7 @@ public:
   /**
    * Creates a CSV-Report (type,value) with some calculates results of the measures (average, max_trip, min_trip)
    */
-  void createCsvReport(std::ostream &stream,
+  void createCsvReport(std::ostream &stream, std::ostream &absoluteStream,
       const std::vector<std::string> &sequence);
 
   std::string getRAWData();

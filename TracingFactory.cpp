@@ -65,6 +65,10 @@ void TracingFactory::setTraceFile(std::string fileName){
   filename = fileName;
 }
 
+void TracingFactory::setAbsoluteTraceFile(std::string fileName){
+  absoluteFilename = fileName;
+}
+
 //
 PtpTracer::Ptr TracingFactory::createPtpTracer(std::string key){
   if (ptpMap.find(key) == ptpMap.end()){
@@ -92,7 +96,8 @@ TaskTracer::Ptr TracingFactory::createTaskTracer(std::string task,
 TracingFactory::~TracingFactory(){
   //assert(startTimes.size() == stopTimes.size());
   std::ofstream traceStream(filename.c_str());
-  if( traceStream.good() ){
+  std::ofstream aTraceStream(absoluteFilename.c_str());
+  if( traceStream.good() && aTraceStream.good() ){
     traceStream << "#\n" << "# PtpTacer";
     std::vector<std::string> sequence;
     sequence.push_back(Tracer::AVG_LATENCY);
@@ -110,7 +115,8 @@ TracingFactory::~TracingFactory(){
 
     // for each PtpTracer: write data
     for(PtpMap::const_iterator it = ptpMap.begin(); it != ptpMap.end(); ++it) {
-      it->second->createCsvReport(traceStream, sequence);
+      it->second->createCsvReport(traceStream, aTraceStream, sequence);
+      it->second->getRAWData();
     }
 
     // for each TaskTracer: write data
@@ -120,7 +126,7 @@ TracingFactory::~TracingFactory(){
       const TaskTracerMap &taskTracerMap = resIter->second;
       for (TaskTracerMap::const_iterator it = taskTracerMap.begin(); it
           != taskTracerMap.end(); ++it) {
-        it->second->createCsvReport(traceStream, sequence);
+        it->second->createCsvReport(traceStream, aTraceStream, sequence);
       }
     }
 

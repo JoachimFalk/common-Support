@@ -76,6 +76,7 @@ private:
 
   //std::ofstream traceStream;
   std::string filename;
+  std::string absoluteFilename;
 
 
 public:
@@ -97,6 +98,12 @@ public:
    * setting a file name is required, no trace output will be written otherwise
    */
   void setTraceFile(std::string fileName);
+
+  /**
+     * set file name for absolute timestamp trace output (e.g.
+     * setting a file name is required, no trace output will be written otherwise
+     */
+  void setAbsoluteTraceFile(std::string fileName);
 
   PtpTracer::Ptr createPtpTracer(std::string id);
 
