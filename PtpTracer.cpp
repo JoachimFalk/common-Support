@@ -138,7 +138,7 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
         assert(resultMap.find(*iter) != resultMap.end());
         result << "\t" << resultMap[*iter];
       }
-      absoluteStream << absoluteStart_stop << std::endl;
+      absoluteStream << "\t" << absoluteStart_stop << std::endl;
       result << std::endl;
     }
   }
