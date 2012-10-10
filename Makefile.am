@@ -56,11 +56,6 @@ AM_LDFLAGS=				\
 	     -e 's@^\(includedir\s*=\).*@\1$(includedir)@'	\
 	  < $^ > $@
 
-clean-local: clean-pkgconfig
-
-clean-pkgconfig:
-	@rm -f $(nodist_pkgconfig_DATA)
-
 pkgconfigdir = $(libdir)/pkgconfig
 
 nodist_pkgconfig_DATA =			\
@@ -267,7 +262,7 @@ test_po_SOURCES		= test_po.cpp
 #  possible, too (e.g., Perl).
 noinst_SCRIPTS=autotest.sh
 
-CLEANFILES=$(noinst_SCRIPTS)
+CLEANFILES=$(noinst_SCRIPTS) $(nodist_pkgconfig_DATA)
 
 autotest.sh: $(srcdir)/autotest-sh
 	rm -f $@
