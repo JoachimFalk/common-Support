@@ -25,6 +25,13 @@ include ../BuildSystem/doxygen.am
 
 SUBDIRS=pkginclude .
 
+LIBCOSUPPORT_INITIALIZER_LIBS   := $(shell PKG_CONFIG_PATH=$(builddir)/pkgconfig $(PKG_CONFIG) libcosupport-initializer --libs --static)
+LIBCOSUPPORT_INITIALIZER_CFLAGS := $(shell PKG_CONFIG_PATH=$(builddir)/pkgconfig $(PKG_CONFIG) libcosupport-initializer --cflags)
+
+dummy:
+	echo "LIBCOSUPPORT_INITIALIZER_LIBS:   $(LIBCOSUPPORT_INITIALIZER_LIBS)"
+	echo "LIBCOSUPPORT_INITIALIZER_CFLAGS: $(LIBCOSUPPORT_INITIALIZER_CFLAGS)"
+
 # This is only needed if there is a configure.in in this directory
 ACLOCAL_AMFLAGS=-I ../BuildSystem/m4
 
@@ -41,6 +48,30 @@ AM_LDFLAGS=				\
 	$(BOOST_LDFLAGS)		\
 	$(SYSTEMC_LDFLAGS)		\
 	$(XERCES_LDFLAGS)
+
+%.pc: pkgconfig/%.pc
+	@sed -e 's@^\(prefix\s*=\).*@\1$(prefix)@'		\
+	     -e 's@^\(exec_prefix\s*=\).*@\1$(exec_prefix)@'	\
+	     -e 's@^\(libdir\s*=\).*@\1$(libdir)@'		\
+	     -e 's@^\(includedir\s*=\).*@\1$(includedir)@'	\
+	  < $^ > $@
+
+clean-local: clean-pkgconfig
+
+clean-pkgconfig:
+	@rm -f $(nodist_pkgconfig_DATA)
+
+pkgconfigdir = $(libdir)/pkgconfig
+
+nodist_pkgconfig_DATA =			\
+	libcosupport.pc			\
+	libcosupport-initializer.pc	\
+	libcosupport-smartptr.pc	\
+	libcosupport-streams.pc		\
+	libcosupport-string.pc		\
+	libcosupport-math.pc		\
+	libcosupport-allocators.pc	\
+	libcosupport-tracing.pc
 
 lib_LTLIBRARIES=			\
 	libcosupport.la			\
@@ -77,18 +108,24 @@ libcosupport_la_LIBADD =			\
 	libcosupport-tracing.la
 
 if COSUPPORT_ENABLE_XERCES
+nodist_pkgconfig_DATA +=			\
+	libcosupport-xerces.pc
 libcosupport_la_LIBADD +=			\
 	libcosupport-xerces.la
 lib_LTLIBRARIES +=				\
 	libcosupport-xerces.la
 endif
 if COSUPPORT_ENABLE_XALAN
+nodist_pkgconfig_DATA +=			\
+	libcosupport-xalan.pc
 libcosupport_la_LIBADD +=			\
 	libcosupport-xalan.la
 lib_LTLIBRARIES +=				\
 	libcosupport-xalan.la
 endif
 if COSUPPORT_ENABLE_SYSTEMC
+nodist_pkgconfig_DATA +=			\
+	libcosupport-systemc.pc
 libcosupport_la_LIBADD +=			\
 	libcosupport-systemc.la
 lib_LTLIBRARIES +=				\

@@ -1,18 +1,17 @@
 # This is a comment
 prefix=/invalid
 exec_prefix=/invalid
-libdir=@abs_builddir@/.libs
-includedir=@abs_srcdir@/pkginclude
+libdir=@abs_top_builddir@/.libs
+includedir=@abs_top_srcdir@/pkginclude
 
 # human-readable name
-Name: libcosupport-string
+Name: libcosupport-allocators
 # human-readable description
 Description: Library of supporting infrastructure of the chair of HW/SW CoDesign at Uni Erlangen
 Version: @PACKAGE_VERSION@
 URL: http://www12.informatik.uni-erlangen.de/research/systemoc
-#Conflicts: foobar <= 4.5
 #Requires: glib-2.0 = 1.3.1
-#Requires.private:
-Libs: -L${libdir} -lcosupport-string
-Libs.private: @BOOST_LDFLAGS@ -lboost_regex@BOOST_LIBMTPOSTFIX@
-Cflags: -I${includedir} @BOOST_INCLUDE@
+#Conflicts: foobar <= 4.5
+Libs: -L${libdir} -lcosupport-allocators
+#Libs.private: -lm
+Cflags: -I${includedir}
