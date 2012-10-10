@@ -60,7 +60,7 @@ std::string toString(const T& obj) {
 }
 
 //
-void PtpTracer::createCsvReport(std::ostream &result,
+void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStream,
     const std::vector<std::string> &sequence)
 {
   std::map<std::string, std::string> resultMap;
