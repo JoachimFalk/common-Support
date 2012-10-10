@@ -62,6 +62,7 @@ public:
       const std::vector<std::string> &sequence)
   {
     stream << resource_ << "/";
+    absoluteStream << resource_ << "/";
     PtpTracer::createCsvReport(stream, absoluteStream, sequence);
   }
 
