@@ -64,6 +64,7 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
     const std::vector<std::string> &sequence)
 {
   std::map<std::string, std::string> resultMap;
+  std::string absoluteStart_stop = "";
 
   if (!stopTimes.empty()) {
     if(startTimes.empty()){
@@ -81,7 +82,6 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
       size_t sampleCount = 0;
 
       std::string start_stop = "";
-      std::string absoluteStart_stop = "";
 
       // sum up latencies
       int countMax = 0;
@@ -128,6 +128,8 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
       resultMap[Tracer::MIN_LATENCY] = toString(min_trip.to_default_time_units());
       resultMap[Tracer::START_STOP] = start_stop;
 
+    }
+  }
 
       // write the csv line
       result << this->name;
@@ -140,8 +142,6 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
       }
       absoluteStream << "\t" << absoluteStart_stop << std::endl;
       result << std::endl;
-    }
-  }
 }
 
 /**
@@ -150,7 +150,6 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
  */
 std::string PtpTracer::getRAWData(){
     std::stringstream result;
-
     if (!stopTimes.empty() && !startTimes.empty()) {
     sc_time last_trip;
     unsigned int count = 0;
