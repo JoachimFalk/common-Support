@@ -131,6 +131,7 @@ TracingFactory::~TracingFactory(){
     }
 
     traceStream.close();
+    aTraceStream.close();
   }
 
   ptpMap.clear();
