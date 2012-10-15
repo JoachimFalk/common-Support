@@ -65,6 +65,8 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
 {
   std::map<std::string, std::string> resultMap;
   std::string absoluteStart_stop = "";
+  result << this->name;
+  absoluteStream << this->name;
 
   if (!stopTimes.empty()) {
     if(startTimes.empty()){
@@ -127,19 +129,16 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
       resultMap[Tracer::MAX_LATENCY] = toString(max_trip.to_default_time_units());
       resultMap[Tracer::MIN_LATENCY] = toString(min_trip.to_default_time_units());
       resultMap[Tracer::START_STOP] = start_stop;
-
-    }
-  }
-
       // write the csv line
-      result << this->name;
-      absoluteStream << this->name;
       // write average, max and min latency starting with a tabulator
       for(std::vector<std::string>::const_iterator iter
           = sequence.begin(); iter != sequence.end(); ++iter){
         assert(resultMap.find(*iter) != resultMap.end());
         result << "\t" << resultMap[*iter];
       }
+    }
+  }
+
       absoluteStream << "\t" << absoluteStart_stop << std::endl;
       result << std::endl;
 }
