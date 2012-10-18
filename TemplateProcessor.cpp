@@ -46,7 +46,7 @@ namespace CoSupport { namespace String {
 
 namespace {
 
-  static const boost::regex reTemplateVariable("<@([[:alnum:]]+)@>");
+  static const boost::regex reTemplateVariable("<@([[:alnum:]_]+)@>");
 
 } // namespace Anonymous
 
