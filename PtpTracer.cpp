@@ -111,7 +111,7 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
         if(last_trip > max_trip) max_trip = last_trip;
 
         start_stop = start_stop + toString(last_trip.to_default_time_units());
-        absoluteStart_stop = absoluteStart_stop + toString(start.to_default_time_units()) + "," + toString(stop.to_default_time_units());
+        absoluteStart_stop = absoluteStart_stop + toString(((long)start.to_default_time_units())) + "," + toString(((long)stop.to_default_time_units()));
         if(count < stopTimes.size()-1){
           start_stop = start_stop + ",";
           absoluteStart_stop = absoluteStart_stop + ";";
