@@ -66,7 +66,7 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
   std::map<std::string, std::string> resultMap;
   std::string absoluteStart_stop = "";
   result << this->name;
-  absoluteStream << this->name;
+  absoluteStream << this->name <<"\t";
 
   if (!stopTimes.empty()) {
     if(startTimes.empty()){
@@ -111,10 +111,10 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
         if(last_trip > max_trip) max_trip = last_trip;
 
         start_stop = start_stop + toString(last_trip.to_default_time_units());
-        absoluteStart_stop = absoluteStart_stop + toString(((long)start.to_default_time_units())) + "," + toString(((long)stop.to_default_time_units()));
+        absoluteStream << toString(((long)start.to_default_time_units())) + "," + toString(((long)stop.to_default_time_units()));
         if(count < stopTimes.size()-1){
           start_stop = start_stop + ",";
-          absoluteStart_stop = absoluteStart_stop + ";";
+          absoluteStream << ";";
         }
 
       }
@@ -139,7 +139,7 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
     }
   }
 
-      absoluteStream << "\t" << absoluteStart_stop << std::endl;
+      absoluteStream << std::endl;
       result << std::endl;
 }
 
