@@ -64,7 +64,6 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
     const std::vector<std::string> &sequence)
 {
   std::map<std::string, std::string> resultMap;
-  std::string absoluteStart_stop = "";
   result << this->name;
   absoluteStream << this->name <<"\t";
 
