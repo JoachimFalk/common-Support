@@ -142,6 +142,8 @@ std::ostream &operator <<(std::ostream &out, const DoubleQuotedString &src) {
             out << "\\r"; break;
           case '\v':
             out << "\\v"; break;
+          case '"':
+            out << "\\\""; break;
           default:
             if (isprint(src[n]))
               out << src[n];
