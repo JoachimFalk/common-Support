@@ -94,83 +94,83 @@ noinst_PROGRAMS=			\
 	test_po
 
 libcosupport_la_SOURCES =
-libcosupport_la_LIBADD =			\
-	libcosupport-initializer.la		\
-	libcosupport-smartptr.la		\
-	libcosupport-streams.la			\
-	libcosupport-string.la			\
-	libcosupport-allocators.la		\
+libcosupport_la_LIBADD =				\
+	libcosupport-initializer.la			\
+	libcosupport-smartptr.la			\
+	libcosupport-streams.la				\
+	libcosupport-string.la				\
+	libcosupport-allocators.la			\
 	libcosupport-tracing.la
 
 if COSUPPORT_ENABLE_XERCES
-nodist_pkgconfig_DATA +=			\
+nodist_pkgconfig_DATA +=				\
 	libcosupport-xerces.pc
-libcosupport_la_LIBADD +=			\
+libcosupport_la_LIBADD +=				\
 	libcosupport-xerces.la
-lib_LTLIBRARIES +=				\
+lib_LTLIBRARIES +=					\
 	libcosupport-xerces.la
 endif
 if COSUPPORT_ENABLE_XALAN
-nodist_pkgconfig_DATA +=			\
+nodist_pkgconfig_DATA +=				\
 	libcosupport-xalan.pc
-libcosupport_la_LIBADD +=			\
+libcosupport_la_LIBADD +=				\
 	libcosupport-xalan.la
-lib_LTLIBRARIES +=				\
+lib_LTLIBRARIES +=					\
 	libcosupport-xalan.la
 endif
 if COSUPPORT_ENABLE_SYSTEMC
-nodist_pkgconfig_DATA +=			\
+nodist_pkgconfig_DATA +=				\
 	libcosupport-systemc.pc
-libcosupport_la_LIBADD +=			\
+libcosupport_la_LIBADD +=				\
 	libcosupport-systemc.la
-lib_LTLIBRARIES +=				\
+lib_LTLIBRARIES +=					\
 	libcosupport-systemc.la
-noinst_PROGRAMS +=				\
-	test_event_and_list			\
-	test_event_or_list			\
+noinst_PROGRAMS +=					\
+	test_event_and_list				\
+	test_event_or_list				\
 	test_nested_event_lists
 endif
 
-libcosupport_initializer_la_SOURCES =		\
-	BasicInitializer.cpp
-libcosupport_initializer_la_LIBADD =		\
+libcosupport_initializer_la_SOURCES =			\
+	implementation/BasicInitializer.cpp
+libcosupport_initializer_la_LIBADD =			\
 	-lboost_thread$(BOOST_LIBMTPOSTFIX)
 
-libcosupport_smartptr_la_SOURCES =		\
-	RefCountObject.cpp
-libcosupport_smartptr_la_LIBADD =		\
-	$(refcount_CH_LTOBJS)			\
-	$(refcount_object_CH_LTOBJS)		\
+libcosupport_smartptr_la_SOURCES =			\
+	implementation/RefCountObject.cpp
+libcosupport_smartptr_la_LIBADD =			\
+	$(refcount_CH_LTOBJS)				\
+	$(refcount_object_CH_LTOBJS)			\
 	-lboost_thread$(BOOST_LIBMTPOSTFIX)
 
 if COSUPPORT_ENABLE_XERCES
-libcosupport_xerces_la_SOURCES =		\
-	SMXIdManager.cpp			\
-	StdIstreamInputSource.cpp		\
-	StdIstreamInputStream.cpp		\
-	StdOstreamFormatTarget.cpp
-libcosupport_xerces_la_LIBADD =			\
-	-lboost_thread$(BOOST_LIBMTPOSTFIX)	\
-	libcosupport-initializer.la		\
+libcosupport_xerces_la_SOURCES =			\
+	implementation/SMXIdManager.cpp			\
+	implementation/StdIstreamInputSource.cpp	\
+	implementation/StdIstreamInputStream.cpp	\
+	implementation/StdOstreamFormatTarget.cpp
+libcosupport_xerces_la_LIBADD =				\
+	-lboost_thread$(BOOST_LIBMTPOSTFIX)		\
+	libcosupport-initializer.la			\
 	-lxerces-c $(XERCES_AUXLIBS)
 endif
 
 if COSUPPORT_ENABLE_XALAN
 libcosupport_xalan_la_SOURCES =
-libcosupport_xalan_la_LIBADD =			\
-	-lboost_thread$(BOOST_LIBMTPOSTFIX)	\
-	libcosupport-initializer.la		\
+libcosupport_xalan_la_LIBADD =				\
+	-lboost_thread$(BOOST_LIBMTPOSTFIX)		\
+	libcosupport-initializer.la			\
 	-lxalan-c
 endif
 
 if COSUPPORT_ENABLE_SYSTEMC
-libcosupport_systemc_la_SOURCES =		\
-	par_manager.cpp				\
-	PerformanceEvaluation.cpp
-libcosupport_systemc_la_LDFLAGS=		\
+libcosupport_systemc_la_SOURCES =			\
+	implementation/par_manager.cpp			\
+	implementation/PerformanceEvaluation.cpp
+libcosupport_systemc_la_LDFLAGS=			\
 	$(AM_LDFLAGS)
-libcosupport_systemc_la_LIBADD =		\
-	-lboost_thread$(BOOST_LIBMTPOSTFIX)	\
+libcosupport_systemc_la_LIBADD =			\
+	-lboost_thread$(BOOST_LIBMTPOSTFIX)		\
 	-lsystemc
 
 test_event_and_list_SOURCES	  = test_event_and_list.cpp
@@ -183,45 +183,45 @@ test_nested_event_lists_SOURCES	  = test_nested_event_lists.cpp
 test_nested_event_lists_LDADD	  = libcosupport-systemc.la libcosupport-streams.la
 endif
 
-libcosupport_streams_la_SOURCES =		\
-	DebugOStream.cpp			\
-	FilterOStream.cpp			\
-	ColorStreambuf.cpp			\
-	DebugStreambuf.cpp			\
-	FilterStreambuf.cpp			\
-	HeaderFooterStreambuf.cpp		\
-	IndentStreambuf.cpp			\
-	LineNumberStreambuf.cpp			\
-	NullStreambuf.cpp			\
-	TranslationStreambuf.cpp		\
-	SocketTCPClient.cpp
-libcosupport_streams_la_LIBADD =		\
-	-lboost_iostreams$(BOOST_LIBMTPOSTFIX)	\
+libcosupport_streams_la_SOURCES =			\
+	implementation/DebugOStream.cpp			\
+	implementation/FilterOStream.cpp		\
+	implementation/ColorStreambuf.cpp		\
+	implementation/DebugStreambuf.cpp		\
+	implementation/FilterStreambuf.cpp		\
+	implementation/HeaderFooterStreambuf.cpp	\
+	implementation/IndentStreambuf.cpp		\
+	implementation/LineNumberStreambuf.cpp		\
+	implementation/NullStreambuf.cpp		\
+	implementation/TranslationStreambuf.cpp		\
+	implementation/SocketTCPClient.cpp
+libcosupport_streams_la_LIBADD =			\
+	-lboost_iostreams$(BOOST_LIBMTPOSTFIX)		\
 	-lboost_system$(BOOST_LIBMTPOSTFIX)
 
-libcosupport_string_la_SOURCES =		\
-	TemplateProcessor.cpp			\
-	UniquePool.cpp				\
-	UniqueCIdentifierPool.cpp		\
-	DoubleQuotedString.cpp			\
-	QuotedString.cpp			\
-	SingleQuotedString.cpp			\
-	UnQuotedString.cpp
+libcosupport_string_la_SOURCES =			\
+	implementation/TemplateProcessor.cpp		\
+	implementation/UniquePool.cpp			\
+	implementation/UniqueCIdentifierPool.cpp	\
+	implementation/DoubleQuotedString.cpp		\
+	implementation/QuotedString.cpp			\
+	implementation/SingleQuotedString.cpp		\
+	implementation/UnQuotedString.cpp
 
-libcosupport_string_la_LIBADD =			\
+libcosupport_string_la_LIBADD =				\
 	-lboost_regex$(BOOST_LIBMTPOSTFIX)
 
-libcosupport_math_la_SOURCES =			\
-	flog2.cpp
+libcosupport_math_la_SOURCES =				\
+	implementation/flog2.cpp
 libcosupport_math_la_LIBADD =
 
 libcosupport_allocators_la_SOURCES =
 libcosupport_allocators_la_LIBADD =
 
-libcosupport_tracing_la_SOURCES =		\
-	PtpTracer.cpp				\
-	Tracer.cpp				\
-	TracingFactory.cpp
+libcosupport_tracing_la_SOURCES =			\
+	implementation/PtpTracer.cpp			\
+	implementation/Tracer.cpp			\
+	implementation/TracingFactory.cpp
 
 test_dbgstream_SOURCES	= test_dbgstream.cpp
 test_dbgstream_LDADD	= libcosupport-streams.la
