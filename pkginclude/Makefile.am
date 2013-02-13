@@ -36,36 +36,64 @@ SUBDIRS=
 #	touch "$@"
 
 nobase_include_HEADERS = \
-	CoSupport/cosupport_config.h \
 	CoSupport/Allocators/IdAllocRequest.hpp \
 	CoSupport/Allocators/IdPool.hpp \
+	CoSupport/boost/graph/graph_traits.hpp \
+	CoSupport/boost/graph/undirect_graph.hpp \
+	CoSupport/boost/init_namespace.hpp \
+	CoSupport/commondefs.h \
+	CoSupport/compatibility-glue/integertypes.h \
+	CoSupport/compatibility-glue/snprintf.h \
+	CoSupport/cosupport_config.h \
 	CoSupport/DataTypes/ArrayFifo.hpp \
+	CoSupport/DataTypes/bit_buffer.hpp \
 	CoSupport/DataTypes/CheckedVector.hpp \
+	CoSupport/DataTypes/container_insert.hpp \
+	CoSupport/DataTypes/container_retrieve.hpp \
+	CoSupport/DataTypes/Detail/BidirectionalTraversalIterImpl.hpp \
+	CoSupport/DataTypes/Detail/RandomAccessTraversalIterImpl.hpp \
+	CoSupport/DataTypes/Detail/BidirectionalTraversalIterTemplate.hpp \
+	CoSupport/DataTypes/Detail/RandomAccessTraversalIterTemplate.hpp \
 	CoSupport/DataTypes/EMPTY.hpp \
 	CoSupport/DataTypes/Facade.hpp \
 	CoSupport/DataTypes/ListFacade.hpp \
+	CoSupport/DataTypes/List.hpp \
+	CoSupport/DataTypes/ListInterface.hpp \
 	CoSupport/DataTypes/MaybeValue.hpp \
+	CoSupport/DataTypes/MaybeValueInterface.hpp \
 	CoSupport/DataTypes/NILTYPE.hpp \
+	CoSupport/DataTypes/oneof.hpp \
+	CoSupport/DataTypes/Projection.hpp \
 	CoSupport/DataTypes/SerializeHelper.hpp \
+	CoSupport/DataTypes/Set.hpp \
+	CoSupport/DataTypes/SetInterface.hpp \
 	CoSupport/DataTypes/ValidWrapper.hpp \
 	CoSupport/DataTypes/Value.hpp \
-	CoSupport/DataTypes/bit_buffer.hpp \
-	CoSupport/DataTypes/container_insert.hpp \
-	CoSupport/DataTypes/container_retrieve.hpp \
-	CoSupport/DataTypes/oneof.hpp \
+	CoSupport/DataTypes/ValueInterface.hpp \
+	CoSupport/DataTypes/Vector.hpp \
+	CoSupport/DataTypes/VectorInterface.hpp \
+	CoSupport/DataTypes/VectorProjection.hpp \
+	CoSupport/endianess.h \
 	CoSupport/Initializer/BasicInitializer.hpp \
 	CoSupport/Lambda/function_objects.hpp \
 	CoSupport/Lambda/functor.hpp \
-	CoSupport/Math/Interval.hpp \
-	CoSupport/Math/ModuloGroup.hpp \
 	CoSupport/Math/flog2.hpp \
+	CoSupport/Math/Interval.hpp \
 	CoSupport/Math/modulo_arith.hpp \
+	CoSupport/Math/ModuloGroup.hpp \
 	CoSupport/Math/smoc_math.hpp \
 	CoSupport/Math/string_hash.hpp \
-	CoSupport/SmartPtr/RefCount.hpp \
-	CoSupport/SmartPtr/RefCountObject.hpp \
+	CoSupport/Math/Tuple/BinOp.hpp \
+	CoSupport/Math/Tuple/exceptions.hpp \
+	CoSupport/Math/Tuple/PO.hpp \
+	CoSupport/Math/Tuple/POVector.hpp \
+	CoSupport/Math/Tuple/ScalarConstant.hpp \
+	CoSupport/Math/Tuple/UnOp.hpp \
+	CoSupport/sassert.h \
 	CoSupport/SmartPtr/intrusive_copyonwrite_ptr.hpp \
 	CoSupport/SmartPtr/intrusive_refcount_ptr.hpp \
+	CoSupport/SmartPtr/RefCount.hpp \
+	CoSupport/SmartPtr/RefCountObject.hpp \
 	CoSupport/SmartPtr/shared_copyonwrite_ptr.hpp \
 	CoSupport/Streams/AlternateStream.hpp \
 	CoSupport/Streams/ColorStreambuf.hpp \
@@ -76,43 +104,36 @@ nobase_include_HEADERS = \
 	CoSupport/Streams/HeaderFooterStreambuf.hpp \
 	CoSupport/Streams/HexOutput.hpp \
 	CoSupport/Streams/IndentStreambuf.hpp \
+	CoSupport/Streams/iterator_dump.hpp \
 	CoSupport/Streams/LineNumberStreambuf.hpp \
 	CoSupport/Streams/NullStreambuf.hpp \
 	CoSupport/Streams/SocketTCPClient.hpp \
-	CoSupport/Streams/TranslationStreambuf.hpp \
-	CoSupport/Streams/iterator_dump.hpp \
 	CoSupport/Streams/stl_output_for_list.hpp \
+	CoSupport/Streams/stl_output_for_map.hpp \
 	CoSupport/Streams/stl_output_for_pair.hpp \
-	CoSupport/Streams/stl_output_for_vector.hpp \
 	CoSupport/Streams/stl_output_for_set.hpp \
+	CoSupport/Streams/stl_output_for_vector.hpp \
+	CoSupport/Streams/TranslationStreambuf.hpp \
 	CoSupport/String/Concat.hpp \
+	CoSupport/String/convert.hpp \
 	CoSupport/String/DoubleQuotedString.hpp \
 	CoSupport/String/QuotedString.hpp \
 	CoSupport/String/SingleQuotedString.hpp \
 	CoSupport/String/TemplateProcessor.hpp \
 	CoSupport/String/TypeName.hpp \
-	CoSupport/String/UnQuotedString.hpp \
-	CoSupport/String/UniquePool.hpp \
 	CoSupport/String/UniqueCIdentifierPool.hpp \
-	CoSupport/String/convert.hpp \
-	CoSupport/Tracing/PtpTracer.hpp	\
-	CoSupport/Tracing/TaskTracer.hpp	\
+	CoSupport/String/UniquePool.hpp \
+	CoSupport/String/UnQuotedString.hpp \
+	CoSupport/Tracing/PtpTracer.hpp \
+	CoSupport/Tracing/TaskTracer.hpp \
 	CoSupport/Tracing/Tracer.hpp \
 	CoSupport/Tracing/TracingFactory.hpp \
+	CoSupport/Type/constpropagate.hpp \
 	CoSupport/Type/STLIteratorSelector.hpp \
 	CoSupport/Type/STLPointerSelector.hpp \
 	CoSupport/Type/STLReferenceSelector.hpp \
 	CoSupport/Type/STLReverseIteratorSelector.hpp \
-	CoSupport/Type/constpropagate.hpp \
-	CoSupport/Type/transform.hpp \
-	CoSupport/commondefs.h \
-	CoSupport/compatibility-glue/integertypes.h \
-	CoSupport/compatibility-glue/snprintf.h \
-	CoSupport/endianess.h \
-	CoSupport/sassert.h \
-	CoSupport/boost/graph/undirect_graph.hpp \
-	CoSupport/boost/graph/graph_traits.hpp \
-	CoSupport/boost/init_namespace.hpp
+	CoSupport/Type/transform.hpp
 
 if COSUPPORT_ENABLE_XERCES
 nobase_include_HEADERS += \
@@ -125,15 +146,16 @@ nobase_include_HEADERS += \
 	CoSupport/XML/xalan_support.hpp
 endif
 endif
+
 if COSUPPORT_ENABLE_SYSTEMC
 nobase_include_HEADERS += \
-	CoSupport/SystemC/ChannelModificationListener.hpp \
-	CoSupport/SystemC/PerformanceEvaluation.hpp \
-	CoSupport/SystemC/VcdFile.hpp \
 	CoSupport/SystemC/algorithm.hpp \
+	CoSupport/SystemC/ChannelModificationListener.hpp \
 	CoSupport/SystemC/par_manager.hpp \
+	CoSupport/SystemC/PerformanceEvaluation.hpp \
 	CoSupport/SystemC/systemc_support.hpp \
-	CoSupport/SystemC/systemc_time.hpp
+	CoSupport/SystemC/systemc_time.hpp \
+	CoSupport/SystemC/VcdFile.hpp
 if COSUPPORT_ENABLE_XERCES
 nobase_include_HEADERS += \
 	CoSupport/SMXIdManager.hpp
