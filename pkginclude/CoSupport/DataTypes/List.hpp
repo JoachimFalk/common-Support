@@ -37,46 +37,28 @@
 #define _INCLUDED_COSUPPORT_DATATYPES_LIST_HPP
 
 #include "ListInterface.hpp"
+#include "Detail/BidirectionalTraversalIterImpl.hpp"
 
 #include <list>
 
 namespace CoSupport { namespace DataTypes {
 
-namespace Detail {
-
-  template <typename ITER>
-  class BidirectionalTraversalIter {
-    typedef BidirectionalTraversalIter<ITER> this_type;
-  public:
-    ITER iter;
-
-    BidirectionalTraversalIter(const ITER &iter): iter(iter) {}
-
-    void next() { ++iter; }
-    void prev() { --iter; }
-    bool equal(const this_type &rhs) const { return iter == rhs.iter; }
-
-    typename std::iterator_traits<ITER>::reference deref() const { return *iter; }
-  };
-
-} // namespace Detail
-
 template <typename T>
-class List: public ListInterface<List<T>, Detail::BidirectionalTraversalIter<typename std::list<T>::iterator>, T> {
+class List: public ListInterface<List<T>, Detail::BidirectionalTraversalIterImpl<typename std::list<T>::iterator>, T> {
   typedef List<T> this_type;
 private:
-  friend class ListInterface<List<T>, Detail::BidirectionalTraversalIter<typename std::list<T>::iterator>, T>;
+  friend class ListInterface<List<T>, Detail::BidirectionalTraversalIterImpl<typename std::list<T>::iterator>, T>;
 protected:
   std::list<T> list;
 
-  Detail::BidirectionalTraversalIter<typename std::list<T>::iterator> first() const
+  Detail::BidirectionalTraversalIterImpl<typename std::list<T>::iterator> first() const
     { return const_cast<this_type *>(this)->list.begin(); }
-  Detail::BidirectionalTraversalIter<typename std::list<T>::iterator> last() const
+  Detail::BidirectionalTraversalIterImpl<typename std::list<T>::iterator> last() const
     { return const_cast<this_type *>(this)->list.end(); }
 
-  Detail::BidirectionalTraversalIter<typename std::list<T>::iterator> del(const Detail::BidirectionalTraversalIter<typename std::list<T>::iterator> &iter)
+  Detail::BidirectionalTraversalIterImpl<typename std::list<T>::iterator> del(const Detail::BidirectionalTraversalIterImpl<typename std::list<T>::iterator> &iter)
     { return list.erase(iter.iter); }
-  Detail::BidirectionalTraversalIter<typename std::list<T>::iterator> add(const Detail::BidirectionalTraversalIter<typename std::list<T>::iterator> &iter, const typename this_type::value_type &value)
+  Detail::BidirectionalTraversalIterImpl<typename std::list<T>::iterator> add(const Detail::BidirectionalTraversalIterImpl<typename std::list<T>::iterator> &iter, const typename this_type::value_type &value)
     { return list.insert(iter.iter, value); }
 };
 

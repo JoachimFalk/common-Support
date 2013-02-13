@@ -37,45 +37,27 @@
 #define _INCLUDED_COSUPPORT_DATATYPES_VECTOR_HPP
 
 #include "VectorInterface.hpp"
+#include "Detail/RandomAccessTraversalIterImpl.hpp"
 
 #include <vector>
 
 namespace CoSupport { namespace DataTypes {
 
-namespace Detail {
-
-  template <typename ITER>
-  class RandomAccessTraversalIter {
-    typedef RandomAccessTraversalIter<ITER> this_type;
-  public:
-    ITER iter;
-
-    RandomAccessTraversalIter(const ITER &iter): iter(iter) {}
-
-    void advance(int n) { iter += n; }
-    int  distance_to(const this_type &rhs) const { return rhs.iter - iter; }
-    bool equal(const this_type &rhs) const { return iter == rhs.iter; }
-
-    typename std::iterator_traits<ITER>::reference deref() const { return *iter; }
-  };
-
-} // namespace Detail
-
 template <typename T>
-class Vector: public VectorInterface<Vector<T>, Detail::RandomAccessTraversalIter<typename std::vector<T>::iterator>, T> {
+class Vector: public VectorInterface<Vector<T>, Detail::RandomAccessTraversalIterImpl<typename std::vector<T>::iterator>, T> {
   typedef Vector<T> this_type;
-  friend class VectorInterface<Vector<T>, Detail::RandomAccessTraversalIter<typename std::vector<T>::iterator>, T>;
+  friend class VectorInterface<Vector<T>, Detail::RandomAccessTraversalIterImpl<typename std::vector<T>::iterator>, T>;
 protected:
   std::vector<T> vector;
 
-  Detail::RandomAccessTraversalIter<typename std::vector<T>::iterator> first() const
+  Detail::RandomAccessTraversalIterImpl<typename std::vector<T>::iterator> first() const
     { return const_cast<this_type *>(this)->vector.begin(); }
-  Detail::RandomAccessTraversalIter<typename std::vector<T>::iterator> last() const
+  Detail::RandomAccessTraversalIterImpl<typename std::vector<T>::iterator> last() const
     { return const_cast<this_type *>(this)->vector.end(); }
 
-  Detail::RandomAccessTraversalIter<typename std::vector<T>::iterator> del(const Detail::RandomAccessTraversalIter<typename std::vector<T>::iterator> &iter)
+  Detail::RandomAccessTraversalIterImpl<typename std::vector<T>::iterator> del(const Detail::RandomAccessTraversalIterImpl<typename std::vector<T>::iterator> &iter)
     { return vector.erase(iter.iter); }
-  Detail::RandomAccessTraversalIter<typename std::vector<T>::iterator> add(const Detail::RandomAccessTraversalIter<typename std::vector<T>::iterator> &iter, const typename this_type::value_type &value)
+  Detail::RandomAccessTraversalIterImpl<typename std::vector<T>::iterator> add(const Detail::RandomAccessTraversalIterImpl<typename std::vector<T>::iterator> &iter, const typename this_type::value_type &value)
     { return vector.insert(iter.iter, value); }
 };
 
