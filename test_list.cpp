@@ -41,7 +41,7 @@
 #include <CoSupport/DataTypes/List.hpp>
 
 typedef CoSupport::DataTypes::List<int> TList;
-typedef std::map<TList, int>            TMap;
+typedef std::map<TList, int>            TListInMap;
 
 int main(int argc, char *argv[]) {
   TList list;
@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
   std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
 //assert(list.size() == 4 && list[0] ==-1 && list[1] == 55 && list[2] == 55 && list[3] == 1);
 
-  TMap  map;
+  TListInMap  map;
   map.insert(std::make_pair(list, 13));
   for(TList::iterator iter = list.begin();
       iter != list.end();
