@@ -1,6 +1,6 @@
-/* vim: set sw=2 ts=8: */
+// vim: set sw=2 sts=2 ts=8 et syn=cpp:
 /*
- * Copyright (c) 2004-2010 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2011-2011 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -33,59 +33,40 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_SET_HPP
-#define _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_SET_HPP
+#ifndef _INCLUDED_COSUPPORT_DATATYPES_SET_HPP
+#define _INCLUDED_COSUPPORT_DATATYPES_SET_HPP
 
-#include <ostream>
-//#include <set>
+#include "SetInterface.hpp"
+#include "Detail/BidirectionalTraversalIterImpl.hpp"
+
+#include <set>
 
 namespace CoSupport { namespace DataTypes {
 
-  template <
-    class DERIVED,
-    class ITER_,
-    class VALUE,
-    class REFERENCE,
-    class CONSTREFERENCE,
-    class PTR_,
-    class CONSTPTR_
-  >
-  class SetInterface;
+template <typename T>
+class Set: public SetInterface<Set<T>, Detail::BidirectionalTraversalIterImpl<typename std::set<T>::iterator>, T> {
+  typedef SetInterface<Set<T>, Detail::BidirectionalTraversalIterImpl<typename std::set<T>::iterator>, T> base_type;
+  typedef Set<T>                                                                                      this_type;
+private:
+  friend class SetInterface<Set<T>, Detail::BidirectionalTraversalIterImpl<typename std::set<T>::iterator>, T>;
+protected:
+  std::set<T> set;
+
+  Detail::BidirectionalTraversalIterImpl<typename std::set<T>::iterator> implBegin() const
+    { return const_cast<this_type *>(this)->set.begin(); }
+  Detail::BidirectionalTraversalIterImpl<typename std::set<T>::iterator> implEnd() const
+    { return const_cast<this_type *>(this)->set.end(); }
+
+  using base_type::implErase;
+
+  void
+  implErase(const Detail::BidirectionalTraversalIterImpl<typename std::set<T>::iterator> &iter)
+    { set.erase(iter.iter); }
+  std::pair<Detail::BidirectionalTraversalIterImpl<typename std::set<T>::iterator>, bool>
+  implInsert(const typename this_type::value_type &value)
+    { return set.insert(value); }
+};
 
 } } // namespace CoSupport::DataTypes
 
-namespace std {
-                                                                                
-  template <typename T, class C, class A> class set;
-
-  template <typename T, class C, class A>
-  std::ostream &operator << (std::ostream &out, const std::set<T,C,A> &l) {
-    out << "[Set:";
-    for ( typename std::set<T,C,A>::const_iterator iter = l.begin();
-          iter != l.end();
-          ++iter )
-      out << (iter == l.begin() ? "" : ", ") << *iter;
-    out << "]";
-    return out;
-  }
-
-  template<
-    class D, class I,
-    class V, class R, class CR, class P, class CP
-  >
-  std::ostream &operator << (
-      std::ostream &out,
-      const CoSupport::DataTypes::SetInterface<D,I,V,R,CR,P,CP> &l)
-  {
-    out << "[Set:";
-    for (typename CoSupport::DataTypes::SetInterface<D,I,V,R,CR,P,CP>::const_iterator iter = l.begin();
-         iter != l.end();
-         ++iter )
-      out << (iter == l.begin() ? "" : ", ") << *iter;
-    out << "]";
-    return out;
-  }
-
-} // namespace std
-
-#endif // _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_SET_HPP
+#endif // _INCLUDED_COSUPPORT_DATATYPES_SET_HPP

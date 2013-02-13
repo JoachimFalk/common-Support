@@ -1,6 +1,5 @@
-/* vim: set sw=2 ts=8: */
 /*
- * Copyright (c) 2004-2010 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2013-2013 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -33,59 +32,26 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_SET_HPP
-#define _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_SET_HPP
+#ifndef _INCLUDED_COSUPPORT_DATATYPES_DETAIL_BIDIRECTIONALTRAVERSALITERIMPL_HPP
+#define _INCLUDED_COSUPPORT_DATATYPES_DETAIL_BIDIRECTIONALTRAVERSALITERIMPL_HPP
 
-#include <ostream>
-//#include <set>
+namespace CoSupport { namespace DataTypes { namespace Detail {
 
-namespace CoSupport { namespace DataTypes {
+  template <typename ITER>
+  class BidirectionalTraversalIterImpl {
+    typedef BidirectionalTraversalIterImpl<ITER> this_type;
+  public:
+    ITER iter;
 
-  template <
-    class DERIVED,
-    class ITER_,
-    class VALUE,
-    class REFERENCE,
-    class CONSTREFERENCE,
-    class PTR_,
-    class CONSTPTR_
-  >
-  class SetInterface;
+    BidirectionalTraversalIterImpl(const ITER &iter): iter(iter) {}
 
-} } // namespace CoSupport::DataTypes
+    void next() { ++iter; }
+    void prev() { --iter; }
+    bool equal(const this_type &rhs) const { return iter == rhs.iter; }
 
-namespace std {
-                                                                                
-  template <typename T, class C, class A> class set;
+    typename std::iterator_traits<ITER>::reference deref() const { return *iter; }
+  };
 
-  template <typename T, class C, class A>
-  std::ostream &operator << (std::ostream &out, const std::set<T,C,A> &l) {
-    out << "[Set:";
-    for ( typename std::set<T,C,A>::const_iterator iter = l.begin();
-          iter != l.end();
-          ++iter )
-      out << (iter == l.begin() ? "" : ", ") << *iter;
-    out << "]";
-    return out;
-  }
+} } } // namespace CoSupport::DataTypes::Detail
 
-  template<
-    class D, class I,
-    class V, class R, class CR, class P, class CP
-  >
-  std::ostream &operator << (
-      std::ostream &out,
-      const CoSupport::DataTypes::SetInterface<D,I,V,R,CR,P,CP> &l)
-  {
-    out << "[Set:";
-    for (typename CoSupport::DataTypes::SetInterface<D,I,V,R,CR,P,CP>::const_iterator iter = l.begin();
-         iter != l.end();
-         ++iter )
-      out << (iter == l.begin() ? "" : ", ") << *iter;
-    out << "]";
-    return out;
-  }
-
-} // namespace std
-
-#endif // _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_SET_HPP
+#endif // _INCLUDED_COSUPPORT_DATATYPES_DETAIL_BIDIRECTIONALTRAVERSALITERIMPL_HPP
