@@ -181,6 +181,7 @@ namespace Detail {
 
 } // namespace Detail
 
+/// This class represents the interface for a storage which contains a value of type T.
 template <class D, typename T, typename R>
 class ValueInterface
 : public Detail::ValueTypeDecorator<
@@ -209,12 +210,12 @@ public:
   template <class DD, typename TT, typename RR>
   void set(const ValueInterface<DD,TT,RR> &val)
     { this->set(val.get()); }
-  // setImpl is an interface method which must be implemented in D!
+  // implSet is an interface method which must be implemented in D!
   void set(const T &val)
-    { getDerived()->setImpl(val); }
-  // getImpl is an interface method which must be implemented in D!
+    { getDerived()->implSet(val); }
+  // implGet is an interface method which must be implemented in D!
   R get() const // this may throw
-    { return getDerived()->getImpl(); }
+    { return getDerived()->implGet(); }
 };
 
 template <class DD, typename TT, typename RR>
