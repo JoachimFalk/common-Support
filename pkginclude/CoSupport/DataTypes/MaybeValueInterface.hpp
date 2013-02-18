@@ -152,6 +152,7 @@ namespace Detail {
 
 } // namespace Detail
 
+/// This class represents the interface for a storage which may contain a value of type T.
 template <class D, typename T, typename R = T const &>
 class MaybeValueInterface
 : public Detail::MaybeValueTypeDecorator<
@@ -182,18 +183,18 @@ public:
   template <class DD, typename TT, typename RR>
   void set(const MaybeValueInterface<DD,TT,RR> &val)
     { if (val.isDefined()) this->set(val.get()); else this->undef(); }
-  // setImpl is an interface method which must be implemented in D!
+  // implSet is an interface method which must be implemented in D!
   void set(const T &val)
-    { getDerived()->setImpl(val); }
-  // getImpl is an interface method which must be implemented in D!
+    { getDerived()->implSet(val); }
+  // implGet is an interface method which must be implemented in D!
   R get() const // this may throw
-    { return getDerived()->getImpl(); }
-  // undefImpl is an interface method which must be implemented in D!
+    { return getDerived()->implGet(); }
+  // implUndef is an interface method which must be implemented in D!
   void undef()
-    { return getDerived()->undefImpl(); }
-  // isDefinedImpl is an interface method which must be implemented in D!
+    { return getDerived()->implUndef(); }
+  // implIsDefined is an interface method which must be implemented in D!
   bool isDefined() const
-    { return getDerived()->isDefinedImpl(); }
+    { return getDerived()->implIsDefined(); }
 };
 
 template <class DD, typename TT, typename RR>

@@ -1,7 +1,7 @@
 //  -*- tab-width:8; intent-tabs-mode:nil; c-basic-offset:2; -*-
 // vim: set sw=2 ts=8 sts=2 expandtab:
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2013-2013 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -34,45 +34,60 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_DATATYPES_VALUE_HPP
-#define _INCLUDED_COSUPPORT_DATATYPES_VALUE_HPP
+#ifndef _INCLUDED_COSUPPORT_DATATYPES_VALUEVIRTUAL_HPP
+#define _INCLUDED_COSUPPORT_DATATYPES_VALUEVIRTUAL_HPP
 
-#include "ValueInterface.hpp"
+#include "Value.hpp"
 
 namespace CoSupport { namespace DataTypes {
 
-/// This class implements the interface for a storage which contains a value of type T.
-template <typename T, template<class DD, class TT, class RR> class BASE = ValueInterface, typename R = T const &>
-class Value
-: public BASE<Value<T,BASE,R>, T, R> {
-  typedef Value<T,BASE,R>     this_type;
-  typedef BASE<this_type,T,R> base_type;
+/// This class represents a virtual interface for a storage which contains a value of type T.
+template <class D, typename T, typename R = T const &>
+class ValueVirtualInterface
+: public ValueInterface<D,T,R> {
+  typedef ValueVirtualInterface<D,T,R> this_type;
+  typedef ValueInterface<D,T,R>        base_type;
+public:
+  virtual ~ValueVirtualInterface() {}
+
+  using base_type::operator =;
+protected:
+  virtual void  implSet(const T &) = 0;
+  virtual R     implGet() const = 0;
+};
+
+/// This class is a wrapper to access a value virtual interface.
+template <typename T, typename R = T const &>
+class ValueVirtual
+: public ValueInterface<ValueVirtual<T,R>,T,R> {
+  typedef ValueVirtual<T,R>             this_type;
+  typedef ValueInterface<this_type,T,R> base_type;
 
   friend class ValueInterface<this_type,T,R>;
 private:
-  T value;
+  struct Impl: public ValueVirtualInterface<Impl, T, R> {
+    friend class ValueVirtual<T,R>;
+  } *impl;
 protected:
-  void implSet(const T &val)
-    { value = val; }
-  T const &implGet() const
-    { return value; }
+  void implSet(const T &val) { impl->implSet(val); }
+  R    implGet() const { return impl->implGet(); }
 public:
-  Value() {}
-  Value(T const &val)
-    : value(val) {}
+  ValueVirtual()
+    : impl(reinterpret_cast<Impl *>(new Value<T, ValueVirtualInterface, R>())) {}
+  ValueVirtual(T const &val)
+    : impl(reinterpret_cast<Impl *>(new Value<T, ValueVirtualInterface, R>(val))) {}
   template <class DD, typename TT, typename RR>
-  Value(ValueInterface<DD,TT,RR> const &val)
-    : value(val.get()) {}
+  ValueVirtual(ValueInterface<DD,TT,RR> const &val)
+    : impl(reinterpret_cast<Impl *>(new Value<T, ValueVirtualInterface, R>(val.get()))) {}
+  template <class DD, typename TT, typename RR>
+  ValueVirtual(ValueVirtualInterface<DD,TT,RR> *impl)
+    : impl(reinterpret_cast<Impl *>(impl)) {}
 
-//You may need this if you can't rely on the default
-//assignment operator to do the job correctly!
-//Here we can rely on T::operator = of value.
-//this_type &operator = (const this_type &val)
-//  { return base_type::operator =(val); }
+  ~ValueVirtual() { delete impl; }
 
   using base_type::operator =;
 };
 
 } } // namespace CoSupport::DataTypes
 
-#endif // _INCLUDED_COSUPPORT_DATATYPES_VALUE_HPP
+#endif // _INCLUDED_COSUPPORT_DATATYPES_VALUEVIRTUAL_HPP

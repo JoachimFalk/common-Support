@@ -41,11 +41,12 @@
 
 namespace CoSupport { namespace DataTypes {
 
-template <class T>
+/// This class implements the interface for a storage which may contains a value of type T.
+template <typename T, template<class DD, class TT, class RR> class BASE = MaybeValueInterface, typename R = T const &>
 class MaybeValue
-: public MaybeValueInterface<MaybeValue<T>, T> {
-  typedef MaybeValue<T>                      this_type;
-  typedef MaybeValueInterface<this_type, T>  base_type;
+: public BASE<MaybeValue<T,BASE,R>, T, R> {
+  typedef MaybeValue<T,BASE,R>  this_type;
+  typedef BASE<this_type,T,R>   base_type;
 
   friend class MaybeValueInterface<this_type, T>;
 private:
@@ -53,13 +54,13 @@ private:
 
   storage_type value;
 protected:
-  void setImpl(const T &val)
+  void implSet(const T &val)
     { value = val; }
-  T const &getImpl() const
+  T const &implGet() const
     { return boost::get<T>(value); }
-  void undefImpl()
+  void implUndef()
     { value = boost::blank(); }
-  bool isDefinedImpl() const
+  bool implIsDefined() const
     { return boost::get<boost::blank>(&value) == NULL; }
 public:
   MaybeValue()

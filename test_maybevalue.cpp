@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2013 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -37,20 +37,22 @@
 #include <climits>
 
 #include <CoSupport/DataTypes/MaybeValue.hpp>
+#include <CoSupport/DataTypes/MaybeValueVirtual.hpp>
+#include <CoSupport/DataTypes/MaybeValueFacade.hpp>
 
 #define CHECK_OP_VW(MIN,X,OP,V) do { \
     std::cout << #X " " #OP " " << #V << ": " << (X OP V) << std::endl; \
-    assert((X OP V) == (X OP (V.isDefined() ? V.get() : MIN))); \
+    assert((X OP V) == (X OP ((V).isDefined() ? (V).get() : MIN))); \
   } while (0)
 
 #define CHECK_OP_WV(MIN,X,OP,V) do { \
     std::cout << #X " " #OP " " << #V << ": " << (X OP V) << std::endl; \
-    assert((X OP V) == ((X.isDefined() ? X.get() : MIN) OP V)); \
+    assert((X OP V) == (((X).isDefined() ? (X).get() : MIN) OP V)); \
   } while (0)
 
 #define CHECK_OP_WW(MIN,X,OP,V) do { \
     std::cout << #X " " #OP " " << #V << ": " << (X OP V) << std::endl; \
-    assert((X OP V) == ((X.isDefined() ? X.get() : MIN) OP (V.isDefined() ? V.get() : MIN))); \
+    assert((X OP V) == (((X).isDefined() ? (X).get() : MIN) OP ((V).isDefined() ? (V).get() : MIN))); \
   } while (0)
 
 using namespace CoSupport::DataTypes;
@@ -162,10 +164,10 @@ int main(int argc, char *argv[]) {
     { MaybeValue<int> &check = (foo = MaybeValue<long>(12)); assert(&check == &foo); }
   }
   {
-    MaybeValue<const char *> cp("foo");
-    MaybeValue<std::string>  str1(cp);
-    MaybeValue<std::string>  str2("bar");
-    MaybeValue<std::string>  str3(std::string("zzz"));
+    MaybeValue<const char *, MaybeValueVirtualInterface> cp("foo");
+    MaybeValue<std::string>                              str1(cp);
+    MaybeValue<std::string, MaybeValueVirtualInterface>  str2("bar");
+    MaybeValue<std::string>                              str3(std::string("zzz"));
     
     std::cout << "cp(\"foo\"):                \"" << cp << "\"" << std::endl;
     std::cout << "str1(cp):                 \"" << str1 << "\"" << std::endl;
@@ -293,6 +295,131 @@ int main(int argc, char *argv[]) {
     CHECK_OP_WV(NULL,cp,<=,caaa); CHECK_OP_VW(NULL,cfoo,<=,cp);
     CHECK_OP_WV(NULL,cp,> ,caaa); CHECK_OP_VW(NULL,cfoo,> ,cp);
     CHECK_OP_WV(NULL,cp,>=,caaa); CHECK_OP_VW(NULL,cfoo,>=,cp);
+  }
+  {
+    MaybeValueFacade<int>            a(12);
+    MaybeValueFacade<int>::Ref       ra(a);
+    MaybeValueFacade<int>::ConstRef  cra1(a);
+    MaybeValueFacade<int>::ConstRef  cra2(ra);
+    MaybeValueFacade<int>::Ptr       pa(a.toPtr());
+    MaybeValueFacade<int>::ConstPtr  cpa1(pa);
+    MaybeValueFacade<int>::ConstPtr  cpa2(a.toPtr());
+    
+    MaybeValue<int, MaybeValueFacadeInterface> *bImpl = new MaybeValue<int, MaybeValueFacadeInterface>(15);
+    MaybeValueFacade<int>            b(bImpl);
+    MaybeValueFacade<int>::Ref       rb(b);
+    MaybeValueFacade<int>::ConstRef  crb1(b);
+    MaybeValueFacade<int>::ConstRef  crb2(rb);
+    MaybeValueFacade<int>::Ptr       pb(b.toPtr());
+    MaybeValueFacade<int>::ConstPtr  cpb1(pb);
+    MaybeValueFacade<int>::ConstPtr  cpb2(b.toPtr());
+    
+    MaybeValue<int>                        c(14);
+    MaybeValue<int, MaybeValueVirtualInterface> d(13);
+    
+    assert(a == 12); sassert(a++ == 12);
+    assert(a == 13); assert(ra == 13); assert(cra2 == 13); assert(*cpa1 == 13); assert(*cpa2 == 13);
+    assert(a.isDefined());
+    a.undef();
+    assert(!a.isDefined());
+    
+    assert(bImpl->get() == 15);
+    assert(b == 15); sassert(b-- == 15);
+    assert(b == 14); assert(rb == 14); assert(crb2 == 14); assert(*cpb1 == 14); assert(*cpb2 == 14);
+    assert(bImpl->get() == 14);
+    
+    sassert(++c == 15); sassert(d++ == 13); assert(c == 15); assert(d == 14);
+    
+    CHECK_OP_WW(INT_MIN,a,==,ra); CHECK_OP_WW(INT_MIN,a,==,cra1); CHECK_OP_WW(INT_MIN,a,==,*pa); CHECK_OP_WW(INT_MIN,a,==,*cpa1);
+    CHECK_OP_WW(INT_MIN,a,!=,ra); CHECK_OP_WW(INT_MIN,a,!=,cra1); CHECK_OP_WW(INT_MIN,a,!=,*pa); CHECK_OP_WW(INT_MIN,a,!=,*cpa1);
+    CHECK_OP_WW(INT_MIN,a,< ,ra); CHECK_OP_WW(INT_MIN,a,< ,cra1); CHECK_OP_WW(INT_MIN,a,< ,*pa); CHECK_OP_WW(INT_MIN,a,< ,*cpa1);
+    CHECK_OP_WW(INT_MIN,a,<=,ra); CHECK_OP_WW(INT_MIN,a,<=,cra1); CHECK_OP_WW(INT_MIN,a,<=,*pa); CHECK_OP_WW(INT_MIN,a,<=,*cpa1);
+    CHECK_OP_WW(INT_MIN,a,> ,ra); CHECK_OP_WW(INT_MIN,a,> ,cra1); CHECK_OP_WW(INT_MIN,a,> ,*pa); CHECK_OP_WW(INT_MIN,a,> ,*cpa1);
+    CHECK_OP_WW(INT_MIN,a,>=,ra); CHECK_OP_WW(INT_MIN,a,>=,cra1); CHECK_OP_WW(INT_MIN,a,>=,*pa); CHECK_OP_WW(INT_MIN,a,>=,*cpa1);
+    
+    CHECK_OP_WW(INT_MIN,c,==,ra); CHECK_OP_WW(INT_MIN,c,==,cra1); CHECK_OP_WW(INT_MIN,c,==,*pa); CHECK_OP_WW(INT_MIN,c,==,*cpa1);
+    CHECK_OP_WW(INT_MIN,c,!=,ra); CHECK_OP_WW(INT_MIN,c,!=,cra1); CHECK_OP_WW(INT_MIN,c,!=,*pa); CHECK_OP_WW(INT_MIN,c,!=,*cpa1);
+    CHECK_OP_WW(INT_MIN,c,< ,ra); CHECK_OP_WW(INT_MIN,c,< ,cra1); CHECK_OP_WW(INT_MIN,c,< ,*pa); CHECK_OP_WW(INT_MIN,c,< ,*cpa1);
+    CHECK_OP_WW(INT_MIN,c,<=,ra); CHECK_OP_WW(INT_MIN,c,<=,cra1); CHECK_OP_WW(INT_MIN,c,<=,*pa); CHECK_OP_WW(INT_MIN,c,<=,*cpa1);
+    CHECK_OP_WW(INT_MIN,c,> ,ra); CHECK_OP_WW(INT_MIN,c,> ,cra1); CHECK_OP_WW(INT_MIN,c,> ,*pa); CHECK_OP_WW(INT_MIN,c,> ,*cpa1);
+    CHECK_OP_WW(INT_MIN,c,>=,ra); CHECK_OP_WW(INT_MIN,c,>=,cra1); CHECK_OP_WW(INT_MIN,c,>=,*pa); CHECK_OP_WW(INT_MIN,c,>=,*cpa1);
+    
+    CHECK_OP_WW(INT_MIN,d,==,ra); CHECK_OP_WW(INT_MIN,d,==,cra1); CHECK_OP_WW(INT_MIN,d,==,*pa); CHECK_OP_WW(INT_MIN,d,==,*cpa1);
+    CHECK_OP_WW(INT_MIN,d,!=,ra); CHECK_OP_WW(INT_MIN,d,!=,cra1); CHECK_OP_WW(INT_MIN,d,!=,*pa); CHECK_OP_WW(INT_MIN,d,!=,*cpa1);
+    CHECK_OP_WW(INT_MIN,d,< ,ra); CHECK_OP_WW(INT_MIN,d,< ,cra1); CHECK_OP_WW(INT_MIN,d,< ,*pa); CHECK_OP_WW(INT_MIN,d,< ,*cpa1);
+    CHECK_OP_WW(INT_MIN,d,<=,ra); CHECK_OP_WW(INT_MIN,d,<=,cra1); CHECK_OP_WW(INT_MIN,d,<=,*pa); CHECK_OP_WW(INT_MIN,d,<=,*cpa1);
+    CHECK_OP_WW(INT_MIN,d,> ,ra); CHECK_OP_WW(INT_MIN,d,> ,cra1); CHECK_OP_WW(INT_MIN,d,> ,*pa); CHECK_OP_WW(INT_MIN,d,> ,*cpa1);
+    CHECK_OP_WW(INT_MIN,d,>=,ra); CHECK_OP_WW(INT_MIN,d,>=,cra1); CHECK_OP_WW(INT_MIN,d,>=,*pa); CHECK_OP_WW(INT_MIN,d,>=,*cpa1);
+    
+    CHECK_OP_WW(INT_MIN,*bImpl,==,ra); CHECK_OP_WW(INT_MIN,*bImpl,==,cra1); CHECK_OP_WW(INT_MIN,*bImpl,==,*pa); CHECK_OP_WW(INT_MIN,*bImpl,==,*cpa1);
+    CHECK_OP_WW(INT_MIN,*bImpl,!=,ra); CHECK_OP_WW(INT_MIN,*bImpl,!=,cra1); CHECK_OP_WW(INT_MIN,*bImpl,!=,*pa); CHECK_OP_WW(INT_MIN,*bImpl,!=,*cpa1);
+    CHECK_OP_WW(INT_MIN,*bImpl,< ,ra); CHECK_OP_WW(INT_MIN,*bImpl,< ,cra1); CHECK_OP_WW(INT_MIN,*bImpl,< ,*pa); CHECK_OP_WW(INT_MIN,*bImpl,< ,*cpa1);
+    CHECK_OP_WW(INT_MIN,*bImpl,<=,ra); CHECK_OP_WW(INT_MIN,*bImpl,<=,cra1); CHECK_OP_WW(INT_MIN,*bImpl,<=,*pa); CHECK_OP_WW(INT_MIN,*bImpl,<=,*cpa1);
+    CHECK_OP_WW(INT_MIN,*bImpl,> ,ra); CHECK_OP_WW(INT_MIN,*bImpl,> ,cra1); CHECK_OP_WW(INT_MIN,*bImpl,> ,*pa); CHECK_OP_WW(INT_MIN,*bImpl,> ,*cpa1);
+    CHECK_OP_WW(INT_MIN,*bImpl,>=,ra); CHECK_OP_WW(INT_MIN,*bImpl,>=,cra1); CHECK_OP_WW(INT_MIN,*bImpl,>=,*pa); CHECK_OP_WW(INT_MIN,*bImpl,>=,*cpa1);
+    
+    CHECK_OP_WW(INT_MIN,ra,==,*bImpl); CHECK_OP_WW(INT_MIN,cra1,==,*bImpl); CHECK_OP_WW(INT_MIN,*pa,==,*bImpl); CHECK_OP_WW(INT_MIN,*cpa1,==,*bImpl);
+    CHECK_OP_WW(INT_MIN,ra,!=,*bImpl); CHECK_OP_WW(INT_MIN,cra1,!=,*bImpl); CHECK_OP_WW(INT_MIN,*pa,!=,*bImpl); CHECK_OP_WW(INT_MIN,*cpa1,!=,*bImpl);
+    CHECK_OP_WW(INT_MIN,ra,< ,*bImpl); CHECK_OP_WW(INT_MIN,cra1,< ,*bImpl); CHECK_OP_WW(INT_MIN,*pa,< ,*bImpl); CHECK_OP_WW(INT_MIN,*cpa1,< ,*bImpl);
+    CHECK_OP_WW(INT_MIN,ra,<=,*bImpl); CHECK_OP_WW(INT_MIN,cra1,<=,*bImpl); CHECK_OP_WW(INT_MIN,*pa,<=,*bImpl); CHECK_OP_WW(INT_MIN,*cpa1,<=,*bImpl);
+    CHECK_OP_WW(INT_MIN,ra,> ,*bImpl); CHECK_OP_WW(INT_MIN,cra1,> ,*bImpl); CHECK_OP_WW(INT_MIN,*pa,> ,*bImpl); CHECK_OP_WW(INT_MIN,*cpa1,> ,*bImpl);
+    CHECK_OP_WW(INT_MIN,ra,>=,*bImpl); CHECK_OP_WW(INT_MIN,cra1,>=,*bImpl); CHECK_OP_WW(INT_MIN,*pa,>=,*bImpl); CHECK_OP_WW(INT_MIN,*cpa1,>=,*bImpl);
+    
+    CHECK_OP_WW(INT_MIN,ra,==,a); CHECK_OP_WW(INT_MIN,cra1,==,a); CHECK_OP_WW(INT_MIN,*pa,==,a); CHECK_OP_WW(INT_MIN,*cpa1,==,a);
+    CHECK_OP_WW(INT_MIN,ra,!=,a); CHECK_OP_WW(INT_MIN,cra1,!=,a); CHECK_OP_WW(INT_MIN,*pa,!=,a); CHECK_OP_WW(INT_MIN,*cpa1,!=,a);
+    CHECK_OP_WW(INT_MIN,ra,< ,a); CHECK_OP_WW(INT_MIN,cra1,< ,a); CHECK_OP_WW(INT_MIN,*pa,< ,a); CHECK_OP_WW(INT_MIN,*cpa1,< ,a);
+    CHECK_OP_WW(INT_MIN,ra,<=,a); CHECK_OP_WW(INT_MIN,cra1,<=,a); CHECK_OP_WW(INT_MIN,*pa,<=,a); CHECK_OP_WW(INT_MIN,*cpa1,<=,a);
+    CHECK_OP_WW(INT_MIN,ra,> ,a); CHECK_OP_WW(INT_MIN,cra1,> ,a); CHECK_OP_WW(INT_MIN,*pa,> ,a); CHECK_OP_WW(INT_MIN,*cpa1,> ,a);
+    CHECK_OP_WW(INT_MIN,ra,>=,a); CHECK_OP_WW(INT_MIN,cra1,>=,a); CHECK_OP_WW(INT_MIN,*pa,>=,a); CHECK_OP_WW(INT_MIN,*cpa1,>=,a);
+    
+    CHECK_OP_WW(INT_MIN,ra,==,c); CHECK_OP_WW(INT_MIN,cra1,==,c); CHECK_OP_WW(INT_MIN,*pa,==,c); CHECK_OP_WW(INT_MIN,*cpa1,==,c);
+    CHECK_OP_WW(INT_MIN,ra,!=,c); CHECK_OP_WW(INT_MIN,cra1,!=,c); CHECK_OP_WW(INT_MIN,*pa,!=,c); CHECK_OP_WW(INT_MIN,*cpa1,!=,c);
+    CHECK_OP_WW(INT_MIN,ra,< ,c); CHECK_OP_WW(INT_MIN,cra1,< ,c); CHECK_OP_WW(INT_MIN,*pa,< ,c); CHECK_OP_WW(INT_MIN,*cpa1,< ,c);
+    CHECK_OP_WW(INT_MIN,ra,<=,c); CHECK_OP_WW(INT_MIN,cra1,<=,c); CHECK_OP_WW(INT_MIN,*pa,<=,c); CHECK_OP_WW(INT_MIN,*cpa1,<=,c);
+    CHECK_OP_WW(INT_MIN,ra,> ,c); CHECK_OP_WW(INT_MIN,cra1,> ,c); CHECK_OP_WW(INT_MIN,*pa,> ,c); CHECK_OP_WW(INT_MIN,*cpa1,> ,c);
+    CHECK_OP_WW(INT_MIN,ra,>=,c); CHECK_OP_WW(INT_MIN,cra1,>=,c); CHECK_OP_WW(INT_MIN,*pa,>=,c); CHECK_OP_WW(INT_MIN,*cpa1,>=,c);
+    
+    CHECK_OP_WW(INT_MIN,ra,==,d); CHECK_OP_WW(INT_MIN,cra1,==,d); CHECK_OP_WW(INT_MIN,*pa,==,d); CHECK_OP_WW(INT_MIN,*cpa1,==,d);
+    CHECK_OP_WW(INT_MIN,ra,!=,d); CHECK_OP_WW(INT_MIN,cra1,!=,d); CHECK_OP_WW(INT_MIN,*pa,!=,d); CHECK_OP_WW(INT_MIN,*cpa1,!=,d);
+    CHECK_OP_WW(INT_MIN,ra,< ,d); CHECK_OP_WW(INT_MIN,cra1,< ,d); CHECK_OP_WW(INT_MIN,*pa,< ,d); CHECK_OP_WW(INT_MIN,*cpa1,< ,d);
+    CHECK_OP_WW(INT_MIN,ra,<=,d); CHECK_OP_WW(INT_MIN,cra1,<=,d); CHECK_OP_WW(INT_MIN,*pa,<=,d); CHECK_OP_WW(INT_MIN,*cpa1,<=,d);
+    CHECK_OP_WW(INT_MIN,ra,> ,d); CHECK_OP_WW(INT_MIN,cra1,> ,d); CHECK_OP_WW(INT_MIN,*pa,> ,d); CHECK_OP_WW(INT_MIN,*cpa1,> ,d);
+    CHECK_OP_WW(INT_MIN,ra,>=,d); CHECK_OP_WW(INT_MIN,cra1,>=,d); CHECK_OP_WW(INT_MIN,*pa,>=,d); CHECK_OP_WW(INT_MIN,*cpa1,>=,d);
+    
+    CHECK_OP_VW(INT_MIN,13,==,ra); CHECK_OP_VW(INT_MIN,13,==,cra1); CHECK_OP_VW(INT_MIN,13,==,*pa); CHECK_OP_VW(INT_MIN,13,==,*cpa1);
+    CHECK_OP_VW(INT_MIN,13,!=,ra); CHECK_OP_VW(INT_MIN,13,!=,cra1); CHECK_OP_VW(INT_MIN,13,!=,*pa); CHECK_OP_VW(INT_MIN,13,!=,*cpa1);
+    CHECK_OP_VW(INT_MIN,13,< ,ra); CHECK_OP_VW(INT_MIN,13,< ,cra1); CHECK_OP_VW(INT_MIN,13,< ,*pa); CHECK_OP_VW(INT_MIN,13,< ,*cpa1);
+    CHECK_OP_VW(INT_MIN,13,<=,ra); CHECK_OP_VW(INT_MIN,13,<=,cra1); CHECK_OP_VW(INT_MIN,13,<=,*pa); CHECK_OP_VW(INT_MIN,13,<=,*cpa1);
+    CHECK_OP_VW(INT_MIN,13,> ,ra); CHECK_OP_VW(INT_MIN,13,> ,cra1); CHECK_OP_VW(INT_MIN,13,> ,*pa); CHECK_OP_VW(INT_MIN,13,> ,*cpa1);
+    CHECK_OP_VW(INT_MIN,13,>=,ra); CHECK_OP_VW(INT_MIN,13,>=,cra1); CHECK_OP_VW(INT_MIN,13,>=,*pa); CHECK_OP_VW(INT_MIN,13,>=,*cpa1);
+    
+    CHECK_OP_WV(INT_MIN,ra,==,13); CHECK_OP_WV(INT_MIN,cra1,==,13); CHECK_OP_WV(INT_MIN,*pa,==,13); CHECK_OP_WV(INT_MIN,*cpa1,==,13);
+    CHECK_OP_WV(INT_MIN,ra,!=,13); CHECK_OP_WV(INT_MIN,cra1,!=,13); CHECK_OP_WV(INT_MIN,*pa,!=,13); CHECK_OP_WV(INT_MIN,*cpa1,!=,13);
+    CHECK_OP_WV(INT_MIN,ra,< ,13); CHECK_OP_WV(INT_MIN,cra1,< ,13); CHECK_OP_WV(INT_MIN,*pa,< ,13); CHECK_OP_WV(INT_MIN,*cpa1,< ,13);
+    CHECK_OP_WV(INT_MIN,ra,<=,13); CHECK_OP_WV(INT_MIN,cra1,<=,13); CHECK_OP_WV(INT_MIN,*pa,<=,13); CHECK_OP_WV(INT_MIN,*cpa1,<=,13);
+    CHECK_OP_WV(INT_MIN,ra,> ,13); CHECK_OP_WV(INT_MIN,cra1,> ,13); CHECK_OP_WV(INT_MIN,*pa,> ,13); CHECK_OP_WV(INT_MIN,*cpa1,> ,13);
+    CHECK_OP_WV(INT_MIN,ra,>=,13); CHECK_OP_WV(INT_MIN,cra1,>=,13); CHECK_OP_WV(INT_MIN,*pa,>=,13); CHECK_OP_WV(INT_MIN,*cpa1,>=,13);
+    
+    CHECK_OP_WW(INT_MIN,rb,==,ra); CHECK_OP_WW(INT_MIN,rb,==,cra1); CHECK_OP_WW(INT_MIN,rb,==,*pa); CHECK_OP_WW(INT_MIN,rb,==,*cpa1);
+    CHECK_OP_WW(INT_MIN,rb,!=,ra); CHECK_OP_WW(INT_MIN,rb,!=,cra1); CHECK_OP_WW(INT_MIN,rb,!=,*pa); CHECK_OP_WW(INT_MIN,rb,!=,*cpa1);
+    CHECK_OP_WW(INT_MIN,rb,< ,ra); CHECK_OP_WW(INT_MIN,rb,< ,cra1); CHECK_OP_WW(INT_MIN,rb,< ,*pa); CHECK_OP_WW(INT_MIN,rb,< ,*cpa1);
+    CHECK_OP_WW(INT_MIN,rb,<=,ra); CHECK_OP_WW(INT_MIN,rb,<=,cra1); CHECK_OP_WW(INT_MIN,rb,<=,*pa); CHECK_OP_WW(INT_MIN,rb,<=,*cpa1);
+    CHECK_OP_WW(INT_MIN,rb,> ,ra); CHECK_OP_WW(INT_MIN,rb,> ,cra1); CHECK_OP_WW(INT_MIN,rb,> ,*pa); CHECK_OP_WW(INT_MIN,rb,> ,*cpa1);
+    CHECK_OP_WW(INT_MIN,rb,>=,ra); CHECK_OP_WW(INT_MIN,rb,>=,cra1); CHECK_OP_WW(INT_MIN,rb,>=,*pa); CHECK_OP_WW(INT_MIN,rb,>=,*cpa1);
+    
+    CHECK_OP_WW(INT_MIN,*pb,==,ra); CHECK_OP_WW(INT_MIN,*pb,==,cra1); CHECK_OP_WW(INT_MIN,*pb,==,*pa); CHECK_OP_WW(INT_MIN,*pb,==,*cpa1);
+    CHECK_OP_WW(INT_MIN,*pb,!=,ra); CHECK_OP_WW(INT_MIN,*pb,!=,cra1); CHECK_OP_WW(INT_MIN,*pb,!=,*pa); CHECK_OP_WW(INT_MIN,*pb,!=,*cpa1);
+    CHECK_OP_WW(INT_MIN,*pb,< ,ra); CHECK_OP_WW(INT_MIN,*pb,< ,cra1); CHECK_OP_WW(INT_MIN,*pb,< ,*pa); CHECK_OP_WW(INT_MIN,*pb,< ,*cpa1);
+    CHECK_OP_WW(INT_MIN,*pb,<=,ra); CHECK_OP_WW(INT_MIN,*pb,<=,cra1); CHECK_OP_WW(INT_MIN,*pb,<=,*pa); CHECK_OP_WW(INT_MIN,*pb,<=,*cpa1);
+    CHECK_OP_WW(INT_MIN,*pb,> ,ra); CHECK_OP_WW(INT_MIN,*pb,> ,cra1); CHECK_OP_WW(INT_MIN,*pb,> ,*pa); CHECK_OP_WW(INT_MIN,*pb,> ,*cpa1);
+    CHECK_OP_WW(INT_MIN,*pb,>=,ra); CHECK_OP_WW(INT_MIN,*pb,>=,cra1); CHECK_OP_WW(INT_MIN,*pb,>=,*pa); CHECK_OP_WW(INT_MIN,*pb,>=,*cpa1);
+    
+    CHECK_OP_WW(INT_MIN,*cpb2,==,ra); CHECK_OP_WW(INT_MIN,*cpb2,==,cra1); CHECK_OP_WW(INT_MIN,*cpb2,==,*pa); CHECK_OP_WW(INT_MIN,*cpb2,==,*cpa1);
+    CHECK_OP_WW(INT_MIN,*cpb2,!=,ra); CHECK_OP_WW(INT_MIN,*cpb2,!=,cra1); CHECK_OP_WW(INT_MIN,*cpb2,!=,*pa); CHECK_OP_WW(INT_MIN,*cpb2,!=,*cpa1);
+    CHECK_OP_WW(INT_MIN,*cpb2,< ,ra); CHECK_OP_WW(INT_MIN,*cpb2,< ,cra1); CHECK_OP_WW(INT_MIN,*cpb2,< ,*pa); CHECK_OP_WW(INT_MIN,*cpb2,< ,*cpa1);
+    CHECK_OP_WW(INT_MIN,*cpb2,<=,ra); CHECK_OP_WW(INT_MIN,*cpb2,<=,cra1); CHECK_OP_WW(INT_MIN,*cpb2,<=,*pa); CHECK_OP_WW(INT_MIN,*cpb2,<=,*cpa1);
+    CHECK_OP_WW(INT_MIN,*cpb2,> ,ra); CHECK_OP_WW(INT_MIN,*cpb2,> ,cra1); CHECK_OP_WW(INT_MIN,*cpb2,> ,*pa); CHECK_OP_WW(INT_MIN,*cpb2,> ,*cpa1);
+    CHECK_OP_WW(INT_MIN,*cpb2,>=,ra); CHECK_OP_WW(INT_MIN,*cpb2,>=,cra1); CHECK_OP_WW(INT_MIN,*cpb2,>=,*pa); CHECK_OP_WW(INT_MIN,*cpb2,>=,*cpa1);
   }
 
   return 0;
