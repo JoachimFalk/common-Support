@@ -42,9 +42,9 @@
 namespace CoSupport { namespace DataTypes {
 
 /// This class implements the interface for a storage which may contains a value of type T.
+/// \example test_maybevalue.cpp
 template <typename T, template<class DD, class TT, class RR> class BASE = MaybeValueInterface, typename R = T const &>
-class MaybeValue
-: public BASE<MaybeValue<T,BASE,R>, T, R> {
+class MaybeValue: public BASE<MaybeValue<T,BASE,R>, T, R> {
   typedef MaybeValue<T,BASE,R>  this_type;
   typedef BASE<this_type,T,R>   base_type;
 

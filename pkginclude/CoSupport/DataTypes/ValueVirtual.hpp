@@ -42,6 +42,7 @@
 namespace CoSupport { namespace DataTypes {
 
 /// This class represents a virtual interface for a storage which contains a value of type T.
+/// \example test_value.cpp
 template <class D, typename T, typename R = T const &>
 class ValueVirtualInterface
 : public ValueInterface<D,T,R> {
@@ -57,6 +58,7 @@ protected:
 };
 
 /// This class is a wrapper to access a value virtual interface.
+/// \example test_value.cpp
 template <typename T, typename R = T const &>
 class ValueVirtual
 : public ValueInterface<ValueVirtual<T,R>,T,R> {

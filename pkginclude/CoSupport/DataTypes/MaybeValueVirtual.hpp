@@ -42,6 +42,7 @@
 namespace CoSupport { namespace DataTypes {
 
 /// This class represents a virtual interface for a storage which may contain a value of type T
+/// \example test_maybevalue.cpp
 template <class D, typename T, typename R = T const &>
 class MaybeValueVirtualInterface
 : public MaybeValueInterface<D,T,R> {
@@ -59,6 +60,7 @@ protected:
 };
 
 /// This class is a wrapper to access a value virtual interface.
+/// \example test_maybevalue.cpp
 template <typename T, typename R = T const &>
 class MaybeValueVirtual
 : public MaybeValueInterface<MaybeValueVirtual<T,R>,T,R> {

@@ -42,9 +42,9 @@
 namespace CoSupport { namespace DataTypes {
 
 /// This class implements the interface for a storage which contains a value of type T.
+/// \example test_value.cpp
 template <typename T, template<class DD, class TT, class RR> class BASE = ValueInterface, typename R = T const &>
-class Value
-: public BASE<Value<T,BASE,R>, T, R> {
+class Value: public BASE<Value<T,BASE,R>, T, R> {
   typedef Value<T,BASE,R>     this_type;
   typedef BASE<this_type,T,R> base_type;
 
