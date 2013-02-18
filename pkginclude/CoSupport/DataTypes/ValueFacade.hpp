@@ -45,6 +45,7 @@
 namespace CoSupport { namespace DataTypes {
 
 /// This class represents a facade interface for a storage which contains a value of type T.
+/// \example test_value.cpp
 template <class D, typename T, typename R = T const &>
 class ValueFacadeInterface
 : public ValueVirtualInterface<D,T,R>,
@@ -74,6 +75,7 @@ namespace Detail {
 } // namespace Detail
 
 /// This class is a facade for a storage which contains a value of type T.
+/// \example test_value.cpp
 template <typename T, typename R>
 class ValueFacade
 : public FacadeFoundation<

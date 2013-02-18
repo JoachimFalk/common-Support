@@ -153,6 +153,7 @@ namespace Detail {
 } // namespace Detail
 
 /// This class represents the interface for a storage which may contain a value of type T.
+/// \example test_maybevalue.cpp
 template <class D, typename T, typename R = T const &>
 class MaybeValueInterface
 : public Detail::MaybeValueTypeDecorator<

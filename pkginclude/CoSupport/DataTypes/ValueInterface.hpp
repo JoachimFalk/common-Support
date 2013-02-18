@@ -182,6 +182,7 @@ namespace Detail {
 } // namespace Detail
 
 /// This class represents the interface for a storage which contains a value of type T.
+/// \example test_value.cpp
 template <class D, typename T, typename R>
 class ValueInterface
 : public Detail::ValueTypeDecorator<
