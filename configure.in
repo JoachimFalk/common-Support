@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_INIT(
-  [HscdSupport Devel Branch], [0.9],
+  [HscdSupport Devel Branch], [1.0],
   [joachim.falk@informatik.uni-erlangen.de christian.zebelein@informatik.uni-erlangen.de],
   [HscdSupport--devel-])
 
