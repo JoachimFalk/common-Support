@@ -37,7 +37,9 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_SETVIRTUAL_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_SETVIRTUAL_HPP
 
-#include "SetInterface.hpp"
+#include "Set.hpp"
+
+#include <set>
 
 #include <boost/scoped_ptr.hpp>
 
