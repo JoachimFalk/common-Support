@@ -35,6 +35,7 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_SETINTERFACE_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_SETINTERFACE_HPP
 
+#include <boost/iterator/iterator_facade.hpp>
 #include <boost/type_traits/make_unsigned.hpp>
 #include <boost/type_traits/add_const.hpp>
 #include <boost/type_traits/add_reference.hpp>
@@ -43,7 +44,10 @@
 
 #include <boost/utility/enable_if.hpp>
 
-#include "Detail/BidirectionalTraversalIterTemplate.hpp"
+#include "../Type/STLReferenceSelector.hpp"
+#include "../Type/STLPointerSelector.hpp"
+
+//#include "Detail/BidirectionalTraversalIterTemplate.hpp"
 
 namespace CoSupport { namespace DataTypes {
 
@@ -130,73 +134,83 @@ non-member overloads:
 /// \li implUpperBound(key k)
 /// \li implErase(iter first, iter last)
 template <
-  class DERIVED, // The derived set container being constructed
-  class ITER_,
+  class DERIVED,                                        // The derived set container being constructed
+  template <class CONTAINER, bool REVERSE> class ITER,  // The iterator used by the derived set container
   class KEY,
   class REFERENCE = typename boost::add_reference<KEY>::type,
   class CONSTREFERENCE = typename boost::add_reference<typename boost::add_const<KEY>::type>::type,
-  class PTR_ = typename boost::add_pointer<KEY>::type,
-  class CONSTPTR_ = typename boost::add_pointer<typename boost::add_const<KEY>::type>::type
+  class PTR = typename boost::add_pointer<KEY>::type,
+  class CONSTPTR = typename boost::add_pointer<typename boost::add_const<KEY>::type>::type
 >
-class SetInterface: protected Detail::BidirectionalTraversalIterTemplateAccess {
+class SetInterface {
   typedef SetInterface                                     this_type;
-  typedef Detail::BidirectionalTraversalIterTemplateAccess  base_type;
-
-  friend class Detail::BidirectionalTraversalIterTemplate<this_type>;
-  friend class Detail::BidirectionalTraversalIterTemplate<const this_type>;
 private:
-  // This is not a standard container type definition => hide it!
-  typedef ITER_  IterImpl;      // for usage by Detail::BidirectionalTraversalIterTemplate
-  //
   // Curiously Recurring Template interface.
-  //
   DERIVED &derived()
     { return *static_cast<DERIVED *>(this); }
 
   DERIVED const &derived() const
     { return *static_cast<DERIVED const *>(this); }
+protected:
+  /// Base class for the iterator template given by ITER
+  template <class CONTAINER, bool REVERSE>
+  class IterBase
+  : public boost::iterator_facade<
+      ITER<CONTAINER, REVERSE>,
+      KEY,
+      boost::bidirectional_traversal_tag,
+      typename Type::STLReferenceSelector<CONTAINER>::type,
+      typename CONTAINER::difference_type>
+  {
+    typedef IterBase<CONTAINER, REVERSE> this_type;
+  public:
+    // overwrite pointer type from boost which thinks it knows best
+    typedef typename Type::STLPointerSelector<CONTAINER>::type pointer;
+
+    // overwrite operator -> from boost which thinks it knows best
+    pointer operator->() const {
+      typename this_type::reference ref = static_cast<ITER<CONTAINER, REVERSE> const *>(this)->dereference();
+      return &ref;
+    }
+  };
 public:
 
   typedef KEY             value_type;
   typedef KEY             key_type;
   typedef REFERENCE       reference;
   typedef CONSTREFERENCE  const_reference;
-  typedef PTR_            pointer;
-  typedef CONSTPTR_       const_pointer;
+  typedef PTR             pointer;
+  typedef CONSTPTR        const_pointer;
 
-  typedef Detail::BidirectionalTraversalIterTemplate<const this_type> iterator;
-  typedef Detail::BidirectionalTraversalIterTemplate<const this_type> const_iterator;
+  typedef ITER<const DERIVED, false> iterator;
+  typedef ITER<const DERIVED, false> const_iterator;
 
   typedef std::ptrdiff_t                                        difference_type;
   typedef typename boost::make_unsigned<difference_type>::type  size_type;
 
   iterator begin()
-    { return base_type::construct<iterator>(derived().implBegin()); }
+    { return derived().implBegin(); }
   const_iterator begin() const
-    { return base_type::construct<const_iterator>(derived().implBegin()); }
-//const_iterator cbegin() const
-//  { return base_type::construct<const_iterator>(derived().implBegin()); }
+    { return derived().implBegin(); }
 
   iterator end()
-    { return base_type::construct<iterator>(derived().implEnd()); }
+    { return derived().implEnd(); }
   const_iterator end() const
-    { return base_type::construct<const_iterator>(derived().implEnd()); }
-//const_iterator cend() const
-//  { return base_type::construct<const_iterator>(derived().implEnd()); }
+    { return derived().implEnd(); }
 
   bool empty() const
-    { return derived().implBegin().equal(derived().implEnd()); }
+    { return derived().implBegin() == derived().implEnd(); }
 
   void erase(const iterator &iter)
-    { derived().implErase(base_type::retrieve(iter)); }
+    { derived().implErase(iter); }
   void erase(const iterator &iter1, const iterator &iter2)
-    { derived().implErase(base_type::retrieve(iter1), base_type::retrieve(iter2)); }
+    { derived().implErase(iter1, iter2); }
 
   // const key_type &k is correct here this is also used by std::set
   size_type erase(const key_type &k) {
-    IterImpl iter(implFind(k));
-    IterImpl end(derived().implEnd());
-    if (iter.equal(end)) {
+    iterator iter(implFind(k));
+    iterator end(derived().implEnd());
+    if (iter == end) {
       return 0;
     } else {
       derived().implErase(iter);
@@ -208,37 +222,31 @@ public:
 
   // const value_type &v is correct here this is also used by std::set
   std::pair<iterator, bool>
-  insert(const value_type &v) {
-    std::pair<IterImpl, bool> retval(derived().implInsert(v));
-    return std::make_pair(
-      base_type::construct<iterator>(retval.first),
-      retval.second);
-  }
+  insert(const value_type &v)
+    { return derived().implInsert(v); }
   // const value_type &v is correct here this is also used by std::set
   iterator
-  insert(iterator iter, const value_type &v) {
-    return base_type::construct<iterator>(derived().implInsert(v).first);
-  }
+  insert(iterator iter, const value_type &v)
+    { return derived().implInsert(v).first; }
   template <class IITER>
   typename boost::disable_if<boost::is_integral<IITER>, void>::type
-  insert(iterator iter, IITER implBegin, IITER const &implEnd) {
-    for (; implBegin != implEnd; ++implBegin)
-      derived().implInsert(*implBegin);
+  insert(IITER iter1, IITER const &iter2) {
+    for (; iter1 != iter2; ++iter1)
+      derived().implInsert(*iter1);
   }
 
   // const key_type &k is correct here this is also used by std::set
   iterator       lower_bound(const key_type &k)
-    { return base_type::construct<iterator      >(derived().implLowerBound(k)); }
-  // const key_type &k is correct here this is also used by std::set
+    { return derived().implLowerBound(k); }
   const_iterator lower_bound(const key_type &k) const
-    { return base_type::construct<const_iterator>(derived().implLowerBound(k)); }
+    { return derived().implLowerBound(k); }
 
   // const key_type &k is correct here this is also used by std::set
   iterator       upper_bound(const key_type &k)
-    { return base_type::construct<iterator      >(derived().implUpperBound(k)); }
+    { return derived().implUpperBound(k); }
   // const key_type &k is correct here this is also used by std::set
   const_iterator upper_bound(const key_type &k) const
-    { return base_type::construct<const_iterator>(derived().implUpperBound(k)); }
+    { return derived().implUpperBound(k); }
 
   // const key_type &k is correct here this is also used by std::set
   std::pair<iterator, iterator>
@@ -261,9 +269,10 @@ public:
 
   // const key_type &k is correct here this is also used by std::set
   iterator       find(const key_type &k)
-    { return base_type::construct<iterator      >(derived().implFind(k)); }
+    { return derived().implFind(k); }
+  // const key_type &k is correct here this is also used by std::set
   const_iterator find(const key_type &k) const
-    { return base_type::construct<const_iterator>(derived().implFind(k)); }
+    { return derived().implFind(k); }
 
   // const key_type &k is correct here this is also used by std::set
   size_type count(const key_type &k) const
@@ -276,40 +285,40 @@ protected:
   // Default implementation.
   size_t implSize() const {
     size_t   retval = 0;
-    IterImpl iter(derived().implBegin());
-    IterImpl end(derived().implEnd());
-    for (; !iter.equal(end); iter.next())
+    iterator iter(derived().implBegin());
+    iterator end(derived().implEnd());
+    for (; !(iter == end); ++iter)
       ++retval;
     return retval;
   }
   // Default implementation.
-  void implErase(IterImpl iter1, const IterImpl &iter2) {
-    while (!iter1.equal(iter2)) {
-      IterImpl iter1l = iter1; iter1.next();
+  void implErase(iterator iter1, const iterator &iter2) {
+    while (!(iter1 == iter2)) {
+      iterator iter1l = iter1; ++iter1;
       derived().implErase(iter1l);
     }
   }
   // Default implementation.
-  IterImpl implLowerBound(const key_type &k) const {
-    IterImpl iter(derived().implBegin());
-    IterImpl end(derived().implEnd());
-    for (; !iter.equal(end); iter.next())
-      if (!(iter.deref() < k))
+  iterator implLowerBound(const key_type &k) const {
+    iterator iter(derived().implBegin());
+    iterator end(derived().implEnd());
+    for (; !(iter == end); ++iter)
+      if (!(*iter < k))
         break;
     return iter;
   }
   // Default implementation.
-  IterImpl implUpperBound(const key_type &k) const {
-    IterImpl retval = implLowerBound(k);
-    if (retval.deref() == k)
-      retval.next();
+  iterator implUpperBound(const key_type &k) const {
+    iterator retval = implLowerBound(k);
+    if (*retval == k)
+      ++retval;
     return retval;
   }
   // Default implementation.
-  IterImpl implFind(const key_type &k) const {
-    IterImpl retval(implLowerBound(k));
-    IterImpl end(derived().implEnd());
-    if (!retval.equal(end) && !(retval.deref() == k))
+  iterator implFind(const key_type &k) const {
+    iterator retval(implLowerBound(k));
+    iterator end(derived().implEnd());
+    if (!(retval == end) && !(*retval == k))
       retval = end;
     return retval;
   }
@@ -327,7 +336,7 @@ protected:
  */
 template <
   class D1, class D2,
-  class I1, class I2,
+  template<class,bool> class I1, template<class,bool> class I2,
   class V,
   class R1, class R2,
   class CR1, class CR2,
@@ -362,7 +371,7 @@ bool operator == (
  */
 template <
   class D1, class D2,
-  class I1, class I2,
+  template<class,bool> class I1, template<class,bool> class I2,
   class V,
   class R1, class R2,
   class CR1, class CR2,
@@ -378,7 +387,7 @@ bool operator < (
 /// Based on operator==
 template <
   class D1, class D2,
-  class I1, class I2,
+  template<class,bool> class I1, template<class,bool> class I2,
   class V,
   class R1, class R2,
   class CR1, class CR2,
@@ -394,7 +403,7 @@ bool operator != (
 /// Based on operator<
 template <
   class D1, class D2,
-  class I1, class I2,
+  template<class,bool> class I1, template<class,bool> class I2,
   class V,
   class R1, class R2,
   class CR1, class CR2,
@@ -410,7 +419,7 @@ bool operator > (
 /// Based on operator<
 template <
   class D1, class D2,
-  class I1, class I2,
+  template<class,bool> class I1, template<class,bool> class I2,
   class V,
   class R1, class R2,
   class CR1, class CR2,
@@ -426,7 +435,7 @@ bool operator <= (
 /// Based on operator<
 template <
   class D1, class D2,
-  class I1, class I2,
+  template<class,bool> class I1, template<class,bool> class I2,
   class V,
   class R1, class R2,
   class CR1, class CR2,

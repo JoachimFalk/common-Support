@@ -42,13 +42,13 @@
 namespace CoSupport { namespace DataTypes {
 
   template <
-    class DERIVED,
-    class ITER_,
-    class VALUE,
+    class DERIVED,                                        // The derived set container being constructed
+    template <class CONTAINER, bool REVERSE> class ITER,  // The iterator used by the derived set container
+    class KEY,
     class REFERENCE,
     class CONSTREFERENCE,
-    class PTR_,
-    class CONSTPTR_
+    class PTR,
+    class CONSTPTR
   >
   class SetInterface;
 
@@ -70,7 +70,7 @@ namespace std {
   }
 
   template<
-    class D, class I,
+    class D, template<class,bool> class I,
     class V, class R, class CR, class P, class CP
   >
   std::ostream &operator << (
