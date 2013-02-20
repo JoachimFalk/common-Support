@@ -59,6 +59,9 @@ namespace Detail {
 
     void assign(const this_type &x)
       { pImpl = x.pImpl; }
+
+    ImplType *getImpl() const
+      { return pImpl.get(); }
   };
 
   class FacadePtrNullClass {};
@@ -121,13 +124,7 @@ private:
   typedef typename T::_H::SmartPtr            SmartPtr;
 protected:
   typedef typename base_type::FPN             FPN;
-public:
-//FIXME: protected:
-  // FIXME: This is an ugly hack !!!
-  ImplType *getImpl() const {
-    return reinterpret_cast<ConstRef &>(*this).getImpl();
-  }
-protected:
+
   // FIXME: This is an ugly hack !!!
   void assign(const value_type &p) {
     reinterpret_cast<Ref &>(*this).assign(p);
@@ -167,9 +164,6 @@ private:
   typedef typename FacadeTraits<Detail::Storage<Impl> >::Ptr      Ptr;
 protected:
   typedef Detail::FacadePtrNullClass FPN;
-protected:
-  typename this_type::ImplType *getImpl() const
-    { return this->pImpl.get(); }
 public:
   typedef void (base_type::*unspecified_bool_type)(const base_type &);
 protected:
@@ -183,18 +177,18 @@ public:
   // is valid] in (true != true), which is WRONG!!!)
   // -> define all comparison operators
   operator unspecified_bool_type() const {
-    return this->pImpl.get() != NULL
+    return this->getImpl() != NULL
       ? static_cast<unspecified_bool_type>(&this_type::assign)
       : NULL;
   }
 
   unspecified_bool_type operator ==(const Ptr &x) const {
-    return this->pImpl.get() == x.getImpl()
+    return this->getImpl() == x.getImpl()
       ? static_cast<unspecified_bool_type>(&this_type::assign)
       : NULL;
   }
   unspecified_bool_type operator ==(const ConstPtr &x) const {
-    return this->pImpl.get() == x.getImpl()
+    return this->getImpl() == x.getImpl()
       ? static_cast<unspecified_bool_type>(&this_type::assign)
       : NULL;
   }
@@ -205,12 +199,12 @@ public:
   }
 
   unspecified_bool_type operator !=(const Ptr &x) const {
-    return this->pImpl.get() != x.getImpl()
+    return this->getImpl() != x.getImpl()
       ? static_cast<unspecified_bool_type>(&this_type::assign)
       : NULL;
   }
   unspecified_bool_type operator !=(const ConstPtr &x) const {
-    return this->pImpl.get() != x.getImpl()
+    return this->getImpl() != x.getImpl()
       ? static_cast<unspecified_bool_type>(&this_type::assign)
       : NULL;
   }
@@ -221,45 +215,45 @@ public:
   }
 
   unspecified_bool_type operator > (const Ptr &x) const {
-    return this->pImpl.get() >  x.getImpl()
+    return this->getImpl() >  x.getImpl()
       ? static_cast<unspecified_bool_type>(&this_type::assign)
       : NULL;
   }
   unspecified_bool_type operator > (const ConstPtr &x) const {
-    return this->pImpl.get() >  x.getImpl()
+    return this->getImpl() >  x.getImpl()
       ? static_cast<unspecified_bool_type>(&this_type::assign)
       : NULL;
   }
 
   unspecified_bool_type operator < (const Ptr &x) const {
-    return this->pImpl.get() <  x.getImpl()
+    return this->getImpl() <  x.getImpl()
       ? static_cast<unspecified_bool_type>(&this_type::assign)
       : NULL;
   }
   unspecified_bool_type operator < (const ConstPtr &x) const {
-    return this->pImpl.get() <  x.getImpl()
+    return this->getImpl() <  x.getImpl()
       ? static_cast<unspecified_bool_type>(&this_type::assign)
       : NULL;
   }
 
   unspecified_bool_type operator >=(const Ptr &x) const {
-    return this->pImpl.get() >= x.getImpl()
+    return this->getImpl() >= x.getImpl()
       ? static_cast<unspecified_bool_type>(&this_type::assign)
       : NULL;
   }
   unspecified_bool_type operator >=(const ConstPtr &x) const {
-    return this->pImpl.get() >= x.getImpl()
+    return this->getImpl() >= x.getImpl()
       ? static_cast<unspecified_bool_type>(&this_type::assign)
       : NULL;
   }
 
   unspecified_bool_type operator <=(const Ptr &x) const {
-    return this->pImpl.get() <= x.getImpl()
+    return this->getImpl() <= x.getImpl()
       ? static_cast<unspecified_bool_type>(&this_type::assign)
       : NULL;
   }
   unspecified_bool_type operator <=(const ConstPtr &x) const {
-    return this->pImpl.get() <= x.getImpl()
+    return this->getImpl() <= x.getImpl()
       ? static_cast<unspecified_bool_type>(&this_type::assign)
       : NULL;
   }
@@ -292,11 +286,10 @@ private:
   //
   ImplType *_impl() const
     { return static_cast<const Derived*>(this)->getImpl(); }
-//FIXME: protected:
-public:
+protected:
   // may be overridden in derived class
   ImplType *getImpl() const
-    { return this->pImpl.get(); }
+    { return static_cast<ImplType *>(this->pImpl.get()); }
 
   explicit FacadeFoundation(const typename _B::SmartPtr &p)
     : _B(p) {}
