@@ -42,6 +42,7 @@
 #include <set>
 
 #include <boost/scoped_ptr.hpp>
+#include <memory> // for std::auto_ptr
 
 namespace CoSupport { namespace DataTypes {
 
@@ -75,11 +76,48 @@ public:
   virtual Iter<false> *implPEnd() const = 0;
   virtual std::pair<Iter<false> *, bool>  implPInsert(T const &v) = 0;
   virtual void         implErase(Iter<false> const &iter) = 0;
-  virtual size_t       implSize() const = 0;
-  virtual void         implErase(Iter<false> const &iter1, Iter<false> const &iter2) = 0;
-  virtual Iter<false> *implPLowerBound(T const &k) const = 0;
-  virtual Iter<false> *implPUpperBound(T const &k) const = 0;
-  virtual Iter<false> *implPFind(T const &k) const = 0;
+
+  // Default implementation.
+  virtual size_t implSize() const {
+    size_t                          retval = 0;
+    boost::scoped_ptr<Iter<false> > iter(implPBegin());
+    boost::scoped_ptr<Iter<false> > end(implPEnd());
+    for (; !iter->equal(*end); iter->increment())
+      ++retval;
+    return retval;
+  }
+  // Default implementation.
+  virtual void implErase(Iter<false> const &iter1, const Iter<false> &iter2) {
+    boost::scoped_ptr<Iter<false> > iter(iter1.duplicate());
+    while (!iter->equal(iter2)) {
+      boost::scoped_ptr<Iter<false> > iterl(iter->duplicate()); iter->increment();
+      implErase(*iterl);
+    }
+  }
+  // Default implementation.
+  virtual Iter<false> *implPLowerBound(T const &k) const {
+    std::auto_ptr<Iter<false> >     iter(implPBegin());
+    boost::scoped_ptr<Iter<false> > end(implPEnd());
+    for (; !iter->equal(*end); iter->increment())
+      if (!(iter->dereference() < k)) //FIXME: comparision semantics may differ from interally implemented one
+        break;
+    return iter.release();
+  }
+  // Default implementation.
+  virtual Iter<false> *implPUpperBound(T const &k) const {
+    std::auto_ptr<Iter<false> > retval(implPLowerBound(k));
+    if (retval->dereference() == k)
+      retval->increment();
+    return retval.release();
+  }
+  // Default implementation.
+  virtual Iter<false> *implPFind(T const &k) const {
+    std::auto_ptr<Iter<false> > retval(implPLowerBound(k));
+    std::auto_ptr<Iter<false> > end(implPEnd());
+    if (!retval->equal(*end) && !(retval->dereference() == k))
+      retval = end;
+    return retval.release();
+  }
 };
 
 template <
