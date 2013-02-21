@@ -58,10 +58,11 @@ class MaybeValueFacadeInterface
 : public SmartPtr::RefCount,//< this must be first otherwise the reinterpret cast to ValueFacadeInterface will not work!
   public MaybeValueVirtualInterface<T,CR>
 {
-  operator ValueFacadeInterface<T,CR>       &()
-    { return *reinterpret_cast<ValueFacadeInterface<T,CR>       *>(this); }
-  operator ValueFacadeInterface<T,CR> const &() const
-    { return *reinterpret_cast<ValueFacadeInterface<T,CR> const *>(this); }
+public:
+  ValueFacadeInterface<T,CR> const *getValueFacadeInterface() const
+    { return reinterpret_cast<ValueFacadeInterface<T,CR> const *>(this); }
+  ValueFacadeInterface<T,CR>       *getValueFacadeInterface()
+    { return reinterpret_cast<ValueFacadeInterface<T,CR>       *>(this); }
 };
 
 template <class T, class CR>
@@ -123,11 +124,13 @@ public:
     : base1_type(new Detail::MaybeValueFacadeImpl<T,CR>(value)) {}
   MaybeValueFacade(T const &value)
     : base1_type(new Detail::MaybeValueFacadeImpl<T,CR>(value)) {}
+  MaybeValueFacade(this_type const &value)
+    : base1_type(new Detail::MaybeValueFacadeImpl<T,CR>(value)) {}
   template <class DD, typename TT, typename CRCR>
   MaybeValueFacade(MaybeValueInterface<DD,TT,CRCR> const &value)
     : base1_type(new Detail::MaybeValueFacadeImpl<T,CR>(value)) {}
 
-  MaybeValueFacade(typename base1_type::SmartPtr p)
+  MaybeValueFacade(typename base1_type::SmartPtr const &p)
     : base1_type(p) {}
 
   using base2_type::operator =;
