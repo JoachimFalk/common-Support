@@ -43,12 +43,15 @@ namespace CoSupport { namespace DataTypes {
 
 /// This class implements the interface for a storage which may contains a value of type T.
 /// \example test_maybevalue.cpp
-template <typename T, template<class DD, class TT, class RR> class BASE = MaybeValueInterface, typename R = T const &>
-class MaybeValue: public BASE<MaybeValue<T,BASE,R>, T, R> {
-  typedef MaybeValue<T,BASE,R>  this_type;
-  typedef BASE<this_type,T,R>   base_type;
+template <
+  class T,
+  class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
+>
+class MaybeValue: public MaybeValueInterface<MaybeValue<T,CR>,T,CR> {
+  typedef MaybeValue<T,CR>                    this_type;
+  typedef MaybeValueInterface<this_type,T,CR> base_type;
 
-  friend class MaybeValueInterface<this_type, T>;
+  friend class MaybeValueInterface<this_type,T,CR>;
 private:
   typedef boost::variant<boost::blank, T>    storage_type;
 
@@ -56,30 +59,22 @@ private:
 protected:
   void implSet(const T &val)
     { value = val; }
-  T const &implGet() const
+  CR   implGet() const
     { return boost::get<T>(value); }
   void implUndef()
     { value = boost::blank(); }
   bool implIsDefined() const
     { return boost::get<boost::blank>(&value) == NULL; }
 public:
-  MaybeValue()
-    : value(boost::blank()) {}
-  MaybeValue(boost::blank)
-    : value(boost::blank()) {}
-  MaybeValue(T const &val)
-    : value(val) {}
-  template <class DD, typename TT, typename RR>
-  MaybeValue(MaybeValueInterface<DD,TT,RR> const &val)
-    : value(val.isDefined()
-        ? storage_type(val.get())
+  MaybeValue(boost::blank value = boost::blank())
+    : value(value) {}
+  MaybeValue(T const &value)
+    : value(value) {}
+  template <class DD, typename TT, typename CRCR>
+  MaybeValue(MaybeValueInterface<DD,TT,CRCR> const &value)
+    : value(value.isDefined()
+        ? storage_type(value.get())
         : storage_type(boost::blank())) {}
-
-//You may need this if you can't rely on the default
-//assignment operator to do the job correctly!
-//Here we can rely on storage_type::operator = of value.
-//this_type &operator = (const this_type &val)
-//  { return base_type::operator =(val); }
 
   using base_type::operator =;
 };

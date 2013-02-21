@@ -52,6 +52,8 @@ template <
 class ValueVirtualInterface {
   typedef ValueVirtualInterface<T,CR> this_type;
 public:
+  typedef T value_type;
+
   virtual ~ValueVirtualInterface() {}
 
   virtual void  implSet(const T &) = 0;
