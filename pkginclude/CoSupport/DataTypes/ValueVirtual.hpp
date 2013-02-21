@@ -120,13 +120,13 @@ protected:
 
   typename base_type::Impl *getImpl() const { return impl.get(); }
 public:
-  ValueVirtual()
-    : impl(new Detail::ValueVirtualImpl<T,CR>()) {}
-  ValueVirtual(T const &val)
-    : impl(new Detail::ValueVirtualImpl<T,CR>(val)) {}
+  ValueVirtual(T const &value = T())
+    : impl(new Detail::ValueVirtualImpl<T,CR>(value)) {}
+  ValueVirtual(this_type const &value)
+    : impl(new Detail::ValueVirtualImpl<T,CR>(value)) {}
   template <class DD, typename TT, typename CRCR>
-  ValueVirtual(ValueInterface<DD,TT,CRCR> const &val)
-    : impl(new Detail::ValueVirtualImpl<T,CR>(val.get())) {}
+  ValueVirtual(ValueInterface<DD,TT,CRCR> const &value)
+    : impl(new Detail::ValueVirtualImpl<T,CR>(value)) {}
 
   ValueVirtual(typename base_type::Impl *impl)
     : impl(impl) {}

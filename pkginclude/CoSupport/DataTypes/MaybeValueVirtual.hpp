@@ -133,6 +133,8 @@ public:
     : impl(new Detail::MaybeValueVirtualImpl<T,CR>(value)) {}
   MaybeValueVirtual(T const &value)
     : impl(new Detail::MaybeValueVirtualImpl<T,CR>(value)) {}
+  MaybeValueVirtual(this_type const &value)
+    : impl(new Detail::MaybeValueVirtualImpl<T,CR>(value)) {}
   template <class DD, typename TT, typename CRCR>
   MaybeValueVirtual(MaybeValueInterface<DD,TT,CRCR> const &value)
     : impl(new Detail::MaybeValueVirtualImpl<T,CR>(value)) {}

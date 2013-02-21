@@ -46,10 +46,16 @@ namespace CoSupport { namespace DataTypes {
 
 template <
   class T,
+  class CR
+>
+class MaybeValueFacadeInterface;
+
+template <
+  class T,
   class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
 >
 class ValueFacadeInterface
-: public SmartPtr::RefCount,//< this must be first otherwise the reinterpret cast in MaybeValueFacadeInterface will not work!
+: public SmartPtr::RefCount,//< this must be first otherwise the reinterpret cast from MaybeValueFacadeInterface will not work!
   public ValueVirtualInterface<T,CR>
 {};
 
@@ -100,16 +106,18 @@ class ValueFacade
   friend class ValueInterface<this_type,T,CR>;
   friend class Detail::ValueVirtualUser<this_type,T,CR>;
 public:
-  ValueFacade()
-    : base1_type(new Detail::ValueFacadeImpl<T,CR>()) {}
-  ValueFacade(T const &val)
-    : base1_type(new Detail::ValueFacadeImpl<T,CR>(val)) {}
+  ValueFacade(T const &value = T())
+    : base1_type(new Detail::ValueFacadeImpl<T,CR>(value)) {}
+  ValueFacade(this_type const &value)
+    : base1_type(new Detail::ValueFacadeImpl<T,CR>(value)) {}
   template <class DD, typename TT, typename CRCR>
-  ValueFacade(ValueInterface<DD,TT,CRCR> const &val)
-    : base1_type(new Detail::ValueFacadeImpl<T,CR>(val.get())) {}
+  ValueFacade(ValueInterface<DD,TT,CRCR> const &value)
+    : base1_type(new Detail::ValueFacadeImpl<T,CR>(value)) {}
 
-  ValueFacade(typename base1_type::SmartPtr p)
+  ValueFacade(typename base1_type::SmartPtr const &p)
     : base1_type(p) {}
+  ValueFacade(::boost::intrusive_ptr<MaybeValueFacadeInterface<T,CR> > const &p)
+    : base1_type(p->getValueFacadeInterface()) {}
 
   using base2_type::operator =;
 };
