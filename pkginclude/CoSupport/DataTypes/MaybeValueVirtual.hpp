@@ -37,61 +37,108 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_MAYBEVALUEVIRTUAL_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_MAYBEVALUEVIRTUAL_HPP
 
-#include "MaybeValue.hpp"
+#include "MaybeValueInterface.hpp"
+#include "ValueVirtual.hpp"
+
+#include <boost/scoped_ptr.hpp>
+#include <boost/blank.hpp>
+#include <boost/variant.hpp>
 
 namespace CoSupport { namespace DataTypes {
 
-/// This class represents a virtual interface for a storage which may contain a value of type T
-/// \example test_maybevalue.cpp
-template <class D, typename T, typename R = T const &>
-class MaybeValueVirtualInterface
-: public MaybeValueInterface<D,T,R> {
-  typedef MaybeValueVirtualInterface<D,T,R> this_type;
-  typedef MaybeValueInterface<D,T,R>        base_type;
+/// This class represents a virtual interface for a storage which contains a value of type T.
+/// \example test_value.cpp
+template <
+  class T,
+  class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
+>
+class MaybeValueVirtualInterface: public ValueVirtualInterface<T,CR> {
+  typedef MaybeValueVirtualInterface<T,CR> this_type;
 public:
-  virtual ~MaybeValueVirtualInterface() {}
-
-  using base_type::operator =;
-protected:
-  virtual void  implSet(const T &) = 0;
-  virtual R     implGet() const = 0;
   virtual void  implUndef() = 0;
   virtual bool  implIsDefined() const = 0;
 };
 
-/// This class is a wrapper to access a value virtual interface.
-/// \example test_maybevalue.cpp
-template <typename T, typename R = T const &>
-class MaybeValueVirtual
-: public MaybeValueInterface<MaybeValueVirtual<T,R>,T,R> {
-  typedef MaybeValueVirtual<T,R>             this_type;
-  typedef MaybeValueInterface<this_type,T,R> base_type;
+namespace Detail {
 
-  friend class MaybeValueInterface<this_type,T,R>;
-private:
-  struct Impl: public MaybeValueVirtualInterface<Impl, T, R> {
-    friend class MaybeValueVirtual<T,R>;
-  } *impl;
+  template <
+    class T,
+    class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
+  >
+  class MaybeValueVirtualImpl: public MaybeValueVirtualInterface<T,CR> {
+    typedef MaybeValueVirtualImpl<T,CR>      this_type;
+    typedef MaybeValueVirtualInterface<T,CR> base_type;
+  public:
+    MaybeValueVirtualImpl(): value(boost::blank()) {}
+    MaybeValueVirtualImpl(T const &value): value(value) {}
+    template <class DD, class TT, class CRCR>
+    MaybeValueVirtualImpl(const MaybeValueInterface<DD,TT,CRCR> &v)
+      : value(v.isDefined()
+          ? boost::variant<boost::blank, T>(v.get())
+          : boost::variant<boost::blank, T>(boost::blank())) {}
+
+    boost::variant<boost::blank, T> value;
+
+    void  implSet(const T &v) { value = v; }
+    CR    implGet() const { return boost::get<T>(value); }
+    void  implUndef() { value = boost::blank(); }
+    bool  implIsDefined() const { return boost::get<T>(&value) != NULL; }
+  };
+
+  template <
+    class D,
+    class T,
+    class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
+  >
+  class MaybeValueVirtualUser
+  : public MaybeValueInterface<D,T,CR>
+  {
+    typedef MaybeValueVirtualUser<D,T,CR>  this_type;
+    typedef MaybeValueInterface<D,T,CR>    base_type;
+  public:
+    using base_type::operator =;
+  protected:
+    typedef MaybeValueVirtualInterface<T,CR> Impl;
+ 
+    Impl *_impl() const
+      { return static_cast<const D *>(this)->getImpl(); }
+
+    void  implSet(const T &v) { _impl()->implSet(v); }
+    CR    implGet() const { return _impl()->implGet(); }
+    void  implUndef() { _impl()->implUndef(); }
+    bool  implIsDefined() const { return _impl()->implIsDefined(); }
+  };
+
+} // namespace Detail
+
+/// This class is a wrapper to access a value virtual interface.
+/// \example test_value.cpp
+template <
+  class T,
+  class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
+>
+class MaybeValueVirtual
+: public Detail::MaybeValueVirtualUser<MaybeValueVirtual<T,CR>,T,CR> {
+  typedef MaybeValueVirtual<T,CR>                        this_type;
+  typedef Detail::MaybeValueVirtualUser<this_type,T,CR>  base_type;
+
+  friend class MaybeValueInterface<this_type,T,CR>;
+  friend class Detail::MaybeValueVirtualUser<this_type,T,CR>;
 protected:
-  void implSet(const T &val) { impl->implSet(val); }
-  R    implGet() const { return impl->implGet(); }
-  void implUndef() { impl->implUndef(); }
-  bool implIsDefined() const { return impl->implIsDefined(); }
+  boost::scoped_ptr<typename base_type::Impl> impl;
+
+  typename base_type::Impl *getImpl() const { return impl.get(); }
 public:
   MaybeValueVirtual()
-    : impl(reinterpret_cast<Impl *>(new MaybeValue<T, MaybeValueVirtualInterface, R>())) {}
+    : impl(new Detail::MaybeValueVirtualImpl<T,CR>()) {}
   MaybeValueVirtual(T const &val)
-    : impl(reinterpret_cast<Impl *>(new MaybeValue<T, MaybeValueVirtualInterface, R>(val))) {}
-  template <class DD, typename TT, typename RR>
-  MaybeValueVirtual(MaybeValueInterface<DD,TT,RR> const &val)
-    : impl(reinterpret_cast<Impl *>(val.isDefined()
-       ? new MaybeValue<T, MaybeValueVirtualInterface, R>(val.get())
-       : new MaybeValue<T, MaybeValueVirtualInterface, R>())) {}
-  template <class DD, typename TT, typename RR>
-  MaybeValueVirtual(MaybeValueVirtualInterface<DD,TT,RR> *impl)
-    : impl(reinterpret_cast<Impl *>(impl)) {}
+    : impl(new Detail::MaybeValueVirtualImpl<T,CR>(val)) {}
+  template <class DD, typename TT, typename CRCR>
+  MaybeValueVirtual(MaybeValueInterface<DD,TT,CRCR> const &val)
+    : impl(new Detail::MaybeValueVirtualImpl<T,CR>(val)) {}
 
-  ~MaybeValueVirtual() { delete impl; }
+  MaybeValueVirtual(typename base_type::Impl *impl)
+    : impl(impl) {}
 
   using base_type::operator =;
 };

@@ -44,68 +44,80 @@
 
 namespace CoSupport { namespace DataTypes {
 
-/// This class represents a facade interface for a storage which contains a value of type T.
-/// \example test_maybevalue.cpp
-template <class D, typename T, typename R = T const &>
+template <
+  class T,
+  class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
+>
 class MaybeValueFacadeInterface
-: public MaybeValueVirtualInterface<D,T,R>,
+: public MaybeValueVirtualInterface<T,CR>,
   public SmartPtr::RefCount
-{
-public:
-  using MaybeValueVirtualInterface<D,T,R>::operator =;
-};
+{};
 
-template <typename T, typename R = T const &>
-class MaybeValueFacade;
+template <class T, class CR>
+void intrusive_ptr_release(MaybeValueFacadeInterface<T,CR> *p) {
+  if (p->del_ref())
+    // RefCountObject has virtual destructor
+    delete p;
+}
 
 namespace Detail {
 
-  template <typename T, typename R = T const &>
-  struct MaybeValueFacadeImpl: public MaybeValueFacadeInterface<MaybeValueFacadeImpl<T,R>, T, R> {
-    friend class MaybeValueFacade<T,R>;
-  };
+  template <
+    class T,
+    class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
+  >
+  class MaybeValueFacadeImpl: public MaybeValueFacadeInterface<T,CR> {
+    typedef MaybeValueFacadeImpl<T,CR>       this_type;
+    typedef MaybeValueFacadeInterface<T,CR>  base_type;
+  public:
+    MaybeValueFacadeImpl(): value(boost::blank()) {}
+    MaybeValueFacadeImpl(T const &value): value(value) {}
+    template <class DD, class TT, class CRCR>
+    MaybeValueFacadeImpl(const MaybeValueInterface<DD,TT,CRCR> &v)
+      : value(v.isDefined()
+          ? boost::variant<boost::blank, T>(v.get())
+          : boost::variant<boost::blank, T>(boost::blank())) {}
 
-  template <typename T, typename R>
-  void intrusive_ptr_release(MaybeValueFacadeImpl<T,R> *p) {
-    if (p->del_ref())
-      // RefCountObject has virtual destructor
-      delete p;
-  }
+    boost::variant<boost::blank, T> value;
+
+    void  implSet(const T &v) { value = v; }
+    CR    implGet() const { return boost::get<T>(value); }
+    void  implUndef() { value = boost::blank(); }
+    bool  implIsDefined() const { return boost::get<T>(&value) != NULL; }
+  };
 
 } // namespace Detail
 
-/// This class is a facade for a storage which contains a value of type T.
-/// \example test_maybevalue.cpp
-template <typename T, typename R>
+/// This class is a facade for a std::set look alike containing values of type T.
+/// \example test_set.cpp
+template <
+  class T,
+  class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
+>
 class MaybeValueFacade
 : public FacadeFoundation<
-    MaybeValueFacade<T,R>,
-    Detail::MaybeValueFacadeImpl<T,R> >,
-  public MaybeValueInterface<MaybeValueFacade<T,R>,T,R>
+    MaybeValueFacade<T,CR>,
+    MaybeValueFacadeInterface<T,CR> >,
+  public Detail::MaybeValueVirtualUser<
+    MaybeValueFacade<T,CR>,T,CR>
 {
-  typedef MaybeValueFacade<T,R>                                             this_type;
-  typedef FacadeFoundation<this_type, Detail::MaybeValueFacadeImpl<T, R> >  base1_type;
-  typedef MaybeValueInterface<this_type,T,R>                                base2_type;
+  typedef MaybeValueFacade<T,CR>                                        this_type;
+  typedef FacadeFoundation<this_type,MaybeValueFacadeInterface<T,CR> >  base1_type;
+  typedef Detail::MaybeValueVirtualUser<this_type,T,CR>                 base2_type;
 
-  friend class MaybeValueInterface<this_type,T,R>;
-protected:
-  void implSet(const T &val) { this->getImpl()->implSet(val); }
-  R    implGet() const { return this->getImpl()->implGet(); }
-  void implUndef() { return this->getImpl()->implUndef(); }
-  bool implIsDefined() const { return this->getImpl()->implIsDefined(); }
+  friend class MaybeValueInterface<this_type,T,CR>;
+  friend class Detail::MaybeValueVirtualUser<this_type,T,CR>;
 public:
   MaybeValueFacade()
-    : base1_type(reinterpret_cast<typename base1_type::ImplType *>(new MaybeValue<T, MaybeValueFacadeInterface, R>())) {}
+    : base1_type(new Detail::MaybeValueFacadeImpl<T,CR>()) {}
   MaybeValueFacade(T const &val)
-    : base1_type(reinterpret_cast<typename base1_type::ImplType *>(new MaybeValue<T, MaybeValueFacadeInterface, R>(val))) {}
-  template <class DD, typename TT, typename RR>
-  MaybeValueFacade(MaybeValueInterface<DD,TT,RR> const &val)
-    : base1_type(reinterpret_cast<typename base1_type::ImplType *>(new MaybeValue<T, MaybeValueFacadeInterface, R>(val.get()))) {}
-  template <class DD, typename TT, typename RR>
-  MaybeValueFacade(MaybeValueFacadeInterface<DD,TT,RR> *impl)
-    : base1_type(reinterpret_cast<typename base1_type::ImplType *>(impl)) {}
-  MaybeValueFacade(typename this_type::SmartPtr const &impl)
-    : base1_type(reinterpret_cast<typename base1_type::ImplType *>(impl.get())) {}
+    : base1_type(new Detail::MaybeValueFacadeImpl<T,CR>(val)) {}
+  template <class DD, typename TT, typename CRCR>
+  MaybeValueFacade(MaybeValueInterface<DD,TT,CRCR> const &val)
+    : base1_type(new Detail::MaybeValueFacadeImpl<T,CR>(val)) {}
+
+  MaybeValueFacade(typename base1_type::SmartPtr p)
+    : base1_type(p) {}
 
   using base2_type::operator =;
 };

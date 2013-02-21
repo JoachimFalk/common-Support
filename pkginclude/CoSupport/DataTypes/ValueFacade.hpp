@@ -44,66 +44,72 @@
 
 namespace CoSupport { namespace DataTypes {
 
-/// This class represents a facade interface for a storage which contains a value of type T.
-/// \example test_value.cpp
-template <class D, typename T, typename R = T const &>
+template <
+  class T,
+  class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
+>
 class ValueFacadeInterface
-: public ValueVirtualInterface<D,T,R>,
+: public ValueVirtualInterface<T,CR>,
   public SmartPtr::RefCount
-{
-public:
-  using ValueVirtualInterface<D,T,R>::operator =;
-};
+{};
 
-template <typename T, typename R = T const &>
-class ValueFacade;
+template <class T, class CR>
+void intrusive_ptr_release(ValueFacadeInterface<T,CR> *p) {
+  if (p->del_ref())
+    // RefCountObject has virtual destructor
+    delete p;
+}
 
 namespace Detail {
 
-  template <typename T, typename R = T const &>
-  struct ValueFacadeImpl: public ValueFacadeInterface<ValueFacadeImpl<T,R>, T, R> {
-    friend class ValueFacade<T,R>;
-  };
+  template <
+    class T,
+    class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
+  >
+  class ValueFacadeImpl: public ValueFacadeInterface<T,CR> {
+    typedef ValueFacadeImpl<T,CR>       this_type;
+    typedef ValueFacadeInterface<T,CR>  base_type;
+  public:
+    ValueFacadeImpl(T const &value = T()): value(value) {}
 
-  template <typename T, typename R>
-  void intrusive_ptr_release(ValueFacadeImpl<T,R> *p) {
-    if (p->del_ref())
-      // RefCountObject has virtual destructor
-      delete p;
-  }
+    T value;
+
+    void  implSet(const T &v) { value = v; }
+    CR    implGet() const { return value; }
+  };
 
 } // namespace Detail
 
-/// This class is a facade for a storage which contains a value of type T.
-/// \example test_value.cpp
-template <typename T, typename R>
+/// This class is a facade for a std::set look alike containing values of type T.
+/// \example test_set.cpp
+template <
+  class T,
+  class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
+>
 class ValueFacade
 : public FacadeFoundation<
-    ValueFacade<T,R>,
-    Detail::ValueFacadeImpl<T,R> >,
-  public ValueInterface<ValueFacade<T,R>,T,R>
+    ValueFacade<T,CR>,
+    ValueFacadeInterface<T,CR> >,
+  public Detail::ValueVirtualUser<
+    ValueFacade<T,CR>,T,CR>
 {
-  typedef ValueFacade<T,R>                                            this_type;
-  typedef FacadeFoundation<this_type, Detail::ValueFacadeImpl<T, R> > base1_type;
-  typedef ValueInterface<this_type,T,R>                               base2_type;
+  typedef ValueFacade<T,CR>                                        this_type;
+  typedef FacadeFoundation<this_type,ValueFacadeInterface<T,CR> >  base1_type;
+  typedef Detail::ValueVirtualUser<this_type,T,CR>                 base2_type;
 
-  friend class ValueInterface<this_type,T,R>;
-protected:
-  void implSet(const T &val) { this->getImpl()->implSet(val); }
-  R    implGet() const { return this->getImpl()->implGet(); }
+  friend class ValueInterface<this_type,T,CR>;
+  friend class Detail::ValueVirtualUser<this_type,T,CR>;
 public:
   ValueFacade()
-    : base1_type(reinterpret_cast<typename base1_type::ImplType *>(new Value<T, ValueFacadeInterface, R>())) {}
+    : base1_type(new Detail::ValueFacadeImpl<T,CR>()) {}
   ValueFacade(T const &val)
-    : base1_type(reinterpret_cast<typename base1_type::ImplType *>(new Value<T, ValueFacadeInterface, R>(val))) {}
-  template <class DD, typename TT, typename RR>
-  ValueFacade(ValueInterface<DD,TT,RR> const &val)
-    : base1_type(reinterpret_cast<typename base1_type::ImplType *>(new Value<T, ValueFacadeInterface, R>(val.get()))) {}
-  template <class DD, typename TT, typename RR>
-  ValueFacade(ValueFacadeInterface<DD,TT,RR> *impl)
-    : base1_type(reinterpret_cast<typename base1_type::ImplType *>(impl)) {}
-  ValueFacade(typename this_type::SmartPtr const &impl)
-    : base1_type(reinterpret_cast<typename base1_type::ImplType *>(impl.get())) {}
+    : base1_type(new Detail::ValueFacadeImpl<T,CR>(val)) {}
+  template <class DD, typename TT, typename CRCR>
+  ValueFacade(ValueInterface<DD,TT,CRCR> const &val)
+    : base1_type(new Detail::ValueFacadeImpl<T,CR>(val.get())) {}
+
+  ValueFacade(typename base1_type::SmartPtr p)
+    : base1_type(p) {}
 
   using base2_type::operator =;
 };

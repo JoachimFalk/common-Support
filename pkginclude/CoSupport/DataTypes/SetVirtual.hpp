@@ -37,7 +37,7 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_SETVIRTUAL_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_SETVIRTUAL_HPP
 
-#include "Set.hpp"
+#include "SetInterface.hpp"
 
 #include <set>
 
@@ -120,73 +120,70 @@ public:
   }
 };
 
-template <
-  class SET,
-  class T,
-  class R = typename boost::add_reference<T>::type,
-  class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
-  class P = typename boost::add_pointer<T>::type,
-  class CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
->
-class SetVirtualImpl: public SetVirtualInterface<T,R,CR,P,CP> {
-  typedef SetVirtualImpl<SET,T,R,CR,P,CP>   this_type;
-  typedef SetVirtualInterface<T,R,CR,P,CP>  base_type;
-public:
-  SetVirtualImpl() {}
-  SetVirtualImpl(SET set): set(set) {}
-  SetVirtualImpl(const SET &set): set(set) {}
-
-  SET set;
-
-  /// Base class for the iterator template given by ITER
-  template <bool REVERSE>
-  class IterImpl: public base_type::template Iter<REVERSE> {
-    typedef IterImpl<REVERSE>                           this_type;
-    typedef typename base_type::template Iter<REVERSE>  ifac_type;
-  public:
-    typename SET::iterator iter;
-
-    IterImpl(typename SET::iterator const &iter): iter(iter) {}
-
-    void        increment()
-      { ++iter; }
-    void        decrement()
-      { --iter; }
-    bool        equal(ifac_type const &rhs) const
-      { return iter == static_cast<this_type const &>(rhs).iter; }
-    CR          dereference() const
-      { return *iter; }
-    ifac_type  *duplicate() const
-      { return new this_type(iter); }
-  };
-
-  typename base_type::template Iter<false> *implPBegin() const
-    { return new IterImpl<false>(set.begin()); }
-  typename base_type::template Iter<false> *implPEnd() const
-    { return new IterImpl<false>(set.end()); }
-  std::pair<typename base_type::template Iter<false> *, bool> implPInsert(T const &v) {
-    std::pair<typename SET::iterator, bool> retval(set.insert(v));
-    return std::pair<typename base_type::template Iter<false> *, bool>(
-        new IterImpl<false>(retval.first), retval.second);
-  }
-  void         implErase(typename base_type::template Iter<false> const &iter)
-    { set.erase(static_cast<IterImpl<false> const &>(iter).iter); }
-  size_t       implSize() const
-    { return set.size(); }
-  void         implErase(typename base_type::template Iter<false> const &iter1,
-                         typename base_type::template Iter<false> const &iter2) {
-    set.erase(static_cast<IterImpl<false> const &>(iter1).iter,
-              static_cast<IterImpl<false> const &>(iter2).iter);
-  }
-  typename base_type::template Iter<false> *implPLowerBound(T const &k) const
-    { return new IterImpl<false>(set.lower_bound(k)); }
-  typename base_type::template Iter<false> *implPUpperBound(T const &k) const
-    { return new IterImpl<false>(set.upper_bound(k)); }
-  typename base_type::template Iter<false> *implPFind(T const &k) const
-    { return new IterImpl<false>(set.find(k)); }
-};
-
 namespace Detail {
+
+  template <
+    class T,
+    class R = typename boost::add_reference<T>::type,
+    class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
+    class P = typename boost::add_pointer<T>::type,
+    class CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
+  >
+  class SetVirtualImpl: public SetVirtualInterface<T,R,CR,P,CP> {
+    typedef SetVirtualImpl<T,R,CR,P,CP>       this_type;
+    typedef SetVirtualInterface<T,R,CR,P,CP>  base_type;
+  public:
+    SetVirtualImpl() {}
+
+    std::set<T> set;
+
+    /// Base class for the iterator template given by ITER
+    template <bool REVERSE>
+    class IterImpl: public base_type::template Iter<REVERSE> {
+      typedef IterImpl<REVERSE>                           this_type;
+      typedef typename base_type::template Iter<REVERSE>  ifac_type;
+    public:
+      typename std::set<T>::iterator iter;
+
+      IterImpl(typename std::set<T>::iterator const &iter): iter(iter) {}
+
+      void        increment()
+        { ++iter; }
+      void        decrement()
+        { --iter; }
+      bool        equal(ifac_type const &rhs) const
+        { return iter == static_cast<this_type const &>(rhs).iter; }
+      CR          dereference() const
+        { return *iter; }
+      ifac_type  *duplicate() const
+        { return new this_type(iter); }
+    };
+
+    typename base_type::template Iter<false> *implPBegin() const
+      { return new IterImpl<false>(set.begin()); }
+    typename base_type::template Iter<false> *implPEnd() const
+      { return new IterImpl<false>(set.end()); }
+    std::pair<typename base_type::template Iter<false> *, bool> implPInsert(T const &v) {
+      std::pair<typename std::set<T>::iterator, bool> retval(set.insert(v));
+      return std::pair<typename base_type::template Iter<false> *, bool>(
+          new IterImpl<false>(retval.first), retval.second);
+    }
+    void         implErase(typename base_type::template Iter<false> const &iter)
+      { set.erase(static_cast<IterImpl<false> const &>(iter).iter); }
+    size_t       implSize() const
+      { return set.size(); }
+    void         implErase(typename base_type::template Iter<false> const &iter1,
+                           typename base_type::template Iter<false> const &iter2) {
+      set.erase(static_cast<IterImpl<false> const &>(iter1).iter,
+                static_cast<IterImpl<false> const &>(iter2).iter);
+    }
+    typename base_type::template Iter<false> *implPLowerBound(T const &k) const
+      { return new IterImpl<false>(set.lower_bound(k)); }
+    typename base_type::template Iter<false> *implPUpperBound(T const &k) const
+      { return new IterImpl<false>(set.upper_bound(k)); }
+    typename base_type::template Iter<false> *implPFind(T const &k) const
+      { return new IterImpl<false>(set.find(k)); }
+  };
 
   template <class D, typename T, typename R, typename CR, typename P, typename CP>
   class SetVirtualUser;
@@ -194,8 +191,13 @@ namespace Detail {
   template <class CONTAINER, bool REVERSE>
   class SetVirtualIter;
 
+  template <class CONTAINER, bool REVERSE>
+  struct SetVirtualIterBaseAccessor {
+    typedef typename CONTAINER::template IterBase<CONTAINER, REVERSE> type;
+  };
+
   template <class CONTAINER>
-  class SetVirtualIter<CONTAINER, false>: public SetIterBaseAccessor<CONTAINER, false>::type {
+  class SetVirtualIter<CONTAINER, false>: public SetVirtualIterBaseAccessor<CONTAINER, false>::type {
     typedef SetVirtualIter<CONTAINER, false> this_type;
 
     template <
@@ -287,7 +289,7 @@ class SetVirtual
 
   friend class SetInterface<this_type,Detail::SetVirtualIter,T,R,CR,P,CP>;
   friend class Detail::SetVirtualUser<this_type,T,R,CR,P,CP>;
-  template <class CONTAINER, bool REVERSE> friend class Detail::SetIterBaseAccessor;
+  template <class CONTAINER, bool REVERSE> friend class Detail::SetVirtualIterBaseAccessor;
   template <class CONTAINER, bool REVERSE> friend class Detail::SetVirtualIter;
 protected:
   boost::scoped_ptr<typename base_type::Impl> impl;
@@ -295,14 +297,14 @@ protected:
   typename base_type::Impl *getImpl() const { return impl.get(); }
 public:
   SetVirtual()
-    : impl(new SetVirtualImpl<std::set<T>,T,R,CR,P,CP>()) {}
+    : impl(new Detail::SetVirtualImpl<T,R,CR,P,CP>()) {}
   SetVirtual(this_type const &val)
-    : impl(new SetVirtualImpl<std::set<T>,T,R,CR,P,CP>())
-    { static_cast<SetVirtualImpl<std::set<T>,T,R,CR,P,CP> *>(impl.get())->set.insert(val.begin(), val.end()); }
+    : impl(new Detail::SetVirtualImpl<T,R,CR,P,CP>())
+    { static_cast<Detail::SetVirtualImpl<T,R,CR,P,CP> *>(impl.get())->set.insert(val.begin(), val.end()); }
   template <class DD, template<class,bool> class II, class RR, class CRCR, class PP, class CPCP>
   SetVirtual(SetInterface<DD,II,T,RR,CRCR,PP,CPCP> const &val)
-    : impl(new SetVirtualImpl<std::set<T>,T,R,CR,P,CP>())
-    { static_cast<SetVirtualImpl<std::set<T>,T,R,CR,P,CP> *>(impl.get())->set.insert(val.begin(), val.end()); }
+    : impl(new Detail::SetVirtualImpl<T,R,CR,P,CP>())
+    { static_cast<Detail::SetVirtualImpl<T,R,CR,P,CP> *>(impl.get())->set.insert(val.begin(), val.end()); }
   SetVirtual(typename base_type::Impl *impl)
     : impl(impl) {}
 
