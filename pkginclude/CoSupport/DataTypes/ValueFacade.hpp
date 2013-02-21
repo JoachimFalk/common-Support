@@ -49,8 +49,8 @@ template <
   class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
 >
 class ValueFacadeInterface
-: public ValueVirtualInterface<T,CR>,
-  public SmartPtr::RefCount
+: public SmartPtr::RefCount,//< this must be first otherwise the reinterpret cast in MaybeValueFacadeInterface will not work!
+  public ValueVirtualInterface<T,CR>
 {};
 
 template <class T, class CR>

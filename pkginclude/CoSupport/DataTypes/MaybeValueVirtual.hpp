@@ -69,7 +69,7 @@ namespace Detail {
     typedef MaybeValueVirtualImpl<T,CR>      this_type;
     typedef MaybeValueVirtualInterface<T,CR> base_type;
   public:
-    MaybeValueVirtualImpl(): value(boost::blank()) {}
+    MaybeValueVirtualImpl(boost::blank value = boost::blank()): value(value) {}
     MaybeValueVirtualImpl(T const &value): value(value) {}
     template <class DD, class TT, class CRCR>
     MaybeValueVirtualImpl(const MaybeValueInterface<DD,TT,CRCR> &v)
@@ -129,13 +129,13 @@ protected:
 
   typename base_type::Impl *getImpl() const { return impl.get(); }
 public:
-  MaybeValueVirtual()
-    : impl(new Detail::MaybeValueVirtualImpl<T,CR>()) {}
-  MaybeValueVirtual(T const &val)
-    : impl(new Detail::MaybeValueVirtualImpl<T,CR>(val)) {}
+  MaybeValueVirtual(boost::blank value = boost::blank())
+    : impl(new Detail::MaybeValueVirtualImpl<T,CR>(value)) {}
+  MaybeValueVirtual(T const &value)
+    : impl(new Detail::MaybeValueVirtualImpl<T,CR>(value)) {}
   template <class DD, typename TT, typename CRCR>
-  MaybeValueVirtual(MaybeValueInterface<DD,TT,CRCR> const &val)
-    : impl(new Detail::MaybeValueVirtualImpl<T,CR>(val)) {}
+  MaybeValueVirtual(MaybeValueInterface<DD,TT,CRCR> const &value)
+    : impl(new Detail::MaybeValueVirtualImpl<T,CR>(value)) {}
 
   MaybeValueVirtual(typename base_type::Impl *impl)
     : impl(impl) {}

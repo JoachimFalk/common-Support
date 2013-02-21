@@ -46,12 +46,23 @@ namespace CoSupport { namespace DataTypes {
 
 template <
   class T,
+  class CR
+>
+class ValueFacadeInterface;
+
+template <
+  class T,
   class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
 >
 class MaybeValueFacadeInterface
-: public MaybeValueVirtualInterface<T,CR>,
-  public SmartPtr::RefCount
-{};
+: public SmartPtr::RefCount,//< this must be first otherwise the reinterpret cast to ValueFacadeInterface will not work!
+  public MaybeValueVirtualInterface<T,CR>
+{
+  operator ValueFacadeInterface<T,CR>       &()
+    { return *reinterpret_cast<ValueFacadeInterface<T,CR>       *>(this); }
+  operator ValueFacadeInterface<T,CR> const &() const
+    { return *reinterpret_cast<ValueFacadeInterface<T,CR> const *>(this); }
+};
 
 template <class T, class CR>
 void intrusive_ptr_release(MaybeValueFacadeInterface<T,CR> *p) {
@@ -70,7 +81,7 @@ namespace Detail {
     typedef MaybeValueFacadeImpl<T,CR>       this_type;
     typedef MaybeValueFacadeInterface<T,CR>  base_type;
   public:
-    MaybeValueFacadeImpl(): value(boost::blank()) {}
+    MaybeValueFacadeImpl(boost::blank value = boost::blank()): value(value) {}
     MaybeValueFacadeImpl(T const &value): value(value) {}
     template <class DD, class TT, class CRCR>
     MaybeValueFacadeImpl(const MaybeValueInterface<DD,TT,CRCR> &v)
@@ -108,13 +119,13 @@ class MaybeValueFacade
   friend class MaybeValueInterface<this_type,T,CR>;
   friend class Detail::MaybeValueVirtualUser<this_type,T,CR>;
 public:
-  MaybeValueFacade()
-    : base1_type(new Detail::MaybeValueFacadeImpl<T,CR>()) {}
-  MaybeValueFacade(T const &val)
-    : base1_type(new Detail::MaybeValueFacadeImpl<T,CR>(val)) {}
+  MaybeValueFacade(boost::blank value = boost::blank())
+    : base1_type(new Detail::MaybeValueFacadeImpl<T,CR>(value)) {}
+  MaybeValueFacade(T const &value)
+    : base1_type(new Detail::MaybeValueFacadeImpl<T,CR>(value)) {}
   template <class DD, typename TT, typename CRCR>
-  MaybeValueFacade(MaybeValueInterface<DD,TT,CRCR> const &val)
-    : base1_type(new Detail::MaybeValueFacadeImpl<T,CR>(val)) {}
+  MaybeValueFacade(MaybeValueInterface<DD,TT,CRCR> const &value)
+    : base1_type(new Detail::MaybeValueFacadeImpl<T,CR>(value)) {}
 
   MaybeValueFacade(typename base1_type::SmartPtr p)
     : base1_type(p) {}

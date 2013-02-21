@@ -50,9 +50,6 @@
 
 namespace CoSupport { namespace DataTypes {
 
-template <class D, typename T, typename R = T const &>
-class ValueInterface;
-
 namespace Detail {
 
   class ValueInterfaceTag {};
@@ -62,11 +59,11 @@ namespace Detail {
   template <typename T>
   struct ValueTypeClassifier { typedef value_type_unknown_tag_t tag; };
 
-  template <typename tag, class D, typename T, typename R>
+  template <typename tag, class D, typename T, typename CR>
   class ValueTypeDecorator;
 
-  template <class D, typename T, typename R>
-  class ValueTypeDecorator<value_type_unknown_tag_t, D, T, R> {};
+  template <class D, typename T, typename CR>
+  class ValueTypeDecorator<value_type_unknown_tag_t, D, T, CR> {};
 
 #define COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(TYPE,TAG) \
   template <> struct ValueTypeClassifier<TYPE> { typedef TAG tag; }
@@ -82,9 +79,9 @@ namespace Detail {
   COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(float,value_type_numeric_tag_t);
   COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(double,value_type_numeric_tag_t);
 
-  template <class D, typename T, typename R>
-  class ValueTypeDecorator<value_type_numeric_tag_t, D, T, R> {
-    typedef ValueTypeDecorator<value_type_numeric_tag_t, D, T, R> this_type;
+  template <class D, typename T, typename CR>
+  class ValueTypeDecorator<value_type_numeric_tag_t, D, T, CR> {
+    typedef ValueTypeDecorator<value_type_numeric_tag_t, D, T, CR> this_type;
   protected:
     D       *getDerived()
       { return static_cast<D *>(this); }
@@ -123,9 +120,9 @@ namespace Detail {
   COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(char *,value_type_charptr_tag_t);
   COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(const char *,value_type_charptr_tag_t);
 
-  template <class D, typename T, typename R>
-  class ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> {
-    typedef ValueTypeDecorator<value_type_charptr_tag_t, D, T, R> this_type;
+  template <class D, typename T, typename CR>
+  class ValueTypeDecorator<value_type_charptr_tag_t, D, T, CR> {
+    typedef ValueTypeDecorator<value_type_charptr_tag_t, D, T, CR> this_type;
 
   protected:
     D       *getDerived()
@@ -140,9 +137,9 @@ namespace Detail {
 
   COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(std::string,value_type_std_string_tag_t);
 
-  template <class D, typename T, typename R>
-  class ValueTypeDecorator<value_type_std_string_tag_t, D, T, R> {
-    typedef ValueTypeDecorator<value_type_std_string_tag_t, D, T, R> this_type;
+  template <class D, typename T, typename CR>
+  class ValueTypeDecorator<value_type_std_string_tag_t, D, T, CR> {
+    typedef ValueTypeDecorator<value_type_std_string_tag_t, D, T, CR> this_type;
   protected:
     D       *getDerived()
       { return static_cast<D *>(this); }
@@ -157,9 +154,9 @@ namespace Detail {
   template <typename T>
   struct ValueTypeClassifier<T *> { typedef value_type_plain_pointer_t tag; };
 
-  template <class D, typename T, typename R>
-  class ValueTypeDecorator<value_type_plain_pointer_t, D, T, R> {
-    typedef ValueTypeDecorator<value_type_plain_pointer_t, D, T, R> this_type;
+  template <class D, typename T, typename CR>
+  class ValueTypeDecorator<value_type_plain_pointer_t, D, T, CR> {
+    typedef ValueTypeDecorator<value_type_plain_pointer_t, D, T, CR> this_type;
   private:
     typedef T                                                 value_type;
     typedef typename boost::add_reference<
@@ -183,13 +180,17 @@ namespace Detail {
 
 /// This class represents the interface for a storage which contains a value of type T.
 /// \example test_value.cpp
-template <class D, typename T, typename R>
+template <
+  class D,
+  class T,
+  class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
+>
 class ValueInterface
 : public Detail::ValueTypeDecorator<
-    typename Detail::ValueTypeClassifier<T>::tag, D, T, R
+    typename Detail::ValueTypeClassifier<T>::tag, D, T, CR
   >,
   public Detail::ValueInterfaceTag {
-  typedef ValueInterface<D,T,R> this_type;
+  typedef ValueInterface<D,T,CR> this_type;
 protected:
   D       *getDerived()
     { return static_cast<D *>(this); }
@@ -197,143 +198,143 @@ protected:
   D const *getDerived() const
     { return static_cast<D const *>(this); }
 public:
-  template <class DD, typename TT, typename RR>
-  D &operator = (const ValueInterface<DD, TT, RR> &val)
+  template <class DD, typename TT, typename CRCR>
+  D &operator = (const ValueInterface<DD, TT, CRCR> &val)
     { this->set(val); return *getDerived(); }
   D &operator = (const this_type &val)
     { this->set(val); return *getDerived(); }
   D &operator = (const T &val)
     { this->set(val); return *getDerived(); }
 
-  operator R() const
+  operator CR() const
     { return this->get(); }
 
-  template <class DD, typename TT, typename RR>
-  void set(const ValueInterface<DD,TT,RR> &val)
+  template <class DD, typename TT, typename CRCR>
+  void set(const ValueInterface<DD,TT,CRCR> &val)
     { this->set(val.get()); }
   // implSet is an interface method which must be implemented in D!
   void set(const T &val)
     { getDerived()->implSet(val); }
   // implGet is an interface method which must be implemented in D!
-  R get() const // this may throw
+  CR get() const // this may throw
     { return getDerived()->implGet(); }
 };
 
-template <class DD, typename TT, typename RR>
-std::ostream &operator << (std::ostream &out, ValueInterface<DD,TT,RR> const &x)
+template <class DD, typename TT, typename CRCR>
+std::ostream &operator << (std::ostream &out, ValueInterface<DD,TT,CRCR> const &x)
   { return out << x.get(); }
 
-template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
 bool
 operator ==(
-    const ValueInterface<D1, T1, R1> &lhs,
-    const ValueInterface<D2, T2, R2> &rhs)
+    const ValueInterface<D1, T1, CR1> &lhs,
+    const ValueInterface<D2, T2, CR2> &rhs)
   { return lhs.get() == rhs.get(); }
-template <typename T1, class D2, typename T2, typename R2>
+template <typename T1, class D2, typename T2, typename CR2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T1>, bool>::type
 operator ==(
     T1 const &lhs,
-    const ValueInterface<D2, T2, R2> &rhs)
+    const ValueInterface<D2, T2, CR2> &rhs)
   { return lhs == rhs.get(); }
-template <class D1, typename T1, typename R1, typename T2>
+template <class D1, typename T1, typename CR1, typename T2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T2>, bool>::type
 operator ==(
-    const ValueInterface<D1, T1, R1> &lhs,
+    const ValueInterface<D1, T1, CR1> &lhs,
     T2 const &rhs)
   { return lhs.get() == rhs; }
 
-template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
 bool
 operator !=(
-    const ValueInterface<D1, T1, R1> &lhs,
-    const ValueInterface<D2, T2, R2> &rhs)
+    const ValueInterface<D1, T1, CR1> &lhs,
+    const ValueInterface<D2, T2, CR2> &rhs)
   { return lhs.get() != rhs.get(); }
-template <typename T1, class D2, typename T2, typename R2>
+template <typename T1, class D2, typename T2, typename CR2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T1>, bool>::type
 operator !=(
     T1 const &lhs,
-    const ValueInterface<D2, T2, R2> &rhs)
+    const ValueInterface<D2, T2, CR2> &rhs)
   { return lhs != rhs.get(); }
-template <class D1, typename T1, typename R1, typename T2>
+template <class D1, typename T1, typename CR1, typename T2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T2>, bool>::type
 operator !=(
-    const ValueInterface<D1, T1, R1> &lhs,
+    const ValueInterface<D1, T1, CR1> &lhs,
     T2 const &rhs)
   { return lhs.get() != rhs; }
 
-template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
 bool
 operator < (
-    const ValueInterface<D1, T1, R1> &lhs,
-    const ValueInterface<D2, T2, R2> &rhs)
+    const ValueInterface<D1, T1, CR1> &lhs,
+    const ValueInterface<D2, T2, CR2> &rhs)
   { return lhs.get() <  rhs.get(); }
-template <typename T1, class D2, typename T2, typename R2>
+template <typename T1, class D2, typename T2, typename CR2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T1>, bool>::type
 operator < (
     T1 const &lhs,
-    const ValueInterface<D2, T2, R2> &rhs)
+    const ValueInterface<D2, T2, CR2> &rhs)
   { return lhs <  rhs.get(); }
-template <class D1, typename T1, typename R1, typename T2>
+template <class D1, typename T1, typename CR1, typename T2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T2>, bool>::type
 operator < (
-    const ValueInterface<D1, T1, R1> &lhs,
+    const ValueInterface<D1, T1, CR1> &lhs,
     T2 const &rhs)
   { return lhs.get() <  rhs; }
 
-template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
 bool
 operator <=(
-    const ValueInterface<D1, T1, R1> &lhs,
-    const ValueInterface<D2, T2, R2> &rhs)
+    const ValueInterface<D1, T1, CR1> &lhs,
+    const ValueInterface<D2, T2, CR2> &rhs)
   { return lhs.get() <= rhs.get(); }
-template <typename T1, class D2, typename T2, typename R2>
+template <typename T1, class D2, typename T2, typename CR2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T1>, bool>::type
 operator <=(
     T1 const &lhs,
-    const ValueInterface<D2, T2, R2> &rhs)
+    const ValueInterface<D2, T2, CR2> &rhs)
   { return lhs <= rhs.get(); }
-template <class D1, typename T1, typename R1, typename T2>
+template <class D1, typename T1, typename CR1, typename T2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T2>, bool>::type
 operator <=(
-    const ValueInterface<D1, T1, R1> &lhs,
+    const ValueInterface<D1, T1, CR1> &lhs,
     T2 const &rhs)
   { return lhs.get() <= rhs; }
 
-template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
 bool
 operator > (
-    const ValueInterface<D1, T1, R1> &lhs,
-    const ValueInterface<D2, T2, R2> &rhs)
+    const ValueInterface<D1, T1, CR1> &lhs,
+    const ValueInterface<D2, T2, CR2> &rhs)
   { return lhs.get() >  rhs.get(); }
-template <typename T1, class D2, typename T2, typename R2>
+template <typename T1, class D2, typename T2, typename CR2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T1>, bool>::type
 operator > (
     T1 const &lhs,
-    const ValueInterface<D2, T2, R2> &rhs)
+    const ValueInterface<D2, T2, CR2> &rhs)
   { return lhs >  rhs.get(); }
-template <class D1, typename T1, typename R1, typename T2>
+template <class D1, typename T1, typename CR1, typename T2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T2>, bool>::type
 operator > (
-    const ValueInterface<D1, T1, R1> &lhs,
+    const ValueInterface<D1, T1, CR1> &lhs,
     T2 const &rhs)
   { return lhs.get() >  rhs; }
 
-template <class D1, typename T1, typename R1, class D2, typename T2, typename R2>
+template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
 bool
 operator >=(
-    const ValueInterface<D1, T1, R1> &lhs,
-    const ValueInterface<D2, T2, R2> &rhs)
+    const ValueInterface<D1, T1, CR1> &lhs,
+    const ValueInterface<D2, T2, CR2> &rhs)
   { return lhs.get() >= rhs.get(); }
-template <typename T1, class D2, typename T2, typename R2>
+template <typename T1, class D2, typename T2, typename CR2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T1>, bool>::type
 operator >=(
     T1 const &lhs,
-    const ValueInterface<D2, T2, R2> &rhs)
+    const ValueInterface<D2, T2, CR2> &rhs)
   { return lhs >= rhs.get(); }
-template <class D1, typename T1, typename R1, typename T2>
+template <class D1, typename T1, typename CR1, typename T2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T2>, bool>::type
 operator >=(
-    const ValueInterface<D1, T1, R1> &lhs,
+    const ValueInterface<D1, T1, CR1> &lhs,
     T2 const &rhs)
   { return lhs.get() >= rhs; }
 
