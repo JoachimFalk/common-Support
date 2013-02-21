@@ -65,10 +65,8 @@ nobase_include_HEADERS = \
 	CoSupport/DataTypes/oneof.hpp \
 	CoSupport/DataTypes/Projection.hpp \
 	CoSupport/DataTypes/SerializeHelper.hpp \
-	CoSupport/DataTypes/Set.hpp \
 	CoSupport/DataTypes/SetInterface.hpp \
 	CoSupport/DataTypes/ValidWrapper.hpp \
-	CoSupport/DataTypes/Value.hpp \
 	CoSupport/DataTypes/ValueInterface.hpp \
 	CoSupport/DataTypes/Vector.hpp \
 	CoSupport/DataTypes/VectorInterface.hpp \

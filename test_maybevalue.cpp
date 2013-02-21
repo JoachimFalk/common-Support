@@ -164,10 +164,10 @@ int main(int argc, char *argv[]) {
     { MaybeValue<int> &check = (foo = MaybeValue<long>(12)); assert(&check == &foo); }
   }
   {
-    MaybeValue<const char *, MaybeValueVirtualInterface> cp("foo");
-    MaybeValue<std::string>                              str1(cp);
-    MaybeValue<std::string, MaybeValueVirtualInterface>  str2("bar");
-    MaybeValue<std::string>                              str3(std::string("zzz"));
+    MaybeValueVirtual<const char *> cp("foo");
+    MaybeValue<std::string>         str1(cp);
+    MaybeValueVirtual<std::string>  str2("bar");
+    MaybeValue<std::string>         str3(std::string("zzz"));
     
     std::cout << "cp(\"foo\"):                \"" << cp << "\"" << std::endl;
     std::cout << "str1(cp):                 \"" << str1 << "\"" << std::endl;
@@ -305,7 +305,7 @@ int main(int argc, char *argv[]) {
     MaybeValueFacade<int>::ConstPtr  cpa1(pa);
     MaybeValueFacade<int>::ConstPtr  cpa2(a.toPtr());
     
-    MaybeValue<int, MaybeValueFacadeInterface> *bImpl = new MaybeValue<int, MaybeValueFacadeInterface>(15);
+    MaybeValueFacadeInterface<int>  *bImpl = new Detail::MaybeValueFacadeImpl<int>();
     MaybeValueFacade<int>            b(bImpl);
     MaybeValueFacade<int>::Ref       rb(b);
     MaybeValueFacade<int>::ConstRef  crb1(b);
@@ -314,19 +314,25 @@ int main(int argc, char *argv[]) {
     MaybeValueFacade<int>::ConstPtr  cpb1(pb);
     MaybeValueFacade<int>::ConstPtr  cpb2(b.toPtr());
     
-    MaybeValue<int>                        c(14);
-    MaybeValue<int, MaybeValueVirtualInterface> d(13);
+    MaybeValue<int>                  c(14);
+    MaybeValueVirtual<int>           d(13);
     
     assert(a == 12); sassert(a++ == 12);
     assert(a == 13); assert(ra == 13); assert(cra2 == 13); assert(*cpa1 == 13); assert(*cpa2 == 13);
     assert(a.isDefined());
     a.undef();
     assert(!a.isDefined());
-    
-    assert(bImpl->get() == 15);
+
+    assert(!b.isDefined());
+    bImpl->implSet(15);
+    assert(b.isDefined());
+    assert(bImpl->implGet() == 15);
     assert(b == 15); sassert(b-- == 15);
     assert(b == 14); assert(rb == 14); assert(crb2 == 14); assert(*cpb1 == 14); assert(*cpb2 == 14);
-    assert(bImpl->get() == 14);
+    assert(bImpl->implGet() == 14);
+    assert(b.isDefined());
+    bImpl->implUndef();
+    assert(!b.isDefined());
     
     sassert(++c == 15); sassert(d++ == 13); assert(c == 15); assert(d == 14);
     
@@ -350,20 +356,6 @@ int main(int argc, char *argv[]) {
     CHECK_OP_WW(INT_MIN,d,<=,ra); CHECK_OP_WW(INT_MIN,d,<=,cra1); CHECK_OP_WW(INT_MIN,d,<=,*pa); CHECK_OP_WW(INT_MIN,d,<=,*cpa1);
     CHECK_OP_WW(INT_MIN,d,> ,ra); CHECK_OP_WW(INT_MIN,d,> ,cra1); CHECK_OP_WW(INT_MIN,d,> ,*pa); CHECK_OP_WW(INT_MIN,d,> ,*cpa1);
     CHECK_OP_WW(INT_MIN,d,>=,ra); CHECK_OP_WW(INT_MIN,d,>=,cra1); CHECK_OP_WW(INT_MIN,d,>=,*pa); CHECK_OP_WW(INT_MIN,d,>=,*cpa1);
-    
-    CHECK_OP_WW(INT_MIN,*bImpl,==,ra); CHECK_OP_WW(INT_MIN,*bImpl,==,cra1); CHECK_OP_WW(INT_MIN,*bImpl,==,*pa); CHECK_OP_WW(INT_MIN,*bImpl,==,*cpa1);
-    CHECK_OP_WW(INT_MIN,*bImpl,!=,ra); CHECK_OP_WW(INT_MIN,*bImpl,!=,cra1); CHECK_OP_WW(INT_MIN,*bImpl,!=,*pa); CHECK_OP_WW(INT_MIN,*bImpl,!=,*cpa1);
-    CHECK_OP_WW(INT_MIN,*bImpl,< ,ra); CHECK_OP_WW(INT_MIN,*bImpl,< ,cra1); CHECK_OP_WW(INT_MIN,*bImpl,< ,*pa); CHECK_OP_WW(INT_MIN,*bImpl,< ,*cpa1);
-    CHECK_OP_WW(INT_MIN,*bImpl,<=,ra); CHECK_OP_WW(INT_MIN,*bImpl,<=,cra1); CHECK_OP_WW(INT_MIN,*bImpl,<=,*pa); CHECK_OP_WW(INT_MIN,*bImpl,<=,*cpa1);
-    CHECK_OP_WW(INT_MIN,*bImpl,> ,ra); CHECK_OP_WW(INT_MIN,*bImpl,> ,cra1); CHECK_OP_WW(INT_MIN,*bImpl,> ,*pa); CHECK_OP_WW(INT_MIN,*bImpl,> ,*cpa1);
-    CHECK_OP_WW(INT_MIN,*bImpl,>=,ra); CHECK_OP_WW(INT_MIN,*bImpl,>=,cra1); CHECK_OP_WW(INT_MIN,*bImpl,>=,*pa); CHECK_OP_WW(INT_MIN,*bImpl,>=,*cpa1);
-    
-    CHECK_OP_WW(INT_MIN,ra,==,*bImpl); CHECK_OP_WW(INT_MIN,cra1,==,*bImpl); CHECK_OP_WW(INT_MIN,*pa,==,*bImpl); CHECK_OP_WW(INT_MIN,*cpa1,==,*bImpl);
-    CHECK_OP_WW(INT_MIN,ra,!=,*bImpl); CHECK_OP_WW(INT_MIN,cra1,!=,*bImpl); CHECK_OP_WW(INT_MIN,*pa,!=,*bImpl); CHECK_OP_WW(INT_MIN,*cpa1,!=,*bImpl);
-    CHECK_OP_WW(INT_MIN,ra,< ,*bImpl); CHECK_OP_WW(INT_MIN,cra1,< ,*bImpl); CHECK_OP_WW(INT_MIN,*pa,< ,*bImpl); CHECK_OP_WW(INT_MIN,*cpa1,< ,*bImpl);
-    CHECK_OP_WW(INT_MIN,ra,<=,*bImpl); CHECK_OP_WW(INT_MIN,cra1,<=,*bImpl); CHECK_OP_WW(INT_MIN,*pa,<=,*bImpl); CHECK_OP_WW(INT_MIN,*cpa1,<=,*bImpl);
-    CHECK_OP_WW(INT_MIN,ra,> ,*bImpl); CHECK_OP_WW(INT_MIN,cra1,> ,*bImpl); CHECK_OP_WW(INT_MIN,*pa,> ,*bImpl); CHECK_OP_WW(INT_MIN,*cpa1,> ,*bImpl);
-    CHECK_OP_WW(INT_MIN,ra,>=,*bImpl); CHECK_OP_WW(INT_MIN,cra1,>=,*bImpl); CHECK_OP_WW(INT_MIN,*pa,>=,*bImpl); CHECK_OP_WW(INT_MIN,*cpa1,>=,*bImpl);
     
     CHECK_OP_WW(INT_MIN,ra,==,a); CHECK_OP_WW(INT_MIN,cra1,==,a); CHECK_OP_WW(INT_MIN,*pa,==,a); CHECK_OP_WW(INT_MIN,*cpa1,==,a);
     CHECK_OP_WW(INT_MIN,ra,!=,a); CHECK_OP_WW(INT_MIN,cra1,!=,a); CHECK_OP_WW(INT_MIN,*pa,!=,a); CHECK_OP_WW(INT_MIN,*cpa1,!=,a);

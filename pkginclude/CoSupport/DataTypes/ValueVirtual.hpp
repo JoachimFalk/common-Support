@@ -37,55 +37,97 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_VALUEVIRTUAL_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_VALUEVIRTUAL_HPP
 
-#include "Value.hpp"
+#include "ValueInterface.hpp"
+
+#include <boost/scoped_ptr.hpp>
 
 namespace CoSupport { namespace DataTypes {
 
 /// This class represents a virtual interface for a storage which contains a value of type T.
 /// \example test_value.cpp
-template <class D, typename T, typename R = T const &>
-class ValueVirtualInterface
-: public ValueInterface<D,T,R> {
-  typedef ValueVirtualInterface<D,T,R> this_type;
-  typedef ValueInterface<D,T,R>        base_type;
+template <
+  class T,
+  class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
+>
+class ValueVirtualInterface {
+  typedef ValueVirtualInterface<T,CR> this_type;
 public:
   virtual ~ValueVirtualInterface() {}
 
-  using base_type::operator =;
-protected:
   virtual void  implSet(const T &) = 0;
-  virtual R     implGet() const = 0;
+  virtual CR    implGet() const = 0;
 };
+
+namespace Detail {
+
+  template <
+    class T,
+    class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
+  >
+  class ValueVirtualImpl: public ValueVirtualInterface<T,CR> {
+    typedef ValueVirtualImpl<T,CR>      this_type;
+    typedef ValueVirtualInterface<T,CR> base_type;
+  public:
+    ValueVirtualImpl(T const &value = T()): value(value) {}
+
+    T value;
+
+    void  implSet(const T &v) { value = v; }
+    CR    implGet() const { return value; }
+  };
+
+  template <
+    class D,
+    class T,
+    class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
+  >
+  class ValueVirtualUser
+  : public ValueInterface<D,T,CR>
+  {
+    typedef ValueVirtualUser<D,T,CR>  this_type;
+    typedef ValueInterface<D,T,CR>    base_type;
+  public:
+    using base_type::operator =;
+  protected:
+    typedef ValueVirtualInterface<T,CR> Impl;
+ 
+    Impl *_impl() const
+      { return static_cast<const D *>(this)->getImpl(); }
+
+    void  implSet(const T &v) { _impl()->implSet(v); }
+    CR    implGet() const { return _impl()->implGet(); }
+  };
+
+} // namespace Detail
 
 /// This class is a wrapper to access a value virtual interface.
 /// \example test_value.cpp
-template <typename T, typename R = T const &>
+template <
+  class T,
+  class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
+>
 class ValueVirtual
-: public ValueInterface<ValueVirtual<T,R>,T,R> {
-  typedef ValueVirtual<T,R>             this_type;
-  typedef ValueInterface<this_type,T,R> base_type;
+: public Detail::ValueVirtualUser<ValueVirtual<T,CR>,T,CR> {
+  typedef ValueVirtual<T,CR>                        this_type;
+  typedef Detail::ValueVirtualUser<this_type,T,CR>  base_type;
 
-  friend class ValueInterface<this_type,T,R>;
-private:
-  struct Impl: public ValueVirtualInterface<Impl, T, R> {
-    friend class ValueVirtual<T,R>;
-  } *impl;
+  friend class ValueInterface<this_type,T,CR>;
+  friend class Detail::ValueVirtualUser<this_type,T,CR>;
 protected:
-  void implSet(const T &val) { impl->implSet(val); }
-  R    implGet() const { return impl->implGet(); }
+  boost::scoped_ptr<typename base_type::Impl> impl;
+
+  typename base_type::Impl *getImpl() const { return impl.get(); }
 public:
   ValueVirtual()
-    : impl(reinterpret_cast<Impl *>(new Value<T, ValueVirtualInterface, R>())) {}
+    : impl(new Detail::ValueVirtualImpl<T,CR>()) {}
   ValueVirtual(T const &val)
-    : impl(reinterpret_cast<Impl *>(new Value<T, ValueVirtualInterface, R>(val))) {}
-  template <class DD, typename TT, typename RR>
-  ValueVirtual(ValueInterface<DD,TT,RR> const &val)
-    : impl(reinterpret_cast<Impl *>(new Value<T, ValueVirtualInterface, R>(val.get()))) {}
-  template <class DD, typename TT, typename RR>
-  ValueVirtual(ValueVirtualInterface<DD,TT,RR> *impl)
-    : impl(reinterpret_cast<Impl *>(impl)) {}
+    : impl(new Detail::ValueVirtualImpl<T,CR>(val)) {}
+  template <class DD, typename TT, typename CRCR>
+  ValueVirtual(ValueInterface<DD,TT,CRCR> const &val)
+    : impl(new Detail::ValueVirtualImpl<T,CR>(val.get())) {}
 
-  ~ValueVirtual() { delete impl; }
+  ValueVirtual(typename base_type::Impl *impl)
+    : impl(impl) {}
 
   using base_type::operator =;
 };

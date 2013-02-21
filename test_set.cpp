@@ -40,14 +40,103 @@
 #include <CoSupport/Streams/stl_output_for_set.hpp>
 #include <CoSupport/Streams/stl_output_for_map.hpp>
 
-#include <CoSupport/DataTypes/Set.hpp>
+#include <CoSupport/DataTypes/SetInterface.hpp>
 #include <CoSupport/DataTypes/SetVirtual.hpp>
 #include <CoSupport/DataTypes/SetFacade.hpp>
 
 #include <cstring>
 
-typedef CoSupport::DataTypes::Set<int> TSet;
-typedef std::map<TSet, int>            TSetInMap;
+#include <set>
+
+/// This class implements the interface for a std::set containing values of type T.
+template <
+  typename T,
+  typename R,
+  typename CR,
+  typename P,
+  typename CP
+>
+class Set;
+
+namespace Detail {
+
+  template <class CONTAINER, bool REVERSE>
+  class SetIter;
+
+  template <class CONTAINER, bool REVERSE>
+  struct SetIterBaseAccessor {
+    typedef typename CONTAINER::template IterBase<CONTAINER, REVERSE> type;
+  };
+
+  template <class CONTAINER>
+  class SetIter<CONTAINER, false>: public SetIterBaseAccessor<CONTAINER, false>::type {
+    typedef SetIter<CONTAINER, false> this_type;
+
+    template <
+      typename T,
+      typename R,
+      typename CR,
+      typename P,
+      typename CP
+    >
+    friend class Set;
+    friend class boost::iterator_core_access;
+  public:
+    SetIter() {}
+  private:
+    typename std::set<typename CONTAINER::value_type>::iterator iter;
+
+    SetIter(typename std::set<typename CONTAINER::value_type>::iterator const &iter): iter(iter) {}
+
+    void increment() { ++iter; }
+    void decrement() { --iter; }
+    bool equal(const this_type &rhs) const { return iter == rhs.iter; }
+
+    typename this_type::reference dereference() const { return *iter; }
+  };
+
+} // namespace Detail
+
+/// This class implements the interface for a std::set containing values of type T.
+template <
+  typename T,
+  typename R  = typename boost::add_reference<T>::type,
+  typename CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
+  typename P  = typename boost::add_pointer<T>::type,
+  typename CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
+>
+class Set
+: public CoSupport::DataTypes::SetInterface<Set<T,R,CR,P,CP>,Detail::SetIter,T,R,CR,P,CP>
+{
+  typedef Set<T,R,CR,P,CP>                                                          this_type;
+  typedef CoSupport::DataTypes::SetInterface<this_type,Detail::SetIter,T,R,CR,P,CP> base_type;
+
+  friend class CoSupport::DataTypes::SetInterface<this_type,Detail::SetIter,T,R,CR,P,CP>;
+  template <class CONTAINER, bool REVERSE> friend class Detail::SetIterBaseAccessor;
+protected:
+  std::set<T> set;
+
+  typename this_type::iterator implBegin() const
+    { return const_cast<this_type *>(this)->set.begin(); }
+  typename this_type::iterator implEnd() const
+    { return const_cast<this_type *>(this)->set.end(); }
+
+  using base_type::implErase;
+
+  void
+  implErase(const typename this_type::iterator &iter)
+    { set.erase(iter.iter); }
+  std::pair<typename this_type::iterator, bool>
+  implInsert(const typename this_type::value_type &value) {
+    std::pair<typename std::set<T>::iterator, bool> retval(set.insert(value));
+    return std::make_pair(
+      typename this_type::iterator(retval.first),
+      retval.second);
+  }
+};
+
+typedef Set<int>            TSet;
+typedef std::map<TSet, int> TSetInMap;
 
 //typedef CoSupport::DataTypes::Set<std::string, CoSupport::DataTypes::SetVirtualInterface> VSetImpl;
 //typedef std::map<VSetImpl, int>                                                           VSetImplInMap;

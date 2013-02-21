@@ -36,9 +36,38 @@
 #include <cassert>
 #include <cmath>
 
-#include <CoSupport/DataTypes/Value.hpp>
+#include <CoSupport/DataTypes/ValueInterface.hpp>
 #include <CoSupport/DataTypes/ValueVirtual.hpp>
 #include <CoSupport/DataTypes/ValueFacade.hpp>
+
+/// This class implements the interface for a storage which contains a value of type T.
+/// \example test_value.cpp
+template <
+  class T,
+  class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
+>
+class Value: public CoSupport::DataTypes::ValueInterface<Value<T,CR>,T,CR> {
+  typedef Value<T,CR>                                           this_type;
+  typedef CoSupport::DataTypes::ValueInterface<this_type,T,CR>  base_type;
+
+  friend class CoSupport::DataTypes::ValueInterface<this_type,T,CR>;
+private:
+  T value;
+protected:
+  void implSet(const T &val)
+    { value = val; }
+  T const &implGet() const
+    { return value; }
+public:
+  Value() {}
+  Value(T const &val)
+    : value(val) {}
+  template <class DD, typename TT, typename CRCR>
+  Value(CoSupport::DataTypes::ValueInterface<DD,TT,CRCR> const &val)
+    : value(val.get()) {}
+
+  using base_type::operator =;
+};
 
 #define CHECK_OP_VW(X,OP,V) do { \
     std::cout << #X " " #OP " " << #V << ": " << (X OP V) << std::endl; \
@@ -67,20 +96,19 @@ struct C: public A {
   int c;
 };
 
-
 volatile int sink;
 
 using namespace CoSupport::DataTypes;
 
 int main(int argc, char *argv[]) {
   {
-    Value<int>                        x(0);
-    Value<int>                        y(10);
-    Value<int, ValueVirtualInterface> z(y);
+    Value<int>        x(0);
+    Value<int>        y(10);
+    ValueVirtual<int> z(y);
     
-    Value<double, ValueVirtualInterface> xx;
-    Value<double>                        yy(M_PI);
-    Value<double>                        zz(y);
+    ValueVirtual<double> xx;
+    Value<double>        yy(M_PI);
+    Value<double>        zz(y);
     
     std::cout << "x(0): " << x << std::endl;
     
@@ -276,16 +304,16 @@ int main(int argc, char *argv[]) {
     B b;
     C c;
 
-    Value<A *>                          pan(NULL);
-    ValueVirtual<A *>                   pa1(&a);
-    Value<B *>                          pb1(&b);
-    Value<C *, ValueVirtualInterface>  *pc1Impl(new Value<C *, ValueVirtualInterface>(&c));
-    ValueVirtual<C *>                   pc1(pc1Impl);
+    Value<A *>                  pan(NULL);
+    ValueVirtual<A *>           pa1(&a);
+    Value<B *>                  pb1(&b);
+    ValueVirtualInterface<C *> *pc1Impl(new Detail::ValueVirtualImpl<C *>(&c));
+    ValueVirtual<C *>           pc1(pc1Impl);
     
     sink = pa1->a + pb1->a + pb1->b + pc1->a + pc1->c;
     sink = (*pa1).a + (*pb1).a + (*pb1).b + (*pc1).a + (*pc1).c;
 
-    assert(*pc1Impl == pc1);
+    assert(pc1Impl->implGet() == pc1);
     
     CHECK_OP_WW(pa1,==,pan); CHECK_OP_WW(pa1,==,pb1); CHECK_OP_WW(pa1,==,pc1);
     CHECK_OP_WW(pa1,!=,pan); CHECK_OP_WW(pa1,!=,pb1); CHECK_OP_WW(pa1,!=,pc1);
@@ -310,7 +338,7 @@ int main(int argc, char *argv[]) {
     ValueFacade<int>::ConstPtr  cpa1(pa);
     ValueFacade<int>::ConstPtr  cpa2(a.toPtr());
     
-    Value<int, ValueFacadeInterface> *bImpl = new Value<int, ValueFacadeInterface>(15);
+    ValueFacadeInterface<int>  *bImpl = new Detail::ValueFacadeImpl<int>(15);
     ValueFacade<int>            b(bImpl);
     ValueFacade<int>::Ref       rb(b);
     ValueFacade<int>::ConstRef  crb1(b);
@@ -319,16 +347,16 @@ int main(int argc, char *argv[]) {
     ValueFacade<int>::ConstPtr  cpb1(pb);
     ValueFacade<int>::ConstPtr  cpb2(b.toPtr());
     
-    Value<int>                        c(14);
-    Value<int, ValueVirtualInterface> d(13);
+    Value<int>        c(14);
+    ValueVirtual<int> d(13);
     
     assert(a == 12); sassert(a++ == 12);
     assert(a == 13); assert(ra == 13); assert(cra2 == 13); assert(*cpa1 == 13); assert(*cpa2 == 13);
     
-    assert(bImpl->get() == 15);
+    assert(bImpl->implGet() == 15);
     assert(b == 15); sassert(b-- == 15);
     assert(b == 14); assert(rb == 14); assert(crb2 == 14); assert(*cpb1 == 14); assert(*cpb2 == 14);
-    assert(bImpl->get() == 14);
+    assert(bImpl->implGet() == 14);
     
     sassert(++c == 15); sassert(d++ == 13); assert(c == 15); assert(d == 14);
     
@@ -352,20 +380,6 @@ int main(int argc, char *argv[]) {
     CHECK_OP_WW(d,<=,ra); CHECK_OP_WW(d,<=,cra1); CHECK_OP_WW(d,<=,*pa); CHECK_OP_WW(d,<=,*cpa1);
     CHECK_OP_WW(d,> ,ra); CHECK_OP_WW(d,> ,cra1); CHECK_OP_WW(d,> ,*pa); CHECK_OP_WW(d,> ,*cpa1);
     CHECK_OP_WW(d,>=,ra); CHECK_OP_WW(d,>=,cra1); CHECK_OP_WW(d,>=,*pa); CHECK_OP_WW(d,>=,*cpa1);
-    
-    CHECK_OP_WW(*bImpl,==,ra); CHECK_OP_WW(*bImpl,==,cra1); CHECK_OP_WW(*bImpl,==,*pa); CHECK_OP_WW(*bImpl,==,*cpa1);
-    CHECK_OP_WW(*bImpl,!=,ra); CHECK_OP_WW(*bImpl,!=,cra1); CHECK_OP_WW(*bImpl,!=,*pa); CHECK_OP_WW(*bImpl,!=,*cpa1);
-    CHECK_OP_WW(*bImpl,< ,ra); CHECK_OP_WW(*bImpl,< ,cra1); CHECK_OP_WW(*bImpl,< ,*pa); CHECK_OP_WW(*bImpl,< ,*cpa1);
-    CHECK_OP_WW(*bImpl,<=,ra); CHECK_OP_WW(*bImpl,<=,cra1); CHECK_OP_WW(*bImpl,<=,*pa); CHECK_OP_WW(*bImpl,<=,*cpa1);
-    CHECK_OP_WW(*bImpl,> ,ra); CHECK_OP_WW(*bImpl,> ,cra1); CHECK_OP_WW(*bImpl,> ,*pa); CHECK_OP_WW(*bImpl,> ,*cpa1);
-    CHECK_OP_WW(*bImpl,>=,ra); CHECK_OP_WW(*bImpl,>=,cra1); CHECK_OP_WW(*bImpl,>=,*pa); CHECK_OP_WW(*bImpl,>=,*cpa1);
-    
-    CHECK_OP_WW(ra,==,*bImpl); CHECK_OP_WW(cra1,==,*bImpl); CHECK_OP_WW(*pa,==,*bImpl); CHECK_OP_WW(*cpa1,==,*bImpl);
-    CHECK_OP_WW(ra,!=,*bImpl); CHECK_OP_WW(cra1,!=,*bImpl); CHECK_OP_WW(*pa,!=,*bImpl); CHECK_OP_WW(*cpa1,!=,*bImpl);
-    CHECK_OP_WW(ra,< ,*bImpl); CHECK_OP_WW(cra1,< ,*bImpl); CHECK_OP_WW(*pa,< ,*bImpl); CHECK_OP_WW(*cpa1,< ,*bImpl);
-    CHECK_OP_WW(ra,<=,*bImpl); CHECK_OP_WW(cra1,<=,*bImpl); CHECK_OP_WW(*pa,<=,*bImpl); CHECK_OP_WW(*cpa1,<=,*bImpl);
-    CHECK_OP_WW(ra,> ,*bImpl); CHECK_OP_WW(cra1,> ,*bImpl); CHECK_OP_WW(*pa,> ,*bImpl); CHECK_OP_WW(*cpa1,> ,*bImpl);
-    CHECK_OP_WW(ra,>=,*bImpl); CHECK_OP_WW(cra1,>=,*bImpl); CHECK_OP_WW(*pa,>=,*bImpl); CHECK_OP_WW(*cpa1,>=,*bImpl);
     
     CHECK_OP_WW(ra,==,a); CHECK_OP_WW(cra1,==,a); CHECK_OP_WW(*pa,==,a); CHECK_OP_WW(*cpa1,==,a);
     CHECK_OP_WW(ra,!=,a); CHECK_OP_WW(cra1,!=,a); CHECK_OP_WW(*pa,!=,a); CHECK_OP_WW(*cpa1,!=,a);
