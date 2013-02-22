@@ -134,6 +134,9 @@ public:
     : base1_type(p) {}
 
   using base2_type::operator =;
+
+  this_type &operator =(const this_type &value)
+    { this->set(value); return *this; }
 };
 
 } } // namespace CoSupport::DataTypes
