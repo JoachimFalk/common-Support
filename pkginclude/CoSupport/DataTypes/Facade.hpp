@@ -86,6 +86,9 @@ struct FacadeTraits<const T> {
   typedef typename FacadeTraits<T>::ConstPtr   Ptr;
 };
 
+
+struct FacadeCoreAccess;
+
 template <class T, template <class> class C>
 class FacadeRef: public T {
   typedef FacadeRef<T, C> this_type;
@@ -114,6 +117,7 @@ class FacadePtr: public FacadePtr<typename T::_B, C> {
   typedef FacadePtr<typename T::_B, C>  base_type;
 
   template <class TT, template <class> class CC> friend class FacadePtr;
+  friend class FacadeCoreAccess;
 private:
   typedef typename C<T>::type                 value_type;
   typedef typename FacadeTraits<T>::ConstRef  ConstRef;
@@ -267,6 +271,7 @@ class FacadeFoundation: public Base {
 
   template <class TT, template <class> class CC> friend class FacadeRef;
   template <class TT, template <class> class CC> friend class FacadePtr;
+  friend class FacadeCoreAccess;
 protected:
   typedef this_type FFType;
 public:
@@ -312,6 +317,23 @@ private:
   // default no copy no assign
   FacadeFoundation(const this_type &);
   FacadeFoundation &operator =(const this_type &);
+};
+
+struct FacadeCoreAccess {
+  template <class T, template <class> class C>
+  static
+  typename T::_H::ImplType *getImpl(FacadeRef<T,C> const &ref)
+    { return static_cast<typename T::_H const &>(ref)._impl(); }
+
+  template <class T, template <class> class C>
+  static
+  typename T::_H::ImplType *getImpl(FacadePtr<T,C> const &ptr)
+    { return static_cast<typename T::_H const &>(*ptr)._impl(); }
+
+  template <class Derived, class Impl, class Base, class SPtr>
+  static
+  Impl                     *getImpl(FacadeFoundation<Derived,Impl,Base,SPtr> const &facade)
+    { return facade._impl(); }
 };
 
 } } // namespace CoSupport::DataTypes
