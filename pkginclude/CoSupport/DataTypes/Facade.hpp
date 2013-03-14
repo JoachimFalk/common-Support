@@ -96,6 +96,7 @@ class FacadeRef: public T {
   template <class TT, template <class> class CC> friend class FacadeRef;
   template <class TT, template <class> class CC> friend class FacadePtr;
 public:
+  // FIXME: Make this protected again
   typedef typename T::_H::ImplType  ImplType;
   typedef typename T::_H::SmartPtr  SmartPtr;
 public:
@@ -124,6 +125,8 @@ private:
   typedef typename FacadeTraits<T>::Ref       Ref;
   typedef typename FacadeTraits<T>::ConstPtr  ConstPtr;
   typedef typename FacadeTraits<T>::Ptr       Ptr;
+public:
+  // FIXME: Make this protected again
   typedef typename T::_H::ImplType            ImplType;
   typedef typename T::_H::SmartPtr            SmartPtr;
 protected:
@@ -275,8 +278,10 @@ class FacadeFoundation: public Base {
 protected:
   typedef this_type FFType;
 public:
+  // FIXME: Make this protected again
   typedef Base      _B; // Why does this need to be public, FacadePtr is a friend!
 
+  // FIXME: Make this protected again
   typedef Impl      ImplType;
   typedef SPtr      SmartPtr;
 
