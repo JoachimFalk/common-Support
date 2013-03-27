@@ -41,6 +41,8 @@
 
 #include "../SmartPtr/intrusive_refcount_ptr.hpp"
 
+#include "Iter/Detail/BidirectionalTraversalVFImpl.hpp"
+
 namespace CoSupport { namespace DataTypes {
 
 template <
@@ -73,8 +75,8 @@ namespace Detail {
     class CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
   >
   class SetFacadeImpl: public SetFacadeInterface<T,R,CR,P,CP> {
-    typedef SetFacadeImpl<SET,T,R,CR,P,CP>   this_type;
-    typedef SetFacadeInterface<T,R,CR,P,CP>  base_type;
+    typedef SetFacadeImpl<SET,T,R,CR,P,CP>  this_type;
+    typedef SetFacadeInterface<T,R,CR,P,CP> base_type;
   public:
     SetFacadeImpl() {}
     SetFacadeImpl(SET set): set(set) {}
@@ -82,54 +84,35 @@ namespace Detail {
 
     SET set;
 
-    /// Base class for the iterator template given by ITER
-    template <bool REVERSE>
-    class IterImpl: public base_type::template Iter<REVERSE> {
-      typedef IterImpl<REVERSE>                           self_type;
-      typedef typename base_type::template Iter<REVERSE>  ifac_type;
-    public:
-      boost::intrusive_ptr<this_type> set;
-      typename SET::iterator          iter;
+    typedef Iter::Detail::BidirectionalTraversalVFImpl<
+      CR,
+      typename SET::iterator,
+      boost::intrusive_ptr<this_type> >     VIterImpl;
 
-      IterImpl(this_type const *set, typename SET::iterator const &iter)
-          : set(const_cast<this_type *>(set)), iter(iter) {}
-
-      void        increment()
-        { ++iter; }
-      void        decrement()
-        { --iter; }
-      bool        equal(ifac_type const &rhs) const
-        { return iter == static_cast<self_type const &>(rhs).iter; }
-      CR          dereference() const
-        { return *iter; }
-      ifac_type  *duplicate() const
-        { return new self_type(set.get(),iter); }
-    };
-
-    typename base_type::template Iter<false> *implPBegin() const
-      { return new IterImpl<false>(this,set.begin()); }
-    typename base_type::template Iter<false> *implPEnd() const
-      { return new IterImpl<false>(this,set.end()); }
-    std::pair<typename base_type::template Iter<false> *, bool> implPInsert(T const &v) {
+    typename base_type::VIter *implPBegin() const
+      { return new VIterImpl(const_cast<this_type *>(this),set.begin()); }
+    typename base_type::VIter *implPEnd() const
+      { return new VIterImpl(const_cast<this_type *>(this),set.end()); }
+    std::pair<typename base_type::VIter *, bool> implPInsert(T const &v) {
       std::pair<typename SET::iterator, bool> retval(set.insert(v));
-      return std::pair<typename base_type::template Iter<false> *, bool>(
-          new IterImpl<false>(this,retval.first), retval.second);
+      return std::pair<typename base_type::VIter *, bool>(
+          new VIterImpl(const_cast<this_type *>(this),retval.first), retval.second);
     }
-    void         implErase(typename base_type::template Iter<false> const &iter)
-      { set.erase(static_cast<IterImpl<false> const &>(iter).iter); }
+    void         implErase(typename base_type::VIter const &iter)
+      { set.erase(static_cast<VIterImpl const &>(iter).iter); }
     size_t       implSize() const
       { return set.size(); }
-    void         implErase(typename base_type::template Iter<false> const &iter1,
-                           typename base_type::template Iter<false> const &iter2) {
-      set.erase(static_cast<IterImpl<false> const &>(iter1).iter,
-                static_cast<IterImpl<false> const &>(iter2).iter);
+    void         implErase(typename base_type::VIter const &iter1,
+                           typename base_type::VIter const &iter2) {
+      set.erase(static_cast<VIterImpl const &>(iter1).iter,
+                static_cast<VIterImpl const &>(iter2).iter);
     }
-    typename base_type::template Iter<false> *implPLowerBound(T const &k) const
-      { return new IterImpl<false>(this,set.lower_bound(k)); }
-    typename base_type::template Iter<false> *implPUpperBound(T const &k) const
-      { return new IterImpl<false>(this,set.upper_bound(k)); }
-    typename base_type::template Iter<false> *implPFind(T const &k) const
-      { return new IterImpl<false>(this,set.find(k)); }
+    typename base_type::VIter *implPLowerBound(T const &k) const
+      { return new VIterImpl(const_cast<this_type *>(this),set.lower_bound(k)); }
+    typename base_type::VIter *implPUpperBound(T const &k) const
+      { return new VIterImpl(const_cast<this_type *>(this),set.upper_bound(k)); }
+    typename base_type::VIter *implPFind(T const &k) const
+      { return new VIterImpl(const_cast<this_type *>(this),set.find(k)); }
   };
 
 } // namespace Detail
@@ -164,7 +147,7 @@ public:
   SetFacade(this_type const &val)
     : base1_type(new Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP>())
     { static_cast<Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP> *>(this->getImpl())->set.insert(val.begin(), val.end()); }
-  template <class DD, template<class,bool> class II, class RR, class CRCR, class PP, class CPCP>
+  template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
   SetFacade(SetInterface<DD,II,T,RR,CRCR,PP,CPCP> const &val)
     : base1_type(new Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP>())
     { static_cast<Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP> *>(this->getImpl())->set.insert(val.begin(), val.end()); }

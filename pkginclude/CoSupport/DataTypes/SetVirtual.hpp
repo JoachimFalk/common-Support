@@ -44,6 +44,9 @@
 #include <boost/scoped_ptr.hpp>
 #include <memory> // for std::auto_ptr
 
+#include "Iter/BidirectionalTraversalVIf.hpp"
+#include "Iter/Detail/BidirectionalTraversalVImpl.hpp"
+
 namespace CoSupport { namespace DataTypes {
 
 template <
@@ -58,62 +61,50 @@ class SetVirtualInterface {
 public:
   virtual ~SetVirtualInterface() {}
 
-  /// Base class for the iterator template given by ITER
-  template <bool REVERSE>
-  class Iter {
-    typedef Iter<REVERSE> this_type;
-  public:
-    virtual ~Iter() {}
+  typedef Iter::BidirectionalTraversalVIf<CR> VIter;
 
-    virtual void        increment() = 0;
-    virtual void        decrement() = 0;
-    virtual bool        equal(this_type const &rhs) const = 0;
-    virtual CR          dereference() const = 0;
-    virtual this_type  *duplicate() const = 0;
-  };
-
-  virtual Iter<false> *implPBegin() const = 0;
-  virtual Iter<false> *implPEnd() const = 0;
-  virtual std::pair<Iter<false> *, bool>  implPInsert(T const &v) = 0;
-  virtual void         implErase(Iter<false> const &iter) = 0;
+  virtual VIter *implPBegin() const = 0;
+  virtual VIter *implPEnd() const = 0;
+  virtual std::pair<VIter *, bool>  implPInsert(T const &v) = 0;
+  virtual void         implErase(VIter const &iter) = 0;
 
   // Default implementation.
   virtual size_t implSize() const {
     size_t                          retval = 0;
-    boost::scoped_ptr<Iter<false> > iter(implPBegin());
-    boost::scoped_ptr<Iter<false> > end(implPEnd());
+    boost::scoped_ptr<VIter > iter(implPBegin());
+    boost::scoped_ptr<VIter > end(implPEnd());
     for (; !iter->equal(*end); iter->increment())
       ++retval;
     return retval;
   }
   // Default implementation.
-  virtual void implErase(Iter<false> const &iter1, const Iter<false> &iter2) {
-    boost::scoped_ptr<Iter<false> > iter(iter1.duplicate());
+  virtual void implErase(VIter const &iter1, const VIter &iter2) {
+    boost::scoped_ptr<VIter > iter(iter1.duplicate());
     while (!iter->equal(iter2)) {
-      boost::scoped_ptr<Iter<false> > iterl(iter->duplicate()); iter->increment();
+      boost::scoped_ptr<VIter > iterl(iter->duplicate()); iter->increment();
       implErase(*iterl);
     }
   }
   // Default implementation.
-  virtual Iter<false> *implPLowerBound(T const &k) const {
-    std::auto_ptr<Iter<false> >     iter(implPBegin());
-    boost::scoped_ptr<Iter<false> > end(implPEnd());
+  virtual VIter *implPLowerBound(T const &k) const {
+    std::auto_ptr<VIter >     iter(implPBegin());
+    boost::scoped_ptr<VIter > end(implPEnd());
     for (; !iter->equal(*end); iter->increment())
       if (!(iter->dereference() < k)) //FIXME: comparision semantics may differ from interally implemented one
         break;
     return iter.release();
   }
   // Default implementation.
-  virtual Iter<false> *implPUpperBound(T const &k) const {
-    std::auto_ptr<Iter<false> > retval(implPLowerBound(k));
+  virtual VIter *implPUpperBound(T const &k) const {
+    std::auto_ptr<VIter > retval(implPLowerBound(k));
     if (retval->dereference() == k)
       retval->increment();
     return retval.release();
   }
   // Default implementation.
-  virtual Iter<false> *implPFind(T const &k) const {
-    std::auto_ptr<Iter<false> > retval(implPLowerBound(k));
-    std::auto_ptr<Iter<false> > end(implPEnd());
+  virtual VIter *implPFind(T const &k) const {
+    std::auto_ptr<VIter > retval(implPLowerBound(k));
+    std::auto_ptr<VIter > end(implPEnd());
     if (!retval->equal(*end) && !(retval->dereference() == k))
       retval = end;
     return retval.release();
@@ -137,68 +128,45 @@ namespace Detail {
 
     std::set<T> set;
 
-    /// Base class for the iterator template given by ITER
-    template <bool REVERSE>
-    class IterImpl: public base_type::template Iter<REVERSE> {
-      typedef IterImpl<REVERSE>                           this_type;
-      typedef typename base_type::template Iter<REVERSE>  ifac_type;
-    public:
-      typename std::set<T>::iterator iter;
+    typedef Iter::Detail::BidirectionalTraversalVImpl<CR, typename std::set<T>::iterator> VIterImpl;
 
-      IterImpl(typename std::set<T>::iterator const &iter): iter(iter) {}
-
-      void        increment()
-        { ++iter; }
-      void        decrement()
-        { --iter; }
-      bool        equal(ifac_type const &rhs) const
-        { return iter == static_cast<this_type const &>(rhs).iter; }
-      CR          dereference() const
-        { return *iter; }
-      ifac_type  *duplicate() const
-        { return new this_type(iter); }
-    };
-
-    typename base_type::template Iter<false> *implPBegin() const
-      { return new IterImpl<false>(set.begin()); }
-    typename base_type::template Iter<false> *implPEnd() const
-      { return new IterImpl<false>(set.end()); }
-    std::pair<typename base_type::template Iter<false> *, bool> implPInsert(T const &v) {
+    typename base_type::VIter *implPBegin() const
+      { return new VIterImpl(set.begin()); }
+    typename base_type::VIter *implPEnd() const
+      { return new VIterImpl(set.end()); }
+    std::pair<typename base_type::VIter *, bool> implPInsert(T const &v) {
       std::pair<typename std::set<T>::iterator, bool> retval(set.insert(v));
-      return std::pair<typename base_type::template Iter<false> *, bool>(
-          new IterImpl<false>(retval.first), retval.second);
+      return std::pair<typename base_type::VIter *, bool>(
+          new VIterImpl(retval.first), retval.second);
     }
-    void         implErase(typename base_type::template Iter<false> const &iter)
-      { set.erase(static_cast<IterImpl<false> const &>(iter).iter); }
+    void         implErase(typename base_type::VIter const &iter)
+      { set.erase(static_cast<VIterImpl const &>(iter).iter); }
     size_t       implSize() const
       { return set.size(); }
-    void         implErase(typename base_type::template Iter<false> const &iter1,
-                           typename base_type::template Iter<false> const &iter2) {
-      set.erase(static_cast<IterImpl<false> const &>(iter1).iter,
-                static_cast<IterImpl<false> const &>(iter2).iter);
+    void         implErase(typename base_type::VIter const &iter1,
+                           typename base_type::VIter const &iter2) {
+      set.erase(static_cast<VIterImpl const &>(iter1).iter,
+                static_cast<VIterImpl const &>(iter2).iter);
     }
-    typename base_type::template Iter<false> *implPLowerBound(T const &k) const
-      { return new IterImpl<false>(set.lower_bound(k)); }
-    typename base_type::template Iter<false> *implPUpperBound(T const &k) const
-      { return new IterImpl<false>(set.upper_bound(k)); }
-    typename base_type::template Iter<false> *implPFind(T const &k) const
-      { return new IterImpl<false>(set.find(k)); }
+    typename base_type::VIter *implPLowerBound(T const &k) const
+      { return new VIterImpl(set.lower_bound(k)); }
+    typename base_type::VIter *implPUpperBound(T const &k) const
+      { return new VIterImpl(set.upper_bound(k)); }
+    typename base_type::VIter *implPFind(T const &k) const
+      { return new VIterImpl(set.find(k)); }
   };
 
   template <class D, typename T, typename R, typename CR, typename P, typename CP>
   class SetVirtualUser;
 
-  template <class CONTAINER, bool REVERSE>
-  class SetVirtualIter;
-
-  template <class CONTAINER, bool REVERSE>
+  template <class CONTAINER>
   struct SetVirtualIterBaseAccessor {
-    typedef typename CONTAINER::template IterBase<CONTAINER, REVERSE> type;
+    typedef typename CONTAINER::template IterBase<CONTAINER>::type type;
   };
 
   template <class CONTAINER>
-  class SetVirtualIter<CONTAINER, false>: public SetVirtualIterBaseAccessor<CONTAINER, false>::type {
-    typedef SetVirtualIter<CONTAINER, false> this_type;
+  class SetVirtualIter: public SetVirtualIterBaseAccessor<CONTAINER>::type {
+    typedef SetVirtualIter<CONTAINER> this_type;
 
     template <
       class    D,
@@ -216,7 +184,7 @@ namespace Detail {
 
     this_type &operator =(this_type const &rhs) { impl.reset(rhs.impl->duplicate()); return *this; }
   private:
-    typedef typename CONTAINER::Impl::template Iter<false> Impl;
+    typedef typename CONTAINER::Impl::VIter Impl;
     boost::scoped_ptr<Impl> impl;
 
     SetVirtualIter(Impl *impl): impl(impl) {}
@@ -254,7 +222,7 @@ namespace Detail {
     typename this_type::iterator  implEnd() const
       { return _impl()->implPEnd(); }
     std::pair<typename this_type::iterator, bool>  implInsert(const typename this_type::value_type &v) {
-      std::pair<typename Impl::template Iter<false> *, bool> retval(_impl()->implPInsert(v));
+      std::pair<typename Impl::VIter *, bool> retval(_impl()->implPInsert(v));
       return std::pair<typename this_type::iterator, bool>(retval.first, retval.second);
     }
     void                          implErase(const typename this_type::iterator &iter)
@@ -289,8 +257,8 @@ class SetVirtual
 
   friend class SetInterface<this_type,Detail::SetVirtualIter,T,R,CR,P,CP>;
   friend class Detail::SetVirtualUser<this_type,T,R,CR,P,CP>;
-  template <class CONTAINER, bool REVERSE> friend class Detail::SetVirtualIterBaseAccessor;
-  template <class CONTAINER, bool REVERSE> friend class Detail::SetVirtualIter;
+  template <class CONTAINER> friend class Detail::SetVirtualIterBaseAccessor;
+  template <class CONTAINER> friend class Detail::SetVirtualIter;
 protected:
   boost::scoped_ptr<typename base_type::Impl> impl;
 
@@ -301,7 +269,7 @@ public:
   SetVirtual(this_type const &val)
     : impl(new Detail::SetVirtualImpl<T,R,CR,P,CP>())
     { static_cast<Detail::SetVirtualImpl<T,R,CR,P,CP> *>(impl.get())->set.insert(val.begin(), val.end()); }
-  template <class DD, template<class,bool> class II, class RR, class CRCR, class PP, class CPCP>
+  template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
   SetVirtual(SetInterface<DD,II,T,RR,CRCR,PP,CPCP> const &val)
     : impl(new Detail::SetVirtualImpl<T,R,CR,P,CP>())
     { static_cast<Detail::SetVirtualImpl<T,R,CR,P,CP> *>(impl.get())->set.insert(val.begin(), val.end()); }

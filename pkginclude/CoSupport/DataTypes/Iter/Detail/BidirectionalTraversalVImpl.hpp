@@ -1,6 +1,5 @@
-/* vim: set sw=2 ts=8: */
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2013-2013 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -33,59 +32,35 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_LIST_HPP
-#define _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_LIST_HPP
+#ifndef _INCLUDED_COSUPPORT_DATATYPES_ITER_DETAIL_BIDIRECTIONALTRAVERSALVIMPL_HPP
+#define _INCLUDED_COSUPPORT_DATATYPES_ITER_DETAIL_BIDIRECTIONALTRAVERSALVIMPL_HPP
 
-#include <ostream>
-//#include <list>
+#include "../BidirectionalTraversalVIf.hpp"
 
-namespace CoSupport { namespace DataTypes {
+namespace CoSupport { namespace DataTypes { namespace Iter { namespace Detail {
 
-  template <
-    class DERIVED,
-    template<class> class ITER,
-    class VALUE,
-    class REFERENCE,
-    class CONSTREFERENCE,
-    class PTR_,
-    class CONSTPTR_
-  >
-  class ListInterface;
+/// Implementation of the BidirectionalTraversalVIf interface by a given iter of type ITER
+template <class REFERENCE, class ITER>
+class BidirectionalTraversalVImpl: public BidirectionalTraversalVIf<REFERENCE> {
+  typedef BidirectionalTraversalVImpl<REFERENCE,ITER>   this_type;
+  typedef BidirectionalTraversalVIf<REFERENCE>          ifac_type;
+public:
+  ITER iter;
 
-} } // namespace CoSupport::DataTypes
+  BidirectionalTraversalVImpl(ITER const &iter): iter(iter) {}
 
-namespace std {
+  void        increment()
+    { ++iter; }
+  void        decrement()
+    { --iter; }
+  bool        equal(ifac_type const &rhs) const
+    { return iter == static_cast<this_type const &>(rhs).iter; }
+  REFERENCE   dereference() const
+    { return *iter; }
+  ifac_type  *duplicate() const
+    { return new this_type(iter); }
+};
 
-  template <class T, class A> class list;
+} } } } // namespace CoSupport::DataTypes::Iter::Detail
 
-  template <typename T, class A>
-  std::ostream &operator << (std::ostream &out, const std::list<T,A> &l) {
-    out << "[List:";
-    for (typename std::list<T,A>::const_iterator iter = l.begin();
-         iter != l.end();
-         ++iter )
-      out << (iter == l.begin() ? "" : ", ") << *iter;
-    out << "]";
-    return out;
-  }
-
-  template<
-    class D, template<class> class I,
-    class V, class R, class CR, class P, class CP
-  >
-  std::ostream &operator << (
-      std::ostream &out,
-      const CoSupport::DataTypes::ListInterface<D,I,V,R,CR,P,CP> &l)
-  {
-    out << "[List:";
-    for (typename CoSupport::DataTypes::ListInterface<D,I,V,R,CR,P,CP>::const_iterator iter = l.begin();
-         iter != l.end();
-         ++iter )
-      out << (iter == l.begin() ? "" : ", ") << *iter;
-    out << "]";
-    return out;
-  }
-
-} // namespace std
-
-#endif // _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_LIST_HPP
+#endif // _INCLUDED_COSUPPORT_DATATYPES_ITER_DETAIL_BIDIRECTIONALTRAVERSALVIMPL_HPP

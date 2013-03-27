@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2013 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2011 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -32,26 +32,40 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_DATATYPES_DETAIL_BIDIRECTIONALTRAVERSALITERIMPL_HPP
-#define _INCLUDED_COSUPPORT_DATATYPES_DETAIL_BIDIRECTIONALTRAVERSALITERIMPL_HPP
+#ifndef _INCLUDED_COSUPPORT_DATATYPES_ITER_DETAIL_BIDIRECTIONALTRAVERSALBASE_HPP
+#define _INCLUDED_COSUPPORT_DATATYPES_ITER_DETAIL_BIDIRECTIONALTRAVERSALBASE_HPP
 
-namespace CoSupport { namespace DataTypes { namespace Detail {
+#include <boost/iterator/iterator_facade.hpp>
 
-  template <typename ITER>
-  class BidirectionalTraversalIterImpl {
-    typedef BidirectionalTraversalIterImpl<ITER> this_type;
-  public:
-    ITER iter;
+#include "../../../Type/STLIteratorSelector.hpp"
+#include "../../../Type/STLReferenceSelector.hpp"
+#include "../../../Type/STLPointerSelector.hpp"
 
-    BidirectionalTraversalIterImpl(const ITER &iter): iter(iter) {}
+namespace CoSupport { namespace DataTypes { namespace Iter { namespace Detail {
 
-    void next() { ++iter; }
-    void prev() { --iter; }
-    bool equal(const this_type &rhs) const { return iter == rhs.iter; }
+template <class CONTAINER>
+class BidirectionalTraversalBase
+: public boost::iterator_facade<
+    typename Type::STLIteratorSelector<CONTAINER>::type,
+    typename CONTAINER::value_type,
+    boost::bidirectional_traversal_tag,
+    typename Type::STLReferenceSelector<CONTAINER>::type,
+    typename CONTAINER::difference_type>
+{
+  typedef BidirectionalTraversalBase<CONTAINER> this_type;
+public:
+  // overwrite pointer type from boost which thinks it knows best
+  typedef typename Type::STLPointerSelector<CONTAINER>::type pointer;
 
-    typename std::iterator_traits<ITER>::reference deref() const { return *iter; }
-  };
+  // overwrite operator -> from boost which thinks it knows best
+  pointer operator->() const {
+    typename this_type::reference ref =
+      static_cast<typename Type::STLIteratorSelector<CONTAINER>::type const *>(this)
+      ->dereference();
+    return &ref;
+  }
+};
 
-} } } // namespace CoSupport::DataTypes::Detail
+} } } } // namespace CoSupport::DataTypes::Iter::Detail
 
-#endif // _INCLUDED_COSUPPORT_DATATYPES_DETAIL_BIDIRECTIONALTRAVERSALITERIMPL_HPP
+#endif // _INCLUDED_COSUPPORT_DATATYPES_ITER_DETAIL_BIDIRECTIONALTRAVERSALBASE_HPP

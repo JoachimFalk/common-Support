@@ -1,6 +1,5 @@
-// vim: set sw=2 sts=2 ts=8 et syn=cpp:
 /*
- * Copyright (c) 2011-2011 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2013-2013 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -33,35 +32,25 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_DATATYPES_LIST_HPP
-#define _INCLUDED_COSUPPORT_DATATYPES_LIST_HPP
+#ifndef _INCLUDED_COSUPPORT_DATATYPES_ITER_BIDIRECTIONALTRAVERSALVIF_HPP
+#define _INCLUDED_COSUPPORT_DATATYPES_ITER_BIDIRECTIONALTRAVERSALVIF_HPP
 
-#include "ListInterface.hpp"
-#include "Detail/BidirectionalTraversalIterImpl.hpp"
+namespace CoSupport { namespace DataTypes { namespace Iter {
 
-#include <list>
+/// Base class for the iterator template given by ITER
+template <class REFERENCE>
+class BidirectionalTraversalVIf {
+  typedef BidirectionalTraversalVIf<REFERENCE> this_type;
+public:
+  virtual ~BidirectionalTraversalVIf() {}
 
-namespace CoSupport { namespace DataTypes {
-
-template <typename T>
-class List: public ListInterface<List<T>, Detail::BidirectionalTraversalIterImpl<typename std::list<T>::iterator>, T> {
-  typedef List<T> this_type;
-private:
-  friend class ListInterface<List<T>, Detail::BidirectionalTraversalIterImpl<typename std::list<T>::iterator>, T>;
-protected:
-  std::list<T> list;
-
-  Detail::BidirectionalTraversalIterImpl<typename std::list<T>::iterator> first() const
-    { return const_cast<this_type *>(this)->list.begin(); }
-  Detail::BidirectionalTraversalIterImpl<typename std::list<T>::iterator> last() const
-    { return const_cast<this_type *>(this)->list.end(); }
-
-  Detail::BidirectionalTraversalIterImpl<typename std::list<T>::iterator> del(const Detail::BidirectionalTraversalIterImpl<typename std::list<T>::iterator> &iter)
-    { return list.erase(iter.iter); }
-  Detail::BidirectionalTraversalIterImpl<typename std::list<T>::iterator> add(const Detail::BidirectionalTraversalIterImpl<typename std::list<T>::iterator> &iter, const typename this_type::value_type &value)
-    { return list.insert(iter.iter, value); }
+  virtual void        increment() = 0;
+  virtual void        decrement() = 0;
+  virtual bool        equal(this_type const &rhs) const = 0;
+  virtual REFERENCE   dereference() const = 0;
+  virtual this_type  *duplicate() const = 0;
 };
 
-} } // namespace CoSupport::DataTypes
+} } } // namespace CoSupport::DataTypes::Iter
 
-#endif // _INCLUDED_COSUPPORT_DATATYPES_LIST_HPP
+#endif // _INCLUDED_COSUPPORT_DATATYPES_ITER_BIDIRECTIONALTRAVERSALVIF_HPP

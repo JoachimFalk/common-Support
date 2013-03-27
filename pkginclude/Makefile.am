@@ -50,15 +50,17 @@ nobase_include_HEADERS = \
 	CoSupport/DataTypes/CheckedVector.hpp \
 	CoSupport/DataTypes/container_insert.hpp \
 	CoSupport/DataTypes/container_retrieve.hpp \
-	CoSupport/DataTypes/Detail/BidirectionalTraversalIterImpl.hpp \
+	CoSupport/DataTypes/Iter/BidirectionalTraversalVIf.hpp \
+	CoSupport/DataTypes/Iter/Detail/BidirectionalTraversalBase.hpp \
+	CoSupport/DataTypes/Iter/Detail/BidirectionalTraversalVFImpl.hpp \
+	CoSupport/DataTypes/Iter/Detail/BidirectionalTraversalVImpl.hpp \
 	CoSupport/DataTypes/Detail/RandomAccessTraversalIterImpl.hpp \
-	CoSupport/DataTypes/Detail/BidirectionalTraversalIterTemplate.hpp \
 	CoSupport/DataTypes/Detail/RandomAccessTraversalIterTemplate.hpp \
 	CoSupport/DataTypes/EMPTY.hpp \
 	CoSupport/DataTypes/Facade.hpp \
-	CoSupport/DataTypes/ListFacade.hpp \
-	CoSupport/DataTypes/List.hpp \
 	CoSupport/DataTypes/ListInterface.hpp \
+	CoSupport/DataTypes/ListVirtual.hpp \
+	CoSupport/DataTypes/ListFacade.hpp \
 	CoSupport/DataTypes/MaybeValue.hpp \
 	CoSupport/DataTypes/MaybeValueInterface.hpp \
 	CoSupport/DataTypes/NILTYPE.hpp \
