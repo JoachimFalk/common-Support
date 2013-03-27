@@ -60,17 +60,14 @@ class Set;
 
 namespace Detail {
 
-  template <class CONTAINER, bool REVERSE>
-  class SetIter;
-
-  template <class CONTAINER, bool REVERSE>
+  template <class CONTAINER>
   struct SetIterBaseAccessor {
-    typedef typename CONTAINER::template IterBase<CONTAINER, REVERSE> type;
+    typedef typename CONTAINER::template IterBase<CONTAINER>::type type;
   };
 
   template <class CONTAINER>
-  class SetIter<CONTAINER, false>: public SetIterBaseAccessor<CONTAINER, false>::type {
-    typedef SetIter<CONTAINER, false> this_type;
+  class SetIter: public SetIterBaseAccessor<CONTAINER>::type {
+    typedef SetIter<CONTAINER> this_type;
 
     template <
       typename T,
@@ -83,6 +80,8 @@ namespace Detail {
     friend class boost::iterator_core_access;
   public:
     SetIter() {}
+    SetIter(SetIter<typename boost::remove_const<CONTAINER>::type> const &rhs)
+      : iter(rhs.iter) {}
   private:
     typename std::set<typename CONTAINER::value_type>::iterator iter;
 

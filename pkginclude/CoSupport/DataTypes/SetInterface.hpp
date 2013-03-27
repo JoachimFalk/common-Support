@@ -35,7 +35,6 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_SETINTERFACE_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_SETINTERFACE_HPP
 
-#include <boost/iterator/iterator_facade.hpp>
 #include <boost/type_traits/make_unsigned.hpp>
 #include <boost/type_traits/add_const.hpp>
 #include <boost/type_traits/add_reference.hpp>
@@ -44,10 +43,7 @@
 
 #include <boost/utility/enable_if.hpp>
 
-#include "../Type/STLReferenceSelector.hpp"
-#include "../Type/STLPointerSelector.hpp"
-
-//#include "Detail/BidirectionalTraversalIterTemplate.hpp"
+#include "Iter/Detail/BidirectionalTraversalBase.hpp"
 
 namespace CoSupport { namespace DataTypes {
 
@@ -134,8 +130,8 @@ non-member overloads:
 /// \li implUpperBound(key k)
 /// \li implErase(iter first, iter last)
 template <
-  class DERIVED,                                        // The derived set container being constructed
-  template <class CONTAINER, bool REVERSE> class ITER,  // The iterator used by the derived set container
+  class DERIVED,                          // The derived set container being constructed
+  template <class CONTAINER> class ITER,  // The iterator used by the derived set container
   class KEY,
   class REFERENCE = typename boost::add_reference<KEY>::type,
   class CONSTREFERENCE = typename boost::add_reference<typename boost::add_const<KEY>::type>::type,
@@ -153,25 +149,9 @@ private:
     { return *static_cast<DERIVED const *>(this); }
 protected:
   /// Base class for the iterator template given by ITER
-  template <class CONTAINER, bool REVERSE>
-  class IterBase
-  : public boost::iterator_facade<
-      ITER<CONTAINER, REVERSE>,
-      KEY,
-      boost::bidirectional_traversal_tag,
-      typename Type::STLReferenceSelector<CONTAINER>::type,
-      typename CONTAINER::difference_type>
-  {
-    typedef IterBase<CONTAINER, REVERSE> this_type;
-  public:
-    // overwrite pointer type from boost which thinks it knows best
-    typedef typename Type::STLPointerSelector<CONTAINER>::type pointer;
-
-    // overwrite operator -> from boost which thinks it knows best
-    pointer operator->() const {
-      typename this_type::reference ref = static_cast<ITER<CONTAINER, REVERSE> const *>(this)->dereference();
-      return &ref;
-    }
+  template <class CONTAINER>
+  struct IterBase {
+    typedef Iter::Detail::BidirectionalTraversalBase<CONTAINER> type;
   };
 public:
 
@@ -182,8 +162,8 @@ public:
   typedef PTR             pointer;
   typedef CONSTPTR        const_pointer;
 
-  typedef ITER<const DERIVED, false> iterator;
-  typedef ITER<const DERIVED, false> const_iterator;
+  typedef ITER<const DERIVED> iterator;
+  typedef ITER<const DERIVED> const_iterator;
 
   typedef std::ptrdiff_t                                        difference_type;
   typedef typename boost::make_unsigned<difference_type>::type  size_type;
@@ -199,7 +179,7 @@ public:
     { return derived().implEnd(); }
 
   bool empty() const
-    { return derived().implBegin() == derived().implEnd(); }
+    { return begin() == end(); }
 
   void erase(const iterator &iter)
     { derived().implErase(iter); }
@@ -336,7 +316,7 @@ protected:
  */
 template <
   class D1, class D2,
-  template<class,bool> class I1, template<class,bool> class I2,
+  template<class> class I1, template<class> class I2,
   class V,
   class R1, class R2,
   class CR1, class CR2,
@@ -371,7 +351,7 @@ bool operator == (
  */
 template <
   class D1, class D2,
-  template<class,bool> class I1, template<class,bool> class I2,
+  template<class> class I1, template<class> class I2,
   class V,
   class R1, class R2,
   class CR1, class CR2,
@@ -387,7 +367,7 @@ bool operator < (
 /// Based on operator==
 template <
   class D1, class D2,
-  template<class,bool> class I1, template<class,bool> class I2,
+  template<class> class I1, template<class> class I2,
   class V,
   class R1, class R2,
   class CR1, class CR2,
@@ -403,7 +383,7 @@ bool operator != (
 /// Based on operator<
 template <
   class D1, class D2,
-  template<class,bool> class I1, template<class,bool> class I2,
+  template<class> class I1, template<class> class I2,
   class V,
   class R1, class R2,
   class CR1, class CR2,
@@ -419,7 +399,7 @@ bool operator > (
 /// Based on operator<
 template <
   class D1, class D2,
-  template<class,bool> class I1, template<class,bool> class I2,
+  template<class> class I1, template<class> class I2,
   class V,
   class R1, class R2,
   class CR1, class CR2,
@@ -435,7 +415,7 @@ bool operator <= (
 /// Based on operator<
 template <
   class D1, class D2,
-  template<class,bool> class I1, template<class,bool> class I2,
+  template<class> class I1, template<class> class I2,
   class V,
   class R1, class R2,
   class CR1, class CR2,

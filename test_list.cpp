@@ -38,59 +38,285 @@
 #include <map>
 
 #include <CoSupport/Streams/stl_output_for_list.hpp>
-#include <CoSupport/DataTypes/List.hpp>
+#include <CoSupport/Streams/stl_output_for_map.hpp>
 
-typedef CoSupport::DataTypes::List<int> TList;
-typedef std::map<TList, int>            TListInMap;
+#include <CoSupport/DataTypes/ListInterface.hpp>
+#include <CoSupport/DataTypes/ListVirtual.hpp>
+#include <CoSupport/DataTypes/ListFacade.hpp>
+
+#include <cstring>
+
+#include <list>
+
+/// This class implements the interface for a std::list containing values of type T.
+template <
+  typename T,
+  typename R,
+  typename CR,
+  typename P,
+  typename CP
+>
+class List;
+
+namespace Detail {
+
+  template <class CONTAINER>
+  struct ListIterBaseAccessor {
+    typedef typename CONTAINER::template IterBase<CONTAINER>::type type;
+  };
+
+  template <class CONTAINER>
+  class ListIter: public ListIterBaseAccessor<CONTAINER>::type {
+    typedef ListIter<CONTAINER> this_type;
+
+    template <
+      typename T,
+      typename R,
+      typename CR,
+      typename P,
+      typename CP
+    >
+    friend class List;
+    friend class ListIter<typename boost::add_const<CONTAINER>::type>;
+    friend class boost::iterator_core_access;
+  public:
+    ListIter() {}
+    ListIter(ListIter<typename boost::remove_const<CONTAINER>::type> const &rhs)
+      : iter(rhs.iter) {}
+  private:
+    typename std::list<typename CONTAINER::value_type>::iterator iter;
+
+    ListIter(typename std::list<typename CONTAINER::value_type>::iterator const &iter): iter(iter) {}
+
+    void increment() { ++iter; }
+    void decrement() { --iter; }
+    bool equal(const this_type &rhs) const { return iter == rhs.iter; }
+
+    typename this_type::reference dereference() const { return *iter; }
+  };
+
+} // namespace Detail
+
+/// This class implements the interface for a std::list containing values of type T.
+template <
+  typename T,
+  typename R  = typename boost::add_reference<T>::type,
+  typename CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
+  typename P  = typename boost::add_pointer<T>::type,
+  typename CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
+>
+class List
+: public CoSupport::DataTypes::ListInterface<List<T,R,CR,P,CP>,Detail::ListIter,T,R,CR,P,CP>
+{
+  typedef List<T,R,CR,P,CP>                                                          this_type;
+  typedef CoSupport::DataTypes::ListInterface<this_type,Detail::ListIter,T,R,CR,P,CP> base_type;
+
+  friend class CoSupport::DataTypes::ListInterface<this_type,Detail::ListIter,T,R,CR,P,CP>;
+  template <class CONTAINER, bool REVERSE> friend class Detail::ListIterBaseAccessor;
+protected:
+  std::list<T> list;
+
+  typename this_type::iterator implBegin() const
+    { return const_cast<this_type *>(this)->list.begin(); }
+  typename this_type::iterator implEnd() const
+    { return const_cast<this_type *>(this)->list.end(); }
+
+  using base_type::implErase;
+
+  typename this_type::iterator
+  implErase(const typename this_type::iterator &iter)
+    { return list.erase(iter.iter); }
+  typename this_type::iterator
+  implInsert(typename this_type::iterator iter, const typename this_type::value_type &value)
+    { return list.insert(iter.iter, value); }
+};
+
+typedef List<int>             TList;
+typedef std::map<TList, int>  TListInMap;
+
+typedef CoSupport::DataTypes::ListVirtual<int> VList;
+typedef std::map<VList, int>                   VListInMap;
+
+typedef CoSupport::DataTypes::ListFacade<int>  FList;
+typedef std::map<FList, int>                   FListInMap;
 
 int main(int argc, char *argv[]) {
-  TList list;
-  list.push_back(1);
-  list.push_back(2);
-  std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
-//assert(list.size() == 2 && list[0] == 1 && list[1] == 2);
-  list.insert(list.begin(), 0);
-  std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
-//assert(list.size() == 3 && list[0] == 0 && list[1] == 1 && list[2] == 2);
-  list.push_front(-1);
-  std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
-//assert(list.size() == 4 && list[0] ==-1 && list[1] == 0 && list[2] == 1 && list[3] == 2);
-  list.erase(--list.end());
-  std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
-  std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
-//assert(list.size() == 3 && list[0] ==-1 && list[1] == 0 && list[2] == 1);
-  list.erase(--(--list.end()));
-  std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
-//assert(list.size() == 2 && list[0] ==-1 && list[1] == 1);
-  assert(list.front() == -1);
-  assert(list.back() == 1);
-  list.insert(++list.begin(), 2, 55);
-  std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
-//assert(list.size() == 4 && list[0] ==-1 && list[1] == 55 && list[2] == 55 && list[3] == 1);
+  {
+    TList list;
+    list.push_back(1);
+    list.push_back(2);
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  //assert(list.size() == 2 && list[0] == 1 && list[1] == 2);
+    list.insert(list.begin(), 0);
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  //assert(list.size() == 3 && list[0] == 0 && list[1] == 1 && list[2] == 2);
+    list.push_front(-1);
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  //assert(list.size() == 4 && list[0] ==-1 && list[1] == 0 && list[2] == 1 && list[3] == 2);
+    list.erase(--list.end());
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  //assert(list.size() == 3 && list[0] ==-1 && list[1] == 0 && list[2] == 1);
+    list.erase(--(--list.end()));
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  //assert(list.size() == 2 && list[0] ==-1 && list[1] == 1);
+    assert(list.front() == -1);
+    assert(list.back() == 1);
+    list.insert(++list.begin(), 2, 55);
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  //assert(list.size() == 4 && list[0] ==-1 && list[1] == 55 && list[2] == 55 && list[3] == 1);
 
-  TListInMap  map;
-  map.insert(std::make_pair(list, 13));
-  for(TList::iterator iter = list.begin();
-      iter != list.end();
-      ++iter) {
-    if (iter != list.begin())
-      std::cout << ", ";
-    std::cout << *iter;
-    int v = *iter;
-    iter = list.insert(list.erase(iter), 2*v);
+    TListInMap  map;
     map.insert(std::make_pair(list, 13));
+    std::cout << "list: {";
+    for(TList::iterator iter = list.begin();
+        iter != list.end();
+        ++iter) {
+      if (iter != list.begin())
+        std::cout << ", ";
+      std::cout << *iter;
+      int v = *iter;
+      iter = list.insert(list.erase(iter), 2*v);
+      map.insert(std::make_pair(list, 13));
+    }
+    std::cout << "}" << std::endl;
+    std::cout << "list: {";
+    for(TList::const_iterator iter = list.begin();
+        iter != list.end();
+        ++iter) {
+      if (iter != list.begin())
+        std::cout << ", ";
+      std::cout << *iter;
+    }
+    std::cout << "}" << std::endl;
+    list.erase(list.begin(), list.end());
+    assert(list.empty());
+    map.insert(std::make_pair(list, 33));
+    std::cout << map << std::endl;
+    {
+      TList::iterator iter(list.begin());
+      iter = list.begin();
+      TList::const_iterator citer(iter);
+      citer = iter;
+    }
   }
-  std::cout << std::endl;
-  for(TList::const_iterator iter = list.begin();
-      iter != list.end();
-      ++iter) {
-    if (iter != list.begin())
-      std::cout << ", ";
-    std::cout << *iter;
+  {
+    VList list;
+    list.push_back(1);
+    list.push_back(2);
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  //assert(list.size() == 2 && list[0] == 1 && list[1] == 2);
+    list.insert(list.begin(), 0);
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  //assert(list.size() == 3 && list[0] == 0 && list[1] == 1 && list[2] == 2);
+    list.push_front(-1);
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  //assert(list.size() == 4 && list[0] ==-1 && list[1] == 0 && list[2] == 1 && list[3] == 2);
+    list.erase(--list.end());
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  //assert(list.size() == 3 && list[0] ==-1 && list[1] == 0 && list[2] == 1);
+    list.erase(--(--list.end()));
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  //assert(list.size() == 2 && list[0] ==-1 && list[1] == 1);
+    assert(list.front() == -1);
+    assert(list.back() == 1);
+    list.insert(++list.begin(), 2, 55);
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  //assert(list.size() == 4 && list[0] ==-1 && list[1] == 55 && list[2] == 55 && list[3] == 1);
+
+    VListInMap  map;
+    map.insert(std::make_pair(list, 13));
+    std::cout << "list: {";
+    for(VList::iterator iter = list.begin();
+        iter != list.end();
+        ++iter) {
+      if (iter != list.begin())
+        std::cout << ", ";
+      std::cout << *iter;
+      int v = *iter;
+      iter = list.insert(list.erase(iter), 2*v);
+      map.insert(std::make_pair(list, 13));
+    }
+    std::cout << "}" << std::endl;
+    std::cout << "list: {";
+    for(VList::const_iterator iter = list.begin();
+        iter != list.end();
+        ++iter) {
+      if (iter != list.begin())
+        std::cout << ", ";
+      std::cout << *iter;
+    }
+    std::cout << "}" << std::endl;
+    list.erase(list.begin(), list.end());
+    assert(list.empty());
+    map.insert(std::make_pair(list, 33));
+    std::cout << map << std::endl;
+    {
+      VList::iterator iter(list.begin());
+      iter = list.begin();
+      VList::const_iterator citer(iter);
+      citer = iter;
+    }
   }
-  std::cout << std::endl;
-  list.erase(list.begin(), list.end());
-  assert(list.empty());
-  map.insert(std::make_pair(list, 33));
+  {
+    FList list;
+    list.push_back(1);
+    list.push_back(2);
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  //assert(list.size() == 2 && list[0] == 1 && list[1] == 2);
+    list.insert(list.begin(), 0);
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  //assert(list.size() == 3 && list[0] == 0 && list[1] == 1 && list[2] == 2);
+    list.push_front(-1);
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  //assert(list.size() == 4 && list[0] ==-1 && list[1] == 0 && list[2] == 1 && list[3] == 2);
+    list.erase(--list.end());
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  //assert(list.size() == 3 && list[0] ==-1 && list[1] == 0 && list[2] == 1);
+    list.erase(--(--list.end()));
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  //assert(list.size() == 2 && list[0] ==-1 && list[1] == 1);
+    assert(list.front() == -1);
+    assert(list.back() == 1);
+    list.insert(++list.begin(), 2, 55);
+    std::cout << "list: " << list << ", list.size(): " << list.size() << std::endl;
+  //assert(list.size() == 4 && list[0] ==-1 && list[1] == 55 && list[2] == 55 && list[3] == 1);
+
+    FListInMap  map;
+    map.insert(std::make_pair(list, 13));
+    std::cout << "list: {";
+    for(FList::iterator iter = list.begin();
+        iter != list.end();
+        ++iter) {
+      if (iter != list.begin())
+        std::cout << ", ";
+      std::cout << *iter;
+      int v = *iter;
+      iter = list.insert(list.erase(iter), 2*v);
+      map.insert(std::make_pair(list, 13));
+    }
+    std::cout << "}" << std::endl;
+    std::cout << "list: {";
+    for(FList::const_iterator iter = list.begin();
+        iter != list.end();
+        ++iter) {
+      if (iter != list.begin())
+        std::cout << ", ";
+      std::cout << *iter;
+    }
+    std::cout << "}" << std::endl;
+    list.erase(list.begin(), list.end());
+    assert(list.empty());
+    map.insert(std::make_pair(list, 33));
+    std::cout << map << std::endl;
+    {
+      FList::iterator iter(list.begin());
+      iter = list.begin();
+      FList::const_iterator citer(iter);
+      citer = iter;
+    }
+  }
   return 0;
 }

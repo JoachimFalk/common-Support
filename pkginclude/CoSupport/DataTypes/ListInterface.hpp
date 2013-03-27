@@ -43,7 +43,7 @@
 
 #include <boost/utility/enable_if.hpp>
 
-#include "Detail/BidirectionalTraversalIterTemplate.hpp"
+#include "Iter/Detail/BidirectionalTraversalBase.hpp"
 
 namespace CoSupport { namespace DataTypes {
 
@@ -52,35 +52,37 @@ namespace CoSupport { namespace DataTypes {
 
 /// ListInterface is used as a public base class for defining new
 /// standard-conforming, e.g., std::list<VALUE>, list containers.
-/// The derived class DERIVED must implement first(), last(),
-/// add(), and del() as protected methods. These will be used
-/// by this template to implement the std::list interface.
+/// The derived class DERIVED must implement the following protected
+/// methods which are required by the ListInterface to implement the
+/// std::list interface:
+/// \li implBegin()
+/// \li implEnd()
+/// \li implInsert()
+/// \li del()
 template <
-  class DERIVED, // The derived list container being constructed
-  class ITER_,
+  class DERIVED,                          // The derived list container being constructed
+  template <class CONTAINER> class ITER,  // The iterator used by the derived list container
   class VALUE,
   class REFERENCE = typename boost::add_reference<VALUE>::type,
   class CONSTREFERENCE = typename boost::add_reference<typename boost::add_const<VALUE>::type>::type,
   class PTR_ = typename boost::add_pointer<VALUE>::type,
   class CONSTPTR_ = typename boost::add_pointer<typename boost::add_const<VALUE>::type>::type
 >
-class ListInterface: protected Detail::BidirectionalTraversalIterTemplateAccess {
+class ListInterface {
   typedef ListInterface                                     this_type;
-  typedef Detail::BidirectionalTraversalIterTemplateAccess  base_type;
-
-  friend class Detail::BidirectionalTraversalIterTemplate<this_type>;
-  friend class Detail::BidirectionalTraversalIterTemplate<const this_type>;
 private:
-  // This is not a standard container type definition => hide it!
-  typedef ITER_  IterImpl;      // for usage by Detail::BidirectionalTraversalIterTemplate
-  //
   // Curiously Recurring Template interface.
-  //
   DERIVED &derived()
     { return *static_cast<DERIVED *>(this); }
 
   DERIVED const &derived() const
     { return *static_cast<DERIVED const *>(this); }
+protected:
+  /// Base class for the iterator template given by ITER
+  template <class CONTAINER>
+  struct IterBase {
+    typedef Iter::Detail::BidirectionalTraversalBase<CONTAINER> type;
+  };
 public:
 
   typedef VALUE           value_type;
@@ -89,81 +91,74 @@ public:
   typedef PTR_            pointer;
   typedef CONSTPTR_       const_pointer;
 
-  typedef Detail::BidirectionalTraversalIterTemplate<this_type>       iterator;
-  typedef Detail::BidirectionalTraversalIterTemplate<const this_type> const_iterator;
+  typedef ITER<DERIVED>       iterator;
+  typedef ITER<DERIVED const> const_iterator;
 
   typedef std::ptrdiff_t                                        difference_type;
   typedef typename boost::make_unsigned<difference_type>::type  size_type;
 
   iterator begin()
-    { return base_type::construct<iterator>(derived().first()); }
+    { return derived().implBegin(); }
   const_iterator begin() const
-    { return base_type::construct<const_iterator>(derived().first()); }
+    { return const_cast<this_type *>(this)->derived().implBegin(); }
 
   iterator end()
-    { return base_type::construct<iterator>(derived().last()); }
+    { return derived().implEnd(); }
   const_iterator end() const
-    { return base_type::construct<const_iterator>(derived().last()); }
+    { return const_cast<this_type *>(this)->derived().implEnd(); }
 
   bool empty() const
-    { return derived().begin() == derived().end(); }
+    { return begin() == end(); }
 
   reference front()
-    { return *derived().begin(); }
+    { return *begin(); }
   const_reference front() const
-    { return *derived().begin(); }
+    { return *begin(); }
 
   reference back()
-    { return *--derived().end(); }
+    { return *--end(); }
   const_reference back() const
-    { return *--derived().end(); }
+    { return *--end(); }
 
-  iterator erase(const iterator &iter) {
-    return base_type::construct<iterator>
-      (derived().del(base_type::retrieve(iter)));
-  }
-  iterator erase(const iterator &iter1, const iterator &iter2) {
-    return base_type::construct<iterator>
-      (derived().delRange(base_type::retrieve(iter1), base_type::retrieve(iter2)));
-  }
+  iterator erase(const iterator &iter)
+    { return derived().implErase(iter); }
+  iterator erase(const iterator &iter1, const iterator &iter2)
+    { return derived().implErase(iter1, iter2); }
 
   // const value_type &v is correct here this is also used by std::list
   iterator insert(const iterator &iter, const value_type &v) {
-    return base_type::construct<iterator>
-      (derived().add(base_type::retrieve(iter), v));
+    return derived().implInsert(iter, v);
   }
   // const value_type &v is correct here this is also used by std::vector
   void insert(iterator iter, size_type n, const value_type &v) {
     for (;n > 0; --n)
-      iter = base_type::construct<iterator>
-        (derived().add(base_type::retrieve(iter), v));
+      iter = insert(iter, v);
   }
   template <class IITER>
   typename boost::disable_if<boost::is_integral<IITER>, void>::type
   insert(iterator iter, IITER first, IITER const &last) {
     for (; first != last; ++first)
-      iter = base_type::construct<iterator>
-        (derived().add(base_type::retrieve(iter), *first));
+      iter = insert(iter, *first);
   }
 
   void clear() { erase(begin(), end()); }
 
   // const value_type &v is correct here this is also used by std::list
   void push_back(const value_type &v)
-    { derived().insert(derived().end(), v); }
+    { insert(end(), v); }
   // const value_type &v is correct here this is also used by std::list
   void push_front(const value_type &v) 
-    { derived().insert(derived().begin(), v); }
+    { insert(begin(), v); }
 
   void pop_back()
-    { derived().erase(--derived().end()); }
+    { erase(--end()); }
   void pop_front()
-    { derived().erase(derived().begin()); }
+    { erase(begin()); }
 
   size_t size() const {
     size_t retval = 0;
     
-    for (const_iterator iter = derived().begin(); iter != derived().end(); ++iter)
+    for (const_iterator iter = begin(); iter != end(); ++iter)
       ++retval;
     return retval;
   }
@@ -205,9 +200,10 @@ public:
 */
 protected:
   // Default implementation.
-  IterImpl delRange(IterImpl iter1, const IterImpl &iter2) {
-    while (!iter1.equal(iter2))
-      iter1 = derived().del(iter1);
+  iterator implErase(iterator iter1, const iterator &iter2) {
+    while (!(iter1 == iter2)) {
+      iter1 = derived().implErase(iter1);
+    }
     return iter1;
   }
 };
@@ -224,7 +220,7 @@ protected:
  */
 template <
   class D1, class D2,
-  class I1, class I2,
+  template<class> class I1, template<class> class I2,
   class V,
   class R1, class R2,
   class CR1, class CR2,
@@ -259,7 +255,7 @@ bool operator == (
  */
 template <
   class D1, class D2,
-  class I1, class I2,
+  template<class> class I1, template<class> class I2,
   class V,
   class R1, class R2,
   class CR1, class CR2,
@@ -275,7 +271,7 @@ bool operator < (
 /// Based on operator==
 template <
   class D1, class D2,
-  class I1, class I2,
+  template<class> class I1, template<class> class I2,
   class V,
   class R1, class R2,
   class CR1, class CR2,
@@ -291,7 +287,7 @@ bool operator != (
 /// Based on operator<
 template <
   class D1, class D2,
-  class I1, class I2,
+  template<class> class I1, template<class> class I2,
   class V,
   class R1, class R2,
   class CR1, class CR2,
@@ -307,7 +303,7 @@ bool operator > (
 /// Based on operator<
 template <
   class D1, class D2,
-  class I1, class I2,
+  template<class> class I1, template<class> class I2,
   class V,
   class R1, class R2,
   class CR1, class CR2,
@@ -323,7 +319,7 @@ bool operator <= (
 /// Based on operator<
 template <
   class D1, class D2,
-  class I1, class I2,
+  template<class> class I1, template<class> class I2,
   class V,
   class R1, class R2,
   class CR1, class CR2,

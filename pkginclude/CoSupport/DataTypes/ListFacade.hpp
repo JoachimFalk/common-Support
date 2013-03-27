@@ -1,5 +1,6 @@
+// vim: set sw=2 sts=2 ts=8 et syn=cpp:
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2013-2013 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -35,58 +36,131 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_LISTFACADE_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_LISTFACADE_HPP
 
-#include "ListInterface.hpp"
+#include "ListVirtual.hpp"
+#include "Facade.hpp"
+
+#include "../SmartPtr/intrusive_refcount_ptr.hpp"
+
+#include "Iter/Detail/BidirectionalTraversalVFImpl.hpp"
 
 namespace CoSupport { namespace DataTypes {
 
-  // This is obsolete use ListInterface instead.
+template <
+  class T,
+  class R = typename boost::add_reference<T>::type,
+  class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
+  class P = typename boost::add_pointer<T>::type,
+  class CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
+>
+class ListFacadeInterface
+: public ListVirtualInterface<T,R,CR,P,CP>,
+  public SmartPtr::RefCount
+{};
+
+template <class T, class R, class CR, class P, class CP>
+void intrusive_ptr_release(ListFacadeInterface<T,R,CR,P,CP> *p) {
+  if (p->del_ref())
+    // RefCountObject has virtual destructor
+    delete p;
+}
+
+namespace Detail {
+
   template <
-    class DERIVED, // The derived list container being constructed
-    class ITER_,
-    class VALUE,
-    class REFERENCE = typename boost::add_reference<VALUE>::type,
-    class CONSTREFERENCE = typename boost::add_reference<typename boost::add_const<VALUE>::type>::type,
-    class PTR_ = typename boost::add_pointer<VALUE>::type,
-    class CONSTPTR_ = typename boost::add_pointer<typename boost::add_const<VALUE>::type>::type
+    class LIST,
+    class T,
+    class R = typename boost::add_reference<T>::type,
+    class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
+    class P = typename boost::add_pointer<T>::type,
+    class CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
   >
-  class  COSUPPORT_ATTRIBUTE_DEPRECATED ListFacade
-  : public ListInterface<DERIVED, ITER_, VALUE, REFERENCE, CONSTREFERENCE, PTR_, CONSTPTR_>
-  {
-    typedef ListFacade                                                    this_type;
-    typedef ListInterface
-      <DERIVED, ITER_, VALUE, REFERENCE, CONSTREFERENCE, PTR_, CONSTPTR_> base_type;
-  private:
-    //
-    // Curiously Recurring Template interface.
-    //
-    DERIVED &derived()
-      { return *static_cast<DERIVED *>(this); }
-
-    DERIVED const &derived() const
-      { return *static_cast<DERIVED const *>(this); }
+  class ListFacadeImpl: public ListFacadeInterface<T,R,CR,P,CP> {
+    typedef ListFacadeImpl<LIST,T,R,CR,P,CP>  this_type;
+    typedef ListFacadeInterface<T,R,CR,P,CP>  base_type;
   public:
-    typedef typename base_type::iterator        iterator;
-    typedef typename base_type::const_iterator  const_iterator;
+    ListFacadeImpl() {}
+    ListFacadeImpl(LIST list): list(list) {}
+    ListFacadeImpl(const LIST &list): list(list) {}
 
-    iterator begin()
-      { return base_type::template construct<iterator>(this->derived().first()); }
-    const_iterator begin() const
-      { return base_type::template construct<const_iterator>(this->derived().first()); }
+    LIST list;
 
-    iterator end()
-      { return base_type::template construct<iterator>(this->derived().last()); }
-    const_iterator end() const
-      { return base_type::template construct<const_iterator>(this->derived().last()); }
+    typedef Iter::Detail::BidirectionalTraversalVFImpl<
+      R,
+      typename LIST::iterator,
+      boost::intrusive_ptr<this_type> >     VIterImpl;
 
-    iterator erase(const iterator &iter) {
-      return base_type::template construct<iterator>
-        (this->derived().del(base_type::template retrieve(iter)));
+    typename base_type::VIter *implPBegin()
+      { return new VIterImpl(this, list.begin()); }
+    typename base_type::VIter *implPEnd()
+      { return new VIterImpl(this, list.end()); }
+    typename base_type::VIter *implPInsert(
+        typename base_type::VIter const &iter, T const &v) {
+      return new VIterImpl(this, list.insert(
+        static_cast<VIterImpl const &>(iter).iter, v));
     }
-    iterator insert(const iterator &iter, const typename this_type::value_type &v) {
-      return base_type::template construct<iterator>
-        (this->derived().add(base_type::template retrieve(iter), v));
+    typename base_type::VIter *implPErase(
+        typename base_type::VIter const &iter) {
+      return new VIterImpl(this, list.erase(
+        static_cast<VIterImpl const &>(iter).iter));
+    }
+    typename base_type::VIter *implPErase(
+          typename base_type::VIter const &iter1,
+          typename base_type::VIter const &iter2)
+    {
+      return new VIterImpl(this, list.erase(
+        static_cast<VIterImpl const &>(iter1).iter,
+        static_cast<VIterImpl const &>(iter2).iter));
     }
   };
+
+} // namespace Detail
+
+/// This class is a facade for a std::list look alike containing values of type T.
+/// \example test_set.cpp
+template <
+  typename T,
+  typename R  = typename boost::add_reference<T>::type,
+  typename CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
+  typename P  = typename boost::add_pointer<T>::type,
+  typename CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
+>
+class ListFacade
+: public FacadeFoundation<
+    ListFacade<T,R,CR,P,CP>,
+    ListFacadeInterface<T,R,CR,P,CP> >,
+  public Detail::ListVirtualUser<
+    ListFacade<T,R,CR,P,CP>,T,R,CR,P,CP>
+{
+  typedef ListFacade<T,R,CR,P,CP>                                        this_type;
+  typedef FacadeFoundation<this_type,ListFacadeInterface<T,R,CR,P,CP> >  base1_type;
+  typedef Detail::ListVirtualUser<this_type,T,R,CR,P,CP>                 base2_type;
+
+  friend class ListInterface<this_type,Detail::ListVirtualIter,T,R,CR,P,CP>;
+  friend class Detail::ListVirtualUser<this_type,T,R,CR,P,CP>;
+  template <class CONTAINER, bool REVERSE> friend class Detail::ListVirtualIterBaseAccessor;
+  template <class CONTAINER, bool REVERSE> friend class Detail::ListVirtualIter;
+public:
+  ListFacade()
+    : base1_type(new Detail::ListFacadeImpl<std::list<T>,T,R,CR,P,CP>()) {}
+  ListFacade(this_type const &val)
+    : base1_type(new Detail::ListFacadeImpl<std::list<T>,T,R,CR,P,CP>()) {
+    Detail::ListFacadeImpl<std::list<T>,T,R,CR,P,CP> *_impl =
+      static_cast<Detail::ListFacadeImpl<std::list<T>,T,R,CR,P,CP> *>(this->getImpl());
+    _impl->list.insert(_impl->list.begin(), val.begin(), val.end());
+  }
+  template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
+  ListFacade(ListInterface<DD,II,T,RR,CRCR,PP,CPCP> const &val)
+    : base1_type(new Detail::ListFacadeImpl<std::list<T>,T,R,CR,P,CP>()) {
+    Detail::ListFacadeImpl<std::list<T>,T,R,CR,P,CP> *_impl =
+      static_cast<Detail::ListFacadeImpl<std::list<T>,T,R,CR,P,CP> *>(this->getImpl());
+    _impl->list.insert(_impl->list.begin(), val.begin(), val.end());
+  }
+
+  ListFacade(typename base1_type::SmartPtr const &p)
+    : base1_type(p) {}
+
+  using base2_type::operator =;
+};
 
 } } // namespace CoSupport::DataTypes
 
