@@ -351,10 +351,33 @@ struct FacadeCoreAccess {
 
 namespace boost {
 
+//typedef const FacadeRef<T, boost::add_const> ConstRef;
+//typedef FacadeRef<T, boost::remove_const>    Ref;
+//typedef FacadePtr<T, boost::add_const>       ConstPtr;
+//typedef FacadePtr<T, boost::remove_const>    Ptr;
+
+  template <class Derived, template <class> class C>
+  struct add_const<CoSupport::DataTypes::FacadeRef<Derived, C> >
+    { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::ConstRef type; };
+
+  template <class Derived, template <class> class C>
+  struct add_const<CoSupport::DataTypes::FacadePtr<Derived, C> >
+    { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::ConstPtr type; };
+
+  template <class Derived, template <class> class C>
+  struct remove_const<const CoSupport::DataTypes::FacadeRef<Derived, C> >
+    { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::Ref type; };
+
+  template <class Derived, template <class> class C>
+  struct remove_const<CoSupport::DataTypes::FacadePtr<Derived, C> >
+    { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::Ptr type; };
+
+  // FIXME: This still does not work for add_reference<Derived>::type
   template <class Derived, class Impl, class Base, class SPtr>
   struct add_reference<CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base, SPtr> >
     { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::Ref type; };
 
+  // FIXME: This still does not work for add_reference<Derived const>::type
   template <class Derived, class Impl, class Base, class SPtr>
   struct add_reference<const CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base, SPtr> >
     { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::ConstRef type; };
@@ -363,10 +386,16 @@ namespace boost {
   struct remove_reference<CoSupport::DataTypes::FacadeRef<Derived, C> >
     { typedef typename C<Derived>::type type; };
 
+  template <class Derived, template <class> class C>
+  struct remove_reference<const CoSupport::DataTypes::FacadeRef<Derived, C> >
+    { typedef typename C<Derived>::type type; };
+
+  // FIXME: This still does not work for add_pointer<Derived>::type
   template <class Derived, class Impl, class Base, class SPtr>
   struct add_pointer<CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base, SPtr> >
     { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::Ptr type; };
 
+  // FIXME: This still does not work for add_pointer<Derived const>::type
   template <class Derived, class Impl, class Base, class SPtr>
   struct add_pointer<const CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base, SPtr> >
     { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::ConstPtr type; };

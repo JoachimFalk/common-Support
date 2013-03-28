@@ -32,11 +32,36 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
+#include <iostream>
+
 #include <CoSupport/sassert.h>
+#include <CoSupport/String/TypeName.hpp>
+
+#include <boost/type_traits/add_reference.hpp>
+#include <boost/type_traits/remove_reference.hpp>
+
+#include <boost/type_traits/add_pointer.hpp>
+#include <boost/type_traits/remove_pointer.hpp>
+
+#include <boost/type_traits/add_const.hpp>
+#include <boost/type_traits/remove_const.hpp>
+
+#include <boost/type_traits/is_same.hpp>
+
+#include <boost/static_assert.hpp>
 
 #include "test_facade_lib.hpp"
 
 using namespace Something;
+
+class X {};
+
+COSUPPORT_REGISTER_TYPENAME(X)
+COSUPPORT_REGISTER_TYPENAME(A)
+COSUPPORT_REGISTER_TYPENAME(A::Ref)
+COSUPPORT_REGISTER_TYPENAME(A::ConstRef)
+COSUPPORT_REGISTER_TYPENAME(A::Ptr)
+COSUPPORT_REGISTER_TYPENAME(A::ConstPtr)
 
 int main(int argc, char *argv[]) {
   A a;
@@ -306,4 +331,112 @@ int main(int argc, char *argv[]) {
   sassert(pa != NULL);
   cpa = &a;
   sassert(cpa != NULL);
+
+#define TYPENAME(x) #x << ": " << CoSupport::String::TypeName<x>::name()
+
+  std::cout << TYPENAME(X) << std::endl;
+  std::cout << TYPENAME(X const) << std::endl;
+  std::cout << TYPENAME(X *) << std::endl;
+  std::cout << TYPENAME(X const *) << std::endl;
+  std::cout << TYPENAME(X &) << std::endl;
+  std::cout << TYPENAME(X const &) << std::endl;
+  std::cout << TYPENAME(typename boost::add_reference<X>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::add_reference<X const>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::add_reference<X *>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::add_reference<X const *>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::add_reference<X &>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::add_reference<X const &>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::remove_reference<X>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::remove_reference<X const>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::remove_reference<X *>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::remove_reference<X const *>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::remove_reference<X &>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::remove_reference<X const &>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::add_pointer<X>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::add_pointer<X const>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::add_pointer<X *>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::add_pointer<X const *>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::add_pointer<X &>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::add_pointer<X const &>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::remove_pointer<X>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::remove_pointer<X const>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::remove_pointer<X *>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::remove_pointer<X const *>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::remove_pointer<X &>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::remove_pointer<X const &>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::add_const<X>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::add_const<X const>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::add_const<X *>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::add_const<X const *>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::add_const<X &>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::add_const<X const &>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::remove_const<X>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::remove_const<X const>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::remove_const<X *>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::remove_const<X const *>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::remove_const<X &>::type) << std::endl;
+  std::cout << TYPENAME(typename boost::remove_const<X const &>::type) << std::endl;
+
+  std::cout << TYPENAME(A) << std::endl;
+  std::cout << TYPENAME(A const) << std::endl;
+  std::cout << TYPENAME(A::Ptr) << std::endl;
+  std::cout << TYPENAME(A::ConstPtr) << std::endl;
+  std::cout << TYPENAME(A::Ref) << std::endl;
+  std::cout << TYPENAME(A::ConstRef) << std::endl;
+  std::cout << TYPENAME(typename boost::add_reference<A>::type) << std::endl;
+//BOOST_STATIC_ASSERT((boost::is_same<typename boost::add_reference<A>::type, A::Ref>::value)); cf. FIXME in Facade.hpp
+  std::cout << TYPENAME(typename boost::add_reference<A const>::type) << std::endl;
+//BOOST_STATIC_ASSERT((boost::is_same<typename boost::add_reference<A const>::type, A::ConstRef>::value)); cf. FIXME in Facade.hpp
+  std::cout << TYPENAME(typename boost::remove_reference<A>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_reference<A>::type, A>::value));
+  std::cout << TYPENAME(typename boost::remove_reference<A const>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_reference<A const>::type, A const>::value));
+  std::cout << TYPENAME(typename boost::remove_reference<A::Ptr>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_reference<A::Ptr>::type, A::Ptr>::value));
+  std::cout << TYPENAME(typename boost::remove_reference<A::ConstPtr>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_reference<A::ConstPtr>::type, A::ConstPtr>::value));
+  std::cout << TYPENAME(typename boost::remove_reference<A::Ref>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_reference<A::Ref>::type, A>::value));
+  std::cout << TYPENAME(typename boost::remove_reference<A::ConstRef>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_reference<A::ConstRef>::type, A const>::value));
+  std::cout << TYPENAME(typename boost::add_pointer<A>::type) << std::endl;
+//BOOST_STATIC_ASSERT((boost::is_same<typename boost::add_pointer<A>::type, A::Ptr>::value)); cf. FIXME in Facade.hpp
+  std::cout << TYPENAME(typename boost::add_pointer<A const>::type) << std::endl;
+//BOOST_STATIC_ASSERT((boost::is_same<typename boost::add_pointer<A const>::type, A::ConstPtr>::value)); cf. FIXME in Facade.hpp
+  std::cout << TYPENAME(typename boost::remove_pointer<A>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_pointer<A>::type, A>::value));
+  std::cout << TYPENAME(typename boost::remove_pointer<A const>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_pointer<A const>::type, A const>::value));
+  std::cout << TYPENAME(typename boost::remove_pointer<A::Ptr>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_pointer<A::Ptr>::type, A>::value));
+  std::cout << TYPENAME(typename boost::remove_pointer<A::ConstPtr>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_pointer<A::ConstPtr>::type, A const>::value));
+  std::cout << TYPENAME(typename boost::remove_pointer<A::Ref>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_pointer<A::Ref>::type, A::Ref>::value));
+  std::cout << TYPENAME(typename boost::remove_pointer<A::ConstRef>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_pointer<A::ConstRef>::type, A::ConstRef>::value));
+  std::cout << TYPENAME(typename boost::add_const<A>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::add_const<A>::type, A const>::value));
+  std::cout << TYPENAME(typename boost::add_const<A const>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::add_const<A const>::type, A const>::value));
+  std::cout << TYPENAME(typename boost::add_const<A::Ptr>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::add_const<A::Ptr>::type, A::ConstPtr>::value));
+  std::cout << TYPENAME(typename boost::add_const<A::ConstPtr>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::add_const<A::ConstPtr>::type, A::ConstPtr>::value));
+  std::cout << TYPENAME(typename boost::add_const<A::Ref>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::add_const<A::Ref>::type, A::ConstRef>::value));
+  std::cout << TYPENAME(typename boost::add_const<A::ConstRef>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::add_const<A::ConstRef>::type, A::ConstRef>::value));
+  std::cout << TYPENAME(typename boost::remove_const<A>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_const<A>::type, A>::value));
+  std::cout << TYPENAME(typename boost::remove_const<A const>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_const<A const>::type, A>::value));
+  std::cout << TYPENAME(typename boost::remove_const<A::Ptr>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_const<A::Ptr>::type, A::Ptr>::value));
+  std::cout << TYPENAME(typename boost::remove_const<A::ConstPtr>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_const<A::ConstPtr>::type, A::Ptr>::value));
+  std::cout << TYPENAME(typename boost::remove_const<A::Ref>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_const<A::Ref>::type, A::Ref>::value));
+  std::cout << TYPENAME(typename boost::remove_const<A::ConstRef>::type) << std::endl;
+  BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_const<A::ConstRef>::type, A::Ref>::value));
 }
