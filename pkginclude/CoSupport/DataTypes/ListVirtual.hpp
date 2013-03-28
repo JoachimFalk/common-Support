@@ -145,6 +145,7 @@ namespace Detail {
     >
     friend class ListVirtualUser;
     friend class boost::iterator_core_access;
+    friend class ListVirtualIterBaseAccessor<CONTAINER>::type;
     friend class ListVirtualIter<typename boost::add_const<CONTAINER>::type>;
   public:
     ListVirtualIter(): impl(NULL) {}
