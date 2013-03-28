@@ -178,6 +178,7 @@ namespace Detail {
     >
     friend class SetVirtualUser;
     friend class boost::iterator_core_access;
+    friend class SetVirtualIterBaseAccessor<CONTAINER>::type;
   public:
     SetVirtualIter(): impl(NULL) {}
     SetVirtualIter(this_type const &rhs): impl(rhs.impl->duplicate()) {}
