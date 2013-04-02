@@ -524,6 +524,16 @@ namespace boost {
       const CoSupport::DataTypes::FacadePtr<T,C> &ptr)
     { return &static_cast<typename C<TT>::type &>(*ptr); }
 
+  template <class TT, class T, template <class> class C>
+  const CoSupport::DataTypes::FacadePtr<TT,C> dynamic_pointer_cast(
+      const CoSupport::DataTypes::Detail::FacadeProxyPtr<T,C> &ptr)
+    { return TT::upcast(*ptr); }
+
+  template <class TT, class T, template <class> class C>
+  const CoSupport::DataTypes::FacadePtr<TT,C> static_pointer_cast(
+      const CoSupport::DataTypes::Detail::FacadeProxyPtr<T,C> &ptr)
+    { return &static_cast<typename C<TT>::type &>(*ptr); }
+
 } // namespace boost
 
 #endif // _INCLUDED_COSUPPORT_DATATYPES_FACADE_HPP
