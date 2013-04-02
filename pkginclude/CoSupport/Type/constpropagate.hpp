@@ -36,15 +36,20 @@
 #ifndef _INCLUDED_COSUPPORT_TYPE_CONSTPROPAGATE_HPP
 #define _INCLUDED_COSUPPORT_TYPE_CONSTPROPAGATE_HPP
 
+#include <boost/type_traits.hpp>
+#include <boost/mpl/if.hpp>
+
 namespace CoSupport { namespace Type {
 
+  // replace this with
+  // typename boost::mpl::if_<boost::is_const<TSRC>,
+  //   typename boost::add_const<TDEST>::type,
+  //   TDEST>::type
   template <typename TSRC, typename TDEST>
   struct ConstPropagate {
-    typedef TDEST type;
-  };
-  template <typename TSRC, typename TDEST>
-  struct ConstPropagate<const TSRC, TDEST> {
-    typedef typename Const<TDEST>::type type;
+    typedef typename boost::mpl::if_<boost::is_const<TSRC>,
+      typename boost::add_const<TDEST>::type,
+      TDEST>::type  type;
   };
 
 } } // namespace CoSupport::Type
