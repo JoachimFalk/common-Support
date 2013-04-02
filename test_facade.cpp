@@ -52,6 +52,8 @@
 
 #include "test_facade_lib.hpp"
 
+#include <list>
+
 using namespace Something;
 
 class X {};
@@ -439,4 +441,9 @@ int main(int argc, char *argv[]) {
   BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_const<A::Ref>::type, A::Ref>::value));
   std::cout << TYPENAME(typename boost::remove_const<A::ConstRef>::type) << std::endl;
   BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_const<A::ConstRef>::type, A::Ref>::value));
+
+  std::list<A> al;
+  al.push_back(a);
+  std::list<A::Ref> arl;
+  arl.push_back(a);
 }
