@@ -41,10 +41,6 @@
 
 namespace CoSupport { namespace Type {
 
-  // replace this with
-  // typename boost::mpl::if_<boost::is_const<TSRC>,
-  //   typename boost::add_const<TDEST>::type,
-  //   TDEST>::type
   template <typename TSRC, typename TDEST>
   struct ConstPropagate {
     typedef typename boost::mpl::if_<boost::is_const<TSRC>,
