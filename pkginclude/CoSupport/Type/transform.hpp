@@ -36,27 +36,34 @@
 #ifndef _INCLUDED_COSUPPORT_TYPE_TRANSFORM_HPP
 #define _INCLUDED_COSUPPORT_TYPE_TRANSFORM_HPP
 
+#include "../commondefs.h"
+
+#warning "The <CoSupport/type/transform.hpp> header is obsolete, please use <boost/type_traits.hpp> instead!"
+
 namespace CoSupport { namespace Type {
 
+  // replace this with boost::mpl::identity
   template <typename T>
-  struct Identity { typedef T type; };
+  struct COSUPPORT_ATTRIBUTE_DEPRECATED Identity    { typedef T type; };
 
+  // replace this with boost::add_const
   template <typename T>
-  struct Const          { typedef const T type; };
+  struct COSUPPORT_ATTRIBUTE_DEPRECATED Const       { typedef const T type; };
 #ifndef KASCPAR_PARSING
   template <typename T>
   struct Const<const T> { typedef const T type; };
 #endif // KASCPAR_PARSING
 
+  // replace this with boost::remove_const
   template <typename T>
-  struct Mutable          { typedef T type; };
+  struct COSUPPORT_ATTRIBUTE_DEPRECATED Mutable     { typedef T type; };
 #ifndef KASCPAR_PARSING
   template <typename T>
   struct Mutable<const T> { typedef T type; };
 #endif // KASCPAR_PARSING
 
   template <typename T>
-  struct ToggleConst          { typedef const T type; };
+  struct COSUPPORT_ATTRIBUTE_DEPRECATED ToggleConst { typedef const T type; };
 #ifndef KASCPAR_PARSING
   template <typename T>
   struct ToggleConst<const T> { typedef T type; };
