@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2013 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -49,6 +49,7 @@ namespace Detail {
   class Storage {
     typedef Storage<Impl>                     this_type;
   public:
+    typedef Impl                              _UrgsType;
     typedef Impl                              ImplType;
     typedef ::boost::intrusive_ptr<ImplType>  SmartPtr;
   protected:
@@ -86,8 +87,112 @@ struct FacadeTraits<const T> {
   typedef typename FacadeTraits<T>::ConstPtr   Ptr;
 };
 
-
 struct FacadeCoreAccess;
+
+namespace Detail {
+  template <class T, template <class> class C>
+  class FacadeProxyPtr {
+    typedef FacadeProxyPtr<T,C> this_type;
+
+    template <class TT, template <class> class CC> friend class FacadePtr;
+  private:
+    typedef typename FacadeTraits<Detail::Storage<typename T::_UrgsType> >::ConstPtr ConstPtr;
+    typedef typename FacadeTraits<Detail::Storage<typename T::_UrgsType> >::Ptr      Ptr;
+    typedef FacadePtrNullClass                                                       FPN;
+  private:
+    typename C<typename FacadeTraits<T>::Ref>::type *ptr;
+    typedef typename C<typename FacadeTraits<T>::Ref>::type *(this_type::*unspecified_bool_type)() const;
+  public:
+    FacadeProxyPtr(typename C<typename FacadeTraits<T>::Ref>::type *ptr): ptr(ptr) {}
+
+    operator typename C<typename FacadeTraits<T>::Ref>::type *() const
+      { return ptr; }
+    operator typename C<typename FacadeTraits<T>::Ptr>::type() const
+      { return ptr->toPtr(); }
+
+    typename C<T>::type &operator *() const
+      { return *ptr; }
+    typename C<T>::type *operator ->() const
+      { return ptr; }
+
+    unspecified_bool_type operator ==(const Ptr &x) const {
+      return ptr->pImpl.get() == x.getImpl()
+        ? static_cast<unspecified_bool_type>(&this_type::operator typename C<typename FacadeTraits<T>::Ref>::type *)
+        : NULL;
+    }
+    unspecified_bool_type operator ==(const ConstPtr &x) const {
+      return ptr->pImpl.get() == x.getImpl()
+        ? static_cast<unspecified_bool_type>(&this_type::operator typename C<typename FacadeTraits<T>::Ref>::type *)
+        : NULL;
+    }
+    unspecified_bool_type operator ==(FPN *null) const {
+      assert(null == NULL); return !*this
+        ? static_cast<unspecified_bool_type>(&this_type::operator typename C<typename FacadeTraits<T>::Ref>::type *)
+        : NULL;
+    }
+
+    unspecified_bool_type operator !=(const Ptr &x) const {
+      return ptr->pImpl.get() != x.getImpl()
+        ? static_cast<unspecified_bool_type>(&this_type::operator typename C<typename FacadeTraits<T>::Ref>::type *)
+        : NULL;
+    }
+    unspecified_bool_type operator !=(const ConstPtr &x) const {
+      return ptr->pImpl.get() != x.getImpl()
+        ? static_cast<unspecified_bool_type>(&this_type::operator typename C<typename FacadeTraits<T>::Ref>::type *)
+        : NULL;
+    }
+    unspecified_bool_type operator !=(FPN *null) const {
+      assert(null == NULL); return *this
+        ? static_cast<unspecified_bool_type>(&this_type::operator typename C<typename FacadeTraits<T>::Ref>::type *)
+        : NULL;
+    }
+
+    unspecified_bool_type operator > (const Ptr &x) const {
+      return ptr->pImpl.get() >  x.getImpl()
+        ? static_cast<unspecified_bool_type>(&this_type::operator typename C<typename FacadeTraits<T>::Ref>::type *)
+        : NULL;
+    }
+    unspecified_bool_type operator > (const ConstPtr &x) const {
+      return ptr->pImpl.get() >  x.getImpl()
+        ? static_cast<unspecified_bool_type>(&this_type::operator typename C<typename FacadeTraits<T>::Ref>::type *)
+        : NULL;
+    }
+
+    unspecified_bool_type operator < (const Ptr &x) const {
+      return ptr->pImpl.get() <  x.getImpl()
+        ? static_cast<unspecified_bool_type>(&this_type::operator typename C<typename FacadeTraits<T>::Ref>::type *)
+        : NULL;
+    }
+    unspecified_bool_type operator < (const ConstPtr &x) const {
+      return ptr->pImpl.get() <  x.getImpl()
+        ? static_cast<unspecified_bool_type>(&this_type::operator typename C<typename FacadeTraits<T>::Ref>::type *)
+        : NULL;
+    }
+
+    unspecified_bool_type operator >=(const Ptr &x) const {
+      return ptr->pImpl.get() >= x.getImpl()
+        ? static_cast<unspecified_bool_type>(&this_type::operator typename C<typename FacadeTraits<T>::Ref>::type *)
+        : NULL;
+    }
+    unspecified_bool_type operator >=(const ConstPtr &x) const {
+      return ptr->pImpl.get() >= x.getImpl()
+        ? static_cast<unspecified_bool_type>(&this_type::operator typename C<typename FacadeTraits<T>::Ref>::type *)
+        : NULL;
+    }
+
+    unspecified_bool_type operator <=(const Ptr &x) const {
+      return ptr->pImpl.get() <= x.getImpl()
+        ? static_cast<unspecified_bool_type>(&this_type::operator typename C<typename FacadeTraits<T>::Ref>::type *)
+        : NULL;
+    }
+    unspecified_bool_type operator <=(const ConstPtr &x) const {
+      return ptr->pImpl.get() <= x.getImpl()
+        ? static_cast<unspecified_bool_type>(&this_type::operator typename C<typename FacadeTraits<T>::Ref>::type *)
+        : NULL;
+    }
+
+  };
+} // namespace Detail
 
 template <class T, template <class> class C>
 class FacadeRef: public T {
@@ -143,6 +248,9 @@ public:
     : base_type(NULL) { this->assign(Ref(p)); }
   FacadePtr(const Ptr &t)
     : base_type(NULL) { this->assign(*t); }
+  template <class TT>
+  FacadePtr(const Detail::FacadeProxyPtr<TT, boost::remove_const> &t)
+    : base_type(NULL) { this->assign(*t); }
   FacadePtr(FPN *null = NULL)
     : base_type(NULL) { assert(null == NULL); }
 
@@ -166,6 +274,7 @@ class FacadePtr<Detail::Storage<Impl>, C>: public Detail::Storage<Impl> {
   typedef Detail::Storage<Impl>               base_type;
 
   template <typename II, template <class> class CC> friend class FacadePtr;
+  template <typename II, template <class> class CC> friend class Detail::FacadeProxyPtr;
 private:
   typedef typename FacadeTraits<Detail::Storage<Impl> >::ConstPtr ConstPtr;
   typedef typename FacadeTraits<Detail::Storage<Impl> >::Ptr      Ptr;
@@ -274,6 +383,7 @@ class FacadeFoundation: public Base {
 
   template <class TT, template <class> class CC> friend class FacadeRef;
   template <class TT, template <class> class CC> friend class FacadePtr;
+  template <class TT, template <class> class CC> friend class Detail::FacadeProxyPtr;
   friend class FacadeCoreAccess;
 protected:
   typedef this_type FFType;
@@ -314,10 +424,10 @@ public:
   Ptr toPtr()
     { return Ptr(_impl()); }
 
-  ConstPtr operator &() const
-    { return ConstPtr(_impl()); }
-  Ptr operator &()
-    { return Ptr(_impl()); }
+  Detail::FacadeProxyPtr<Derived, boost::add_const> operator &() const
+    { return Detail::FacadeProxyPtr<Derived, boost::add_const>(static_cast<ConstRef *>(this)); }
+  Detail::FacadeProxyPtr<Derived, boost::remove_const> operator &()
+    { return Detail::FacadeProxyPtr<Derived, boost::remove_const>(static_cast<Ref *>(this)); }
 private:
   // default no copy no assign
   FacadeFoundation(const this_type &);
