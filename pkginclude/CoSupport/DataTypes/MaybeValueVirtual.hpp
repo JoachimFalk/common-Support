@@ -52,7 +52,8 @@ template <
   class T,
   class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
 >
-class MaybeValueVirtualInterface: public ValueVirtualInterface<T,CR> {
+class MaybeValueVirtualInterface
+: public ValueVirtualInterface<T,CR> {
   typedef MaybeValueVirtualInterface<T,CR> this_type;
 public:
   virtual void  implUndef() = 0;

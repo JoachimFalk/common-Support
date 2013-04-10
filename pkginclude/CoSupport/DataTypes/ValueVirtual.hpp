@@ -40,6 +40,7 @@
 #include "ValueInterface.hpp"
 
 #include <boost/scoped_ptr.hpp>
+#include <boost/noncopyable.hpp>
 
 namespace CoSupport { namespace DataTypes {
 
@@ -49,7 +50,8 @@ template <
   class T,
   class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
 >
-class ValueVirtualInterface {
+class ValueVirtualInterface
+: private boost::noncopyable {
   typedef ValueVirtualInterface<T,CR> this_type;
 public:
   typedef T value_type;
