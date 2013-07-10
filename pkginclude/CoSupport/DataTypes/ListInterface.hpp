@@ -45,6 +45,8 @@
 
 #include "Iter/Detail/BidirectionalTraversalBase.hpp"
 
+#include <list>
+
 namespace CoSupport { namespace DataTypes {
 
 // WARNING: If you change ListInterface also adapt output operator in
@@ -162,6 +164,12 @@ public:
       ++retval;
     return retval;
   }
+
+  operator std::list<VALUE>()
+    { return std::list<VALUE>(begin(), end()); }
+  operator std::list<VALUE>() const
+    { return std::list<VALUE>(begin(), end()); }
+
 /*
   template<class Predicate>
   const_iterator find_if(Predicate pred) const
