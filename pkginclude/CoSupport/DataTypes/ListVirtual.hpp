@@ -92,6 +92,8 @@ namespace Detail {
     typedef ListVirtualInterface<T,R,CR,P,CP> base_type;
   public:
     ListVirtualImpl() {}
+    template <class I>
+    ListVirtualImpl(I const &begin, I const &end): list(begin, end) {}
 
     std::list<T> list;
 
@@ -228,21 +230,23 @@ protected:
 
   typename base_type::Impl *getImpl() const { return impl.get(); }
 public:
+  template <class DD>
+  ListVirtual(std::list<DD> const &val)
+    : impl(new Detail::ListVirtualImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
+
   ListVirtual()
     : impl(new Detail::ListVirtualImpl<T,R,CR,P,CP>()) {}
+  ListVirtual(this_type &val)
+    : impl(new Detail::ListVirtualImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
   ListVirtual(this_type const &val)
-    : impl(new Detail::ListVirtualImpl<T,R,CR,P,CP>()) {
-    Detail::ListVirtualImpl<T,R,CR,P,CP> *_impl =
-      static_cast<Detail::ListVirtualImpl<T,R,CR,P,CP> *>(impl.get());
-    _impl->list.insert(_impl->list.begin(), val.begin(), val.end());
-  }
+    : impl(new Detail::ListVirtualImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
+  template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
+  ListVirtual(ListInterface<DD,II,T,RR,CRCR,PP,CPCP> &val)
+    : impl(new Detail::ListVirtualImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
   template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
   ListVirtual(ListInterface<DD,II,T,RR,CRCR,PP,CPCP> const &val)
-    : impl(new Detail::ListVirtualImpl<T,R,CR,P,CP>()) {
-    Detail::ListVirtualImpl<T,R,CR,P,CP> *_impl =
-      static_cast<Detail::ListVirtualImpl<T,R,CR,P,CP> *>(impl.get());
-    _impl->list.insert(_impl->list.begin(), val.begin(), val.end());
-  }
+    : impl(new Detail::ListVirtualImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
+
   ListVirtual(typename base_type::Impl *impl)
     : impl(impl) {}
 

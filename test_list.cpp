@@ -113,6 +113,17 @@ class List
 
   friend class CoSupport::DataTypes::ListInterface<this_type,Detail::ListIter,T,R,CR,P,CP>;
   template <class CONTAINER, bool REVERSE> friend class Detail::ListIterBaseAccessor;
+public:
+  List()
+    : list() {}
+  List(this_type const &val)
+    : list(val.list) {}
+  template <class DD>
+  List(std::list<DD> const &val)
+    : list(val.begin(), val.end()) {}
+  template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
+  List(CoSupport::DataTypes::ListInterface<DD,II,T,RR,CRCR,PP,CPCP> const &val)
+    : list(val.begin(), val.end()) {}
 protected:
   std::list<T> list;
 
@@ -131,8 +142,8 @@ protected:
     { return list.insert(iter.iter, value); }
 };
 
-typedef List<int>             TList;
-typedef std::map<TList, int>  TListInMap;
+typedef List<int>                              TList;
+typedef std::map<TList, int>                   TListInMap;
 
 typedef CoSupport::DataTypes::ListVirtual<int> VList;
 typedef std::map<VList, int>                   VListInMap;
@@ -316,6 +327,37 @@ int main(int argc, char *argv[]) {
       iter = list.begin();
       FList::const_iterator citer(iter);
       citer = iter;
+    }
+  }
+  {
+    // Check various copy operations of lists
+    std::list<int> sList;
+    TList          tList;
+    VList          vList;
+    FList          fList;
+    {
+      std::list<int> dst1(sList);
+      std::list<int> dst2(tList);
+      std::list<int> dst3(vList);
+      std::list<int> dst4(fList);
+    }
+    {
+      TList dst1(sList);
+      TList dst2(tList);
+      TList dst3(vList);
+      TList dst4(fList);
+    }
+    {
+      VList dst1(sList);
+      VList dst2(tList);
+      VList dst3(vList);
+      VList dst4(fList);
+    }
+    {
+      FList dst1(sList);
+      FList dst2(tList);
+      FList dst3(vList);
+      FList dst4(fList);
     }
   }
   return 0;

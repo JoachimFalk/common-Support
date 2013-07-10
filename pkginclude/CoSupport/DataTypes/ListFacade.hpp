@@ -67,7 +67,6 @@ void intrusive_ptr_release(ListFacadeInterface<T,R,CR,P,CP> *p) {
 namespace Detail {
 
   template <
-    class LIST,
     class T,
     class R = typename boost::add_reference<T>::type,
     class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
@@ -75,18 +74,18 @@ namespace Detail {
     class CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
   >
   class ListFacadeImpl: public ListFacadeInterface<T,R,CR,P,CP> {
-    typedef ListFacadeImpl<LIST,T,R,CR,P,CP>  this_type;
+    typedef ListFacadeImpl<T,R,CR,P,CP>       this_type;
     typedef ListFacadeInterface<T,R,CR,P,CP>  base_type;
   public:
     ListFacadeImpl() {}
-    ListFacadeImpl(LIST list): list(list) {}
-    ListFacadeImpl(const LIST &list): list(list) {}
+    template <class I>
+    ListFacadeImpl(I const &begin, I const &end): list(begin, end) {}
 
-    LIST list;
+    std::list<T> list;
 
     typedef Iter::Detail::BidirectionalTraversalVFImpl<
       R,
-      typename LIST::iterator,
+      typename std::list<T>::iterator,
       boost::intrusive_ptr<this_type> >     VIterImpl;
 
     typename base_type::VIter *implPBegin()
@@ -140,21 +139,26 @@ class ListFacade
   template <class CONTAINER, bool REVERSE> friend class Detail::ListVirtualIterBaseAccessor;
   template <class CONTAINER, bool REVERSE> friend class Detail::ListVirtualIter;
 public:
+  template <class DD>
+  ListFacade(std::list<DD> const &val)
+    : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
+
   ListFacade()
-    : base1_type(new Detail::ListFacadeImpl<std::list<T>,T,R,CR,P,CP>()) {}
+    : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>()) {}
+  ListFacade(this_type &val)
+    : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
+  ListFacade(typename this_type::Ref const &val)
+    : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(
+        const_cast<typename this_type::Ref &>(val).begin(),
+        const_cast<typename this_type::Ref &>(val).end())) {}
   ListFacade(this_type const &val)
-    : base1_type(new Detail::ListFacadeImpl<std::list<T>,T,R,CR,P,CP>()) {
-    Detail::ListFacadeImpl<std::list<T>,T,R,CR,P,CP> *_impl =
-      static_cast<Detail::ListFacadeImpl<std::list<T>,T,R,CR,P,CP> *>(this->getImpl());
-    _impl->list.insert(_impl->list.begin(), val.begin(), val.end());
-  }
+    : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
+  template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
+  ListFacade(ListInterface<DD,II,T,RR,CRCR,PP,CPCP> &val)
+    : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
   template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
   ListFacade(ListInterface<DD,II,T,RR,CRCR,PP,CPCP> const &val)
-    : base1_type(new Detail::ListFacadeImpl<std::list<T>,T,R,CR,P,CP>()) {
-    Detail::ListFacadeImpl<std::list<T>,T,R,CR,P,CP> *_impl =
-      static_cast<Detail::ListFacadeImpl<std::list<T>,T,R,CR,P,CP> *>(this->getImpl());
-    _impl->list.insert(_impl->list.begin(), val.begin(), val.end());
-  }
+    : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
 
   ListFacade(typename base1_type::SmartPtr const &p)
     : base1_type(p) {}
