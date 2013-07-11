@@ -162,7 +162,7 @@ private:
   DebugStreambuf *dbgBuf;
   Debug           oldDbg;
 public:
-  // constructs a new object wich sets output debug level.
+  // constructs a new object which sets output debug level.
   ScopedDebug(std::ostream &out, const Debug &dbg);
 
   // destructor reverses debug level
