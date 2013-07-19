@@ -331,15 +331,25 @@ int main(int argc, char *argv[]) {
   }
   {
     // Check various copy operations of lists
-    std::list<int> sList;
-    TList          tList;
-    VList          vList;
-    FList          fList;
+    std::list<int>       sList;
+    TList                tList;
+    VList                vList;
+    FList                fList;
+    std::list<int> const csList;
+    TList          const ctList;
+    VList          const cvList;
+    FList          const cfList;
     {
       std::list<int> dst1(sList);
       std::list<int> dst2(tList);
       std::list<int> dst3(vList);
       std::list<int> dst4(fList);
+    }
+    {
+      std::list<int> dst1(csList);
+      std::list<int> dst2(ctList);
+      std::list<int> dst3(cvList);
+      std::list<int> dst4(cfList);
     }
     {
       TList dst1(sList);
@@ -348,16 +358,34 @@ int main(int argc, char *argv[]) {
       TList dst4(fList);
     }
     {
+      TList dst1(csList);
+      TList dst2(ctList);
+      TList dst3(cvList);
+      TList dst4(cfList);
+    }
+    {
       VList dst1(sList);
       VList dst2(tList);
       VList dst3(vList);
       VList dst4(fList);
     }
     {
+      VList dst1(csList);
+      VList dst2(ctList);
+      VList dst3(cvList);
+      VList dst4(cfList);
+    }
+    {
       FList dst1(sList);
       FList dst2(tList);
       FList dst3(vList);
       FList dst4(fList);
+    }
+    {
+      FList dst1(csList);
+      FList dst2(ctList);
+      FList dst3(cvList);
+      FList dst4(cfList);
     }
   }
   return 0;
