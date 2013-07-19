@@ -41,6 +41,8 @@ nobase_include_HEADERS = \
 	CoSupport/boost/graph/graph_traits.hpp \
 	CoSupport/boost/graph/undirect_graph.hpp \
 	CoSupport/boost/init_namespace.hpp \
+	CoSupport/boost/program_options/init_namespace.hpp \
+	CoSupport/boost/program_options/value_semantic.hpp \
 	CoSupport/commondefs.h \
 	CoSupport/compatibility-glue/integertypes.h \
 	CoSupport/compatibility-glue/snprintf.h \
