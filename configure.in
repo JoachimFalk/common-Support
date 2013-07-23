@@ -400,18 +400,6 @@ if test x"$acjf_cosupport_found_pkg_xerces" = x"yes"; then
   AC_CONFIG_FILES([pkgconfig/libcosupport-xerces.pc])
 fi
 
-ACJF_CHECK_LIB_XALAN(
-  [acjf_cosupport_found_pkg_xalan="yes";],
-  [acjf_cosupport_found_pkg_xalan="no";])
-
-AM_CONDITIONAL([COSUPPORT_ENABLE_XALAN], [test x"$acjf_cosupport_found_pkg_xalan" = x"yes"])
-# This is a define for pkginclude/CoSupport/cosupport_config.h to guarantee
-# consistency for Examples and Testcases
-if test x"$acjf_cosupport_found_pkg_systemc" = x"yes"; then
-  AC_DEFINE([COSUPPORT_ENABLE_XALAN], [yes], [Defined if xalan support is enabled])
-  AC_CONFIG_FILES([pkgconfig/libcosupport-xalan.pc])
-fi
-
 SUBDIRS="$subdirs"
 AC_SUBST([SUBDIRS])
 

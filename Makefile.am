@@ -111,14 +111,6 @@ libcosupport_la_LIBADD +=				\
 lib_LTLIBRARIES +=					\
 	libcosupport-xerces.la
 endif
-if COSUPPORT_ENABLE_XALAN
-nodist_pkgconfig_DATA +=				\
-	libcosupport-xalan.pc
-libcosupport_la_LIBADD +=				\
-	libcosupport-xalan.la
-lib_LTLIBRARIES +=					\
-	libcosupport-xalan.la
-endif
 if COSUPPORT_ENABLE_SYSTEMC
 nodist_pkgconfig_DATA +=				\
 	libcosupport-systemc.pc
@@ -154,14 +146,6 @@ libcosupport_xerces_la_LIBADD =				\
 	-lboost_thread$(BOOST_LIBMTPOSTFIX)		\
 	libcosupport-initializer.la			\
 	-lxerces-c $(XERCES_AUXLIBS)
-endif
-
-if COSUPPORT_ENABLE_XALAN
-libcosupport_xalan_la_SOURCES =
-libcosupport_xalan_la_LIBADD =				\
-	-lboost_thread$(BOOST_LIBMTPOSTFIX)		\
-	libcosupport-initializer.la			\
-	-lxalan-c
 endif
 
 if COSUPPORT_ENABLE_SYSTEMC
