@@ -9,9 +9,6 @@
 /* Defined if SystemC support is enabled */
 #undef COSUPPORT_ENABLE_SYSTEMC
 
-/* Defined if xalan support is enabled */
-#undef COSUPPORT_ENABLE_XALAN
-
 /* Defined if xerces support is enabled */
 #undef COSUPPORT_ENABLE_XERCES
 

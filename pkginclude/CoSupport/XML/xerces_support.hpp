@@ -152,7 +152,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
       {}
 
     ~ScopedXMLPtr() {
-      // don't use delete use release() method all xerces and xalan nodes have.
+      // don't use delete use the release() method all xerces nodes have.
       if (ptr != NULL)
         ptr->release();
     }

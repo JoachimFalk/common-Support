@@ -143,10 +143,6 @@ nobase_include_HEADERS += \
 	CoSupport/XML/StdIstreamInputStream.hpp \
 	CoSupport/XML/StdOstreamFormatTarget.hpp \
 	CoSupport/XML/xerces_support.hpp
-if COSUPPORT_ENABLE_XALAN
-nobase_include_HEADERS += \
-	CoSupport/XML/xalan_support.hpp
-endif
 endif
 
 if COSUPPORT_ENABLE_SYSTEMC
