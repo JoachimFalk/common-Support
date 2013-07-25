@@ -14,5 +14,5 @@ URL: http://www12.informatik.uni-erlangen.de/research/systemoc
 #Requires: glib-2.0 = 1.3.1
 Requires.private: libcosupport-initializer = @PACKAGE_VERSION@
 Libs: -L${libdir} -lcosupport-xerces
-Libs.private: @XERCES_LDFLAGS@ -lxerces-c @XERCES_AUXLIBS@ @BOOST_LDFLAGS@ -lboost_thread@BOOST_LIBMTPOSTFIX@
+Libs.private: @XERCES_LDFLAGS@ -lxerces-c @XERCES_AUXLIBS@
 Cflags: -I${includedir} @BOOST_INCLUDE@ @XERCES_INCLUDE@
