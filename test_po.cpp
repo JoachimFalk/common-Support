@@ -53,26 +53,36 @@ int main(int argc, char *argv[]) {
   t1vector1.insert(t1vector1.begin(), 0);
   std::cout << "t1vector1: " << t1vector1 << ", t1vector1.size(): " << t1vector1.size() << std::endl;
   assert(t1vector1.size() == 3 && t1vector1[0] == 0 && t1vector1[1] == 1 && t1vector1[2] == 2);
-  t1vector1.insert(t1vector1.begin(), -1);
+  t1vector1.insert(t1vector1.begin(), 33);
   std::cout << "t1vector1: " << t1vector1 << ", t1vector1.size(): " << t1vector1.size() << std::endl;
-  assert(t1vector1.size() == 4 && t1vector1[0] ==-1 && t1vector1[1] == 0 && t1vector1[2] == 1 && t1vector1[3] == 2);
+  assert(t1vector1.size() == 4 && t1vector1[0] ==33 && t1vector1[1] == 0 && t1vector1[2] == 1 && t1vector1[3] == 2);
   t1vector1.pop_back();
   std::cout << "t1vector1: " << t1vector1 << ", t1vector1.size(): " << t1vector1.size() << std::endl;
-  assert(t1vector1.size() == 3 && t1vector1[0] ==-1 && t1vector1[1] == 0 && t1vector1[2] == 1);
+  assert(t1vector1.size() == 3 && t1vector1[0] ==33 && t1vector1[1] == 0 && t1vector1[2] == 1);
   t1vector1.erase(--t1vector1.end()-1);
   std::cout << "t1vector1: " << t1vector1 << ", t1vector1.size(): " << t1vector1.size() << std::endl;
-  assert(t1vector1.size() == 2 && t1vector1[0] ==-1 && t1vector1[1] == 1);
-  assert(t1vector1.front() == -1);
+  assert(t1vector1.size() == 2 && t1vector1[0] ==33 && t1vector1[1] == 1);
+  assert(t1vector1.front() == 33);
   assert(t1vector1.back() == 1);
   t1vector1.insert(++t1vector1.begin(), 2, 55);
   std::cout << "t1vector1: " << t1vector1 << ", t1vector1.size(): " << t1vector1.size() << std::endl;
-  assert(t1vector1.size() == 4 && t1vector1[0] ==-1 && t1vector1[1] == 55 && t1vector1[2] == 55 && t1vector1[3] == 1);
+  assert(t1vector1.size() == 4 && t1vector1[0] ==33 && t1vector1[1] == 55 && t1vector1[2] == 55 && t1vector1[3] == 1);
   
   T1Vector t1vector2(4);
   t1vector2[0] = 1;
   t1vector2[1] = 2;
   t1vector2[2] = 3;
   t1vector2[3] = 4;
+
+  std::cout << "div(" << t1vector1 << ", " << t1vector2 << "): " << div(t1vector1, t1vector2) << std::endl;
+  assert(div(t1vector1, t1vector2) == 0);
+  std::cout << "mod(" << t1vector1 << ", " << t1vector2 << "): " << mod(t1vector1, t1vector2) << std::endl;
+  assert(mod(t1vector1, t1vector2) == t1vector1);
+  t1vector1.pop_back(); t1vector1.push_back(13);
+  std::cout << "div(" << t1vector1 << ", " << t1vector2 << "): " << div(t1vector1, t1vector2) << std::endl;
+  assert(div(t1vector1, t1vector2) == 3);
+  std::cout << "mod(" << t1vector1 << ", " << t1vector2 << "): " << mod(t1vector1, t1vector2) << std::endl;
+  assert(mod(t1vector1, t1vector2) == t1vector1 - 3*t1vector2);
   
   std::cout << supremum(t1vector1, t1vector2) << std::endl;
   std::cout << infimum(t1vector1, t1vector2) << std::endl;
