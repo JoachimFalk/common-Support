@@ -25,13 +25,6 @@ include ../BuildSystem/doxygen.am
 
 SUBDIRS=pkginclude .
 
-LIBCOSUPPORT_INITIALIZER_LIBS   := $(shell PKG_CONFIG_PATH=$(builddir)/pkgconfig $(PKG_CONFIG) libcosupport-initializer --libs --static)
-LIBCOSUPPORT_INITIALIZER_CFLAGS := $(shell PKG_CONFIG_PATH=$(builddir)/pkgconfig $(PKG_CONFIG) libcosupport-initializer --cflags)
-
-dummy:
-	echo "LIBCOSUPPORT_INITIALIZER_LIBS:   $(LIBCOSUPPORT_INITIALIZER_LIBS)"
-	echo "LIBCOSUPPORT_INITIALIZER_CFLAGS: $(LIBCOSUPPORT_INITIALIZER_CFLAGS)"
-
 # This is only needed if there is a configure.in in this directory
 ACLOCAL_AMFLAGS=-I ../BuildSystem/m4
 
@@ -69,7 +62,6 @@ nodist_pkgconfig_DATA =			\
 	libcosupport-tracing.pc
 
 lib_LTLIBRARIES=			\
-	libcosupport.la			\
 	libcosupport-initializer.la	\
 	libcosupport-smartptr.la	\
 	libcosupport-streams.la		\
@@ -94,28 +86,15 @@ noinst_PROGRAMS=			\
 	test_projection			\
 	test_po
 
-libcosupport_la_SOURCES =
-libcosupport_la_LIBADD =				\
-	libcosupport-initializer.la			\
-	libcosupport-smartptr.la			\
-	libcosupport-streams.la				\
-	libcosupport-string.la				\
-	libcosupport-allocators.la			\
-	libcosupport-tracing.la
-
 if COSUPPORT_ENABLE_XERCES
 nodist_pkgconfig_DATA +=				\
 	libcosupport-xerces.pc
-libcosupport_la_LIBADD +=				\
-	libcosupport-xerces.la
 lib_LTLIBRARIES +=					\
 	libcosupport-xerces.la
 endif
 if COSUPPORT_ENABLE_SYSTEMC
 nodist_pkgconfig_DATA +=				\
 	libcosupport-systemc.pc
-libcosupport_la_LIBADD +=				\
-	libcosupport-systemc.la
 lib_LTLIBRARIES +=					\
 	libcosupport-systemc.la
 noinst_PROGRAMS +=					\
@@ -132,8 +111,6 @@ libcosupport_initializer_la_LIBADD =			\
 libcosupport_smartptr_la_SOURCES =			\
 	implementation/RefCountObject.cpp
 libcosupport_smartptr_la_LIBADD =			\
-	$(refcount_CH_LTOBJS)				\
-	$(refcount_object_CH_LTOBJS)			\
 	-lboost_thread$(BOOST_LIBMTPOSTFIX)
 
 if COSUPPORT_ENABLE_XERCES
@@ -143,9 +120,8 @@ libcosupport_xerces_la_SOURCES =			\
 	implementation/StdIstreamInputStream.cpp	\
 	implementation/StdOstreamFormatTarget.cpp
 libcosupport_xerces_la_LIBADD =				\
-	-lboost_thread$(BOOST_LIBMTPOSTFIX)		\
-	libcosupport-initializer.la			\
-	-lxerces-c $(XERCES_AUXLIBS)
+	-lxerces-c $(XERCES_AUXLIBS)			\
+	libcosupport-initializer.la
 endif
 
 if COSUPPORT_ENABLE_SYSTEMC
@@ -155,7 +131,6 @@ libcosupport_systemc_la_SOURCES =			\
 libcosupport_systemc_la_LDFLAGS=			\
 	$(AM_LDFLAGS)
 libcosupport_systemc_la_LIBADD =			\
-	-lboost_thread$(BOOST_LIBMTPOSTFIX)		\
 	-lsystemc
 
 test_event_and_list_SOURCES	  = test_event_and_list.cpp
