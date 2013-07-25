@@ -107,6 +107,20 @@ namespace CoSupport { namespace Math { namespace Tuple {
     return ret;
   }
 
+  // FIXME: negative vectors?!
+  template <class B1, class B2>
+  PO<BinOpVector<B1 const &, BinOpVector<B2 const &, ScalarConstant<typename B1::value_type>, Detail::OpMul>, Detail::OpSub> >
+  mod(const PO<B1> &i, const PO<B2> &j) {
+    return PO<
+      BinOpVector<
+        B1 const &,
+        BinOpVector<
+          B2 const &,
+          ScalarConstant<typename B1::value_type>,
+          Detail::OpMul>,
+        Detail::OpSub> >(i, j * div(i,j));
+  }
+
   // Support for pointwise +,-,*,/ of POs
   template <typename T>
   class PO<ScalarConstant<T> >: public ScalarConstant<T> {
