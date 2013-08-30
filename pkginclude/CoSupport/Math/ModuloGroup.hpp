@@ -36,6 +36,9 @@
 #ifndef _INCLUDED_COSUPPORT_MATH_MODULOGROUP_HPP
 #define _INCLUDED_COSUPPORT_MATH_MODULOGROUP_HPP
 
+#include <boost/utility.hpp>
+#include <boost/type_traits.hpp>
+
 #include "../sassert.h"
 
 namespace CoSupport { namespace Math {
@@ -95,7 +98,9 @@ namespace Detail {
       assert(e >= value_type(0) && e < m());
       return getDerived();
     }
-    DERIVED &operator += (const value_type &n)
+    template <class TT>
+    typename boost::enable_if<boost::is_integral<TT>, DERIVED &>::type
+    operator += (const TT &n)
       { return getDerived() += DERIVED(n, *this); }
 
     template <class MM, class MD>
@@ -106,21 +111,27 @@ namespace Detail {
       assert(e >= value_type(0) && e < m());
       return getDerived();
     }
-    DERIVED &operator -= (const value_type &n)
+    template <class TT>
+    typename boost::enable_if<boost::is_integral<TT>, DERIVED &>::type
+    operator -= (const TT &n)
       { return getDerived() -= DERIVED(n, *this); }
 
     template <class MM, class MD>
     DERIVED operator + (const ModuloGroupImpl<MM, MD> &n) const {
       return DERIVED(getDerived()) += n;
     }
-    DERIVED operator + (const value_type &n) const
+    template <class TT>
+    typename boost::enable_if<boost::is_integral<TT>, DERIVED>::type
+    operator + (const TT &n) const
       { return getDerived() + DERIVED(n, *this); }
 
     template <class MM, class MD>
     DERIVED operator - (const ModuloGroupImpl<MM, MD> &n) const {
       return DERIVED(getDerived()) -= n;
     }
-    DERIVED operator - (const value_type &n) const
+    template <class TT>
+    typename boost::enable_if<boost::is_integral<TT>, DERIVED>::type
+    operator - (const TT &n) const
       { return getDerived() - DERIVED(n, *this); }
 
     template <class MM, class MD>
@@ -128,13 +139,17 @@ namespace Detail {
       assert(n.m() == m());
       return e == n.getValue();
     }
-    bool operator == (const value_type &n) const
+    template <class TT>
+    typename boost::enable_if<boost::is_integral<TT>, bool>::type
+    operator == (const TT &n) const
       { return getDerived() == DERIVED(n, *this); }
 
     template <class MM, class MD>
     bool operator != (const ModuloGroupImpl<MM, MD> &n) const
       { return !(getDerived() == n); }
-    bool operator != (const value_type &n) const
+    template <class TT>
+    typename boost::enable_if<boost::is_integral<TT>, bool>::type
+    operator != (const TT &n) const
       { return getDerived() != DERIVED(n, *this); }
 
     const value_type &getValue() const
@@ -169,13 +184,18 @@ namespace Detail {
            */
             a <= e && e <= b));
     }
-    template <class AM, class AD>
-    bool between(const ModuloGroupImpl<AM, AD> &a, const value_type &b) const
+    template <class AM, class AD, class TT>
+    typename boost::enable_if<boost::is_integral<TT>, bool>::type
+    between(const ModuloGroupImpl<AM, AD> &a, const TT &b) const
       { return between(a, DERIVED(b, *this)); }
-    template <class BM, class BD>
-    bool between(const value_type &a, const ModuloGroupImpl<BM, BD> &b) const
+    template <class TT, class BM, class BD>
+    typename boost::enable_if<boost::is_integral<TT>, bool>::type
+    between(const TT &a, const ModuloGroupImpl<BM, BD> &b) const
       { return between(DERIVED(a, *this), b); }
-    bool between(const value_type &a, const value_type &b)
+    template <class T1, class T2>
+    typename boost::enable_if<boost::mpl::and_<
+      boost::is_integral<T1>, boost::is_integral<T2> >, bool>::type
+    between(const T1 &a, const T2 &b)
       { return between(DERIVED(a, *this), DERIVED(b, *this)); }
 
     operator unspecified_bool_type() const // never throws
@@ -209,10 +229,12 @@ public:
   typedef typename this_type::value_type value_type;
   typedef typename this_type::M          M;
 public:
-  ModuloGroup(value_type e = value_type(0), const M &m = M())
-    : base_type(e, m) {}
-  ModuloGroup(const M &m)
+
+  ModuloGroup(const M &m = M())
     : base_type(value_type(0), m) {}
+  template <typename T>
+  ModuloGroup(T e, const M &m = M())
+    : base_type((e < 0 ? m.m() + e : e), m) {}
 };
 
 } } // namespace CoSupport::Math
