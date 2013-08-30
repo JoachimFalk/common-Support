@@ -412,6 +412,7 @@ AC_CONFIG_FILES([
   pkgconfig/libcosupport-streams.pc
   pkgconfig/libcosupport-string.pc
   pkgconfig/libcosupport-math.pc
+  pkgconfig/libcosupport-random.pc
   pkgconfig/libcosupport-allocators.pc
   pkgconfig/libcosupport-tracing.pc
 ])
