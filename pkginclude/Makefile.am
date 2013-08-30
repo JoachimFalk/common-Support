@@ -81,7 +81,6 @@ nobase_include_HEADERS = \
 	CoSupport/Lambda/functor.hpp \
 	CoSupport/Math/flog2.hpp \
 	CoSupport/Math/Interval.hpp \
-	CoSupport/Math/modulo_arith.hpp \
 	CoSupport/Math/ModuloGroup.hpp \
 	CoSupport/Math/smoc_math.hpp \
 	CoSupport/Math/string_hash.hpp \
