@@ -90,6 +90,14 @@ nobase_include_HEADERS = \
 	CoSupport/Math/Tuple/POVector.hpp \
 	CoSupport/Math/Tuple/ScalarConstant.hpp \
 	CoSupport/Math/Tuple/UnOp.hpp \
+	CoSupport/Random.hpp \
+	CoSupport/Random/randomSource.hpp \
+	CoSupport/Random/RandomGenerator.hpp \
+	CoSupport/Random/RandomConst.hpp \
+	CoSupport/Random/RandomNormal.hpp \
+	CoSupport/Random/RandomUniform.hpp \
+	CoSupport/Random/RandomUrn.hpp \
+	CoSupport/Random/RandomGenerators.hpp \
 	CoSupport/sassert.h \
 	CoSupport/SmartPtr/intrusive_copyonwrite_ptr.hpp \
 	CoSupport/SmartPtr/intrusive_refcount_ptr.hpp \
