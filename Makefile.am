@@ -115,7 +115,6 @@ libcosupport_smartptr_la_LIBADD =			\
 
 if COSUPPORT_ENABLE_XERCES
 libcosupport_xerces_la_SOURCES =			\
-	implementation/SMXIdManager.cpp			\
 	implementation/StdIstreamInputSource.cpp	\
 	implementation/StdIstreamInputStream.cpp	\
 	implementation/StdOstreamFormatTarget.cpp
