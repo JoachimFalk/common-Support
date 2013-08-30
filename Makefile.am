@@ -58,6 +58,7 @@ nodist_pkgconfig_DATA =			\
 	libcosupport-streams.pc		\
 	libcosupport-string.pc		\
 	libcosupport-math.pc		\
+	libcosupport-random.pc		\
 	libcosupport-allocators.pc	\
 	libcosupport-tracing.pc
 
@@ -67,6 +68,7 @@ lib_LTLIBRARIES=			\
 	libcosupport-streams.la		\
 	libcosupport-string.la		\
 	libcosupport-math.la		\
+	libcosupport-random.la		\
 	libcosupport-allocators.la	\
 	libcosupport-tracing.la
 
@@ -173,6 +175,10 @@ libcosupport_string_la_LIBADD =				\
 libcosupport_math_la_SOURCES =				\
 	implementation/flog2.cpp
 libcosupport_math_la_LIBADD =
+
+libcosupport_random_la_SOURCES =			\
+	implementation/Random/randomSource.cpp
+libcosupport_random_la_LIBADD =
 
 libcosupport_allocators_la_SOURCES =
 libcosupport_allocators_la_LIBADD =
