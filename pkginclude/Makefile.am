@@ -154,8 +154,4 @@ nobase_include_HEADERS += \
 	CoSupport/SystemC/systemc_support.hpp \
 	CoSupport/SystemC/systemc_time.hpp \
 	CoSupport/SystemC/VcdFile.hpp
-if COSUPPORT_ENABLE_XERCES
-nobase_include_HEADERS += \
-	CoSupport/SMXIdManager.hpp
-endif
 endif
