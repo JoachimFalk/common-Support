@@ -50,7 +50,7 @@
 #include <boost/type_traits/remove_const.hpp>
 
 #include "../sassert.h"
-#include "../Math/modulo_arith.hpp"
+#include "../Math/ModuloGroup.hpp"
 
 namespace CoSupport { namespace DataTypes {
 
@@ -77,8 +77,8 @@ namespace CoSupport { namespace DataTypes {
       friend class boost::iterator_core_access;
       friend class ArrayFifo<T,N>;
       
-      F               *f;
-      ModuloInt<N+1>   i;
+      F                                                *f;
+      Math::ModuloGroup<Math::CTModulus<size_t, N+1> >  i;
     public:
       IterTemplate()
         : f(NULL) {}
@@ -90,7 +90,7 @@ namespace CoSupport { namespace DataTypes {
           typename boost::remove_const<V>::type> const &iter)
         : f(iter.f), i(iter.i) {}
     protected:
-      IterTemplate( F *f, ModuloInt<N+1> i )
+      IterTemplate(F *f, Math::ModuloGroup<Math::CTModulus<size_t, N+1> > i)
         : f(f), i(i) {}
       
       template <typename FF, typename VV>
@@ -111,9 +111,9 @@ namespace CoSupport { namespace DataTypes {
         { return f->buffer[i.getValue()]; }
     };
     
-    value_type      buffer[N+1];
-    ModuloInt<N+1>  rIndex;
-    ModuloInt<N+1>  wIndex;
+    value_type                                       buffer[N+1];
+    Math::ModuloGroup<Math::CTModulus<size_t, N+1> > rIndex;
+    Math::ModuloGroup<Math::CTModulus<size_t, N+1> > wIndex;
   public:
     typedef IterTemplate<this_type      , value_type      > iterator;
     typedef IterTemplate<this_type const, value_type const> const_iterator;
