@@ -55,9 +55,9 @@ std::istream &operator >> (std::istream &in, RandomGenerator<T> &v) {
         in.setstate(std::ios::badbit);
         return in;
       }
-      if (strcmp(distName, "uniform:") == 0)
+      if (strcmp(distName, "uniform") == 0)
         return in >> static_cast<RandomUniform<T> &>(v);
-      if (strcmp(distName, "urn:") == 0)
+      if (strcmp(distName, "urn") == 0)
         return in >> static_cast<RandomUrn<T> &>(v);
       in.setstate(std::ios::badbit);
       return in;
