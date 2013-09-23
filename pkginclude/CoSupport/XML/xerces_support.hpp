@@ -41,6 +41,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <memory>
+#include <alloca.h>
 
 #include "../sassert.h"
 #include "../String/convert.hpp"
@@ -333,21 +334,27 @@ namespace CoSupport { namespace XML { namespace Xerces {
       :  std::basic_string<char>(str) {}
     NStr(const XMLCh *const str)
       { fromXMLCh(str); }
-#ifdef _INCLUDED_COSUPPORT_XML_XALAN_SUPPORT_HPP
-    NStr(const XN::XalanDOMString &str)
-      { fromXMLCh(str.c_str()); }
-#endif //_INCLUDED_COSUPPORT_XML_XALAN_SUPPORT_HPP
 
     operator const char *() const
       { return c_str(); }
   private:
     void fromXMLCh(const XMLCh *const str) {
-      size_type len = XN::XMLString::stringLen(str);
-      resize(len + (len >> 1) + 1);
-      while (!XN::XMLString::transcode(str, &this->operator[](0), size() - 1))
-        { resize(2 * size()); /* double size */ }
-      // Cut back to real size
-      resize(strlen(c_str()));
+      size_t i;
+      size_t len = XN::XMLString::stringLen(str)+1;
+      len += len >> 1;
+      char  *buf = reinterpret_cast<char *>(alloca(len));
+      // ASCII
+      for (i = 0; str[i] != 0 && str[i] <= 127; ++i)
+        buf[i] = str[i];
+      if (str[i] == 0)
+        buf[i] = 0;
+      else
+        // FALLBACK TRANSCODE
+        while (!XN::XMLString::transcode(str, buf, len-1)) {
+          len += len;
+          buf = reinterpret_cast<char *>(alloca(len));
+        }
+      *this = buf;
     }
   };
 
