@@ -168,9 +168,9 @@ namespace CoSupport { namespace boost {
     typedef typename graph_traits<G>::edges_size_type         edges_size_type;
     typedef typename graph_traits<G>::degree_size_type        degree_size_type;
   public:
-    G &g;
+    G const &g;
   public:
-    undirect_graph(G &g)
+    undirect_graph(G const &g)
       : g(g) {
       typedef typename boost::graph_traits<G>::directed_category directed;
       BOOST_STATIC_ASSERT((boost::is_convertible<directed, boost::directed_tag>::value)); 
@@ -277,10 +277,8 @@ namespace CoSupport { namespace boost {
 namespace boost {
 
   template <class G, typename P>
-  struct property_map<CoSupport::boost::undirect_graph<G>, P> {
-    typedef typename property_map<G,P>::type        type;
-    typedef typename property_map<G,P>::const_type  const_type;
-  };
+  struct property_map<CoSupport::boost::undirect_graph<G>, P>
+    : public property_map<G,P> {};
 
 } // namespace boost
 
