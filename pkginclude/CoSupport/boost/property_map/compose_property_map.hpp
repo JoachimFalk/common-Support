@@ -33,13 +33,48 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_BOOST_GRAPH_PROPERTIES_HPP
-#define _INCLUDED_COSUPPORT_BOOST_GRAPH_PROPERTIES_HPP
+#ifndef _INCLUDED_COSUPPORT_BOOST_PROPERTY_MAP_COMPOSE_PROPERTY_MAP_HPP
+#define _INCLUDED_COSUPPORT_BOOST_PROPERTY_MAP_COMPOSE_PROPERTY_MAP_HPP
 
 #include "../init_namespace.hpp"
 
-#include <boost/graph/properties.hpp>
+#include <boost/property_map/property_map.hpp>
 
-#include "../pending/property.hpp"
+namespace CoSupport { namespace boost {
 
-#endif // _INCLUDED_COSUPPORT_BOOST_GRAPH_PROPERTIES_HPP
+template <class FPMap, class GPMap>
+class compose_property_map {
+public:
+  typedef typename boost::property_traits<GPMap>::key_type   key_type;
+  typedef typename boost::property_traits<FPMap>::value_type value_type;
+  typedef typename boost::property_traits<FPMap>::reference  reference;
+  typedef typename boost::property_traits<FPMap>::category   category;
+
+  compose_property_map(FPMap const &f, GPMap const &g)
+    : f(f), g(g) {}
+public:
+  FPMap f;
+  GPMap g;
+};
+
+template <class FPMap, class GPMap>
+typename boost::property_traits<FPMap>::reference
+get(compose_property_map<FPMap, GPMap> const &pmap,
+    typename boost::property_traits<GPMap>::key_type const &key)
+  { return get(pmap.f, get(pmap.g, key)); }
+
+template <class FPMap, class GPMap>
+void
+put(compose_property_map<FPMap, GPMap> const &pmap,
+    typename boost::property_traits<GPMap>::key_type   const &key,
+    typename boost::property_traits<FPMap>::value_type const &value)
+  { put(pmap.f, get(pmap.g, key), value); }
+
+template <class FPMap, class GPMap>
+compose_property_map<FPMap, GPMap>
+make_compose_property_map(FPMap const &f, GPMap const &g)
+  { return compose_property_map<FPMap, GPMap>(f, g); }
+
+} } // namespace CoSupport::boost
+
+#endif //_INCLUDED_COSUPPORT_BOOST_PROPERTY_MAP_COMPOSE_PROPERTY_MAP_HPP
