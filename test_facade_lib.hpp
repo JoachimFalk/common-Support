@@ -66,6 +66,9 @@ protected:
 public:
   A();
   A(const this_type &);
+
+  void aNonConst();
+  void aConst() const;
 };
 
 class B
