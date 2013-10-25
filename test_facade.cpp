@@ -53,6 +53,7 @@
 #include "test_facade_lib.hpp"
 
 #include <list>
+#include <set>
 
 using namespace Something;
 
@@ -442,8 +443,30 @@ int main(int argc, char *argv[]) {
   std::cout << TYPENAME(boost::remove_const<A::ConstRef>::type) << std::endl;
   BOOST_STATIC_ASSERT((boost::is_same<boost::remove_const<A::ConstRef>::type, A::Ref>::value));
 
-  std::list<A> al;
-  al.push_back(a);
-  std::list<A::Ref> arl;
-  arl.push_back(a);
+  {
+    std::list<A> al;
+    al.push_back(a);
+    std::list<A>::iterator iter1 = al.begin();
+    iter1->aNonConst();
+    iter1->aConst();
+    std::list<A>::const_iterator iter2 = al.begin();
+    iter2->aConst();
+  }
+  {
+    std::list<A::Ref> arl;
+    arl.push_back(a);
+    std::list<A::Ref>::iterator iter1 = arl.begin();
+    iter1->aNonConst();
+    iter1->aConst();
+    std::list<A::Ref>::const_iterator iter2 = arl.begin();
+    iter2->aConst();
+  }
+/*{
+    std::list<A::ConstRef> acrl;
+    acrl.push_back(a);
+    std::list<A::ConstRef>::iterator iter1 = acrl.begin();
+    iter1->aConst();
+    std::list<A::ConstRef>::const_iterator iter2 = acrl.begin();
+    iter2->aConst();
+  }*/
 }

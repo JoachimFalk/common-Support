@@ -46,6 +46,9 @@ namespace Detail {
     virtual this_type *dup() const
       { return new this_type(*this); }
 
+    void aNonConst() {}
+    void aConst() const {}
+
     virtual ~AImpl() {}
   };
   IMPL_INTRUSIVE_REFCOUNT_PTR(AImpl);
@@ -76,6 +79,12 @@ A::A(const SmartPtr &p)
 
 A::A(const this_type &x)
  : FFType(x.getImpl()->dup()) {}
+
+void A::aNonConst()
+  { return getImpl()->aNonConst(); }
+
+void A::aConst() const
+  { return getImpl()->aConst(); }
 
 B::B()
  : FFType(new ImplType()) {}
