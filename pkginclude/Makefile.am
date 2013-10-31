@@ -45,7 +45,6 @@ nobase_include_HEADERS = \
 	CoSupport/boost/program_options/value_semantic.hpp \
 	CoSupport/commondefs.h \
 	CoSupport/compatibility-glue/integertypes.h \
-	CoSupport/compatibility-glue/snprintf.h \
 	CoSupport/cosupport_config.h \
 	CoSupport/DataTypes/ArrayFifo.hpp \
 	CoSupport/DataTypes/bit_buffer.hpp \
