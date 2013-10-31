@@ -43,6 +43,11 @@ nobase_include_HEADERS = \
 	CoSupport/boost/init_namespace.hpp \
 	CoSupport/boost/program_options/init_namespace.hpp \
 	CoSupport/boost/program_options/value_semantic.hpp \
+	CoSupport/boost/python/init_namespace.hpp \
+	CoSupport/boost/python/register_listfacade.hpp \
+	CoSupport/boost/python/register_setfacade.hpp \
+	CoSupport/boost/python/register_tofrom_python_converter_facade.hpp \
+	CoSupport/boost/python/register_tofrom_python_converter_maybevalue.hpp \
 	CoSupport/commondefs.h \
 	CoSupport/compatibility-glue/integertypes.h \
 	CoSupport/cosupport_config.h \
