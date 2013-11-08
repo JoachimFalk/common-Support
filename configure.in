@@ -415,6 +415,7 @@ AC_CONFIG_FILES([
   pkgconfig/libcosupport-random.pc
   pkgconfig/libcosupport-allocators.pc
   pkgconfig/libcosupport-tracing.pc
+  pkgconfig/libcosupport-path.pc
 ])
 
 ACJF_DONE

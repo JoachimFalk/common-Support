@@ -94,6 +94,7 @@ nobase_include_HEADERS = \
 	CoSupport/Math/Tuple/POVector.hpp \
 	CoSupport/Math/Tuple/ScalarConstant.hpp \
 	CoSupport/Math/Tuple/UnOp.hpp \
+	CoSupport/Path/manipulation.hpp \
 	CoSupport/Random.hpp \
 	CoSupport/Random/randomSource.hpp \
 	CoSupport/Random/RandomGenerator.hpp \
