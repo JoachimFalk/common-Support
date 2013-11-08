@@ -190,7 +190,8 @@ libcosupport_tracing_la_SOURCES =			\
 	implementation/TracingFactory.cpp
 
 libcosupport_path_la_SOURCES =				\
-	implementation/Path/manipulation.cpp
+	implementation/Path/manipulation.cpp		\
+	implementation/Path/resourcelocations.cpp
 libcosupport_path_la_LIBADD =				\
 	-lboost_filesystem$(BOOST_LIBMTPOSTFIX)
 
