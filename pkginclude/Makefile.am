@@ -82,7 +82,6 @@ nobase_include_HEADERS = \
 	CoSupport/DataTypes/VectorProjection.hpp \
 	CoSupport/endianess.h \
 	CoSupport/Initializer/BasicInitializer.hpp \
-	CoSupport/Lambda/function_objects.hpp \
 	CoSupport/Lambda/functor.hpp \
 	CoSupport/Math/flog2.hpp \
 	CoSupport/Math/Interval.hpp \
@@ -146,8 +145,7 @@ nobase_include_HEADERS = \
 	CoSupport/Type/STLIteratorSelector.hpp \
 	CoSupport/Type/STLPointerSelector.hpp \
 	CoSupport/Type/STLReferenceSelector.hpp \
-	CoSupport/Type/STLReverseIteratorSelector.hpp \
-	CoSupport/Type/transform.hpp
+	CoSupport/Type/STLReverseIteratorSelector.hpp
 
 if COSUPPORT_ENABLE_XERCES
 nobase_include_HEADERS += \
