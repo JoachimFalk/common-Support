@@ -33,37 +33,22 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
+#include <CoSupport/Path/resourcelocations.hpp>
+#include <CoSupport/Path/manipulation.hpp>
+
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
 
 #include <boost/scoped_array.hpp>
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
+#include <sstream>
 
 namespace CoSupport { namespace Path {
 
 namespace fs = boost::filesystem;
 
-void GenericGeneratorContext::setExecutableLocationImpl(
-    const char *bindir, const char *builddir, const char *argv0)
-{
-  fs::path fsBin(bindir);
-  fs::path fsBld(builddir);
+boost::filesystem::path getExecutableLocation(const char *argv0) {
   fs::path fsPrg(argv0);
-#ifndef NDEBUG  
-  assert(fsBin.has_root_path());
-  for (fs::path::iterator iter = fsBin.begin();
-       iter != fsBin.end();
-       ++iter)
-    assert(*iter != "..");
-  assert(fsBld.has_root_path());
-  for (fs::path::iterator iter = fsBld.begin();
-       iter != fsBld.end();
-       ++iter)
-    assert(*iter != "..");
-#endif //NDEBUG
   bool found = false;
   
   if (!exists(fsPrg) && strchr(argv0, '/') == NULL) {
@@ -102,9 +87,6 @@ void GenericGeneratorContext::setExecutableLocationImpl(
     }
     fsPrg = cwd.get() / fsPrg;
   }
-//outDbgFSRes << "myself:   " << fsPrg << std::endl;
-//outDbgFSRes << "bindir:   " << fsBin << std::endl;
-//outDbgFSRes << "builddir: " << fsBld << std::endl;
   
   // Handle magic .libs/lt-xxxx stuff
   {
@@ -112,10 +94,11 @@ void GenericGeneratorContext::setExecutableLocationImpl(
     if (iter != fsPrg.begin()) {
       --iter;
 #if BOOST_FILESYSTEM_VERSION > 2
-      if (iter->native().length() >= 3 && iter->native().substr(0,3) == "lt-") {
+      if (iter->native().length() >= 3 && iter->native().substr(0,3) == "lt-")
 #else 
-      if (iter->length() >= 3 && iter->substr(0,3) == "lt-") {
+      if (iter->length() >= 3 && iter->substr(0,3) == "lt-")
 #endif
+      {
         if (iter != fsPrg.begin()) {
 #if BOOST_FILESYSTEM_VERSION > 2
           std::string prgNameNoLt = iter->native().substr(3, std::string::npos);
@@ -133,8 +116,29 @@ void GenericGeneratorContext::setExecutableLocationImpl(
       }
     }
   }
-  
   fsPrg = cleanup(fsPrg);
+  return fsPrg;
+}
+
+/*
+void GenericGeneratorContext::setExecutableLocationImpl(
+    const char *bindir, const char *builddir, const char *argv0)
+{
+  fs::path fsBin(bindir);
+  fs::path fsBld(builddir);
+  fs::path fsPrg(getExecutableLocation(argv0));
+#ifndef NDEBUG  
+  assert(fsBin.has_root_path());
+  for (fs::path::iterator iter = fsBin.begin();
+       iter != fsBin.end();
+       ++iter)
+    assert(*iter != "..");
+  assert(fsBld.has_root_path());
+  for (fs::path::iterator iter = fsBld.begin();
+       iter != fsBld.end();
+       ++iter)
+    assert(*iter != "..");
+#endif //NDEBUG
   
 //if (outDbgFSRes.isVisible(Debug::High)) {
 //  outDbgFSRes << "myself:   " << fsPrg << std::endl;
@@ -169,8 +173,8 @@ void GenericGeneratorContext::setExecutableLocationImpl(
   for (ResourceLocMap::iterator iter = resourceLocMap.begin();
        iter != resourceLocMap.end();
        ++iter) {
-    concatBin.push_back(stripHead(iter->second.installLoc, stripBin));
-    concatBld.push_back(stripHead(iter->second.buildLoc, stripBld));
+    concatBin.push_back(stripPrefix(iter->second.installLoc, stripBin));
+    concatBld.push_back(stripPrefix(iter->second.buildLoc, stripBld));
   }
   
 //if (outDbgFSRes.isVisible(Debug::High)) {
@@ -194,12 +198,12 @@ void GenericGeneratorContext::setExecutableLocationImpl(
     for (ResourceLocMap::iterator iter = resourceLocMap.begin();
          iter != resourceLocMap.end();
          ++iter)
-      iter->second.resolved = graftBin.second / stripHead(iter->second.installLoc, stripBin);
+      iter->second.resolved = graftBin.second / stripPrefix(iter->second.installLoc, stripBin);
   } else {
     for (ResourceLocMap::iterator iter = resourceLocMap.begin();
          iter != resourceLocMap.end();
          ++iter)
-      iter->second.resolved = graftBld.second / stripHead(iter->second.buildLoc, stripBld);
+      iter->second.resolved = graftBld.second / stripPrefix(iter->second.buildLoc, stripBld);
   }
 }
 
@@ -218,9 +222,9 @@ void GenericGeneratorContext::registerResourceLocation(const std::string &key,
   status.first->second.installLoc = installLoc;
   status.first->second.buildLoc   = buildLoc;
   if (graftBin.first) {
-    status.first->second.resolved = graftBin.second / stripHead(installLoc, stripBin);
+    status.first->second.resolved = graftBin.second / stripPrefix(installLoc, stripBin);
   } else if (graftBld.first) {
-    status.first->second.resolved = graftBld.second / stripHead(buildLoc, stripBld);
+    status.first->second.resolved = graftBld.second / stripPrefix(buildLoc, stripBld);
   }
 }
 
@@ -238,5 +242,6 @@ fs::path GenericGeneratorContext::retrieveResourceLocation(const std::string &ke
     throw Exception::MissingResourceKey(key);
   return iter->second.resolved;
 }
+*/
 
 } } // namespace CoSupport::Path

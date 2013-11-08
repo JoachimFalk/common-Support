@@ -33,6 +33,7 @@
  */
 
 #include <CoSupport/Path/manipulation.hpp>
+#include <CoSupport/Path/resourcelocations.hpp>
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
@@ -43,6 +44,9 @@ using namespace CoSupport::Path;
 namespace fs = boost::filesystem;
 
 int main(int argc, char *argv[]) {
+
+  std::cout << getExecutableLocation(argv[0]) << std::endl;
+
   {
     fs::path result = pathTrailingDifferent("a/b/c/d", "a/b/e/f/g");
     std::cout << "pathTrailingDifferent(\"a/b/c/d\", \"a/b/e/f/g\"): " << result << std::endl;
