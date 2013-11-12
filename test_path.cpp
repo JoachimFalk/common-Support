@@ -63,6 +63,26 @@ int main(int argc, char *argv[]) {
     assert(result == "./b/e/f/g");
   }
   {
+    fs::path result = pathTrailingDifferent("a/b/c/d", "a/b/c/d");
+    std::cout << "pathTrailingDifferent(\"a/b/c/d\", \"a/b/c/d\"): " << result << std::endl;
+    assert(result == "");
+  }
+  {
+    fs::path result = pathLeadingDifferent("d/c/b/a", "g/f/e/b/a");
+    std::cout << "pathLeadingDifferent(\"d/c/b/a\", \"g/f/e/b/a\"): " << result << std::endl;
+    assert(result == "d/c");
+  }
+  {
+    fs::path result = pathLeadingDifferent("g/f/e/b/a", "d/c/b/a");
+    std::cout << "pathLeadingDifferent(\"g/f/e/b/a\", \"d/c/b/a\"): " << result << std::endl;
+    assert(result == "g/f/e");
+  }
+  {
+    fs::path result = pathLeadingDifferent("a/b/c/d", "a/b/c/d");
+    std::cout << "pathLeadingDifferent(\"a/b/c/d\", \"a/b/c/d\"): " << result << std::endl;
+    assert(result == "");
+  }
+  {
     size_t result = numParts("/");
     std::cout << "numParts(\"/\"): " << result << std::endl;
     assert(result == 1);

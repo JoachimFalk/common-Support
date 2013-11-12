@@ -51,6 +51,16 @@ namespace CoSupport { namespace Path {
 /// pathTrailingDifferent("a/b/e/f/g", "a/b/c/d") == "e/f/g"
 boost::filesystem::path pathTrailingDifferent(boost::filesystem::path const &p1, boost::filesystem::path const &p2);
 
+/// Compute difference between p1 and p2 and return the leading difference of p1
+/// \param[in] p1 First path
+/// \param[in] p2 Second path
+/// \return trailing Difference of \p p1 between \p p1 and \p p2
+///
+/// \par Example
+/// pathLeadingDifferent("d/c/b/a", "g/f/e/b/a") == "d/c"<br>
+/// pathLeadingDifferent("g/f/e/b/a", "d/c/b/a") == "g/f/e"
+boost::filesystem::path pathLeadingDifferent(boost::filesystem::path const &p1, boost::filesystem::path const &p2);
+
 /// Compute number of components in path
 /// \param[in] p The path
 /// \return number of components in path \p p
