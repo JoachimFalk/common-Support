@@ -65,6 +65,26 @@ boost::filesystem::path pathTrailingDifferent(boost::filesystem::path const &p1,
   return retval;
 }
 
+boost::filesystem::path pathLeadingDifferent(boost::filesystem::path const &p1, boost::filesystem::path const &p2) {
+  boost::filesystem::path::iterator iter, jter;
+  
+  for (iter = p1.end(), jter = p2.end();
+       iter != p1.begin() && jter != p2.begin();
+       ) {
+    --iter; --jter;
+    if (*iter != *jter) {
+      ++iter;
+      break;
+    }
+  }
+  boost::filesystem::path retval;
+  for (; iter != p1.begin(); ) {
+    --iter;
+    retval = *iter / retval;
+  }
+  return retval;
+}
+
 size_t numParts(boost::filesystem::path const &p) {
   size_t numParts = 0;
   for (boost::filesystem::path::const_iterator iter = p.begin();
