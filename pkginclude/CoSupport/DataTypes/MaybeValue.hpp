@@ -41,7 +41,7 @@
 
 namespace CoSupport { namespace DataTypes {
 
-/// This class implements the interface for a storage which may contains a value of type T.
+/// This class implements the interface for a storage which may contain a value of type T.
 /// \example test_maybevalue.cpp
 template <
   class T,
