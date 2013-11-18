@@ -44,7 +44,6 @@ std::string hierarchyBasename (const std::string& str, std::string delimiter )
   std::string ret = str;
   if (found != std::string::npos)
     ret = str.substr(found+1);
-  std::cout << ret << std::endl;
   return ret;
 }
 
