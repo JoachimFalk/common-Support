@@ -167,6 +167,7 @@ libcosupport_string_la_SOURCES =			\
 	implementation/UniquePool.cpp			\
 	implementation/UniqueCIdentifierPool.cpp	\
 	implementation/DoubleQuotedString.cpp		\
+	implementation/identifiermanipulation.cpp	\
 	implementation/QuotedString.cpp			\
 	implementation/SingleQuotedString.cpp		\
 	implementation/UnQuotedString.cpp

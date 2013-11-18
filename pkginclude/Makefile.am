@@ -131,6 +131,7 @@ nobase_include_HEADERS = \
 	CoSupport/String/Concat.hpp \
 	CoSupport/String/convert.hpp \
 	CoSupport/String/DoubleQuotedString.hpp \
+	CoSupport/String/identifiermanipulation.hpp \
 	CoSupport/String/QuotedString.hpp \
 	CoSupport/String/SingleQuotedString.hpp \
 	CoSupport/String/TemplateProcessor.hpp \
