@@ -95,7 +95,7 @@ namespace Detail {
 
   template<class TA, class TB>
   struct OpMax {
-    BOOST_STATIC_ASSERT((boost::is_same<TA, TB>::value));
+    BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_const<TA>::type, typename boost::remove_const<TB>::type>::value));
     // Should be the same as TB. See BOOST_STATIC_ASSERT above.
     typedef TA result_type;
 
@@ -107,7 +107,7 @@ namespace Detail {
 
   template<class TA, class TB>
   struct OpMin {
-    BOOST_STATIC_ASSERT((boost::is_same<TA, TB>::value));
+    BOOST_STATIC_ASSERT((boost::is_same<typename boost::remove_const<TA>::type, typename boost::remove_const<TB>::type>::value));
     // Should be the same as TB. See BOOST_STATIC_ASSERT above.
     typedef TA result_type;
 
