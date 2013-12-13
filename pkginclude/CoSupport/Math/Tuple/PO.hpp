@@ -306,12 +306,38 @@ namespace CoSupport { namespace Math { namespace Tuple {
 
   // supremum (least upper bound) and infimum (greatest lower bound)
   template <class B1, class B2>
+  inline
   PO<BinOpVector<B1 const &, B2 const &, Detail::OpMax> > supremum(PO<B1> const &lhs, PO<B2> const &rhs)
     { return PO<BinOpVector<B1 const &, B2 const &, Detail::OpMax> >(lhs, rhs); }
+  template<class B>
+  inline
+  PO<BinOpVector<B const &, ScalarConstant<typename B::value_type>, Detail::OpMax> > supremum(PO<B> const &lhs, typename B::value_type rhs) {
+    return PO<BinOpVector<B const &, ScalarConstant<typename B::value_type>, Detail::OpMax> >
+      (lhs, PO<ScalarConstant<typename B::value_type> >(rhs, lhs.size()));
+  }
+  template<class B>
+  inline
+  PO<BinOpVector<ScalarConstant<typename B::value_type>, B const &, Detail::OpMax> > supremum(typename B::value_type lhs, PO<B> const &rhs) {
+    return PO<BinOpVector<ScalarConstant<typename B::value_type>, B const &, Detail::OpMax> >
+      (PO<ScalarConstant<typename B::value_type> >(lhs, rhs.size()), rhs);
+  }
 
   template <class B1, class B2>
+  inline
   PO<BinOpVector<B1 const &, B2 const &, Detail::OpMin> > infimum(PO<B1> const &lhs, PO<B2> const &rhs)
     { return PO<BinOpVector<B1 const &, B2 const &, Detail::OpMin> >(lhs, rhs); }
+  template<class B>
+  inline
+  PO<BinOpVector<B const &, ScalarConstant<typename B::value_type>, Detail::OpMin> > infimum(PO<B> const &lhs, typename B::value_type rhs) {
+    return PO<BinOpVector<B const &, ScalarConstant<typename B::value_type>, Detail::OpMin> >
+      (lhs, PO<ScalarConstant<typename B::value_type> >(rhs, lhs.size()));
+  }
+  template<class B>
+  inline
+  PO<BinOpVector<ScalarConstant<typename B::value_type>, B const &, Detail::OpMin> > infimum(typename B::value_type lhs, PO<B> const &rhs) {
+    return PO<BinOpVector<ScalarConstant<typename B::value_type>, B const &, Detail::OpMin> >
+      (PO<ScalarConstant<typename B::value_type> >(lhs, rhs.size()), rhs);
+  }
 
   // Partial order comparison operations
 

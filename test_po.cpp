@@ -83,10 +83,16 @@ int main(int argc, char *argv[]) {
   assert(div(t1vector1, t1vector2) == 3);
   std::cout << "mod(" << t1vector1 << ", " << t1vector2 << "): " << mod(t1vector1, t1vector2) << std::endl;
   assert(mod(t1vector1, t1vector2) == t1vector1 - 3*t1vector2);
-  
-  std::cout << supremum(t1vector1, t1vector2) << std::endl;
-  std::cout << infimum(t1vector1, t1vector2) << std::endl;
-  
+
+  std::cout << "supremum(" << t1vector1 << ", " << t1vector2 << "): " << supremum(t1vector1, t1vector2) << std::endl;
+  std::cout << "infimum(" << t1vector1 << ", " << t1vector2 << "): " << infimum(t1vector1, t1vector2) << std::endl;
+
+  std::cout << "supremum(" << t1vector1 << ", " << 19 << "): " << supremum(t1vector1, 19) << std::endl;
+  std::cout << "infimum(" << t1vector1 << ", " << 19 << "): " << infimum(t1vector1, 19) << std::endl;
+
+  std::cout << "supremum(" << 3 << ", " << t1vector2 << "): " << supremum(3, t1vector2) << std::endl;
+  std::cout << "infimum(" << 3 << ", " << t1vector2 << "): " << infimum(3, t1vector2) << std::endl;
+
   T1Vector t1vector3 = t1vector1 + t1vector2;
   T1Vector t1vector4 = t1vector3 - t1vector1;
   
