@@ -38,12 +38,19 @@
 
 namespace CoSupport { namespace String {
 
-std::string hierarchyBasename (const std::string& str, std::string delimiter )
-{
-  unsigned found = str.find_last_of(delimiter);
+std::string hierarchyBasename(const std::string &str, std::string delimiter) {
+  std::string::size_type found = str.rfind(delimiter);
   std::string ret = str;
   if (found != std::string::npos)
-    ret = str.substr(found+1);
+    ret = str.substr(found+delimiter.size());
+  return ret;
+}
+
+std::string hierarchyDirname(const std::string &str, std::string delimiter) {
+  std::string::size_type found = str.rfind(delimiter);
+  std::string ret = "";
+  if (found != std::string::npos)
+    ret = str.substr(0, found+delimiter.size());
   return ret;
 }
 

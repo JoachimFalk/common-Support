@@ -41,15 +41,21 @@
 
 namespace CoSupport { namespace String {
 
-
-/// Searches the string for the last character that matches any of the
-/// characters specified in \p delimiter and returns substring starting after
-/// the last occurrence of specified character.
-/// \param[in] str input string
-/// \param[in] delimiter specified characters
+/// Searches the string for the last occurancre of the string specified
+/// by the \p delimiter and returns the substring starting after the last
+/// occurrence of specified string.
+/// \param[in] str       input string
+/// \param[in] delimiter delimiter string
 /// \return substring starting after the last occurrence of specified character
-std::string hierarchyBasename (const std::string& str, std::string delimiter);
+std::string hierarchyBasename (const std::string &str, std::string delimiter);
 
+/// Searches the string for the last occurancre of the string specified
+/// by the \p delimiter and returns the substring starting from the first
+/// charater of \p str up to and including the string given in \p deltimeter.
+/// \param[in] str       input string
+/// \param[in] delimiter delimiter string
+/// \return substring from the first character up to and including the last occurance of the delimiter string
+std::string hierarchyDirname(const std::string &str, std::string delimiter);
 
 } } // namespace CoSupport::String
 
