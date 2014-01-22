@@ -42,25 +42,32 @@ AM_LDFLAGS=				\
 	$(SYSTEMC_LDFLAGS)		\
 	$(XERCES_LDFLAGS)
 
-%.pc: pkgconfig/%.pc
-	@sed -e 's@^\(prefix\s*=\).*@\1$(prefix)@'		\
-	     -e 's@^\(exec_prefix\s*=\).*@\1$(exec_prefix)@'	\
-	     -e 's@^\(libdir\s*=\).*@\1$(libdir)@'		\
-	     -e 's@^\(includedir\s*=\).*@\1$(includedir)@'	\
-	  < $^ > $@
-
 pkgconfigdir = $(libdir)/pkgconfig
 
 nodist_pkgconfig_DATA =			\
 	libcosupport.pc			\
+	libcosupport-allocators.pc	\
 	libcosupport-initializer.pc	\
+	libcosupport-math.pc		\
+	libcosupport-path.pc		\
+	libcosupport-random.pc		\
 	libcosupport-smartptr.pc	\
 	libcosupport-streams.pc		\
 	libcosupport-string.pc		\
-	libcosupport-math.pc		\
-	libcosupport-random.pc		\
-	libcosupport-allocators.pc	\
 	libcosupport-tracing.pc
+if COSUPPORT_ENABLE_XERCES
+nodist_pkgconfig_DATA +=		\
+	libcosupport-xerces.pc
+endif
+if COSUPPORT_ENABLE_SYSTEMC
+nodist_pkgconfig_DATA +=		\
+	libcosupport-systemc.pc
+endif
+
+%.pc: pkgconfig/%.pc
+	@sed -e '/^build\w\+\s*=/d'				\
+	     -e 's/\$${build\(\w\+\)}/\$${\1}/g'		\
+	  < $^ > $@
 
 lib_LTLIBRARIES=			\
 	libcosupport-initializer.la	\
@@ -72,6 +79,14 @@ lib_LTLIBRARIES=			\
 	libcosupport-allocators.la	\
 	libcosupport-tracing.la		\
 	libcosupport-path.la
+if COSUPPORT_ENABLE_XERCES
+lib_LTLIBRARIES +=			\
+	libcosupport-xerces.la
+endif
+if COSUPPORT_ENABLE_SYSTEMC
+lib_LTLIBRARIES +=			\
+	libcosupport-systemc.la
+endif
 
 noinst_PROGRAMS=			\
 	test_dbgstream			\
@@ -89,21 +104,10 @@ noinst_PROGRAMS=			\
 	test_projection			\
 	test_po				\
 	test_path
-
-if COSUPPORT_ENABLE_XERCES
-nodist_pkgconfig_DATA +=				\
-	libcosupport-xerces.pc
-lib_LTLIBRARIES +=					\
-	libcosupport-xerces.la
-endif
 if COSUPPORT_ENABLE_SYSTEMC
-nodist_pkgconfig_DATA +=				\
-	libcosupport-systemc.pc
-lib_LTLIBRARIES +=					\
-	libcosupport-systemc.la
-noinst_PROGRAMS +=					\
-	test_event_and_list				\
-	test_event_or_list				\
+noinst_PROGRAMS +=			\
+	test_event_and_list		\
+	test_event_or_list		\
 	test_nested_event_lists
 endif
 
