@@ -1,13 +1,20 @@
-# This is a comment
+# Common information
 PACKAGE=@PACKAGE@
 PACKAGE_VERSION=@PACKAGE_VERSION@
+
+# Installation information
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
-buildlibdir=@abs_top_builddir@/.libs
 includedir=@includedir@
-buildincludedir=@abs_top_builddir@/pkginclude -I@abs_top_srcdir@/pkginclude
 
+# Information for source tree mode (this is deleted if this pkg-config file was installed)
+srctreemode_srcdir=@abs_top_srcdir@
+srctreemode_builddir=@abs_top_builddir@
+srctreemode_libdir=${srctreemode_builddir}
+srctreemode_includedir=${srctreemode_builddir}/pkginclude -I${srctreemode_srcdir}/pkginclude
+
+# pkg-config fields
 # human-readable name
 Name: libcosupport
 # human-readable description
@@ -33,6 +40,6 @@ Requires: \
   ${LIBCOSUPPORT_SYSTEMC_REQUIRES}
 
 #Conflicts: foobar <= 4.5
-#Libs: -L${buildlibdir} -lcosupport
+#Libs: -L${srctreemode_libdir} ${srctreemode_libdir}/libcosupport.la
 #Libs.private: -lm
-#Cflags: -I${buildincludedir}
+#Cflags: -I${srctreemode_includedir}
