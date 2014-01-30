@@ -1,13 +1,20 @@
-# This is a comment
+# Common information
 PACKAGE=@PACKAGE@
 PACKAGE_VERSION=@PACKAGE_VERSION@
+
+# Installation information
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
-buildlibdir=@abs_top_builddir@/.libs
 includedir=@includedir@
-buildincludedir=@abs_top_builddir@/pkginclude -I@abs_top_srcdir@/pkginclude
 
+# Information for source tree mode (this is deleted if this pkg-config file was installed)
+srctreemode_srcdir=@abs_top_srcdir@
+srctreemode_builddir=@abs_top_builddir@
+srctreemode_libdir=${srctreemode_builddir}
+srctreemode_includedir=${srctreemode_builddir}/pkginclude -I${srctreemode_srcdir}/pkginclude
+
+# pkg-config fields
 # human-readable name
 Name: libcosupport-smartptr
 # human-readable description
@@ -17,6 +24,6 @@ URL: http://www12.informatik.uni-erlangen.de/research/systemoc
 #Conflicts: foobar <= 4.5
 #Requires:
 #Requires.private:
-Libs: -L${buildlibdir} -lcosupport-smartptr
+Libs: -L${srctreemode_libdir} ${srctreemode_libdir}/libcosupport-smartptr.la
 Libs.private: @BOOST_LDFLAGS@ -lboost_thread@BOOST_LIBMTPOSTFIX@
-Cflags: -I${buildincludedir} @BOOST_INCLUDE@
+Cflags: -I${srctreemode_includedir} @BOOST_INCLUDE@

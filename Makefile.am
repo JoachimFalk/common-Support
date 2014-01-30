@@ -65,8 +65,9 @@ nodist_pkgconfig_DATA +=		\
 endif
 
 %.pc: pkgconfig/%.pc
-	@sed -e '/^build\w\+\s*=/d'				\
-	     -e 's/\$${build\(\w\+\)}/\$${\1}/g'		\
+	@sed -e '/^srctreemode_\w\+\s*=/d'				\
+	     -e 's/\$${srctreemode_libdir}\/lib\([^ 	]*\).la/-l\1/g'	\
+	     -e 's/\$${srctreemode_\(\w\+\)}/\$${\1}/g'			\
 	  < $^ > $@
 
 lib_LTLIBRARIES=			\
