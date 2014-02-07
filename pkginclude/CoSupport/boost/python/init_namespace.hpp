@@ -38,6 +38,8 @@
 
 #include "../init_namespace.hpp"
 
+#include <boost/python.hpp>
+
 namespace CoSupport { namespace boost { namespace python {
 
 using namespace ::boost::python;
