@@ -39,10 +39,13 @@ nobase_include_HEADERS = \
 	CoSupport/Allocators/IdAllocRequest.hpp \
 	CoSupport/Allocators/IdPool.hpp \
 	CoSupport/boost/graph/graph_traits.hpp \
+	CoSupport/boost/graph/properties.hpp \
 	CoSupport/boost/graph/undirect_graph.hpp \
 	CoSupport/boost/init_namespace.hpp \
+	CoSupport/boost/pending/property.hpp \
 	CoSupport/boost/program_options/init_namespace.hpp \
 	CoSupport/boost/program_options/value_semantic.hpp \
+	CoSupport/boost/property_map/compose_property_map.hpp \
 	CoSupport/boost/python/init_namespace.hpp \
 	CoSupport/boost/python/register_listfacade.hpp \
 	CoSupport/boost/python/register_setfacade.hpp \
@@ -57,26 +60,32 @@ nobase_include_HEADERS = \
 	CoSupport/DataTypes/CheckedVector.hpp \
 	CoSupport/DataTypes/container_insert.hpp \
 	CoSupport/DataTypes/container_retrieve.hpp \
-	CoSupport/DataTypes/Iter/BidirectionalTraversalVIf.hpp \
-	CoSupport/DataTypes/Iter/Detail/BidirectionalTraversalBase.hpp \
-	CoSupport/DataTypes/Iter/Detail/BidirectionalTraversalVFImpl.hpp \
-	CoSupport/DataTypes/Iter/Detail/BidirectionalTraversalVImpl.hpp \
 	CoSupport/DataTypes/Detail/RandomAccessTraversalIterImpl.hpp \
 	CoSupport/DataTypes/Detail/RandomAccessTraversalIterTemplate.hpp \
 	CoSupport/DataTypes/EMPTY.hpp \
 	CoSupport/DataTypes/Facade.hpp \
+	CoSupport/DataTypes/Iter/BidirectionalTraversalVIf.hpp \
+	CoSupport/DataTypes/Iter/Detail/BidirectionalTraversalBase.hpp \
+	CoSupport/DataTypes/Iter/Detail/BidirectionalTraversalVFImpl.hpp \
+	CoSupport/DataTypes/Iter/Detail/BidirectionalTraversalVImpl.hpp \
+	CoSupport/DataTypes/ListFacade.hpp \
 	CoSupport/DataTypes/ListInterface.hpp \
 	CoSupport/DataTypes/ListVirtual.hpp \
-	CoSupport/DataTypes/ListFacade.hpp \
+	CoSupport/DataTypes/MaybeValueFacade.hpp \
 	CoSupport/DataTypes/MaybeValue.hpp \
 	CoSupport/DataTypes/MaybeValueInterface.hpp \
+	CoSupport/DataTypes/MaybeValueVirtual.hpp \
 	CoSupport/DataTypes/NILTYPE.hpp \
 	CoSupport/DataTypes/oneof.hpp \
 	CoSupport/DataTypes/Projection.hpp \
 	CoSupport/DataTypes/SerializeHelper.hpp \
+	CoSupport/DataTypes/SetFacade.hpp \
 	CoSupport/DataTypes/SetInterface.hpp \
+	CoSupport/DataTypes/SetVirtual.hpp \
 	CoSupport/DataTypes/ValidWrapper.hpp \
+	CoSupport/DataTypes/ValueFacade.hpp \
 	CoSupport/DataTypes/ValueInterface.hpp \
+	CoSupport/DataTypes/ValueVirtual.hpp \
 	CoSupport/DataTypes/Vector.hpp \
 	CoSupport/DataTypes/VectorInterface.hpp \
 	CoSupport/DataTypes/VectorProjection.hpp \
@@ -95,14 +104,15 @@ nobase_include_HEADERS = \
 	CoSupport/Math/Tuple/ScalarConstant.hpp \
 	CoSupport/Math/Tuple/UnOp.hpp \
 	CoSupport/Path/manipulation.hpp \
+	CoSupport/Path/resourcelocations.hpp \
 	CoSupport/Random.hpp \
-	CoSupport/Random/randomSource.hpp \
-	CoSupport/Random/RandomGenerator.hpp \
 	CoSupport/Random/RandomConst.hpp \
+	CoSupport/Random/RandomGenerator.hpp \
+	CoSupport/Random/RandomGenerators.hpp \
 	CoSupport/Random/RandomNormal.hpp \
+	CoSupport/Random/randomSource.hpp \
 	CoSupport/Random/RandomUniform.hpp \
 	CoSupport/Random/RandomUrn.hpp \
-	CoSupport/Random/RandomGenerators.hpp \
 	CoSupport/sassert.h \
 	CoSupport/SmartPtr/intrusive_copyonwrite_ptr.hpp \
 	CoSupport/SmartPtr/intrusive_refcount_ptr.hpp \
