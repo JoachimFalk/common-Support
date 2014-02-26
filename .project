@@ -3,6 +3,7 @@
 	<name>Support</name>
 	<comment></comment>
 	<projects>
+		<project>BuildSystem</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
