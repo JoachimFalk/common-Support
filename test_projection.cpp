@@ -45,28 +45,53 @@
 typedef CoSupport::DataTypes::Projection<std::vector<std::string> &, std::vector<size_t> const &> TVector;
 
 int main(int argc, char *argv[]) {
-  std::vector<std::string> v1;
-  v1.push_back("a");
-  v1.push_back("b");
-  v1.push_back("c");
-  v1.push_back("d");
-  std::vector<size_t> v2;
-  v2.push_back(3);
-  v2.push_back(0);
-  v2.push_back(2);
-  v2.push_back(1);
-  TVector vector = proj(v1, v2);
-  
-  std::cout << vector.size() << std::endl;
-  
-  for(TVector::const_iterator iter = vector.begin();
-      iter != vector.end();
-      ++iter) {
-    if (iter != vector.begin())
-      std::cout << ", ";
-    std::cout << *iter;
-  }
-  std::cout << std::endl;
+  {
+    std::vector<std::string> v1;
+    v1.push_back("a");
+    v1.push_back("b");
+    v1.push_back("c");
+    v1.push_back("d");
+    std::vector<size_t> v2;
+    v2.push_back(3);
+    v2.push_back(0);
+    v2.push_back(2);
+    v2.push_back(1);
+    TVector vector = proj(v1, v2);
 
+    std::cout << vector.size() << std::endl;
+
+    for(TVector::const_iterator iter = vector.begin();
+        iter != vector.end();
+        ++iter) {
+      if (iter != vector.begin())
+        std::cout << ", ";
+      std::cout << *iter;
+    }
+    std::cout << std::endl;
+
+    assert(vector[0] == "d");
+    assert(vector[1] == "a");
+    assert(vector[2] == "c");
+    assert(vector[3] == "b");
+  }
+  {
+    std::vector<std::string> v1;
+    v1.push_back("a");
+    v1.push_back("b");
+    v1.push_back("c");
+    v1.push_back("d");
+    std::vector<size_t> v2;
+    v2.push_back(2);
+    v2.push_back(1);
+    std::vector<std::string> v3;
+    v3.push_back("foo");
+    v3.push_back("bar");
+
+    proj(v1,v2) = v3;
+    assert(v1[0] == "a");
+    assert(v1[1] == "bar");
+    assert(v1[2] == "foo");
+    assert(v1[3] == "d");
+  }
   return 0;
 }

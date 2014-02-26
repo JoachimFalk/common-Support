@@ -96,6 +96,30 @@ namespace CoSupport { namespace DataTypes {
     >;
   public:
     VectorProjection(V v, I idx): v(v), idx(idx) {}
+
+    template <class VV, class AA>
+    this_type &operator = (std::vector<VV, AA> const &val) {
+      assert(val.size() == this->size());
+      for (size_t i = 0; i < val.size(); ++i)
+        v[idx[i]] = val[i];
+      return *this;
+    }
+
+    template <
+      class DD,
+      class II,
+      class VV,
+      class RR,
+      class CRCR,
+      class PP,
+      class CPCP
+    >
+    this_type &operator = (VectorInterface<DD,II,VV,RR,CRCR,PP,CPCP> const &val) {
+      assert(val.size() == this->size());
+      for (size_t i = 0; i < val.size(); ++i)
+        v[idx[i]] = val[i];
+      return *this;
+    }
   protected:
     V v;
     I idx;
@@ -137,6 +161,8 @@ namespace CoSupport { namespace DataTypes {
   : public VectorProjection<V, I> {
     Projection(V v, I idx)
       : VectorProjection<V, I>(v, idx) {}
+  public:
+    using VectorProjection<V, I>::operator =;
   };
 
   template<
