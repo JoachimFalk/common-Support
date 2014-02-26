@@ -1,6 +1,9 @@
 config.h.in
 configure
 Makefile.in
+aclocal.m4
+autom4te.cache
+tags
 *.ncb
 *.suo
 Debug
@@ -9,4 +12,3 @@ Release
 Release-VPC
 Release-VPC-noVCD
 *.user
-.settings
