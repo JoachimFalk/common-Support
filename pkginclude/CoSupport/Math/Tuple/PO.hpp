@@ -70,8 +70,12 @@ namespace CoSupport { namespace Math { namespace Tuple {
   // Support for projection of POs
   template <class V, class I>
   class PO<DataTypes::Projection<V, I> >: public DataTypes::Projection<V, I> {
+    typedef DataTypes::Projection<V, I> base_type;
+    typedef PO<base_type>               this_type;
   public:
-    PO(V v, I i): DataTypes::Projection<V, I>(v,i) {}
+    PO(V v, I i): base_type(v,i) {}
+
+    using base_type::operator =;
   };
 
   template<class V, class I>
