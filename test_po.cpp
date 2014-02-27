@@ -38,6 +38,7 @@
 #include <map>
 
 #include <CoSupport/Math/Tuple/POVector.hpp>
+#include <CoSupport/Streams/stl_output_for_vector.hpp>
 
 typedef CoSupport::Math::Tuple::POVector<int>::type                 T1Vector;
 typedef CoSupport::Math::Tuple::POVector<unsigned long long>::type  T2Vector;
@@ -109,6 +110,18 @@ int main(int argc, char *argv[]) {
   assert(t1vector1+t1vector1 == 2*t1vector1 && "t1vector1+t1vector1 = 2*t1vector1");
   assert(t1vector1+t1vector1 == t1vector1*2 && "t1vector1+t1vector1 = t1vector1*2");
   
+  std::vector<size_t> projIdx;
+  projIdx.push_back(2);
+  projIdx.push_back(1);
+  std::vector<size_t> flummy;
+  flummy.push_back(77);
+  flummy.push_back(13);
+
+  std::cout << "proj(" << t1vector1 << ", " << projIdx << "): " << proj(t1vector1, projIdx) << std::endl;
+  proj(t1vector1, projIdx) = flummy;
+  std::cout << "proj(" << t1vector1 << ", " << projIdx << "): " << proj(t1vector1, projIdx) << std::endl;
+  assert(t1vector1[2] == 77 && t1vector1[1] == 13);
+
   t1vector2 = t1vector1;
   t1vector2 *= 4;
   assert(t1vector2/2 == t1vector1*2 && "t1vector2/2 == t1vector1*2");

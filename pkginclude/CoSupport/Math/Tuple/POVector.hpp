@@ -48,18 +48,19 @@ struct POVector { typedef PO<std::vector<T,A> > type; };
 // specialize PO
 template <class T, class A>
 class PO<std::vector<T,A> >: public std::vector<T,A> {
-  typedef PO<std::vector<T,A> > this_type;
+  typedef std::vector<T,A> base_type;
+  typedef PO<base_type>    this_type;
 public:
   // Default constructor
-  PO(const A &a = A()): std::vector<T,A>(a) {}
-  PO(size_t n, const T &t = T(), const A &a = A()): std::vector<T,A>(n, t, a) {}
+  PO(const A &a = A()): base_type(a) {}
+  PO(size_t n, const T &t = T(), const A &a = A()): base_type(n, t, a) {}
 
   template <class ITER>
-  PO(ITER first, ITER last, const A &a = A()): std::vector<T,A>(first, last, a) {}
+  PO(ITER first, ITER last, const A &a = A()): base_type(first, last, a) {}
 
   // General copy constructor
   template <class B>
-  PO(PO<B> const &v): std::vector<T,A>(v.begin(), v.end()) {}
+  PO(PO<B> const &v): base_type(v.begin(), v.end()) {}
 };
 
 } } } // namespace CoSupport::Math::Tuple
