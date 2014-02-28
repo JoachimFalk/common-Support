@@ -38,8 +38,6 @@
 
 #include "../../DataTypes/VectorInterface.hpp"
 
-#include "exceptions.hpp"
-
 #include <boost/type_traits/remove_reference.hpp>
 #include <boost/typeof/typeof.hpp>
 
