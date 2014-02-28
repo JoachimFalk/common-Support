@@ -98,7 +98,6 @@ nobase_include_HEADERS = \
 	CoSupport/Math/smoc_math.hpp \
 	CoSupport/Math/string_hash.hpp \
 	CoSupport/Math/Tuple/BinOp.hpp \
-	CoSupport/Math/Tuple/exceptions.hpp \
 	CoSupport/Math/Tuple/PO.hpp \
 	CoSupport/Math/Tuple/POVector.hpp \
 	CoSupport/Math/Tuple/ScalarConstant.hpp \

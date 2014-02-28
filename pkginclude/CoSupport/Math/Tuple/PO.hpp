@@ -36,7 +36,6 @@
 #ifndef _INCLUDED_COSUPPORT_MATH_TUPLE_PO_HPP
 #define _INCLUDED_COSUPPORT_MATH_TUPLE_PO_HPP
 
-#include "exceptions.hpp"
 #include "../../DataTypes/Projection.hpp"
 #include "ScalarConstant.hpp"
 #include "BinOp.hpp"
@@ -106,8 +105,7 @@ namespace CoSupport { namespace Math { namespace Tuple {
     for (;iter != iend && jter != jend; ++iter, ++jter) {
       ret = std::min(ret, static_cast<size_t>(*iter / *jter));
     }
-    if (iter != iend || jter != jend)
-      throw Exception::DifferentSize();
+    assert(iter == iend && jter == jend);
     return ret;
   }
 
@@ -165,8 +163,7 @@ namespace CoSupport { namespace Math { namespace Tuple {
     typename PO<B2>::const_iterator jend = rhs.end();
     for (;iter != iend && jter != jend; ++iter, ++jter)
       *iter += *jter;
-    if (iter != iend || jter != jend)
-      throw Exception::DifferentSize();
+    assert(iter == iend && jter == jend);
     return lhs;
   }
   template<class B>
@@ -206,8 +203,7 @@ namespace CoSupport { namespace Math { namespace Tuple {
     typename PO<B2>::const_iterator jend = rhs.end();
     for (;iter != iend && jter != jend; ++iter, ++jter)
       *iter -= *jter;
-    if (iter != iend || jter != jend)
-      throw Exception::DifferentSize();
+    assert(iter == iend && jter == jend);
     return lhs;
   }
   template<class B>
@@ -247,8 +243,7 @@ namespace CoSupport { namespace Math { namespace Tuple {
     typename PO<B2>::const_iterator jend = rhs.end();
     for (;iter != iend && jter != jend; ++iter, ++jter)
       *iter *= *jter;
-    if (iter != iend || jter != jend)
-      throw Exception::DifferentSize();
+    assert(iter == iend && jter == jend);
     return lhs;
   }*/
   template<class B>
@@ -294,8 +289,7 @@ namespace CoSupport { namespace Math { namespace Tuple {
     typename PO<B2>::const_iterator jend = rhs.end();
     for (;iter != iend && jter != jend; ++iter, ++jter)
       *iter /= *jter;
-    if (iter != iend || jter != jend)
-      throw Exception::DifferentSize();
+    assert(iter == iend && jter == jend);
     return lhs;
   }*/
   template<class B>
@@ -407,8 +401,7 @@ namespace CoSupport { namespace Math { namespace Tuple {
         less = true;
       ++iter; ++jter;
     }
-    if (iter != iend || jter != jend)
-      throw Exception::DifferentSize();
+    assert(iter == iend && jter == jend);
     return less;
   }
   template <class B>
@@ -469,8 +462,7 @@ namespace CoSupport { namespace Math { namespace Tuple {
         return false;
       ++iter; ++jter;
     }
-    if (iter != iend || jter != jend)
-      throw Exception::DifferentSize();
+    assert(iter == iend && jter == jend);
     return true;
   }
   template <class B>
