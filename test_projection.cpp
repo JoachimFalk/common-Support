@@ -92,6 +92,12 @@ int main(int argc, char *argv[]) {
     assert(v1[1] == "bar");
     assert(v1[2] == "foo");
     assert(v1[3] == "d");
+
+    proj(v1,v2) = "flummy";
+    assert(v1[0] == "a");
+    assert(v1[1] == "flummy");
+    assert(v1[2] == "flummy");
+    assert(v1[3] == "d");
   }
   return 0;
 }

@@ -121,6 +121,9 @@ int main(int argc, char *argv[]) {
   proj(t1vector1, projIdx) = flummy;
   std::cout << "proj(" << t1vector1 << ", " << projIdx << "): " << proj(t1vector1, projIdx) << std::endl;
   assert(t1vector1[2] == 77 && t1vector1[1] == 13);
+  proj(t1vector1, projIdx) = 0;
+  std::cout << "proj(" << t1vector1 << ", " << projIdx << "): " << proj(t1vector1, projIdx) << std::endl;
+  assert(t1vector1[2] == 0 && t1vector1[1] == 0);
 
   t1vector2 = t1vector1;
   t1vector2 *= 4;
