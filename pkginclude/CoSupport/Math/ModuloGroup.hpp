@@ -93,8 +93,10 @@ namespace Detail {
     template <class MM, class MD>
     DERIVED &operator += (const ModuloGroupImpl<MM, MD> &n) {
       assert(n.m() == m());
-      if ((e += n.getValue()) >= m())
-        e -= m();
+      if (e >= m() - n.getValue())
+        e -= m() - n.getValue();
+      else
+        e += n.getValue();
       assert(e >= value_type(0) && e < m());
       return getDerived();
     }
@@ -106,8 +108,10 @@ namespace Detail {
     template <class MM, class MD>
     DERIVED &operator -= (const ModuloGroupImpl<MM, MD> &n) {
       assert(n.m() == m());
-      if ((e -= n.getValue()) >= m())
-        e += m();
+      if (e < n.getValue())
+        e += m() - n.getValue();
+      else
+        e -= n.getValue();
       assert(e >= value_type(0) && e < m());
       return getDerived();
     }
