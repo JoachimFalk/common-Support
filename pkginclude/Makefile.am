@@ -95,7 +95,6 @@ nobase_include_HEADERS = \
 	CoSupport/Math/flog2.hpp \
 	CoSupport/Math/Interval.hpp \
 	CoSupport/Math/ModuloGroup.hpp \
-	CoSupport/Math/smoc_math.hpp \
 	CoSupport/Math/string_hash.hpp \
 	CoSupport/Math/Tuple/BinOp.hpp \
 	CoSupport/Math/Tuple/PO.hpp \
