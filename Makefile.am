@@ -102,6 +102,7 @@ noinst_PROGRAMS=			\
 	test_list			\
 	test_set			\
 	test_vector			\
+	test_modulo			\
 	test_projection			\
 	test_po				\
 	test_path
@@ -232,6 +233,8 @@ test_list_SOURCES	= test_list.cpp
 test_set_SOURCES	= test_set.cpp
 
 test_vector_SOURCES	= test_vector.cpp
+
+test_modulo_SOURCES	= test_modulo.cpp
 
 test_projection_SOURCES	= test_projection.cpp
 
