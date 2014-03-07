@@ -37,7 +37,7 @@
 #include <cmath>
 #include <cassert>
 
-namespace CoSupport {
+namespace CoSupport { namespace Math {
 
 // if someone can come up with something better,
 // a) benchmark it and b) if it's faster, put it below!!!
@@ -494,7 +494,7 @@ size_t flog2c(uint64_t n) {
   return flog2f(n-1)+1;
 }
 
-} // namespace CoSupport
+} } // namespace CoSupport::Math
 
 // #include <iostream>
 /*int main(int argc, char** argv) {

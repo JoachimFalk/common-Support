@@ -44,7 +44,7 @@
 #include <stdint.h>
 #endif // _MSC_VER
 
-namespace CoSupport {
+namespace CoSupport { namespace Math {
 
 // Returns the log base 2 of an integer (floor variant)
 // e.g. flog2f(1) == 0
@@ -65,16 +65,6 @@ size_t flog2f(uint64_t n);
 size_t flog2c(uint32_t n);
 size_t flog2c(uint64_t n);
 
-COSUPPORT_ATTRIBUTE_DEPRECATED
-static inline
-size_t flog2(uint32_t n)
-  { return flog2c(n); }
-
-COSUPPORT_ATTRIBUTE_DEPRECATED
-static inline
-size_t flog2(uint64_t n)
-  { return flog2c(n); }
-
-} // namespace CoSupport
+} } // namespace CoSupport::Math
 
 #endif // INCLUDED_COSUPPORT_FLOG2_HPP
