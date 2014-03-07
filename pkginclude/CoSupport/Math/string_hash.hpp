@@ -112,15 +112,4 @@ class FNV<64> : public Detail::FNVBase<
 
 } } // namespace CoSupport::Math
 
-// Backward compatibility cruft
-namespace CoSupport {
-
-template<size_t BITS>
-class FNV: public Math::FNV<BITS> {
-public:
-  COSUPPORT_ATTRIBUTE_DEPRECATED FNV() {}
-};
-
-} // namespace CoSupport
-
 #endif // INCLUDED_COSUPPORT_STRING_HASH_HPP
