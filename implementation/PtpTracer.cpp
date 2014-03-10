@@ -85,7 +85,7 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
       std::string start_stop = "";
 
       // sum up latencies
-      int countMax = 0;
+      size_t countMax = 0;
       if(stopTimes.size() < startTimes.size()){
         countMax = stopTimes.size();
       }else{
