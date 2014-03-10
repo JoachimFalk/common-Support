@@ -78,7 +78,7 @@ namespace Detail {
 
     typedef typename M::value_type value_type;
 
-    typedef size_t (this_type::*unspecified_bool_type)() const;
+    typedef const value_type &(this_type::*unspecified_bool_type)() const;
   protected:
     value_type e;
   private:
