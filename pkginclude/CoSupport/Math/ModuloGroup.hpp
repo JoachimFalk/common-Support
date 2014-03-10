@@ -36,8 +36,12 @@
 #ifndef _INCLUDED_COSUPPORT_MATH_MODULOGROUP_HPP
 #define _INCLUDED_COSUPPORT_MATH_MODULOGROUP_HPP
 
-#include <boost/utility.hpp>
-#include <boost/type_traits.hpp>
+#include <boost/utility/enable_if.hpp>
+#include <boost/mpl/and.hpp>
+#include <boost/type_traits/make_unsigned.hpp>
+#include <boost/type_traits/is_integral.hpp>
+
+#include <limits>
 
 #include "../sassert.h"
 
@@ -78,7 +82,7 @@ namespace Detail {
 
     typedef typename M::value_type value_type;
 
-    typedef const value_type &(this_type::*unspecified_bool_type)() const;
+    typedef value_type const &(this_type::*unspecified_bool_type)() const;
   protected:
     value_type e;
   private:
@@ -86,17 +90,30 @@ namespace Detail {
       { return *static_cast<DERIVED       *>(this); }
     DERIVED const &getDerived() const
       { return *static_cast<DERIVED const *>(this); }
+
+    static
+    value_type const &toValueType(value_type const &v)
+      { return v; }
+    template <typename VV>
+    static
+    value_type toValueType(VV const &v) {
+      assert(v >= 0);
+      assert(
+          static_cast<typename boost::make_unsigned<VV>::type>(v) <=
+          static_cast<typename boost::make_unsigned<value_type>::type>(std::numeric_limits<value_type>::max()));
+      return v;
+    }
   public:
     ModuloGroupImpl(value_type e = value_type(0), const M &m_ = M())
       : M(m_), e(e) { assert(e < m()); }
 
     template <class MM, class MD>
     DERIVED &operator += (const ModuloGroupImpl<MM, MD> &n) {
-      assert(n.m() == m());
-      if (e >= m() - n.getValue())
-        e -= m() - n.getValue();
+      assert(toValueType(n.m()) == m());
+      if (e >= m() - toValueType(n.getValue()))
+        e -= m() - toValueType(n.getValue());
       else
-        e += n.getValue();
+        e += toValueType(n.getValue());
       assert(e >= value_type(0) && e < m());
       return getDerived();
     }
@@ -107,11 +124,11 @@ namespace Detail {
 
     template <class MM, class MD>
     DERIVED &operator -= (const ModuloGroupImpl<MM, MD> &n) {
-      assert(n.m() == m());
-      if (e < n.getValue())
-        e += m() - n.getValue();
+      assert(toValueType(n.m()) == m());
+      if (e < toValueType(n.getValue()))
+        e += m() - toValueType(n.getValue());
       else
-        e -= n.getValue();
+        e -= toValueType(n.getValue());
       assert(e >= value_type(0) && e < m());
       return getDerived();
     }
@@ -140,8 +157,8 @@ namespace Detail {
 
     template <class MM, class MD>
     bool operator == (const ModuloGroupImpl<MM, MD> &n) const {
-      assert(n.m() == m());
-      return e == n.getValue();
+      assert(toValueType(n.m()) == m());
+      return e == toValueType(n.getValue());
     }
     template <class TT>
     typename boost::enable_if<boost::is_integral<TT>, bool>::type
@@ -156,37 +173,36 @@ namespace Detail {
     operator != (const TT &n) const
       { return getDerived() != DERIVED(n, *this); }
 
-    const value_type &getValue() const
+    value_type const &getValue() const
       { return e; }
 
     // check if a <= e <= b
     template <class AM, class AD, class BM, class BD>
     bool between(const ModuloGroupImpl<AM, AD> &a_, const ModuloGroupImpl<BM, BD> &b_) const {
-      assert(a_.m() == m()); assert(b_.m() == m());
-      const value_type &a = a_.getValue();
-      const value_type &b = b_.getValue();
-      
+      assert(toValueType(a_.m()) == m()); assert(toValueType(b_.m()) == m());
       // a <= e <= b in modulo arith:
       //   a == b   implies a == b == e
       //   a-b == 1 implies true
-      return
-        (a >  b && (
+      if (toValueType(a_.getValue()) >  toValueType(b_.getValue()))
+        return
           /* ---b----------
            * ----a---------
            * ----eeeeeeeeee
            */
-            a <= e ||
+          toValueType(a_.getValue()) <= e ||
           /* ---b----------
            * ----a---------
            * eeee----------
            */
-            e <= b)) ||
-        (a <= b && (
+          e <= toValueType(b_.getValue());
+      else
+        // toValueType(a_.getValue()) <= toValueType(b_.getValue())
+        return
           /* ---a----------
            * -----------b--
            * ---eeeeeeeee--
            */
-            a <= e && e <= b));
+          toValueType(a_.getValue()) <= e && e <= toValueType(b_.getValue());
     }
     template <class AM, class AD, class TT>
     typename boost::enable_if<boost::is_integral<TT>, bool>::type
