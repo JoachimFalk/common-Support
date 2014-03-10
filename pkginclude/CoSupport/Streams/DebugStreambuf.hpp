@@ -120,9 +120,9 @@ protected:
   int getIndex() const;
 private:
   /// current stream debug level
-  int streamLevel;
+  size_t streamLevel;
   /// current output debug level
-  int outputLevel;
+  size_t outputLevel;
 
   /// line prefix
   std::string prefix;
