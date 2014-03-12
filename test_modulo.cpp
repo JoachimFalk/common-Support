@@ -1,6 +1,8 @@
 //#include <CoSupport/Math/modulo.hpp>
 #include <CoSupport/Math/ModuloGroup.hpp>
 
+#include <stdint.h>
+
 template <typename T1, typename T2, typename T3>
 void testModuloGroup(T1 const &m1 = T1(), T2 const &m2 = T2(), T3 const &m3 = T3()) {
   CoSupport::Math::ModuloGroup<T1> a1(2, m1);
@@ -165,5 +167,29 @@ int main(int argc, char *argv[]) {
     CoSupport::Math::CTModulus<int, 5>,
     CoSupport::Math::CTModulus<unsigned int, 5>,
     CoSupport::Math::CTModulus<int, 5> >();
+  {
+    CoSupport::Math::ModuloGroup<CoSupport::Math::CTModulus<int16_t, (1<<15)-3> > dummy((1<<15)-7);
+    assert(dummy + 16 == 12);
+    assert(dummy + 5 == 1);
+    assert(dummy + 4 == 0);
+    assert(dummy + 3 == (1<<15)-4);
+    assert(dummy - ((1<<15)-4) == (1<<15)-6);
+    assert(dummy - ((1<<15)-5) == (1<<15)-5);
+    assert(dummy - ((1<<15)-6) == (1<<15)-4);
+    assert(dummy - ((1<<15)-7) == 0);
+    assert(dummy - ((1<<15)-8) == 1);
+  }
+  {
+    CoSupport::Math::ModuloGroup<CoSupport::Math::CTModulus<uint16_t, (1<<16)-3> > dummy((1<<16)-7);
+    assert(dummy + 16 == 12);
+    assert(dummy + 5 == 1);
+    assert(dummy + 4 == 0);
+    assert(dummy + 3 == (1<<16)-4);
+    assert(dummy - ((1<<16)-4) == (1<<16)-6);
+    assert(dummy - ((1<<16)-5) == (1<<16)-5);
+    assert(dummy - ((1<<16)-6) == (1<<16)-4);
+    assert(dummy - ((1<<16)-7) == 0);
+    assert(dummy - ((1<<16)-8) == 1);
+  }
   return 0;
 }
