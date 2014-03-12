@@ -94,6 +94,7 @@ nobase_include_HEADERS = \
 	CoSupport/Lambda/functor.hpp \
 	CoSupport/Math/flog2.hpp \
 	CoSupport/Math/Interval.hpp \
+	CoSupport/Math/modulo.hpp \
 	CoSupport/Math/ModuloGroup.hpp \
 	CoSupport/Math/string_hash.hpp \
 	CoSupport/Math/Tuple/BinOp.hpp \
