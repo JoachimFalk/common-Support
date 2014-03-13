@@ -108,7 +108,6 @@ namespace CoSupport { namespace Math { namespace Tuple {
 
   using Math::div;
 
-  // FIXME: negative vectors?!
   template <class B1, class B2>
   typename B1::value_type div(const PO<B1> &i, const PO<B2> &j) {
     typename PO<B1>::const_iterator iter = i.begin();
@@ -125,7 +124,6 @@ namespace CoSupport { namespace Math { namespace Tuple {
 
   using Math::mod;
 
-  // FIXME: negative vectors?!
   template <class B1, class B2>
   PO<BinOpVector<B1 const &, BinOpVector<B2 const &, ScalarConstant<typename B1::value_type>, Detail::OpMul>, Detail::OpSub> >
   mod(const PO<B1> &i, const PO<B2> &j) {

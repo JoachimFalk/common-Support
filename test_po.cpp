@@ -74,27 +74,36 @@ int main(int argc, char *argv[]) {
   }
   // Testing mod and div of PO vectors
   {
-    T1Vector t1vector1(4);
-    t1vector1[0] = 33;
-    t1vector1[1] = 55;
-    t1vector1[2] = 55;
-    t1vector1[3] = 1;
+    struct {
+      int n[4], m[4], d;
+    } testData[] = {
+      { { 33, 55, 55,  1}, {  1,  2,  3,  4},  0 },
+      { { 33, 55, 55, 13}, {  1,  2,  3,  4},  3 },
+      { { -1, -5,  0,-13}, {  5, 10, 20, 11}, -2 },
+      { { 13, -5,  0, -9}, {  5, 10, 20, 11}, -1 },
+      { { 13,  1, 21, 12}, {  5, 10, 20, 11},  0 },
+      { { 13, 33, 21, 12}, {  5, 10, 20, 11},  1 },
+      { { 13, 33, 77, 25}, {  5, 10, 20, 11},  2 },
+      { { 13, 33, 77, 25}, { -5, 10, 20, 11}, -3 },
+      { { 13, 33, 77, 25}, { -5, 10,-20, 11}, -4 },
+      { { 13, 33, 77, 25}, { -5,-10,-20,-11}, -4 },
+    };
 
-    T1Vector t1vector2(4);
-    t1vector2[0] = 1;
-    t1vector2[1] = 2;
-    t1vector2[2] = 3;
-    t1vector2[3] = 4;
-
-    std::cout << "div(" << t1vector1 << ", " << t1vector2 << "): " << div(t1vector1, t1vector2) << std::endl;
-    assert(div(t1vector1, t1vector2) == 0);
-    std::cout << "mod(" << t1vector1 << ", " << t1vector2 << "): " << mod(t1vector1, t1vector2) << std::endl;
-    assert(mod(t1vector1, t1vector2) == t1vector1);
-    t1vector1.pop_back(); t1vector1.push_back(13);
-    std::cout << "div(" << t1vector1 << ", " << t1vector2 << "): " << div(t1vector1, t1vector2) << std::endl;
-    assert(div(t1vector1, t1vector2) == 3);
-    std::cout << "mod(" << t1vector1 << ", " << t1vector2 << "): " << mod(t1vector1, t1vector2) << std::endl;
-    assert(mod(t1vector1, t1vector2) == t1vector1 - 3*t1vector2);
+    for (size_t i = 0; i < sizeof(testData)/sizeof(testData[0]); ++i) {
+      T1Vector t1vector1(4), t1vector2(4);
+      t1vector1[0] = testData[i].n[0];
+      t1vector1[1] = testData[i].n[1];
+      t1vector1[2] = testData[i].n[2];
+      t1vector1[3] = testData[i].n[3];
+      t1vector2[0] = testData[i].m[0];
+      t1vector2[1] = testData[i].m[1];
+      t1vector2[2] = testData[i].m[2];
+      t1vector2[3] = testData[i].m[3];
+      std::cout << "div(" << t1vector1 << ", " << t1vector2 << "): " << div(t1vector1, t1vector2) << std::endl;
+      assert(div(t1vector1, t1vector2) == testData[i].d);
+      std::cout << "mod(" << t1vector1 << ", " << t1vector2 << "): " << mod(t1vector1, t1vector2) << std::endl;
+      assert(mod(t1vector1, t1vector2) == t1vector1 - testData[i].d*t1vector2);
+    }
   }
   // Testing normal operations on PO vectors
   {
