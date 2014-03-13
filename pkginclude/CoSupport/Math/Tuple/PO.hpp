@@ -37,22 +37,34 @@
 #define _INCLUDED_COSUPPORT_MATH_TUPLE_PO_HPP
 
 #include "../../DataTypes/Projection.hpp"
+#include "../modulo.hpp"
+
 #include "ScalarConstant.hpp"
 #include "BinOp.hpp"
 #include "UnOp.hpp"
-//#include "../../DataTypes/EMPTY.hpp"
 
 #include <utility>
 #include <ostream>
+#include <limits>
 
-//#include <boost/type_traits/is_base_of.hpp>
-//#include <boost/utility/enable_if.hpp>
+#include <boost/type_traits/integral_constant.hpp>
+#include <boost/mpl/or.hpp>
+#include <boost/utility/enable_if.hpp>
 
 namespace CoSupport { namespace Math { namespace Tuple {
 
-  //class POTag;
-
   template <class B> class PO;
+
+  namespace Detail {
+
+    template <typename T>
+    struct is_po_type: public boost::false_type {};
+    template <typename B>
+    struct is_po_type<PO<B> >: public boost::true_type {};
+    template <typename B>
+    struct is_po_type<PO<B> const>: public boost::true_type {};
+
+  } // namespace Detail
 
   template <class B>
   std::ostream &operator << (std::ostream &out, const PO<B> &t) {
@@ -94,20 +106,24 @@ namespace CoSupport { namespace Math { namespace Tuple {
   PO<DataTypes::Projection<V       &, I const &> > proj(PO<V>       &v, PO<I> const &i)
     { return PO<DataTypes::Projection<V       &, I const &> >(v,i); }
 
+  using Math::div;
+
   // FIXME: negative vectors?!
   template <class B1, class B2>
-  size_t div(const PO<B1> &i, const PO<B2> &j) {
+  typename B1::value_type div(const PO<B1> &i, const PO<B2> &j) {
     typename PO<B1>::const_iterator iter = i.begin();
     typename PO<B1>::const_iterator iend = i.end();
     typename PO<B2>::const_iterator jter = j.begin();
     typename PO<B2>::const_iterator jend = j.end();
-    size_t ret = ~0;
+    typename B1::value_type ret = std::numeric_limits<typename B1::value_type>::max();
     for (;iter != iend && jter != jend; ++iter, ++jter) {
-      ret = std::min(ret, static_cast<size_t>(*iter / *jter));
+      ret = std::min(ret, div(*iter, static_cast<typename B1::value_type>(*jter)));
     }
     assert(iter == iend && jter == jend);
     return ret;
   }
+
+  using Math::mod;
 
   // FIXME: negative vectors?!
   template <class B1, class B2>
@@ -513,34 +529,14 @@ namespace std {
   // we need this to be able to put PO<B> into std::map and std::set
   template<class B>
   struct less<CoSupport::Math::Tuple::PO<B> > {
-    bool operator()(const CoSupport::Math::Tuple::PO<B> &lhs, const CoSupport::Math::Tuple::PO<B> &rhs) const {
-//    cout << "bool less<CoSupport::Math::Tuple::PO<B> >::operator()(lhs,rhs)" << endl;
-      return lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
-    }
+    bool operator()(
+        const CoSupport::Math::Tuple::PO<B> &lhs,
+        const CoSupport::Math::Tuple::PO<B> &rhs) const
+      { return lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()); }
   };
 
-  // Disable operator < for std::pairs containing at least one PO element.
-  // The unmodified semantics of operator < defined in utility does not make
-  // any sense as it mixes partial order with lexigographical order.
-  // So disable operator < to warn of this conflict!
-
-  // Operator intentionally left unimplemented to force linker error!
+  /*
   template<class B, class X>
-  bool
-  operator<(const pair<CoSupport::Math::Tuple::PO<B>,X> &, const pair<CoSupport::Math::Tuple::PO<B>,X> &);
-
-  // Operator intentionally left unimplemented to force linker error!
-  template<class X, class B>
-  bool
-  operator<(const pair<X,CoSupport::Math::Tuple::PO<B> > &, const pair<X,CoSupport::Math::Tuple::PO<B> > &);
-
-  // Operator intentionally left unimplemented to force linker error!
-  template<class B1, class B2>
-  bool
-  operator<(const pair<CoSupport::Math::Tuple::PO<B1>,CoSupport::Math::Tuple::PO<B2> > &,
-            const pair<CoSupport::Math::Tuple::PO<B1>,CoSupport::Math::Tuple::PO<B2> > &);
-
-/*template<class B, class X>
   struct less<pair<CoSupport::Math::Tuple::PO<B>,X> > {
     bool operator()(
         const pair<CoSupport::Math::Tuple::PO<B>,X> &lhs,
@@ -564,7 +560,43 @@ namespace std {
         (!less<X>()(rhs.first, lhs.first) &&
           less<CoSupport::Math::Tuple::PO<B> >()(lhs.second, rhs.second));
     }
-  };*/
+  };
+   */
+
+  // Disable operator <=, >=, <, and > for std::pairs containing at least one PO element.
+  // The unmodified semantics of operator < defined in utility does not make any sense as
+  // it mixes partial order with lexicographical order. So disable the operators to warn
+  // of this conflict!
+
+  // Operators intentionally left unimplemented to force linker error!
+  // This will lead to an "ambiguous overload for »operator<=«" if pairs
+  // with an PO element are compared!
+  template<class TA, class TB>
+  typename boost::enable_if<boost::mpl::or_<
+    CoSupport::Math::Tuple::Detail::is_po_type<TA>,
+    CoSupport::Math::Tuple::Detail::is_po_type<TB> >, bool>::type
+  operator<=(const pair<TA, TB> &, const pair<TA, TB> &);
+  // This will lead to an "ambiguous overload for »operator>=«" if pairs
+  // with an PO element are compared!
+  template<class TA, class TB>
+  typename boost::enable_if<boost::mpl::or_<
+    CoSupport::Math::Tuple::Detail::is_po_type<TA>,
+    CoSupport::Math::Tuple::Detail::is_po_type<TB> >, bool>::type
+  operator>=(const pair<TA, TB> &, const pair<TA, TB> &);
+  // This will lead to an "ambiguous overload for »operator<«" if pairs
+  // with an PO element are compared!
+  template<class TA, class TB>
+  typename boost::enable_if<boost::mpl::or_<
+    CoSupport::Math::Tuple::Detail::is_po_type<TA>,
+    CoSupport::Math::Tuple::Detail::is_po_type<TB> >, bool>::type
+  operator< (const pair<TA, TB> &, const pair<TA, TB> &);
+  // This will lead to an "ambiguous overload for »operator>«" if pairs
+  // with an PO element are compared!
+  template<class TA, class TB>
+  typename boost::enable_if<boost::mpl::or_<
+    CoSupport::Math::Tuple::Detail::is_po_type<TA>,
+    CoSupport::Math::Tuple::Detail::is_po_type<TB> >, bool>::type
+  operator> (const pair<TA, TB> &, const pair<TA, TB> &);
 
 };
 
