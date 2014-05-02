@@ -36,10 +36,10 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_LISTFACADE_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_LISTFACADE_HPP
 
+#include "../SmartPtr/intrusive_refcount_ptr.hpp"
+
 #include "ListVirtual.hpp"
 #include "Facade.hpp"
-
-#include "../SmartPtr/intrusive_refcount_ptr.hpp"
 
 #include "Iter/Detail/BidirectionalTraversalVFImpl.hpp"
 

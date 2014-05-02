@@ -36,10 +36,10 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_SETFACADE_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_SETFACADE_HPP
 
+#include "../SmartPtr/intrusive_refcount_ptr.hpp"
+
 #include "SetVirtual.hpp"
 #include "Facade.hpp"
-
-#include "../SmartPtr/intrusive_refcount_ptr.hpp"
 
 #include "Iter/Detail/BidirectionalTraversalVFImpl.hpp"
 
