@@ -53,6 +53,7 @@ class PO<std::vector<T,A> >: public std::vector<T,A> {
 public:
   // Default constructor
   PO(const A &a = A()): base_type(a) {}
+  PO(base_type const &v): base_type(v) {}
   PO(size_t n, const T &t = T(), const A &a = A()): base_type(n, t, a) {}
 
   template <class ITER>
