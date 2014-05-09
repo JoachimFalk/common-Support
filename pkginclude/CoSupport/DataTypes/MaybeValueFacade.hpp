@@ -37,10 +37,10 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_MAYBEVALUEFACADE_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_MAYBEVALUEFACADE_HPP
 
+#include "../SmartPtr/intrusive_refcount_ptr.hpp"
+
 #include "MaybeValueVirtual.hpp"
 #include "Facade.hpp"
-
-#include "../SmartPtr/intrusive_refcount_ptr.hpp"
 
 namespace CoSupport { namespace DataTypes {
 
