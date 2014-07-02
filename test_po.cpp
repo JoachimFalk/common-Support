@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
   // Testing mod and div of PO vectors
   {
     struct {
-      int n[4], m[4], d;
+      int i[4], j[4], k;
     } testData[] = {
       { { 33, 55, 55,  1}, {  1,  2,  3,  4},  0 },
       { { 33, 55, 55, 13}, {  1,  2,  3,  4},  3 },
@@ -87,22 +87,59 @@ int main(int argc, char *argv[]) {
       { { 13, 33, 77, 25}, { -5, 10, 20, 11}, -3 },
       { { 13, 33, 77, 25}, { -5, 10,-20, 11}, -4 },
       { { 13, 33, 77, 25}, { -5,-10,-20,-11}, -4 },
+      { { -7, 11, 33,-27}, { -3, -7,  6,  5}, -6 },
+      { { -7, 11, 33, -1}, { -3, -7,  6,  5}, -2 },
+      { { -7,-11, 33, 11}, { -3, -7,  6,  5},  1 },
+      { { -7,-21, 33, 11}, { -3, -7,  6,  5},  2 },
     };
 
-    for (size_t i = 0; i < sizeof(testData)/sizeof(testData[0]); ++i) {
-      T1Vector t1vector1(4), t1vector2(4);
-      t1vector1[0] = testData[i].n[0];
-      t1vector1[1] = testData[i].n[1];
-      t1vector1[2] = testData[i].n[2];
-      t1vector1[3] = testData[i].n[3];
-      t1vector2[0] = testData[i].m[0];
-      t1vector2[1] = testData[i].m[1];
-      t1vector2[2] = testData[i].m[2];
-      t1vector2[3] = testData[i].m[3];
-      std::cout << "div(" << t1vector1 << ", " << t1vector2 << "): " << div(t1vector1, t1vector2) << std::endl;
-      assert(div(t1vector1, t1vector2) == testData[i].d);
-      std::cout << "mod(" << t1vector1 << ", " << t1vector2 << "): " << mod(t1vector1, t1vector2) << std::endl;
-      assert(mod(t1vector1, t1vector2) == t1vector1 - testData[i].d*t1vector2);
+    for (size_t n = 0; n < sizeof(testData)/sizeof(testData[0]); ++n) {
+      T1Vector i(4), j(4);
+      for (size_t x = 0; x < i.size(); ++x) {
+        i[x] = testData[n].i[x];
+        j[x] = testData[n].j[x];
+      }
+      int      k = div(i, j);
+      T1Vector m = mod(i, j);
+      std::cout << "div(" << i << ", " << j << "): " << k << std::endl;
+      std::cout << "mod(" << i << ", " << j << "): " << m << std::endl;
+      assert(k == testData[n].k);
+      assert(m == i-j*k);
+      {
+        bool errorZero  = false;
+        bool errorBound = true;
+        for (size_t x = 0; x < i.size(); ++x) {
+          if (!((j[x] > 0 && m[x] >= 0) || (j[x] < 0 && m[x] <= 0)))
+            errorZero = true;
+          if ((j[x] > 0 && m[x] < j[x]) || (j[x] < 0 && m[x] > j[x]))
+            errorBound = false;
+        }
+        assert(!errorZero); assert(!errorBound);
+      }
+      {
+        m = i-j*(k-1);
+        bool errorZero  = false;
+        bool errorBound = true;
+        for (size_t x = 0; x < i.size(); ++x) {
+          if (!((j[x] > 0 && m[x] >= 0) || (j[x] < 0 && m[x] <= 0)))
+            errorZero = true;
+          if ((j[x] > 0 && m[x] < j[x]) || (j[x] < 0 && m[x] > j[x]))
+            errorBound = false;
+        }
+        assert(!errorZero); assert(errorBound);
+      }
+      {
+        m = i-j*(k+1);
+        bool errorZero  = false;
+        bool errorBound = true;
+        for (size_t x = 0; x < i.size(); ++x) {
+          if (!((j[x] > 0 && m[x] >= 0) || (j[x] < 0 && m[x] <= 0)))
+            errorZero = true;
+          if ((j[x] > 0 && m[x] < j[x]) || (j[x] < 0 && m[x] > j[x]))
+            errorBound = false;
+        }
+        assert(errorZero); assert(!errorBound);
+      }
     }
   }
   // Testing normal operations on PO vectors
