@@ -39,6 +39,8 @@
 #include <boost/type_traits/is_signed.hpp>
 #include <boost/utility/enable_if.hpp>
 
+#include <cassert>
+
 namespace CoSupport { namespace Math {
 
 // Invariants:
@@ -50,15 +52,16 @@ namespace CoSupport { namespace Math {
 
 template <typename T>
 typename boost::enable_if<boost::is_unsigned<T>, T>::type
-mod(T n, T m) { return n % m; }
+mod(T n, T m) { assert(m != 0); return n % m; }
 
 template <typename T>
 typename boost::enable_if<boost::is_unsigned<T>, T>::type
-div(T n, T m) { return n / m; }
+div(T n, T m) { assert(m != 0); return n / m; }
 
 template <typename T>
 typename boost::enable_if<boost::is_signed<T>, T>::type
 mod(T n, T m) {
+  assert(m != 0);
 #if -1/2 == 0
   // rounding towards zero
   T r = n % m;
@@ -76,6 +79,7 @@ mod(T n, T m) {
 template <typename T>
 typename boost::enable_if<boost::is_signed<T>, T>::type
 div(T n, T m) {
+  assert(m != 0);
 #if -1/2 == 0
   // rounding towards zero
   if ((n >= 0) == (m >= 0))
