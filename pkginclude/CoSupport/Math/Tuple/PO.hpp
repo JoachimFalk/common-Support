@@ -108,6 +108,15 @@ namespace CoSupport { namespace Math { namespace Tuple {
 
   using Math::div;
 
+  // If k = i div j and \forall x: j[x] != 0 , then
+  //   if j > 0, then
+  //     k such that 0 <= i-j*k \ngeq j
+  //   else if j < 0, then
+  //     k such that 0 >= i-j*k \nleq j
+  //   else
+  //     k such that \nexists k' > k:
+  //       \forall x such that j[x] > 0: i[x]-j[x]*k' >= 0 and
+  //       \forall x such that j[x] < 0: i[x]-j[x]*k' <= 0
   template <class B1, class B2>
   typename B1::value_type div(const PO<B1> &i, const PO<B2> &j) {
     typename PO<B1>::const_iterator iter = i.begin();
@@ -124,6 +133,13 @@ namespace CoSupport { namespace Math { namespace Tuple {
 
   using Math::mod;
 
+  // If m = i mod j and \forall x: j[x] != 0 , then
+  //   if j > 0, then
+  //     m = i-j*k such that 0 <= r \ngeq j
+  //   else if j < 0, then
+  //     m = i-j*k such that 0 >= r \nleq j
+  //   else
+  //     m = i-j*div(i,j) see description of div
   template <class B1, class B2>
   PO<BinOpVector<B1 const &, BinOpVector<B2 const &, ScalarConstant<typename B1::value_type>, Detail::OpMul>, Detail::OpSub> >
   mod(const PO<B1> &i, const PO<B2> &j) {
