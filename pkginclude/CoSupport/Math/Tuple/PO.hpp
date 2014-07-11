@@ -80,31 +80,56 @@ namespace CoSupport { namespace Math { namespace Tuple {
 
   // Support for projection of POs
   template <class V, class I>
-  class PO<DataTypes::Projection<V, I> >: public DataTypes::Projection<V, I> {
-    typedef DataTypes::Projection<V, I> base_type;
-    typedef PO<base_type>               this_type;
+  class PO<DataTypes::VectorProjection<V, I> >: public DataTypes::VectorProjection<V, I> {
+    typedef DataTypes::VectorProjection<V, I> base_type;
+    typedef PO<base_type>                     this_type;
   public:
     PO(V v, I i): base_type(v,i) {}
 
     using base_type::operator =;
+    this_type &operator = (typename this_type::value_type const &val) {
+      for (size_t i = 0; i < this->size(); ++i)
+        this->v[this->idx[i]] = val;
+      return *this;
+    }
+    this_type &operator += (typename this_type::value_type const &val) {
+      for (size_t i = 0; i < this->size(); ++i)
+        this->v[this->idx[i]] += val;
+      return *this;
+    }
+    this_type &operator -= (typename this_type::value_type const &val) {
+      for (size_t i = 0; i < this->size(); ++i)
+        this->v[this->idx[i]] -= val;
+      return *this;
+    }
+    this_type &operator *= (typename this_type::value_type const &val) {
+      for (size_t i = 0; i < this->size(); ++i)
+        this->v[this->idx[i]] *= val;
+      return *this;
+    }
+    this_type &operator /= (typename this_type::value_type const &val) {
+      for (size_t i = 0; i < this->size(); ++i)
+        this->v[this->idx[i]] *= val;
+      return *this;
+    }
   };
 
   template<class V, class I>
   inline
-  PO<DataTypes::Projection<V const &, I const &> > proj(PO<V> const &v, I const &i)
-    { return PO<DataTypes::Projection<V const &, I const &> >(v,i); }
+  PO<DataTypes::VectorProjection<V const &, I const &> > proj(PO<V> const &v, I const &i)
+    { return PO<DataTypes::VectorProjection<V const &, I const &> >(v,i); }
   template<class V, class I>
   inline
-  PO<DataTypes::Projection<V const &, I const &> > proj(PO<V> const &v, PO<I> const &i)
-    { return PO<DataTypes::Projection<V const &, I const &> >(v,i); }
+  PO<DataTypes::VectorProjection<V const &, I const &> > proj(PO<V> const &v, PO<I> const &i)
+    { return PO<DataTypes::VectorProjection<V const &, I const &> >(v,i); }
   template<class V, class I>
   inline
-  PO<DataTypes::Projection<V       &, I const &> > proj(PO<V>       &v, I const &i)
-    { return PO<DataTypes::Projection<V       &, I const &> >(v,i); }
+  PO<DataTypes::VectorProjection<V       &, I const &> > proj(PO<V>       &v, I const &i)
+    { return PO<DataTypes::VectorProjection<V       &, I const &> >(v,i); }
   template<class V, class I>
   inline
-  PO<DataTypes::Projection<V       &, I const &> > proj(PO<V>       &v, PO<I> const &i)
-    { return PO<DataTypes::Projection<V       &, I const &> >(v,i); }
+  PO<DataTypes::VectorProjection<V       &, I const &> > proj(PO<V>       &v, PO<I> const &i)
+    { return PO<DataTypes::VectorProjection<V       &, I const &> >(v,i); }
 
   using Math::div;
 

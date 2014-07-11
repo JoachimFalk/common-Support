@@ -127,12 +127,6 @@ namespace CoSupport { namespace DataTypes {
         v[idx[i]] = val[i];
       return *this;
     }
-
-    this_type &operator = (typename this_type::value_type const &val) {
-      for (size_t i = 0; i < this->size(); ++i)
-        v[idx[i]] = val;
-      return *this;
-    }
   protected:
     V v;
     I idx;
