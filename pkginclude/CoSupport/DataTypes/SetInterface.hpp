@@ -45,6 +45,8 @@
 
 #include "Iter/Detail/BidirectionalTraversalBase.hpp"
 
+#include <set>
+
 namespace CoSupport { namespace DataTypes {
 
 // WARNING: If you change SetInterface also adapt output operator in
@@ -261,6 +263,9 @@ public:
   size_type size() const
     { return implSize(); }
 
+  template <typename X>
+  operator std::set<X>() const
+    { return std::set<X>(begin(), end()); }
 protected:
   // Default implementation.
   size_t implSize() const {

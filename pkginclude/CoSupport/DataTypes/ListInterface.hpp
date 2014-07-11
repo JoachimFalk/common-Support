@@ -165,47 +165,14 @@ public:
     return retval;
   }
 
-  operator std::list<VALUE>()
+/*operator std::list<VALUE>()
     { return std::list<VALUE>(begin(), end()); }
   operator std::list<VALUE>() const
-    { return std::list<VALUE>(begin(), end()); }
+    { return std::list<VALUE>(begin(), end()); }*/
 
-/*
-  template<class Predicate>
-  const_iterator find_if(Predicate pred) const
-    { return std::find_if(begin(), end(), pred); }
-  
-  template<class Predicate>
-  iterator find_if(Predicate pred)
-    { return std::find_if(begin(), end(), pred); }
-  
-  template<class Predicate>
-  bool erase_if(Predicate pred) {
-    iterator i = find_if(pred);
-    if(i == end())
-      return false;
-    erase(i);
-    return true;
-  }
-  
-  template<class Predicate>
-  typename Type::Const<pointer_type>::type lookup(Predicate pred) const {
-    const_iterator i = find_if(pred);
-    if(i == end())
-      return NULL;
-    typename Type::Const<reference_type>::type ref = *i;
-    return &ref;
-  }
-  
-  template<class Predicate>
-  pointer_type lookup(Predicate pred) {
-    iterator i = find_if(pred);
-    if(i == end())
-      return NULL;
-    reference_type ref = *i;
-    return &ref;
-  }
-*/
+  template <typename X>
+  operator std::list<X>() const
+    { return std::list<X>(begin(), end()); }
 protected:
   // Default implementation.
   iterator implErase(iterator iter1, const iterator &iter2) {
