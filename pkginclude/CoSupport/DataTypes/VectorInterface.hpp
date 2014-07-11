@@ -45,6 +45,8 @@
 
 #include "Detail/RandomAccessTraversalIterTemplate.hpp"
 
+#include <vector>
+
 namespace CoSupport { namespace DataTypes {
 
 // WARNING: If you change VectorInterface also adapt output operator in
@@ -156,6 +158,16 @@ public:
   // const value_type &v is correct here this is also used by std::vector
   void push_back(const value_type &v) { insert(end(), v); }
   void pop_back()                     { erase(--end()); }
+
+/*operator std::vector<VALUE>()
+    { return std::vector<VALUE>(begin(), end()); }
+  operator std::vector<VALUE>() const
+    { return std::vector<VALUE>(begin(), end()); }*/
+
+  template <typename X>
+  operator std::vector<X>() const
+    { return std::vector<X>(begin(), end()); }
+
 protected:
   // Default implementation. This should be overwritten for
   // efficiency reasons in DERIVED.
