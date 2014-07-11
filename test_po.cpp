@@ -197,7 +197,7 @@ int main(int argc, char *argv[]) {
     std::vector<size_t> projIdx;
     projIdx.push_back(2);
     projIdx.push_back(1);
-    std::vector<size_t> flummy;
+    CoSupport::Math::Tuple::POVector<size_t>::type flummy;
     flummy.push_back(77);
     flummy.push_back(13);
   
@@ -228,6 +228,30 @@ int main(int argc, char *argv[]) {
                      static_cast<std::vector<int> const &>(idx));
 
     assert(proj(proj(t1vector1, idx), idx) == t1vector1 && "proj(proj(t1vector1, idx), idx) == t1vector1");
+
+    CoSupport::Math::Tuple::POVector<std::string>::type v1;
+    v1.push_back("a");
+    v1.push_back("b");
+    v1.push_back("c");
+    v1.push_back("d");
+    std::vector<size_t> v2;
+    v2.push_back(2);
+    v2.push_back(1);
+    std::vector<std::string> v3;
+    v3.push_back("foo");
+    v3.push_back("bar");
+
+    proj(v1,v2) = v3;
+    assert(v1[0] == "a");
+    assert(v1[1] == "bar");
+    assert(v1[2] == "foo");
+    assert(v1[3] == "d");
+
+    proj(v1,v2) = "flummy";
+    assert(v1[0] == "a");
+    assert(v1[1] == "flummy");
+    assert(v1[2] == "flummy");
+    assert(v1[3] == "d");
   }
   {
     T1Vector t1vector1;
