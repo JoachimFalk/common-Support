@@ -36,6 +36,7 @@
 #include <cassert>
 
 #include <CoSupport/DataTypes/Projection.hpp>
+#include <CoSupport/Streams/stl_output_for_vector.hpp>
 
 //#include <CoSupport/Math/Tuple/POVector.hpp>
 
@@ -92,12 +93,46 @@ int main(int argc, char *argv[]) {
     assert(v1[1] == "bar");
     assert(v1[2] == "foo");
     assert(v1[3] == "d");
-
+/* This is no longer supported for normal vector projections, only PO<vector> projections
     proj(v1,v2) = "flummy";
     assert(v1[0] == "a");
     assert(v1[1] == "flummy");
     assert(v1[2] == "flummy");
     assert(v1[3] == "d");
+ */
+  }
+  {
+    std::vector<size_t> projIdx;
+    projIdx.push_back(2);
+    projIdx.push_back(1);
+    std::vector<size_t> flummy;
+    flummy.push_back(77);
+    flummy.push_back(13);
+  
+    std::vector<int> t1vector1(4);
+    t1vector1[0] = 24;
+    t1vector1[1] = 35;
+    t1vector1[2] = 11;
+    t1vector1[3] = -19;
+
+    std::cout << "proj(" << t1vector1 << ", " << projIdx << "): " << proj(t1vector1, projIdx) << std::endl;
+    proj(t1vector1, projIdx) = flummy;
+    std::cout << "proj(" << t1vector1 << ", " << projIdx << "): " << proj(t1vector1, projIdx) << std::endl;
+    assert(t1vector1[2] == 77 && t1vector1[1] == 13);
+  
+    std::vector<int> idx;
+    idx.push_back(3);
+    idx.push_back(2);
+    idx.push_back(1);
+    idx.push_back(0);
+
+    std::vector<unsigned long long> t2vector1;
+    t2vector1 = proj(t1vector1, static_cast<std::vector<int> const &>(idx));
+    t2vector1 = proj(static_cast<std::vector<int> const &>(t1vector1), idx);
+    t2vector1 = proj(static_cast<std::vector<int> const &>(t1vector1),
+                     static_cast<std::vector<int> const &>(idx));
+
+    assert(std::vector<int>(proj(proj(t1vector1, idx), idx)) == t1vector1 && "proj(proj(t1vector1, idx), idx) == t1vector1");
   }
   return 0;
 }

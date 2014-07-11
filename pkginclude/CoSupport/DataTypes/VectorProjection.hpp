@@ -164,11 +164,13 @@ namespace CoSupport { namespace DataTypes {
   };*/
 
   template <class V, class I>
-  struct Projection
+  class Projection
   : public VectorProjection<V, I> {
+    typedef Projection<V,I> this_type;
+  public:
     Projection(V v, I idx)
       : VectorProjection<V, I>(v, idx) {}
-  public:
+
     using VectorProjection<V, I>::operator =;
   };
 
@@ -192,7 +194,7 @@ namespace CoSupport { namespace DataTypes {
             typename T2, class A2>
   Projection<VectorInterface<D1,I1,V1,R1,CR1,P1,CP1> const &, std::vector<T2, A2> const &>
   proj(VectorInterface<D1,I1,V1,R1,CR1,P1,CP1> const &v, std::vector<T2, A2> const &idx)
-    { return Projection<VectorInterface<D1,I1,V1,R1,CR1,P1,CP1> &, std::vector<T2, A2> const &>(v, idx); }
+    { return Projection<VectorInterface<D1,I1,V1,R1,CR1,P1,CP1> const &, std::vector<T2, A2> const &>(v, idx); }
 
 } } // namespace CoSupport::DataTypes
 
@@ -206,7 +208,7 @@ namespace std {
   template <typename T1, class A1, typename T2, class A2>
   CoSupport::DataTypes::Projection<std::vector<T1, A1> const &, std::vector<T2, A2> const &>
   proj(std::vector<T1, A1> const &v, std::vector<T2, A2> const &idx)
-    { return CoSupport::DataTypes::Projection<std::vector<T1, A1> &, std::vector<T2, A2> const &>(v, idx); }
+    { return CoSupport::DataTypes::Projection<std::vector<T1, A1> const &, std::vector<T2, A2> const &>(v, idx); }
 
 };
 
