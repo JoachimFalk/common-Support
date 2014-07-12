@@ -87,6 +87,29 @@ namespace CoSupport { namespace Math { namespace Tuple {
     PO(V v, I i): base_type(v,i) {}
 
     using base_type::operator =;
+    template<class B2>
+    this_type &operator +=(PO<B2> const &rhs) {
+      typename this_type::iterator    iter = this->begin();
+      typename this_type::iterator    iend = this->end();
+      typename PO<B2>::const_iterator jter = rhs.begin();
+      typename PO<B2>::const_iterator jend = rhs.end();
+      for (;iter != iend && jter != jend; ++iter, ++jter)
+        *iter += *jter;
+      assert(iter == iend && jter == jend);
+      return *this;
+    }
+    template<class B2>
+    this_type &operator -=(PO<B2> const &rhs) {
+      typename this_type::iterator    iter = this->begin();
+      typename this_type::iterator    iend = this->end();
+      typename PO<B2>::const_iterator jter = rhs.begin();
+      typename PO<B2>::const_iterator jend = rhs.end();
+      for (;iter != iend && jter != jend; ++iter, ++jter)
+        *iter -= *jter;
+      assert(iter == iend && jter == jend);
+      return *this;
+    }
+
     this_type &operator = (typename this_type::value_type const &val) {
       for (size_t i = 0; i < this->size(); ++i)
         this->v[this->idx[i]] = val;
