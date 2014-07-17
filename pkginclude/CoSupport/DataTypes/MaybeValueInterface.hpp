@@ -189,17 +189,37 @@ public:
   void set(const MaybeValueInterface<DD,TT,CRCR> &val)
     { if (val.isDefined()) this->set(val.get()); else this->undef(); }
   // implSet is an interface method which must be implemented in D!
-  void set(const T &val)
-    { getDerived()->implSet(val); }
+  void set(const T &val) {
+    BOOST_STATIC_ASSERT((
+      boost::is_same<
+          typename boost::function_types::result_type<BOOST_TYPEOF(&D::implSet)>::type,
+          void>
+        ::value));
+    getDerived()->implSet(val);
+  }
   // implGet is an interface method which must be implemented in D!
-  CR get() const // this may throw
-    { return getDerived()->implGet(); }
+  CR get() const { // this may throw
+    BOOST_STATIC_ASSERT((
+      boost::is_reference<CR>
+        ::value ==
+      boost::is_reference<
+          typename boost::function_types::result_type<BOOST_TYPEOF(&D::implGet)>::type>
+        ::value));
+    return getDerived()->implGet();
+  }
   // implUndef is an interface method which must be implemented in D!
-  void undef()
-    { return getDerived()->implUndef(); }
+  void undef() {
+    BOOST_STATIC_ASSERT((
+      boost::is_same<
+          typename boost::function_types::result_type<BOOST_TYPEOF(&D::implUndef)>::type,
+          void>
+        ::value));
+    getDerived()->implUndef();
+  }
   // implIsDefined is an interface method which must be implemented in D!
-  bool isDefined() const
-    { return getDerived()->implIsDefined(); }
+  bool isDefined() const {
+    return getDerived()->implIsDefined();
+  }
 };
 
 template <class DD, typename TT, typename CRCR>
