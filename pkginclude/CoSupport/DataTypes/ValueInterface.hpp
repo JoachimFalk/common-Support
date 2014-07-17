@@ -39,14 +39,21 @@
 
 #include <ostream>
 
-#include <boost/utility.hpp>
-#include <boost/type_traits.hpp>
+#include <boost/utility/enable_if.hpp>
 
 #include <boost/type_traits/add_reference.hpp>
-#include <boost/type_traits/remove_reference.hpp>
-
-#include <boost/type_traits/add_pointer.hpp>
+#include <boost/type_traits/add_const.hpp>
 #include <boost/type_traits/remove_pointer.hpp>
+
+#include <boost/type_traits/is_reference.hpp>
+#include <boost/type_traits/is_base_of.hpp>
+#include <boost/type_traits/is_same.hpp>
+
+#include <boost/typeof/typeof.hpp>
+
+#include <boost/function_types/result_type.hpp>
+
+#include <boost/static_assert.hpp>
 
 namespace CoSupport { namespace DataTypes {
 
@@ -213,11 +220,25 @@ public:
   void set(const ValueInterface<DD,TT,CRCR> &val)
     { this->set(val.get()); }
   // implSet is an interface method which must be implemented in D!
-  void set(const T &val)
-    { getDerived()->implSet(val); }
+  void set(const T &val) {
+    BOOST_STATIC_ASSERT((
+      boost::is_same<
+          typename boost::function_types::result_type<BOOST_TYPEOF(&D::implSet)>::type,
+          void>
+        ::value));
+    getDerived()->implSet(val);
+  }
   // implGet is an interface method which must be implemented in D!
-  CR get() const // this may throw
-    { return getDerived()->implGet(); }
+  CR get() const { // this may throw
+    BOOST_STATIC_ASSERT((
+      boost::is_reference<CR>
+        ::value ==
+      boost::is_reference<
+          typename boost::function_types::result_type<BOOST_TYPEOF(&D::implGet)>::type>
+        ::value));
+    return getDerived()->implGet();
+  }
+
 };
 
 template <class DD, typename TT, typename CRCR>
