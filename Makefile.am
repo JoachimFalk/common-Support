@@ -200,7 +200,8 @@ libcosupport_path_la_SOURCES =				\
 	implementation/Path/manipulation.cpp		\
 	implementation/Path/resourcelocations.cpp
 libcosupport_path_la_LIBADD =				\
-	-lboost_filesystem$(BOOST_LIBMTPOSTFIX)
+	-lboost_filesystem$(BOOST_LIBMTPOSTFIX)		\
+	-lboost_system$(BOOST_LIBMTPOSTFIX)
 
 test_dbgstream_SOURCES	= test_dbgstream.cpp
 test_dbgstream_LDADD	= libcosupport-streams.la
