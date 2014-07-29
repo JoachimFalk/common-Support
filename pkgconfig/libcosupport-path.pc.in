@@ -25,5 +25,5 @@ URL: http://www12.informatik.uni-erlangen.de/research/systemoc
 #Requires: glib-2.0 = 1.3.1
 #Requires.private:
 Libs: -L${srctreemode_libdir} ${srctreemode_libdir}/libcosupport-path.la
-Libs.private: @BOOST_LDFLAGS@ -lboost_filesystem@BOOST_LIBMTPOSTFIX@
+Libs.private: @BOOST_LDFLAGS@ -lboost_filesystem@BOOST_LIBMTPOSTFIX@ -lboost_system@BOOST_LIBMTPOSTFIX@
 Cflags: -I${srctreemode_includedir} @BOOST_INCLUDE@
