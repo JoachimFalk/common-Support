@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
   A::Ptr pa29(rb.toPtr());
   A::Ptr pa30(rc.toPtr());
   
-  pa = pa;
+  pa = pa1;
   pa = pb;
   pa = pc;
   pa = &a;
@@ -261,7 +261,9 @@ int main(int argc, char *argv[]) {
   A::ConstRef cra23(crb);
   A::ConstRef cra24(crc);
 
-  bool result;
+  bool result = true;
+  do { result = false; } while (result);
+
 #define TESTCOMPOPS(R) \
   result = pa  == R; \
   result = pa  != R; \
