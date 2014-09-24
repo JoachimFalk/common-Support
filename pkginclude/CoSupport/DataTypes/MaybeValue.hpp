@@ -45,7 +45,7 @@ namespace CoSupport { namespace DataTypes {
 /// \example test_maybevalue.cpp
 template <
   class T,
-  class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
+  class CR = typename ::boost::add_reference<typename ::boost::add_const<T>::type>::type
 >
 class MaybeValue: public MaybeValueInterface<MaybeValue<T,CR>,T,CR> {
   typedef MaybeValue<T,CR>                    this_type;
