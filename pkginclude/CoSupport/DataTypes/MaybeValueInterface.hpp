@@ -52,76 +52,19 @@ namespace Detail {
 
   template <typename tag, class D, typename T, typename CR>
   class MaybeValueTypeDecorator: public ValueTypeDecorator<tag, D, T, CR> {};
-
-  template <class D, typename T, typename CR>
-  class MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, CR>;
-
-/*template <class D, typename T, typename CR>
-  bool operator ==(
-      std::string const &lhs,
-      MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, CR> const &rhs)
-    { return rhs.getDerived()->isDefined() && lhs == rhs.getDerived()->get(); }
-  template <class D, typename T, typename CR>
-  bool operator !=(
-      std::string const &lhs,
-      MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, CR> const &rhs)
-    { return !rhs.getDerived()->isDefined() || lhs != rhs.getDerived()->get(); }
-  template <class D, typename T, typename CR>
-  bool operator > (
-      std::string const &lhs,
-      MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, CR> const &rhs)
-    { return !rhs.getDerived()->isDefined() || lhs >  rhs.getDerived()->get(); }
-  template <class D, typename T, typename CR>
-  bool operator >=(
-      std::string const &lhs,
-      MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, CR> const &rhs)
-    { return !rhs.getDerived()->isDefined() || lhs >= rhs.getDerived()->get(); }
-  template <class D, typename T, typename CR>
-  bool operator < (
-      std::string const &lhs,
-      MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, CR> const &rhs)
-    { return rhs.getDerived()->isDefined() && lhs <  rhs.getDerived()->get(); }
-  template <class D, typename T, typename CR>
-  bool operator <=(
-      std::string const &lhs,
-      MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, CR> const &rhs)
-    { return rhs.getDerived()->isDefined() && lhs <= rhs.getDerived()->get(); }*/
-
+/*
   template <class D, typename T, typename CR>
   class MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, CR>
   : public ValueTypeDecorator<value_type_charptr_tag_t, D, T, CR>
   {
     typedef MaybeValueTypeDecorator<value_type_charptr_tag_t, D, T, CR> this_type;
-
-#ifndef _MSC_VER
-/*  friend bool operator ==<>(std::string const &, this_type const &);
-    friend bool operator !=<>(std::string const &, this_type const &);
-    friend bool operator > <>(std::string const &, this_type const &);
-    friend bool operator >=<>(std::string const &, this_type const &);
-    friend bool operator < <>(std::string const &, this_type const &);
-    friend bool operator <=<>(std::string const &, this_type const &);*/
   protected:
-#else
-  public:
-#endif // _MSC_VER
     D       *getDerived()
       { return static_cast<D *>(this); }
 
     D const *getDerived() const
       { return static_cast<D const *>(this); }
   public:
-/*  bool operator ==(std::string const &v) const
-      { return getDerived()->isDefined() && getDerived()->get() == v; }
-    bool operator !=(std::string const &v) const
-      { return !getDerived()->isDefined() || getDerived()->get() != v; }
-    bool operator < (std::string const &v) const
-      { return !getDerived()->isDefined() || getDerived()->get() <  v; }
-    bool operator <=(std::string const &v) const
-      { return !getDerived()->isDefined() || getDerived()->get() <= v; }
-    bool operator > (std::string const &v) const
-      { return getDerived()->isDefined() && getDerived()->get() >  v; }
-    bool operator >=(std::string const &v) const
-      { return getDerived()->isDefined() && getDerived()->get() >= v; } */
   };
 
   template <class D, typename T, typename CR>
@@ -136,19 +79,8 @@ namespace Detail {
     D const *getDerived() const
       { return static_cast<D const *>(this); }
   public:
-/*  bool operator ==(const char *v) const
-      { return getDerived()->isDefined() && getDerived()->get() == v; }
-    bool operator !=(const char *v) const
-      { return !getDerived()->isDefined() || getDerived()->get() != v; }
-    bool operator < (const char *v) const
-      { return !getDerived()->isDefined() || getDerived()->get() <  v; }
-    bool operator <=(const char *v) const
-      { return !getDerived()->isDefined() || getDerived()->get() <= v; }
-    bool operator > (const char *v) const
-      { return getDerived()->isDefined() && getDerived()->get() >  v; }
-    bool operator >=(const char *v) const
-      { return getDerived()->isDefined() && getDerived()->get() >= v; } */
   };
+ */
 
 } // namespace Detail
 
