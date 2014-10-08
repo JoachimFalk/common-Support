@@ -40,6 +40,8 @@
 #include <ostream>
 
 #include <boost/utility/enable_if.hpp>
+#include <boost/mpl/or.hpp>
+#include <boost/mpl/and.hpp>
 
 #include <boost/type_traits/add_reference.hpp>
 #include <boost/type_traits/add_const.hpp>
@@ -54,6 +56,13 @@
 #include <boost/function_types/result_type.hpp>
 
 #include <boost/static_assert.hpp>
+
+namespace boost {
+
+  template<class T> class intrusive_ptr;
+  template<class T> class shared_ptr;
+
+} // namespace boost
 
 namespace CoSupport { namespace DataTypes {
 
@@ -122,7 +131,10 @@ namespace Detail {
     }
   };
 
-  struct value_type_charptr_tag_t {};
+  struct value_type_pointer_tag_t {};
+/*
+  struct value_type_charptr_tag_t
+    : public value_type_pointer_tag_t {};
 
   COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(char *,value_type_charptr_tag_t);
   COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(const char *,value_type_charptr_tag_t);
@@ -155,8 +167,10 @@ namespace Detail {
       { return static_cast<D const *>(this); }
   public:
   };
+ */
 
-  struct value_type_plain_pointer_t {};
+  struct value_type_plain_pointer_t
+    : public value_type_pointer_tag_t {};
 
   template <typename T>
   struct ValueTypeClassifier<T *> { typedef value_type_plain_pointer_t tag; };
@@ -175,10 +189,70 @@ namespace Detail {
     D const *getDerived() const
       { return static_cast<D const *>(this); }
   public:
+    D &operator +=(ptrdiff_t x)
+      { getDerived()->set(getDerived()->get() + x); return *getDerived(); }
+    D &operator -=(ptrdiff_t x)
+      { getDerived()->set(getDerived()->get() - x); return *getDerived(); }
+    D &operator ++()
+      { return *this += 1; }
+    D &operator --()
+      { return *this -= 1; }
+    T operator ++(int) {
+      T retval(getDerived()->get());
+      getDerived()->set(retval + 1);
+      return retval;
+    }
+    T operator --(int) {
+      T retval(getDerived()->get());
+      getDerived()->set(retval - 1);
+      return retval;
+    }
+
+    deref_type operator [](ptrdiff_t x) const
+      { return getDerived()->get()[x]; }
+
     value_type operator ->() const
       { return getDerived()->get(); }
     deref_type operator *() const
       { return *getDerived()->get(); }
+  };
+
+  struct value_type_smart_pointer_t
+    : public value_type_pointer_tag_t {};
+
+  template <typename T>
+  struct ValueTypeClassifier<boost::shared_ptr<T> >
+    { typedef value_type_smart_pointer_t tag; };
+  template <typename T>
+  struct ValueTypeClassifier<boost::intrusive_ptr<T> >
+    { typedef value_type_smart_pointer_t tag; };
+
+  template <class D, typename T, typename CR>
+  class ValueTypeDecorator<value_type_smart_pointer_t, D, T, CR> {
+    typedef ValueTypeDecorator<value_type_smart_pointer_t, D, T, CR> this_type;
+  private:
+    typedef T                                                 value_type;
+    typedef typename boost::add_reference<
+      typename boost::remove_pointer<value_type>::type>::type deref_type;
+  protected:
+    typedef D *(this_type::*unspecified_bool_type)();
+  protected:
+    D       *getDerived()
+      { return static_cast<D *>(this); }
+
+    D const *getDerived() const
+      { return static_cast<D const *>(this); }
+  public:
+    value_type operator ->() const
+      { return getDerived()->get(); }
+    deref_type operator *() const
+      { return *getDerived()->get(); }
+
+    operator unspecified_bool_type() const {
+      return getDerived()->get()
+        ? static_cast<unspecified_bool_type>(&this_type::getDerived)
+        : static_cast<unspecified_bool_type>(NULL);
+    }
   };
 
 #undef COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION
@@ -252,17 +326,59 @@ operator ==(
     const ValueInterface<D2, T2, CR2> &rhs)
   { return lhs.get() == rhs.get(); }
 template <typename T1, class D2, typename T2, typename CR2>
-typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T1>, bool>::type
+typename boost::disable_if<boost::mpl::or_<
+    boost::is_base_of<
+      Detail::ValueInterfaceTag,
+      T1
+    >,
+    boost::mpl::and_<
+      boost::is_base_of<
+        Detail::value_type_pointer_tag_t,
+        typename Detail::ValueTypeClassifier<T2>::tag
+      >,
+      boost::is_same<T1, typeof(NULL)> 
+    >
+  >, bool>::type
 operator ==(
     T1 const &lhs,
     const ValueInterface<D2, T2, CR2> &rhs)
   { return lhs == rhs.get(); }
+template <class D2, typename T2, typename CR2>
+typename boost::enable_if<boost::is_base_of<
+    Detail::value_type_pointer_tag_t,
+    typename Detail::ValueTypeClassifier<T2>::tag
+  >, bool>::type
+operator ==(
+    typeof(NULL) null,
+    const ValueInterface<D2, T2, CR2> &rhs)
+  { assert(!null); return !rhs.get(); }
 template <class D1, typename T1, typename CR1, typename T2>
-typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T2>, bool>::type
+typename boost::disable_if<boost::mpl::or_<
+    boost::is_base_of<
+      Detail::ValueInterfaceTag,
+      T2
+    >,
+    boost::mpl::and_<
+      boost::is_base_of<
+        Detail::value_type_pointer_tag_t,
+        typename Detail::ValueTypeClassifier<T1>::tag
+      >,
+      boost::is_same<T2, typeof(NULL)> 
+    >
+  >, bool>::type
 operator ==(
     const ValueInterface<D1, T1, CR1> &lhs,
     T2 const &rhs)
   { return lhs.get() == rhs; }
+template <class D1, typename T1, typename CR1>
+typename boost::enable_if<boost::is_base_of<
+    Detail::value_type_pointer_tag_t,
+    typename Detail::ValueTypeClassifier<T1>::tag
+  >, bool>::type
+operator ==(
+    const ValueInterface<D1, T1, CR1> &lhs,
+    typeof(NULL) null)
+  { assert(!null); return !lhs.get(); }
 
 template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
 bool
@@ -271,17 +387,60 @@ operator !=(
     const ValueInterface<D2, T2, CR2> &rhs)
   { return lhs.get() != rhs.get(); }
 template <typename T1, class D2, typename T2, typename CR2>
-typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T1>, bool>::type
+typename boost::disable_if<boost::mpl::or_<
+    boost::is_base_of<
+      Detail::ValueInterfaceTag,
+      T1
+    >,
+    boost::mpl::and_<
+      boost::is_base_of<
+        Detail::value_type_pointer_tag_t,
+        typename Detail::ValueTypeClassifier<T2>::tag
+      >,
+      boost::is_same<T1, typeof(NULL)> 
+    >
+  >, bool>::type
 operator !=(
     T1 const &lhs,
     const ValueInterface<D2, T2, CR2> &rhs)
   { return lhs != rhs.get(); }
+template <class D2, typename T2, typename CR2>
+typename boost::enable_if<boost::is_base_of<
+    Detail::value_type_pointer_tag_t,
+    typename Detail::ValueTypeClassifier<T2>::tag
+  >, bool>::type
+operator !=(
+    typeof(NULL) null,
+    const ValueInterface<D2, T2, CR2> &rhs)
+  { assert(!null); return rhs.get(); }
 template <class D1, typename T1, typename CR1, typename T2>
-typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T2>, bool>::type
+typename boost::disable_if<boost::mpl::or_<
+    boost::is_base_of<
+      Detail::ValueInterfaceTag,
+      T2
+    >,
+    boost::mpl::and_<
+      boost::is_base_of<
+        Detail::value_type_pointer_tag_t,
+        typename Detail::ValueTypeClassifier<T1>::tag
+      >,
+      boost::is_same<T2, typeof(NULL)> 
+    >
+  >, bool>::type
 operator !=(
     const ValueInterface<D1, T1, CR1> &lhs,
     T2 const &rhs)
   { return lhs.get() != rhs; }
+template <class D1, typename T1, typename CR1>
+typename boost::enable_if<boost::is_base_of<
+    Detail::value_type_pointer_tag_t,
+    typename Detail::ValueTypeClassifier<T1>::tag
+  >, bool>::type
+operator !=(
+    const ValueInterface<D1, T1, CR1> &lhs,
+    typeof(NULL) null)
+  { assert(!null); return lhs.get(); }
+
 
 template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
 bool
