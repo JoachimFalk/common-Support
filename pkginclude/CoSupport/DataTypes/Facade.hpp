@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2013 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2014 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -37,36 +37,18 @@
 
 #include <boost/intrusive_ptr.hpp>
 
+#include "ValueInterface.hpp"
+
 #include <boost/type_traits/add_const.hpp>
 #include <boost/type_traits/remove_const.hpp>
+#include <boost/type_traits/is_convertible.hpp>
+#include <boost/type_traits/is_same.hpp>
+
+#include <boost/utility/enable_if.hpp>
 
 #include "../commondefs.h"
 
 namespace CoSupport { namespace DataTypes {
-
-namespace Detail {
-  template <class Impl>
-  class Storage {
-    typedef Storage<Impl>                     this_type;
-  public:
-    typedef Impl                              _UrgsType;
-    typedef Impl                              ImplType;
-    typedef ::boost::intrusive_ptr<ImplType>  SmartPtr;
-  protected:
-    SmartPtr pImpl; //< this is the storage smart ptr, its name must be pImpl
-  protected:
-    explicit Storage(const SmartPtr &p)
-      : pImpl(p) {}
-
-    void assign(const this_type &x)
-      { pImpl = x.pImpl; }
-
-    ImplType *getImpl() const
-      { return pImpl.get(); }
-  };
-
-  class FacadePtrNullClass {};
-} // namespace Detail
 
 template <class T, template <class> class C> class FacadeRef;
 template <class T, template <class> class C> class FacadePtr;
@@ -89,156 +71,51 @@ struct FacadeTraits<const T> {
 
 struct FacadeCoreAccess;
 
-namespace Detail {
-  template <class T, template <class> class C, class F>
-  class FacadeProxyPtr {
-    typedef FacadeProxyPtr<T,C,F> this_type;
-
-    template <class TT, template <class> class CC> friend class FacadePtr;
-  private:
-    typedef typename FacadeTraits<Detail::Storage<typename T::_UrgsType> >::ConstPtr ConstPtr;
-    typedef typename FacadeTraits<Detail::Storage<typename T::_UrgsType> >::Ptr      Ptr;
-    typedef FacadePtrNullClass                                                       FPN;
-  private:
-    F *ptr;
-  public:
-    FacadeProxyPtr(F *ptr): ptr(ptr) {}
-
-    operator F *() const
-      { return ptr; }
-
-    operator typename C<typename FacadeTraits<T>::Ptr>::type() const
-      { return ptr->toPtr(); }
-    typename C<T>::type &operator *() const
-      { return *ptr; }
-    typename C<T>::type *operator ->() const
-      { return ptr; }
-
-    bool operator ==(const Ptr &x) const
-      { return ptr->pImpl.get() == x.getImpl(); }
-    bool operator ==(const ConstPtr &x) const
-      { return ptr->pImpl.get() == x.getImpl(); }
-    bool operator ==(FPN *null) const
-      { assert(null == NULL); return !*this; }
-    bool operator !=(const Ptr &x) const
-      { return ptr->pImpl.get() != x.getImpl(); }
-    bool operator !=(const ConstPtr &x) const
-      { return ptr->pImpl.get() != x.getImpl(); }
-    bool operator !=(FPN *null) const
-      { assert(null == NULL); return *this; }
-    bool operator > (const Ptr &x) const
-      { return ptr->pImpl.get() >  x.getImpl(); }
-    bool operator > (const ConstPtr &x) const
-      { return ptr->pImpl.get() >  x.getImpl(); }
-    bool operator < (const Ptr &x) const
-      { return ptr->pImpl.get() <  x.getImpl(); }
-    bool operator < (const ConstPtr &x) const
-      { return ptr->pImpl.get() <  x.getImpl(); }
-    bool operator >=(const Ptr &x) const
-      { return ptr->pImpl.get() >= x.getImpl(); }
-    bool operator >=(const ConstPtr &x) const
-      { return ptr->pImpl.get() >= x.getImpl(); }
-    bool operator <=(const Ptr &x) const
-      { return ptr->pImpl.get() <= x.getImpl(); }
-    bool operator <=(const ConstPtr &x) const
-      { return ptr->pImpl.get() <= x.getImpl(); }
-  };
-} // namespace Detail
-
 template <class T, template <class> class C>
-class FacadeRef: public T {
-  typedef FacadeRef<T, C> this_type;
-
-  template <class TT, template <class> class CC> friend class FacadeRef;
-  template <class TT, template <class> class CC> friend class FacadePtr;
-public:
-  // FIXME: Make this protected again
-  typedef typename T::_H::ImplType  ImplType;
-  typedef typename T::_H::SmartPtr  SmartPtr;
-public:
-  FacadeRef(const SmartPtr &p)
-    : T(p) {}
-  FacadeRef(const this_type &t)
-    : T(SmartPtr()) { this->assign(t); }
-
-  Detail::FacadeProxyPtr<T, boost::add_const, const this_type> operator &() const
-    { return Detail::FacadeProxyPtr<T, boost::add_const, const this_type>(this); }
-  Detail::FacadeProxyPtr<T, boost::remove_const, this_type> operator &()
-    { return Detail::FacadeProxyPtr<T, boost::remove_const, this_type>(this); }
-
-  // bounce assign to base class
-  using T::operator =;
-};
-
-template <class T, template <class> class C>
-class FacadePtr: public FacadePtr<typename T::_B, C> {
-  typedef FacadePtr<T,C>                this_type;
-  typedef FacadePtr<typename T::_B, C>  base_type;
+class FacadePtr {
+  typedef FacadePtr<T, C>      this_type;
+  typedef typename C<T>::type  value_type;
+  typedef value_type          &deref_type;
 
   template <class TT, template <class> class CC> friend class FacadePtr;
-  friend class FacadeCoreAccess;
-private:
-  typedef typename C<T>::type                 value_type;
-  typedef typename FacadeTraits<T>::ConstRef  ConstRef;
-  typedef typename FacadeTraits<T>::Ref       Ref;
-  typedef typename FacadeTraits<T>::ConstPtr  ConstPtr;
-  typedef typename FacadeTraits<T>::Ptr       Ptr;
+
+  typedef deref_type (this_type::*unspecified_bool_type)() const;
 public:
-  // FIXME: Make this protected again
-  typedef typename T::_H::ImplType            ImplType;
-  typedef typename T::_H::SmartPtr            SmartPtr;
-protected:
-  typedef typename base_type::FPN             FPN;
-
-  // FIXME: This is an ugly hack !!!
-  void assign(const value_type &p) {
-    reinterpret_cast<Ref &>(*this).assign(p);
-  }
+  typename T::_StorageType storage;
 public:
-//using base_type::operator <=;
+  FacadePtr(typename T::SmartPtr const &p)
+    : storage(typename FacadeTraits<T>::Ref(p)) {}
 
-  FacadePtr(const SmartPtr &p)
-    : base_type(NULL) { this->assign(Ref(p)); }
-  FacadePtr(const Ptr &t)
-    : base_type(NULL) { this->assign(*t); }
-  template <class TT, class F>
-  FacadePtr(const Detail::FacadeProxyPtr<TT, boost::remove_const, F> &t)
-    : base_type(NULL) { this->assign(*t); }
-  FacadePtr(FPN *null = NULL)
-    : base_type(NULL) { assert(null == NULL); }
+  FacadePtr(typename C<typename T::FFType>::type *ptr = NULL)
+    : storage(ptr == NULL
+        ? typename T::_StorageType()
+        : static_cast<typename T::_StorageType const &>(*ptr)) {}
 
-  value_type &operator *() const {
-    return const_cast<value_type &>
-      (reinterpret_cast<const T &>(*this));
+  FacadePtr(this_type const &ptr)
+    : storage(ptr.storage) {}
+  template <typename TT, template <class> class CC>
+  FacadePtr(FacadePtr<TT, CC> const &ptr,
+      typename boost::enable_if<boost::is_convertible<
+        typename CC<TT>::type *,
+        typename C<T>::type *>, void
+      >::type *dummy = NULL)
+    : storage(ptr.storage) {}
+  template <class DD, typename TT, typename CRCR>
+  FacadePtr(ValueInterface<DD,TT,CRCR> const &value,
+      typename boost::enable_if<boost::is_convertible<
+        TT,
+        this_type>, void
+      >::type *dummy = NULL)
+    : storage(this_type(value.get()).storage) {}
+
+  deref_type  operator *() const {
+    return static_cast<value_type &>
+      (const_cast<this_type *>(this)->storage);
   }
   value_type *operator ->() const {
-    return const_cast<value_type *>
-      (reinterpret_cast<const T *>(this));
+    return &static_cast<value_type &>
+      (const_cast<this_type *>(this)->storage);
   }
-
-  this_type &operator =(const this_type &x)
-    { this->assign(*x); return *this; }
-
-};
-
-template <typename Impl, template <class> class C>
-class FacadePtr<Detail::Storage<Impl>, C>: public Detail::Storage<Impl> {
-  typedef FacadePtr<Detail::Storage<Impl>, C> this_type;
-  typedef Detail::Storage<Impl>               base_type;
-
-  template <typename II, template <class> class CC>          friend class FacadePtr;
-  template <typename II, template <class> class CC, class F> friend class Detail::FacadeProxyPtr;
-private:
-  typedef typename FacadeTraits<Detail::Storage<Impl> >::ConstPtr ConstPtr;
-  typedef typename FacadeTraits<Detail::Storage<Impl> >::Ptr      Ptr;
-protected:
-  typedef Detail::FacadePtrNullClass FPN;
-public:
-  typedef void (base_type::*unspecified_bool_type)(const base_type &);
-protected:
-  FacadePtr(const typename this_type::SmartPtr &p)
-    : base_type(p) {}
-public:
 
   // "operator bool()" would be utilized in comparisons if the
   // comp. operator is not specified (e.g. if "operator!="
@@ -246,57 +123,321 @@ public:
   // is valid] in (true != true), which is WRONG!!!)
   // -> define all comparison operators
   operator unspecified_bool_type() const {
-    return this->getImpl() != NULL
-      ? static_cast<unspecified_bool_type>(&this_type::assign)
+    return storage.pImpl.get() != NULL
+      ? static_cast<unspecified_bool_type>(&this_type::operator *)
       : NULL;
   }
 
-  bool operator ==(const Ptr &x) const
-    { return this->getImpl() == x.getImpl(); }
-  bool operator ==(const ConstPtr &x) const
-    { return this->getImpl() == x.getImpl(); }
-  bool operator ==(FPN *null) const
-    { assert(null == NULL); return !*this; }
-  bool operator !=(const Ptr &x) const
-    { return this->getImpl() != x.getImpl(); }
-  bool operator !=(const ConstPtr &x) const
-    { return this->getImpl() != x.getImpl(); }
-  bool operator !=(FPN *null) const
-    { assert(null == NULL); return *this; }
-  bool operator > (const Ptr &x) const
-    { return this->getImpl() >  x.getImpl(); }
-  bool operator > (const ConstPtr &x) const
-    { return this->getImpl() >  x.getImpl(); }
-  bool operator < (const Ptr &x) const
-    { return this->getImpl() <  x.getImpl(); }
-  bool operator < (const ConstPtr &x) const
-    { return this->getImpl() <  x.getImpl(); }
-  bool operator >=(const Ptr &x) const
-    { return this->getImpl() >= x.getImpl(); }
-  bool operator >=(const ConstPtr &x) const
-    { return this->getImpl() >= x.getImpl(); }
-  bool operator <=(const Ptr &x) const
-    { return this->getImpl() <= x.getImpl(); }
-  bool operator <=(const ConstPtr &x) const
-    { return this->getImpl() <= x.getImpl(); }
+  this_type &operator =(const this_type &rhs)
+    { storage.assign(rhs.storage); return *this; }
 };
 
-template <class Derived, class Impl, class Base = Detail::Storage<Impl>, class SPtr = typename Base::SmartPtr>
-class FacadeFoundation: public Base {
-  typedef FacadeFoundation<Derived,Impl,Base,SPtr>  this_type;
-  // Hack for type downward traversal as FFType may be redefined in Derived!
-  typedef this_type _H;
+template <class T1, template <class> class C1, class T2, template <class> class C2>
+bool operator ==(
+    FacadePtr<T1,C1> const &lhs,
+    FacadePtr<T2,C2> const &rhs)
+  { return lhs.storage.pImpl.get() == rhs.storage.pImpl.get(); }
+template <class T2, template <class> class C2>
+bool operator ==(
+    typename T2::_StorageType const *lhs,
+    FacadePtr<T2,C2> const &rhs)
+  { assert(lhs); return lhs->pImpl.get() == rhs.storage.pImpl.get(); }
+template <class T1, template <class> class C1>
+bool operator ==(
+    FacadePtr<T1,C1> const &lhs,
+    typename T1::_StorageType const *rhs)
+  { assert(rhs); return lhs.storage.pImpl.get() == rhs->pImpl.get(); }
+template <class T2, template <class> class C2>
+bool operator ==(
+    typename T2::SmartPtr const &lhs,
+    FacadePtr<T2,C2> const &rhs)
+  { return lhs.get() == rhs.storage.pImpl.get(); }
+template <class T1, template <class> class C1>
+bool operator ==(
+    FacadePtr<T1,C1> const &lhs,
+    typename T1::SmartPtr const &rhs)
+  { return lhs.storage.pImpl.get() == rhs.get(); }
+template <class T2, template <class> class C2>
+bool operator ==(
+    typeof(NULL) null,
+    FacadePtr<T2,C2> const &rhs)
+  { assert(!null); return !rhs; }
+template <class T1, template <class> class C1>
+bool operator ==(
+    FacadePtr<T1,C1> const &lhs,
+    typeof(NULL) null)
+  { assert(!null); return !lhs; }
+
+template <class T1, template <class> class C1, class T2, template <class> class C2>
+bool operator !=(
+    FacadePtr<T1,C1> const &lhs,
+    FacadePtr<T2,C2> const &rhs)
+  { return lhs.storage.pImpl.get() != rhs.storage.pImpl.get(); }
+template <class T2, template <class> class C2>
+bool operator !=(
+    typename T2::_StorageType const *lhs,
+    FacadePtr<T2,C2> const &rhs)
+  { assert(lhs); return lhs->pImpl.get() != rhs.storage.pImpl.get(); }
+template <class T1, template <class> class C1>
+bool operator !=(
+    FacadePtr<T1,C1> const &lhs,
+    typename T1::_StorageType const *rhs)
+  { assert(rhs); return lhs.storage.pImpl.get() == rhs->pImpl.get(); }
+template <class T2, template <class> class C2>
+bool operator !=(
+    typename T2::SmartPtr const &lhs,
+    FacadePtr<T2,C2> const &rhs)
+  { return lhs.get() != rhs.storage.pImpl.get(); }
+template <class T1, template <class> class C1>
+bool operator !=(
+    FacadePtr<T1,C1> const &lhs,
+    typename T1::SmartPtr const &rhs)
+  { return lhs.storage.pImpl.get() != rhs.get(); }
+template <class T2, template <class> class C2>
+bool operator !=(
+    typeof(NULL) null,
+    FacadePtr<T2,C2> const &rhs)
+  { assert(!null); return rhs; }
+template <class T1, template <class> class C1>
+bool operator !=(
+    FacadePtr<T1,C1> const &lhs,
+    typeof(NULL) null)
+  { assert(!null); return lhs; }
+
+template <class T1, template <class> class C1, class T2, template <class> class C2>
+bool operator <=(
+    FacadePtr<T1,C1> const &lhs,
+    FacadePtr<T2,C2> const &rhs)
+  { return lhs.storage.pImpl.get() <= rhs.storage.pImpl.get(); }
+template <class T2, template <class> class C2>
+bool operator <=(
+    typename T2::_StorageType const *lhs,
+    FacadePtr<T2,C2> const &rhs)
+  { assert(lhs); return lhs->pImpl.get() <= rhs.storage.pImpl.get(); }
+template <class T1, template <class> class C1>
+bool operator <=(
+    FacadePtr<T1,C1> const &lhs,
+    typename T1::_StorageType const *rhs)
+  { assert(rhs); return lhs.storage.pImpl.get() <= rhs->pImpl.get(); }
+template <class T2, template <class> class C2>
+bool operator <=(
+    typename T2::SmartPtr const &lhs,
+    FacadePtr<T2,C2> const &rhs)
+  { return lhs.get() <= rhs.storage.pImpl.get(); }
+template <class T1, template <class> class C1>
+bool operator <=(
+    FacadePtr<T1,C1> const &lhs,
+    typename T1::SmartPtr const &rhs)
+  { return lhs.storage.pImpl.get() <= rhs.get(); }
+
+template <class T1, template <class> class C1, class T2, template <class> class C2>
+bool operator >=(
+    FacadePtr<T1,C1> const &lhs,
+    FacadePtr<T2,C2> const &rhs)
+  { return lhs.storage.pImpl.get() >= rhs.storage.pImpl.get(); }
+template <class T2, template <class> class C2>
+bool operator >=(
+    typename T2::_StorageType const *lhs,
+    FacadePtr<T2,C2> const &rhs)
+  { assert(lhs); return lhs->pImpl.get() >= rhs.storage.pImpl.get(); }
+template <class T1, template <class> class C1>
+bool operator >=(
+    FacadePtr<T1,C1> const &lhs,
+    typename T1::_StorageType const *rhs)
+  { assert(rhs); return lhs.storage.pImpl.get() >= rhs->pImpl.get(); }
+template <class T2, template <class> class C2>
+bool operator >=(
+    typename T2::SmartPtr const &lhs,
+    FacadePtr<T2,C2> const &rhs)
+  { return lhs.get() >= rhs.storage.pImpl.get(); }
+template <class T1, template <class> class C1>
+bool operator >=(
+    FacadePtr<T1,C1> const &lhs,
+    typename T1::SmartPtr const &rhs)
+  { return lhs.storage.pImpl.get() >= rhs.get(); }
+
+template <class T1, template <class> class C1, class T2, template <class> class C2>
+bool operator < (
+    FacadePtr<T1,C1> const &lhs,
+    FacadePtr<T2,C2> const &rhs)
+  { return lhs.storage.pImpl.get() <  rhs.storage.pImpl.get(); }
+template <class T2, template <class> class C2>
+bool operator < (
+    typename T2::_StorageType const *lhs,
+    FacadePtr<T2,C2> const &rhs)
+  { assert(lhs); return lhs->pImpl.get() <  rhs.storage.pImpl.get(); }
+template <class T1, template <class> class C1>
+bool operator < (
+    FacadePtr<T1,C1> const &lhs,
+    typename T1::_StorageType const *rhs)
+  { assert(rhs); return lhs.storage.pImpl.get() <  rhs->pImpl.get(); }
+template <class T2, template <class> class C2>
+bool operator < (
+    typename T2::SmartPtr const &lhs,
+    FacadePtr<T2,C2> const &rhs)
+  { return lhs.get() <  rhs.storage.pImpl.get(); }
+template <class T1, template <class> class C1>
+bool operator < (
+    FacadePtr<T1,C1> const &lhs,
+    typename T1::SmartPtr const &rhs)
+  { return lhs.storage.pImpl.get() <  rhs.get(); }
+
+template <class T1, template <class> class C1, class T2, template <class> class C2>
+bool operator > (
+    FacadePtr<T1,C1> const &lhs,
+    FacadePtr<T2,C2> const &rhs)
+  { return lhs.storage.pImpl.get() >  rhs.storage.pImpl.get(); }
+template <class T2, template <class> class C2>
+bool operator > (
+    typename T2::_StorageType const *lhs,
+    FacadePtr<T2,C2> const &rhs)
+  { assert(lhs); return lhs->pImpl.get() >  rhs.storage.pImpl.get(); }
+template <class T1, template <class> class C1>
+bool operator > (
+    FacadePtr<T1,C1> const &lhs,
+    typename T1::_StorageType const *rhs)
+  { assert(rhs); return lhs.storage.pImpl.get() >  rhs->pImpl.get(); }
+template <class T2, template <class> class C2>
+bool operator > (
+    typename T2::SmartPtr const &lhs,
+    FacadePtr<T2,C2> const &rhs)
+  { return lhs.get() >  rhs.storage.pImpl.get(); }
+template <class T1, template <class> class C1>
+bool operator > (
+    FacadePtr<T1,C1> const &lhs,
+    typename T1::SmartPtr const &rhs)
+  { return lhs.storage.pImpl.get() >  rhs.get(); }
+
+namespace Detail {
+
+  template <class Impl>
+  class Storage {
+    typedef Storage<Impl>                     this_type;
+
+    template <class T, template <class> class C> friend class FacadeRef;
+    template <class T, template <class> class C> friend class FacadePtr;
+  public:
+    template <class T>
+    struct _StoragePtrKind { typedef ::boost::intrusive_ptr<T> type; };
+
+    typedef Impl                              ImplType;
+  public:
+    typedef this_type                                   _StorageType;
+    typedef typename _StoragePtrKind<ImplType>::type    _StoragePtr;
+    _StoragePtr pImpl; //< this is the storage smart ptr, its name must be pImpl
+  public:
+    Storage() {}
+    Storage(const this_type &v)
+      : pImpl(v.pImpl) {}
+    explicit Storage(const _StoragePtr &p)
+      : pImpl(p) {}
+  protected:
+    void assign(const this_type &x)
+      { pImpl = x.pImpl; }
+
+    ImplType *getImpl() const
+      { return pImpl.get(); }
+  };
+
+  struct value_type_facade_pointer_t
+    : public value_type_pointer_tag_t {};
+
+  template <class T, template <class> class C>
+  struct ValueTypeClassifier<FacadePtr<T, C> >
+    { typedef value_type_facade_pointer_t tag; };
+
+  template <class D, class T, template <class> class C>
+  class ValueTypeDecorator<value_type_facade_pointer_t, D, FacadePtr<T, C>, FacadePtr<T, C> const> {
+    typedef ValueTypeDecorator<value_type_facade_pointer_t, D, FacadePtr<T, C>, FacadePtr<T, C> const> this_type;
+  private:
+    typedef FacadePtr<T, C> value_type;
+    typedef FacadeRef<T, C> deref_type;
+  protected:
+    typedef D *(this_type::*unspecified_bool_type)();
+  protected:
+    D       *getDerived()
+      { return static_cast<D *>(this); }
+
+    D const *getDerived() const
+      { return static_cast<D const *>(this); }
+  public:
+    value_type operator ->() const
+      { return getDerived()->get(); }
+    deref_type operator *() const
+      { return *getDerived()->get(); }
+
+    operator unspecified_bool_type() const {
+      return getDerived()->get()
+        ? static_cast<unspecified_bool_type>(&this_type::getDerived)
+        : static_cast<unspecified_bool_type>(NULL);
+    }
+  };
+
+  template <class T, template <class> class C, class F>
+  class FacadeProxyPtr
+  : public ValueInterface<
+      FacadeProxyPtr<T,C,F>,
+      FacadePtr<T,C>,
+      FacadePtr<T,C> const>
+  {
+    typedef FacadeProxyPtr<T,C,F> this_type;
+    typedef FacadePtr<T,C>        value_type;
+
+    friend class ValueInterface<this_type, value_type, value_type const>;
+  private:
+    F *ptr;
+
+    // Don't implement this! FacadeProxyPtr is not an lvalue!
+    //void implSet(const value_type &val) {...}
+
+    value_type const implGet() const
+      { return ptr->toPtr(); }
+  public:
+    FacadeProxyPtr(F *ptr): ptr(ptr) {}
+
+    // We need this operator due to ``operator F *() const''
+    operator bool() const
+      { return ptr && ptr->toPtr(); }
+
+    operator F *() const
+      { return ptr; }
+  };
+
+} // namespace Detail
+
+template <class T, template <class> class C>
+class FacadeRef: public T {
+  typedef FacadeRef<T, C> this_type;
+  typedef T               base_type;
 
   template <class TT, template <class> class CC> friend class FacadeRef;
   template <class TT, template <class> class CC> friend class FacadePtr;
-  template <class TT, template <class> class CC> friend class Detail::FacadeProxyPtr;
+public:
+  FacadeRef(typename this_type::SmartPtr const &p)
+    : base_type(p) {}
+  FacadeRef(this_type const &t)
+    : base_type(static_cast<typename this_type::_StorageType const &>(t)) {}
+
+  // bounce assign to base class
+  using T::operator =;
+
+  Detail::FacadeProxyPtr<T, boost::add_const, const this_type> operator &() const
+    { return Detail::FacadeProxyPtr<T, boost::add_const, const this_type>(this); }
+  Detail::FacadeProxyPtr<T, boost::remove_const, this_type> operator &()
+    { return Detail::FacadeProxyPtr<T, boost::remove_const, this_type>(this); }
+};
+
+template <class Derived, class Impl, class Base = Detail::Storage<Impl>, class SPtr = typename Base::template _StoragePtrKind<Impl>::type>
+class FacadeFoundation: public Base {
+  typedef FacadeFoundation<Derived,Impl,Base,SPtr>  this_type;
+  typedef Base                                      base_type;
+
+  template <class TT, template <class> class CC> friend class FacadeRef;
+  template <class TT, template <class> class CC> friend class FacadePtr;
   friend class FacadeCoreAccess;
 protected:
   typedef this_type FFType;
 public:
-  // FIXME: Make this protected again
-  typedef Base      _B; // Why does this need to be public, FacadePtr is a friend!
-
   // FIXME: Make this protected again
   typedef Impl      ImplType;
   typedef SPtr      SmartPtr;
@@ -317,8 +458,15 @@ protected:
   ImplType *getImpl() const
     { return static_cast<ImplType *>(this->pImpl.get()); }
 
-  explicit FacadeFoundation(const typename _B::SmartPtr &p)
-    : _B(p) {}
+  explicit FacadeFoundation(typename this_type::_StorageType const &x)
+    : base_type(x) {}
+  // Constructor converting the SmartPtr of the derived implementation into the StoragePtr.
+  // Note that this constructor may not be implementable if the type hierarchy of the
+  // implementation classes is not available. In this case, the derived class must implement
+  // a constructor in a .cpp file where this information is available and use constructor
+  // given above for its base class.
+  explicit FacadeFoundation(typename this_type::SmartPtr const &p)
+    : base_type(typename this_type::_StorageType(p)) {}
 public:
   operator ConstRef &() const // do dirty magic
     { return static_cast<ConstRef &>(*this); }
@@ -326,14 +474,20 @@ public:
     { return static_cast<Ref &>(*this); }
 
   ConstPtr toPtr() const
-    { return ConstPtr(_impl()); }
+    { return ConstPtr(this); }
   Ptr toPtr()
-    { return Ptr(_impl()); }
+    { return Ptr(this); }
 
   Detail::FacadeProxyPtr<Derived, boost::add_const, const Derived> operator &() const
     { return Detail::FacadeProxyPtr<Derived, boost::add_const, const Derived>(static_cast<const Derived *>(this)); }
   Detail::FacadeProxyPtr<Derived, boost::remove_const, Derived> operator &()
     { return Detail::FacadeProxyPtr<Derived, boost::remove_const, Derived>(static_cast<Derived *>(this)); }
+/*
+  ConstRef *operator &() const
+    { return static_cast<ConstRef *>(this); }
+  Ref      *operator &()
+    { return static_cast<Ref      *>(this); }
+ */
 private:
   // default no copy no assign
   FacadeFoundation(const this_type &);
@@ -343,17 +497,17 @@ private:
 struct FacadeCoreAccess {
   template <class T, template <class> class C>
   static
-  typename T::_H::ImplType *getImpl(FacadeRef<T,C> const &ref)
-    { return static_cast<typename T::_H const &>(ref)._impl(); }
+  typename T::FFType::ImplType *getImpl(FacadeRef<T,C> const &ref)
+    { return static_cast<typename T::FFType const &>(ref)._impl(); }
 
   template <class T, template <class> class C>
   static
-  typename T::_H::ImplType *getImpl(FacadePtr<T,C> const &ptr)
-    { return static_cast<typename T::_H const &>(*ptr)._impl(); }
+  typename T::FFType::ImplType *getImpl(FacadePtr<T,C> const &ptr)
+    { return static_cast<typename T::FFType const &>(*ptr)._impl(); }
 
   template <class Derived, class Impl, class Base, class SPtr>
   static
-  Impl                     *getImpl(FacadeFoundation<Derived,Impl,Base,SPtr> const &facade)
+  Impl                         *getImpl(FacadeFoundation<Derived,Impl,Base,SPtr> const &facade)
     { return facade._impl(); }
 };
 
@@ -429,6 +583,16 @@ namespace boost {
   const CoSupport::DataTypes::FacadePtr<TT,C> static_pointer_cast(
       const CoSupport::DataTypes::FacadePtr<T,C> &ptr)
     { return &static_cast<typename C<TT>::type &>(*ptr); }
+/*
+  template <class TT, class T>
+  typename TT::Ptr      dynamic_pointer_cast(
+      CoSupport::DataTypes::FacadeRef<T, boost::remove_const> *ptr)
+    { return TT::upcast(*ptr); }
+  template <class TT, class T>
+  typename TT::ConstPtr dynamic_pointer_cast(
+      CoSupport::DataTypes::FacadeRef<T, boost::add_const> const *ptr)
+    { return TT::upcast(*ptr); }
+ */
 
   template <class TT, class T, template <class> class C, class F>
   const CoSupport::DataTypes::FacadePtr<TT,C> dynamic_pointer_cast(

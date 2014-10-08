@@ -86,8 +86,8 @@ namespace Detail {
 
 } // namespace Detail
 
-/// This class is a facade for a std::set look alike containing values of type T.
-/// \example test_set.cpp
+/// This class is a facade for a value of type T.
+/// \example test_value.cpp
 template <
   class T,
   class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
@@ -105,6 +105,9 @@ class ValueFacade
 
   friend class ValueInterface<this_type,T,CR>;
   friend class Detail::ValueVirtualUser<this_type,T,CR>;
+protected:
+  explicit ValueFacade(typename base1_type::_StorageType const &x)
+    : base1_type(x) {}
 public:
   ValueFacade(T const &value = T())
     : base1_type(new Detail::ValueFacadeImpl<T,CR>(value)) {}

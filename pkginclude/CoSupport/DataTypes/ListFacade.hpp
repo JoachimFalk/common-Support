@@ -160,6 +160,8 @@ public:
   ListFacade(ListInterface<DD,II,T,RR,CRCR,PP,CPCP> const &val)
     : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
 
+  explicit ListFacade(typename base1_type::_StorageType const &x)
+    : base1_type(x) {}
   ListFacade(typename base1_type::SmartPtr const &p)
     : base1_type(p) {}
 
