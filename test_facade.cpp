@@ -74,22 +74,76 @@ int main(int argc, char *argv[]) {
   const B cb;
   const C cc;
   
+  assert(a.toPtr());
+  assert(b.toPtr());
+  assert(c.toPtr());
+  assert(&a);
+  assert(&b);
+  assert(&c);
+
   A::Ref ra = a;
   B::Ref rb = b;
   C::Ref rc = c;
 
-  A::Ptr pa;
-  B::Ptr pb;
-  C::Ptr pc;
+  assert(ra.toPtr());
+  assert(rb.toPtr());
+  assert(rc.toPtr());
+  assert(&ra);
+  assert(&rb);
+  assert(&rc);
+
+  assert(a.toPtr() == ra.toPtr());
+  assert(a.toPtr() == &ra);
+  assert(&a == ra.toPtr());
+  assert(&a == &ra);
+
+  A::Ptr pa = &b;
+  B::Ptr pb = b.toPtr();
+  C::Ptr pc = &rc;
   
-  A::ConstRef cra = a;
-  B::ConstRef crb = b;
-  C::ConstRef crc = c;
-  
+  assert(pa != &a);
+  assert(pa != a.toPtr());
+  assert(&a        != pa);
+  assert(a.toPtr() != pa);
+
+  assert(pb != &a);
+  assert(pb != a.toPtr());
+  assert(&a        != pb);
+  assert(a.toPtr() != pb);
+  assert(pb != &c);
+  assert(pb != c.toPtr());
+  assert(&c        != pb);
+  assert(c.toPtr() != pb);
+  assert(pb == &rb);
+  assert(pb == rb.toPtr());
+  assert(&b        == pb);
+  assert(b.toPtr() == pb);
+
   A::ConstPtr cpa;
   B::ConstPtr cpb;
   C::ConstPtr cpc;
   
+  assert(!cpa);
+  assert(!cpb);
+  assert(!cpc);
+
+  A::ConstRef cra = c;
+  B::ConstRef crb = *cpb;
+  C::ConstRef crc = rc;
+
+  assert(cra.toPtr());
+  assert(&cra);
+  assert(!crb.toPtr());
+  assert(!&crb);
+  assert(crc.toPtr());
+  assert(&crc);
+
+  assert(b.toPtr());
+  assert(c.toPtr());
+  assert(&a);
+  assert(&b);
+  assert(&c);
+
   A::Ptr pa1 = pa;
   A::Ptr pa2 = pb;
   A::Ptr pa3 = pc;
@@ -264,6 +318,9 @@ int main(int argc, char *argv[]) {
   bool result = true;
   do { result = false; } while (result);
 
+  if ((pa || cpa) && !pa && cpa)
+    ;
+
 #define TESTCOMPOPS(R) \
   result = pa  == R; \
   result = pa  != R; \
@@ -289,8 +346,202 @@ int main(int argc, char *argv[]) {
   result = R <  cpa; \
   result = R >= cpa; \
   result = R >  cpa; \
+  result = pb  == R; \
+  result = pb  != R; \
+  result = pb  <= R; \
+  result = pb  <  R; \
+  result = pb  >= R; \
+  result = pb  >  R; \
+  result = cpb == R; \
+  result = cpb != R; \
+  result = cpb <= R; \
+  result = cpb <  R; \
+  result = cpb >= R; \
+  result = cpb >  R; \
+  result = R == pb;  \
+  result = R != pb;  \
+  result = R <= pb;  \
+  result = R <  pb;  \
+  result = R >= pb;  \
+  result = R >  pb;  \
+  result = R == cpb; \
+  result = R != cpb; \
+  result = R <= cpb; \
+  result = R <  cpb; \
+  result = R >= cpb; \
+  result = R >  cpb; \
+  result = pc  == R; \
+  result = pc  != R; \
+  result = pc  <= R; \
+  result = pc  <  R; \
+  result = pc  >= R; \
+  result = pc  >  R; \
+  result = cpc == R; \
+  result = cpc != R; \
+  result = cpc <= R; \
+  result = cpc <  R; \
+  result = cpc >= R; \
+  result = cpc >  R; \
+  result = R == pc;  \
+  result = R != pc;  \
+  result = R <= pc;  \
+  result = R <  pc;  \
+  result = R >= pc;  \
+  result = R >  pc;  \
+  result = R == cpc; \
+  result = R != cpc; \
+  result = R <= cpc; \
+  result = R <  cpc; \
+  result = R >= cpc; \
+  result = R >  cpc; \
+  result = &a  == R; \
+  result = &a  != R; \
+  result = &a  <= R; \
+  result = &a  <  R; \
+  result = &a  >= R; \
+  result = &a  >  R; \
+  result = &ca == R; \
+  result = &ca != R; \
+  result = &ca <= R; \
+  result = &ca <  R; \
+  result = &ca >= R; \
+  result = &ca >  R; \
+  result = R == &a;  \
+  result = R != &a;  \
+  result = R <= &a;  \
+  result = R <  &a;  \
+  result = R >= &a;  \
+  result = R >  &a;  \
+  result = R == &ca; \
+  result = R != &ca; \
+  result = R <= &ca; \
+  result = R <  &ca; \
+  result = R >= &ca; \
+  result = R >  &ca; \
+  result = &b  == R; \
+  result = &b  != R; \
+  result = &b  <= R; \
+  result = &b  <  R; \
+  result = &b  >= R; \
+  result = &b  >  R; \
+  result = &cb == R; \
+  result = &cb != R; \
+  result = &cb <= R; \
+  result = &cb <  R; \
+  result = &cb >= R; \
+  result = &cb >  R; \
+  result = R == &b;  \
+  result = R != &b;  \
+  result = R <= &b;  \
+  result = R <  &b;  \
+  result = R >= &b;  \
+  result = R >  &b;  \
+  result = R == &cb; \
+  result = R != &cb; \
+  result = R <= &cb; \
+  result = R <  &cb; \
+  result = R >= &cb; \
+  result = R >  &cb; \
+  result = &c  == R; \
+  result = &c  != R; \
+  result = &c  <= R; \
+  result = &c  <  R; \
+  result = &c  >= R; \
+  result = &c  >  R; \
+  result = &cc == R; \
+  result = &cc != R; \
+  result = &cc <= R; \
+  result = &cc <  R; \
+  result = &cc >= R; \
+  result = &cc >  R; \
+  result = R == &c;  \
+  result = R != &c;  \
+  result = R <= &c;  \
+  result = R <  &c;  \
+  result = R >= &c;  \
+  result = R >  &c;  \
+  result = R == &cc; \
+  result = R != &cc; \
+  result = R <= &cc; \
+  result = R <  &cc; \
+  result = R >= &cc; \
+  result = R >  &cc; \
+  result = &ra  == R; \
+  result = &ra  != R; \
+  result = &ra  <= R; \
+  result = &ra  <  R; \
+  result = &ra  >= R; \
+  result = &ra  >  R; \
+  result = &cra == R; \
+  result = &cra != R; \
+  result = &cra <= R; \
+  result = &cra <  R; \
+  result = &cra >= R; \
+  result = &cra >  R; \
+  result = R == &ra;  \
+  result = R != &ra;  \
+  result = R <= &ra;  \
+  result = R <  &ra;  \
+  result = R >= &ra;  \
+  result = R >  &ra;  \
+  result = R == &cra; \
+  result = R != &cra; \
+  result = R <= &cra; \
+  result = R <  &cra; \
+  result = R >= &cra; \
+  result = R >  &cra; \
+  result = &rb  == R; \
+  result = &rb  != R; \
+  result = &rb  <= R; \
+  result = &rb  <  R; \
+  result = &rb  >= R; \
+  result = &rb  >  R; \
+  result = &crb == R; \
+  result = &crb != R; \
+  result = &crb <= R; \
+  result = &crb <  R; \
+  result = &crb >= R; \
+  result = &crb >  R; \
+  result = R == &rb;  \
+  result = R != &rb;  \
+  result = R <= &rb;  \
+  result = R <  &rb;  \
+  result = R >= &rb;  \
+  result = R >  &rb;  \
+  result = R == &crb; \
+  result = R != &crb; \
+  result = R <= &crb; \
+  result = R <  &crb; \
+  result = R >= &crb; \
+  result = R >  &crb; \
+  result = &rc  == R; \
+  result = &rc  != R; \
+  result = &rc  <= R; \
+  result = &rc  <  R; \
+  result = &rc  >= R; \
+  result = &rc  >  R; \
+  result = &crc == R; \
+  result = &crc != R; \
+  result = &crc <= R; \
+  result = &crc <  R; \
+  result = &crc >= R; \
+  result = &crc >  R; \
+  result = R == &rc;  \
+  result = R != &rc;  \
+  result = R <= &rc;  \
+  result = R <  &rc;  \
+  result = R >= &rc;  \
+  result = R >  &rc;  \
+  result = R == &crc; \
+  result = R != &crc; \
+  result = R <= &crc; \
+  result = R <  &crc; \
+  result = R >= &crc; \
+  result = R >  &crc; \
   result = R != NULL; \
   result = R == NULL; \
+  result = NULL != R; \
+  result = NULL == R; \
   result = R;
 
   TESTCOMPOPS(pa)
@@ -299,27 +550,15 @@ int main(int argc, char *argv[]) {
   TESTCOMPOPS(cpa)
   TESTCOMPOPS(cpb)
   TESTCOMPOPS(cpc)
-  TESTCOMPOPS(&a)
-  TESTCOMPOPS(&b)
-  TESTCOMPOPS(&c)
-  TESTCOMPOPS(&ca)
-  TESTCOMPOPS(&cb)
-  TESTCOMPOPS(&cc)
   TESTCOMPOPS(a.toPtr())
   TESTCOMPOPS(b.toPtr())
   TESTCOMPOPS(c.toPtr())
   TESTCOMPOPS(ca.toPtr())
   TESTCOMPOPS(cb.toPtr())
   TESTCOMPOPS(cc.toPtr())
-  TESTCOMPOPS(&ra)
-  TESTCOMPOPS(&rb)
-  TESTCOMPOPS(&rc)
   TESTCOMPOPS(ra.toPtr())
   TESTCOMPOPS(rb.toPtr())
   TESTCOMPOPS(rc.toPtr())
-  TESTCOMPOPS(&cra)
-  TESTCOMPOPS(&crb)
-  TESTCOMPOPS(&crc)
   TESTCOMPOPS(cra.toPtr())
   TESTCOMPOPS(crb.toPtr())
   TESTCOMPOPS(crc.toPtr())

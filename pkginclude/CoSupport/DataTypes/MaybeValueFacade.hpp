@@ -100,8 +100,8 @@ namespace Detail {
 
 } // namespace Detail
 
-/// This class is a facade for a std::set look alike containing values of type T.
-/// \example test_set.cpp
+/// This class is a facade for a possible value of type T.
+/// \example test_maybevalue.cpp
 template <
   class T,
   class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type
@@ -130,6 +130,8 @@ public:
   MaybeValueFacade(MaybeValueInterface<DD,TT,CRCR> const &value)
     : base1_type(new Detail::MaybeValueFacadeImpl<T,CR>(value)) {}
 
+  explicit MaybeValueFacade(typename base1_type::_StorageType const &x)
+    : base1_type(x) {}
   MaybeValueFacade(typename base1_type::SmartPtr const &p)
     : base1_type(p) {}
 

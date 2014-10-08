@@ -152,6 +152,8 @@ public:
     : base1_type(new Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP>())
     { static_cast<Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP> *>(this->getImpl())->set.insert(val.begin(), val.end()); }
 
+  explicit SetFacade(typename base1_type::_StorageType const &x)
+    : base1_type(x) {}
   SetFacade(typename base1_type::SmartPtr const &p)
     : base1_type(p) {}
 

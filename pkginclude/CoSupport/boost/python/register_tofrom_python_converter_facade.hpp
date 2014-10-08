@@ -46,8 +46,8 @@ namespace CoSupport { namespace boost { namespace python {
 /// This class implements a rvalue from python converter for FacadePtr<T,C>
 template <class T, template <class> class C>
 class register_from_python_converter<CoSupport::DataTypes::FacadePtr<T,C> > {
-  typedef CoSupport::DataTypes::FacadePtr<T,C>  value_type;
-  typedef register_from_python_converter<value_type>     this_type;
+  typedef CoSupport::DataTypes::FacadePtr<T,C>        value_type;
+  typedef register_from_python_converter<value_type>  this_type;
 public:
   register_from_python_converter() {
     // Insert an rvalue from_python converter at the tail of the chain.
@@ -64,7 +64,7 @@ public:
 
   static void *convertible(PyObject *obj_ptr) {
     if (obj_ptr != Py_None) {
-      boost::python::extract<typename value_type::ImplType *> proxy(obj_ptr);
+      boost::python::extract<typename T::ImplType *> proxy(obj_ptr);
       if (!proxy.check())
         return NULL;
     }
@@ -79,7 +79,7 @@ public:
       reinterpret_cast<boost::python::converter::rvalue_from_python_storage<value_type> *>(data)
       ->storage.bytes;
     if (obj_ptr != Py_None) {
-      boost::python::extract<typename value_type::ImplType *> proxy(obj_ptr);
+      boost::python::extract<typename T::ImplType *> proxy(obj_ptr);
       new (storage) value_type(proxy());
     } else
       new (storage) value_type();
@@ -105,13 +105,13 @@ public:
 
   static PyObject *convert(value_type const &v) {
     return boost::python::incref((v != NULL
-      ? boost::python::object(typename value_type::SmartPtr(CoSupport::DataTypes::FacadeCoreAccess::getImpl(v)))
+      ? boost::python::object(typename T::SmartPtr(CoSupport::DataTypes::FacadeCoreAccess::getImpl(v)))
       : boost::python::object()).ptr());
   }
 
 #ifdef BOOST_PYTHON_SUPPORTS_PY_SIGNATURES
   static PyTypeObject const *get_pytype() {
-    return boost::python::converter::registered<typename value_type::ImplType *>::converters
+    return boost::python::converter::registered<typename T::ImplType *>::converters
       .to_python_target_type();
   }
 #endif
@@ -138,7 +138,7 @@ public:
 
   static void *convertible(PyObject *obj_ptr) {
     if (obj_ptr != Py_None) {
-      boost::python::extract<typename value_type::ImplType *> proxy(obj_ptr);
+      boost::python::extract<typename T::ImplType *> proxy(obj_ptr);
       if (proxy.check())
         return obj_ptr;
     }
@@ -153,7 +153,7 @@ public:
       reinterpret_cast<boost::python::converter::rvalue_from_python_storage<value_type> *>(data)
       ->storage.bytes;
     assert(obj_ptr != Py_None);
-    boost::python::extract<typename value_type::ImplType *> proxy(obj_ptr);
+    boost::python::extract<typename T::ImplType *> proxy(obj_ptr);
     new (storage) value_type(proxy());
     data->convertible = storage;
   }
@@ -177,12 +177,12 @@ public:
 
   static PyObject *convert(value_type const &v) {
     return boost::python::incref(
-      boost::python::object(typename value_type::SmartPtr(CoSupport::DataTypes::FacadeCoreAccess::getImpl(v))).ptr());
+      boost::python::object(typename T::SmartPtr(CoSupport::DataTypes::FacadeCoreAccess::getImpl(v))).ptr());
   }
 
 #ifdef BOOST_PYTHON_SUPPORTS_PY_SIGNATURES
   static PyTypeObject const *get_pytype() {
-    return boost::python::converter::registered<typename value_type::ImplType *>::converters
+    return boost::python::converter::registered<typename T::ImplType *>::converters
       .to_python_target_type();
   }
 #endif

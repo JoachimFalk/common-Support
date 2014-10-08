@@ -62,7 +62,9 @@ class A
 
   friend class CoSupport::DataTypes::FacadeFoundation<this_type, ImplType>;
 protected:
-  A(const SmartPtr &p);
+
+  explicit A(const _StorageType &x) : FFType(x) {}
+  explicit A(const SmartPtr &p);
 public:
   A();
   A(const this_type &);
@@ -85,7 +87,8 @@ class B
 protected:
   ImplType *getImpl() const;
 
-  B(const SmartPtr &p);
+  explicit B(const _StorageType &x) : FFType(x) {}
+  explicit B(const SmartPtr &p);
 public:
   B();
   B(const this_type &);
@@ -107,7 +110,8 @@ class C
 protected:
   ImplType *getImpl() const;
 
-  C(const SmartPtr &p);
+  explicit C(const _StorageType &x) : FFType(x) {}
+  explicit C(const SmartPtr &p);
 public:
   C();
   C(const this_type &);
