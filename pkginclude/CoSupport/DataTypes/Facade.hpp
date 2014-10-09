@@ -427,10 +427,10 @@ public:
     { return Detail::FacadeProxyPtr<T, boost::remove_const, this_type>(this); }
 };
 
-template <class Derived, class Impl, class Base = Detail::Storage<Impl>, class SPtr = typename Base::template _StoragePtrKind<Impl>::type>
+template <class Derived, class Impl, class Base = Detail::Storage<Impl> >
 class FacadeFoundation: public Base {
-  typedef FacadeFoundation<Derived,Impl,Base,SPtr>  this_type;
-  typedef Base                                      base_type;
+  typedef FacadeFoundation<Derived,Impl,Base> this_type;
+  typedef Base                                base_type;
 
   template <class TT, template <class> class CC> friend class FacadeRef;
   template <class TT, template <class> class CC> friend class FacadePtr;
@@ -439,8 +439,8 @@ protected:
   typedef this_type FFType;
 public:
   // FIXME: Make this protected again
-  typedef Impl      ImplType;
-  typedef SPtr      SmartPtr;
+  typedef Impl                                                ImplType;
+  typedef typename Base::template _StoragePtrKind<Impl>::type SmartPtr;
 
   // CoSupport::DataTypes:: is here to ameliorate doxygen C++ parsing results
   typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::ConstRef  ConstRef;
@@ -482,12 +482,6 @@ public:
     { return Detail::FacadeProxyPtr<Derived, boost::add_const, const Derived>(static_cast<const Derived *>(this)); }
   Detail::FacadeProxyPtr<Derived, boost::remove_const, Derived> operator &()
     { return Detail::FacadeProxyPtr<Derived, boost::remove_const, Derived>(static_cast<Derived *>(this)); }
-/*
-  ConstRef *operator &() const
-    { return static_cast<ConstRef *>(this); }
-  Ref      *operator &()
-    { return static_cast<Ref      *>(this); }
- */
 private:
   // default no copy no assign
   FacadeFoundation(const this_type &);
@@ -505,9 +499,9 @@ struct FacadeCoreAccess {
   typename T::FFType::ImplType *getImpl(FacadePtr<T,C> const &ptr)
     { return static_cast<typename T::FFType const &>(*ptr)._impl(); }
 
-  template <class Derived, class Impl, class Base, class SPtr>
+  template <class Derived, class Impl, class Base>
   static
-  Impl                         *getImpl(FacadeFoundation<Derived,Impl,Base,SPtr> const &facade)
+  Impl                         *getImpl(FacadeFoundation<Derived,Impl,Base> const &facade)
     { return facade._impl(); }
 };
 
@@ -543,13 +537,13 @@ namespace boost {
     { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::Ptr type; };
 
   // FIXME: This still does not work for add_reference<Derived>::type
-  template <class Derived, class Impl, class Base, class SPtr>
-  struct add_reference<CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base, SPtr> >
+  template <class Derived, class Impl, class Base>
+  struct add_reference<CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base> >
     { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::Ref type; };
 
   // FIXME: This still does not work for add_reference<Derived const>::type
-  template <class Derived, class Impl, class Base, class SPtr>
-  struct add_reference<const CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base, SPtr> >
+  template <class Derived, class Impl, class Base>
+  struct add_reference<const CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base> >
     { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::ConstRef type; };
 
   template <class Derived, template <class> class C>
@@ -561,13 +555,13 @@ namespace boost {
     { typedef typename C<Derived>::type type; };
 
   // FIXME: This still does not work for add_pointer<Derived>::type
-  template <class Derived, class Impl, class Base, class SPtr>
-  struct add_pointer<CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base, SPtr> >
+  template <class Derived, class Impl, class Base>
+  struct add_pointer<CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base> >
     { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::Ptr type; };
 
   // FIXME: This still does not work for add_pointer<Derived const>::type
-  template <class Derived, class Impl, class Base, class SPtr>
-  struct add_pointer<const CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base, SPtr> >
+  template <class Derived, class Impl, class Base>
+  struct add_pointer<const CoSupport::DataTypes::FacadeFoundation<Derived, Impl, Base> >
     { typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::ConstPtr type; };
 
   template <class Derived, template <class> class C>

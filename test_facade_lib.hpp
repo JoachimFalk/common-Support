@@ -77,13 +77,12 @@ class B
 : public CoSupport::DataTypes::FacadeFoundation<
     B,
     Detail::BImpl,
-    A,
-    Detail::PBImpl>
+    A>
 {
   typedef B this_type;
   typedef A base_type;
 
-  friend class CoSupport::DataTypes::FacadeFoundation<this_type, ImplType, base_type, SmartPtr>;
+  friend class CoSupport::DataTypes::FacadeFoundation<this_type, ImplType, base_type>;
 protected:
   ImplType *getImpl() const;
 
@@ -100,13 +99,12 @@ class C
 : public CoSupport::DataTypes::FacadeFoundation<
     C,
     Detail::CImpl,
-    A,
-    Detail::PCImpl>
+    A>
 {
   typedef C this_type;
   typedef A base_type;
 
-  friend class CoSupport::DataTypes::FacadeFoundation<this_type, ImplType, base_type, SmartPtr>;
+  friend class CoSupport::DataTypes::FacadeFoundation<this_type, ImplType, base_type>;
 protected:
   ImplType *getImpl() const;
 
