@@ -44,13 +44,12 @@
 #include <set>
 #include <algorithm>
 
-#include <boost/functional/hash.hpp>
-
-#include <boost/intrusive_ptr.hpp>
-
 #include "../sassert.h"
 #include <CoSupport/SmartPtr/RefCountObject.hpp>
 #include <CoSupport/cosupport_config.h>
+
+#include <boost/functional/hash.hpp>
+#include <boost/intrusive_ptr.hpp>
 
 /*#include "filter_ostream.hpp"
 
