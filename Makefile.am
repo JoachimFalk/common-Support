@@ -115,41 +115,46 @@ endif
 
 libcosupport_initializer_la_SOURCES =			\
 	implementation/BasicInitializer.cpp
-libcosupport_initializer_la_LIBADD =			\
-	-lboost_thread$(BOOST_LIBMTPOSTFIX)
+libcosupport_initializer_la_LDFLAGS = $(AM_LDFLAGS)	\
+	$(filter-out %/libcosupport-initializer.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-initializer))
 
 libcosupport_smartptr_la_SOURCES =			\
 	implementation/RefCountObject.cpp
-libcosupport_smartptr_la_LIBADD =			\
-	-lboost_thread$(BOOST_LIBMTPOSTFIX)
+libcosupport_smartptr_la_LDFLAGS = $(AM_LDFLAGS)	\
+	$(filter-out %/libcosupport-smartptr.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-smartptr))
 
 if COSUPPORT_ENABLE_XERCES
 libcosupport_xerces_la_SOURCES =			\
 	implementation/StdIstreamInputSource.cpp	\
 	implementation/StdIstreamInputStream.cpp	\
 	implementation/StdOstreamFormatTarget.cpp
-libcosupport_xerces_la_LIBADD =				\
-	-lxerces-c $(XERCES_AUXLIBS)			\
+libcosupport_xerces_la_DEPENDENCIES =			\
 	libcosupport-initializer.la
+libcosupport_xerces_la_LDFLAGS = $(AM_LDFLAGS)		\
+	$(filter-out %/libcosupport-xerces.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-xerces))
 endif
 
 if COSUPPORT_ENABLE_SYSTEMC
 libcosupport_systemc_la_SOURCES =			\
 	implementation/par_manager.cpp			\
 	implementation/PerformanceEvaluation.cpp
-libcosupport_systemc_la_LDFLAGS=			\
-	$(AM_LDFLAGS)
-libcosupport_systemc_la_LIBADD =			\
-	-lsystemc
+libcosupport_systemc_la_LDFLAGS = $(AM_LDFLAGS)		\
+	$(filter-out %/libcosupport-systemc.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-systemc))
 
-test_event_and_list_SOURCES	  = test_event_and_list.cpp
-test_event_and_list_LDADD	  = libcosupport-systemc.la
+test_event_and_list_SOURCES		= test_event_and_list.cpp
+test_event_and_list_DEPENDENCIES	= libcosupport-systemc.la
+test_event_and_list_LDFLAGS		= $(AM_LDFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-systemc)
 
-test_event_or_list_SOURCES	  = test_event_or_list.cpp
-test_event_or_list_LDADD	  = libcosupport-systemc.la
+test_event_or_list_SOURCES		= test_event_or_list.cpp
+test_event_or_list_DEPENDENCIES		= libcosupport-systemc.la
+test_event_or_list_LDFLAGS		= $(AM_LDFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-systemc)
 
-test_nested_event_lists_SOURCES	  = test_nested_event_lists.cpp
-test_nested_event_lists_LDADD	  = libcosupport-systemc.la libcosupport-streams.la
+test_nested_event_lists_SOURCES		= test_nested_event_lists.cpp
+test_nested_event_lists_DEPENDENCIES	= libcosupport-systemc.la libcosupport-streams.la
+test_nested_event_lists_LDFLAGS		= $(AM_LDFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-systemc libcosupport-streams)
 endif
 
 libcosupport_streams_la_SOURCES =			\
@@ -164,9 +169,8 @@ libcosupport_streams_la_SOURCES =			\
 	implementation/NullStreambuf.cpp		\
 	implementation/TranslationStreambuf.cpp		\
 	implementation/SocketTCPClient.cpp
-libcosupport_streams_la_LIBADD =			\
-	-lboost_iostreams$(BOOST_LIBMTPOSTFIX)		\
-	-lboost_system$(BOOST_LIBMTPOSTFIX)
+libcosupport_streams_la_LDFLAGS = $(AM_LDFLAGS)		\
+	$(filter-out %/libcosupport-streams.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-streams))
 
 libcosupport_string_la_SOURCES =			\
 	implementation/TemplateProcessor.cpp		\
@@ -177,72 +181,82 @@ libcosupport_string_la_SOURCES =			\
 	implementation/QuotedString.cpp			\
 	implementation/SingleQuotedString.cpp		\
 	implementation/UnQuotedString.cpp
-libcosupport_string_la_LIBADD =				\
-	-lboost_regex$(BOOST_LIBMTPOSTFIX)
+libcosupport_string_la_LDFLAGS = $(AM_LDFLAGS)		\
+	$(filter-out %/libcosupport-string.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-string))
 
 libcosupport_math_la_SOURCES =				\
 	implementation/flog2.cpp
-libcosupport_math_la_LIBADD =
+libcosupport_math_la_LDFLAGS = $(AM_LDFLAGS)		\
+	$(filter-out %/libcosupport-math.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-math))
 
 libcosupport_random_la_SOURCES =			\
 	implementation/Random/randomSource.cpp
-libcosupport_random_la_LIBADD =
+libcosupport_random_la_LDFLAGS = $(AM_LDFLAGS)		\
+	$(filter-out %/libcosupport-random.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-random))
 
 libcosupport_allocators_la_SOURCES =
-libcosupport_allocators_la_LIBADD =
+libcosupport_allocators_la_LDFLAGS = $(AM_LDFLAGS)	\
+	$(filter-out %/libcosupport-allocators.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-allocators))
 
 libcosupport_tracing_la_SOURCES =			\
 	implementation/PtpTracer.cpp			\
 	implementation/Tracer.cpp			\
 	implementation/TracingFactory.cpp
+libcosupport_tracing_la_LDFLAGS = $(AM_LDFLAGS)		\
+	$(filter-out %/libcosupport-tracing.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-tracing))
 
 libcosupport_path_la_SOURCES =				\
 	implementation/Path/manipulation.cpp		\
 	implementation/Path/resourcelocations.cpp
-libcosupport_path_la_LIBADD =				\
-	-lboost_filesystem$(BOOST_LIBMTPOSTFIX)		\
-	-lboost_system$(BOOST_LIBMTPOSTFIX)
+libcosupport_path_la_LDFLAGS = $(AM_LDFLAGS)		\
+	$(filter-out %/libcosupport-path.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-path))
 
-test_dbgstream_SOURCES	= test_dbgstream.cpp
-test_dbgstream_LDADD	= libcosupport-streams.la
+test_dbgstream_SOURCES		= test_dbgstream.cpp
+test_dbgstream_DEPENDENCIES	= libcosupport-streams.la
+test_dbgstream_LDFLAGS		= $(AM_LDFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-streams)
 
-test_maybevalue_SOURCES	= test_maybevalue.cpp
-test_maybevalue_LDADD	=
+test_maybevalue_SOURCES		= test_maybevalue.cpp
 
-test_arrayfifo_SOURCES	= test_arrayfifo.cpp
-test_arrayfifo_LDADD	=
+test_arrayfifo_SOURCES		= test_arrayfifo.cpp
 
-test_interval_SOURCES	= test_interval.cpp
-test_interval_LDADD	=
+test_interval_SOURCES		= test_interval.cpp
 
-test_idpool_SOURCES	= test_idpool.cpp
-test_idpool_LDADD	= libcosupport-allocators.la
+test_idpool_SOURCES		= test_idpool.cpp
+test_idpool_DEPENDENCIES	= libcosupport-allocators.la
+test_idpool_LDFLAGS		= $(AM_LDFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-allocators)
 
 test_stl_output_for_xxx_SOURCES	= test_stl_output_for_xxx.cpp
-test_stl_output_for_xxx_LDADD	=
 
-test_facade_SOURCES	= test_facade.cpp test_facade_lib.cpp
-test_facade_LDADD	= libcosupport-smartptr.la
+test_facade_SOURCES		= test_facade.cpp test_facade_lib.cpp
+test_facade_DEPENDENCIES	= libcosupport-smartptr.la
+test_facade_LDFLAGS		= $(AM_LDFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-smartptr)
 
-test_typename_SOURCES	= test_typename.cpp
-test_typename_LDADD	= libcosupport-string.la
+test_typename_SOURCES		= test_typename.cpp
+test_typename_DEPENDENCIES	= libcosupport-string.la
+test_typename_LDFLAGS		= $(AM_LDFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-string)
 
-test_value_SOURCES	= test_value.cpp
+test_value_SOURCES		= test_value.cpp
 
-test_list_SOURCES	= test_list.cpp
+test_list_SOURCES		= test_list.cpp
 
-test_set_SOURCES	= test_set.cpp
+test_set_SOURCES		= test_set.cpp
 
-test_vector_SOURCES	= test_vector.cpp
+test_vector_SOURCES		= test_vector.cpp
 
-test_modulo_SOURCES	= test_modulo.cpp
+test_modulo_SOURCES		= test_modulo.cpp
 
-test_projection_SOURCES	= test_projection.cpp
+test_projection_SOURCES		= test_projection.cpp
 
-test_po_SOURCES		= test_po.cpp
+test_po_SOURCES			= test_po.cpp
 
-test_path_SOURCES	= test_path.cpp
-test_path_LDADD		= libcosupport-path.la
+test_path_SOURCES		= test_path.cpp
+test_path_DEPENDENCIES		= libcosupport-path.la
+test_path_LDFLAGS		= $(AM_LDFLAGS)			\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-path)
 
 # autotest script is build by some source file. #! line is generated by
 #  automake to guarantee proper path. Other scripting languages are easy
