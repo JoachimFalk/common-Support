@@ -33,8 +33,28 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#include <CoSupport/XML/StdOstreamFormatTarget.hpp>
+#ifndef _INCLUDED_COSUPPORT_XML_XERCES_STDISTREAMINPUTSOURCE_HPP
+#define _INCLUDED_COSUPPORT_XML_XERCES_STDISTREAMINPUTSOURCE_HPP
+
+#include "common.hpp"
+#include <xercesc/sax/InputSource.hpp>
+#include <istream>
+#include <boost/noncopyable.hpp>
 
 namespace CoSupport { namespace XML { namespace Xerces {
 
+  class StdIstreamInputSource
+  : public XN::InputSource, private boost::noncopyable {
+  private:
+    std::istream &in;
+  public:
+    StdIstreamInputSource(
+        std::istream &in,
+        XN::MemoryManager *const manager = XN::XMLPlatformUtils::fgMemoryManager);
+
+    XN::BinInputStream *makeStream() const;
+  };
+
 } } } // namespace CoSupport::XML::Xerces
+
+#endif // _INCLUDED_COSUPPORT_XML_XERCES_STDISTREAMINPUTSOURCE_HPP

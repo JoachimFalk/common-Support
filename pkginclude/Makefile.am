@@ -160,10 +160,12 @@ nobase_include_HEADERS = \
 
 if COSUPPORT_ENABLE_XERCES
 nobase_include_HEADERS += \
-	CoSupport/XML/StdIstreamInputSource.hpp \
-	CoSupport/XML/StdIstreamInputStream.hpp \
-	CoSupport/XML/StdOstreamFormatTarget.hpp \
-	CoSupport/XML/xerces_support.hpp
+	CoSupport/XML/xerces_support.hpp \
+	CoSupport/XML/Xerces/common.hpp \
+	CoSupport/XML/Xerces/StdIstreamInputSource.hpp \
+	CoSupport/XML/Xerces/StdIstreamInputStream.hpp \
+	CoSupport/XML/Xerces/StdOstreamFormatTarget.hpp \
+	CoSupport/XML/Xerces/Handler.hpp
 endif
 
 if COSUPPORT_ENABLE_SYSTEMC

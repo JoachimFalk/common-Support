@@ -33,28 +33,52 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_XML_XERCES_STDISTREAMINPUTSOURCE_HPP
-#define _INCLUDED_COSUPPORT_XML_XERCES_STDISTREAMINPUTSOURCE_HPP
+#ifndef _INCLUDED_COSUPPORT_XML_XERCES_STDISTREAMINPUTSTREAM_HPP
+#define _INCLUDED_COSUPPORT_XML_XERCES_STDISTREAMINPUTSTREAM_HPP
 
-#include "xerces_support.hpp"
-#include <xercesc/sax/InputSource.hpp>
+#include "common.hpp"
+#include <xercesc/util/BinInputStream.hpp>
 #include <istream>
 #include <boost/noncopyable.hpp>
 
+#include <xercesc/util/XercesVersion.hpp>
+
 namespace CoSupport { namespace XML { namespace Xerces {
 
-  class StdIstreamInputSource
-  : public XN::InputSource, private boost::noncopyable {
+  class StdIstreamInputStream
+  : public XN::BinInputStream, private boost::noncopyable {
   private:
     std::istream &in;
   public:
-    StdIstreamInputSource(
-        std::istream &in,
-        XN::MemoryManager *const manager = XN::XMLPlatformUtils::fgMemoryManager);
+    StdIstreamInputStream(std::istream &in)
+      : in(in) {}
 
-    XN::BinInputStream *makeStream() const;
+#if XERCES_VERSION_MAJOR == 2
+    unsigned int curPos() const
+      { return in.tellg(); }
+
+    unsigned int readBytes(XMLByte *const toFill, unsigned int maxToRead) {
+      in.read(reinterpret_cast<char *>(toFill), maxToRead);
+      return in.gcount();
+    }
+#elif XERCES_VERSION_MAJOR >= 3
+    XMLFilePos  curPos() const
+      { return in.tellg(); }
+
+    XMLSize_t   readBytes(XMLByte *const toFill, const XMLSize_t maxToRead) {
+      in.read(reinterpret_cast<char *>(toFill), maxToRead);
+      return in.gcount();
+    }
+
+    /*
+     * Return the "out-of-band" content type for the data supplied by this input
+     * stream in the form of the media-type production (mime type with optional
+     * parameters such as encoding) as defined by the HTTP 1.1 specification.
+     */
+    const XMLCh *getContentType () const;
+#endif // XERCES_VERSION_MAJOR >= 3
   };
 
 } } } // namespace CoSupport::XML::Xerces
 
-#endif // _INCLUDED_COSUPPORT_XML_XERCES_STDISTREAMINPUTSOURCE_HPP
+#endif // _INCLUDED_COSUPPORT_XML_XERCES_STDISTREAMINPUTSTREAM_HPP

@@ -33,15 +33,19 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#include <CoSupport/XML/StdIstreamInputStream.hpp>
-
-#include <xercesc/util/XercesVersion.hpp>
+#include <CoSupport/XML/Xerces/StdIstreamInputSource.hpp>
+#include <CoSupport/XML/Xerces/StdIstreamInputStream.hpp>
 
 namespace CoSupport { namespace XML { namespace Xerces {
-
-#if XERCES_VERSION_MAJOR >= 3
-  const XMLCh *StdIstreamInputStream::getContentType () const
-    { return NULL; }
-#endif // XERCES_VERSION_MAJOR >= 3
-
+  
+  StdIstreamInputSource::StdIstreamInputSource(
+      std::istream& in,
+      XN::MemoryManager* const manager)
+    : InputSource(manager),
+      in(in)
+    {}
+  
+  XN::BinInputStream* StdIstreamInputSource::makeStream() const
+    { return new StdIstreamInputStream(in); }
+  
 } } } // namespace CoSupport::XML::Xerces
