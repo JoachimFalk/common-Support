@@ -1,6 +1,6 @@
-// vim: set sw=2 sts=2 ts=8 et syn=cpp:
+// vim: set sw=2 ts=8:
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2015-2015 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -33,52 +33,74 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_XML_XERCES_STDISTREAMINPUTSTREAM_HPP
-#define _INCLUDED_COSUPPORT_XML_XERCES_STDISTREAMINPUTSTREAM_HPP
+#ifndef _INCLUDED_COSUPPORT_XML_XERCES_HANDLER_HPP
+#define _INCLUDED_COSUPPORT_XML_XERCES_HANDLER_HPP
 
-#include "xerces_support.hpp"
-#include <xercesc/util/BinInputStream.hpp>
 #include <istream>
-#include <boost/noncopyable.hpp>
+#include <ostream>
+#include <map>
 
-#include <xercesc/util/XercesVersion.hpp>
+#include <xercesc/parsers/XercesDOMParser.hpp>
+#include <xercesc/sax/HandlerBase.hpp>
+
+#include "common.hpp"
 
 namespace CoSupport { namespace XML { namespace Xerces {
 
-  class StdIstreamInputStream
-  : public XN::BinInputStream, private boost::noncopyable {
+  class Handler: public XercesInitializer {
   private:
-    std::istream &in;
+    typedef Handler this_type;
+
+    XN::DOMImplementation         *domImpl; // we don't own this pointer
+    ScopedXMLPtr<XN::DOMDocument>  domDocument;
   public:
-    StdIstreamInputStream(std::istream &in)
-      : in(in) {}
+    Handler();
 
-#if XERCES_VERSION_MAJOR == 2
-    unsigned int curPos() const
-      { return in.tellg(); }
+    void setTopElementName(XStr const &topElementName_)
+      { topElementName = topElementName_; }
+    XStr getTopElementName() const
+      { return topElementName; }
 
-    unsigned int readBytes(XMLByte *const toFill, unsigned int maxToRead) {
-      in.read(reinterpret_cast<char *>(toFill), maxToRead);
-      return in.gcount();
-    }
-#elif XERCES_VERSION_MAJOR >= 3
-    XMLFilePos  curPos() const
-      { return in.tellg(); }
+    void setDTDUrl(XStr const &dtdUrl_)
+      { dtdUrl = dtdUrl_; }
+    XStr getDTDUrl() const
+      { return dtdUrl; }
+    void setDTD(XStr const &dtdStr_)
+      { dtdStr = dtdStr_; dtdGiven = true; }
+    XStr getDTD() const
+      { return dtdStr; }
 
-    XMLSize_t   readBytes(XMLByte *const toFill, const XMLSize_t maxToRead) {
-      in.read(reinterpret_cast<char *>(toFill), maxToRead);
-      return in.gcount();
-    }
+    void setXSDUrl(XStr const &xsdUrl_)
+      { xsdUrl = xsdUrl_; }
+    XStr getXSDUrl() const
+      { return xsdUrl; }
+    void setXSD(XStr const &xsdStr_)
+      { xsdStr = xsdStr_; xsdGiven = true; }
+    XStr getXSD() const
+      { return xsdStr; }
 
-    /*
-     * Return the "out-of-band" content type for the data supplied by this input
-     * stream in the form of the media-type production (mime type with optional
-     * parameters such as encoding) as defined by the HTTP 1.1 specification.
-     */
-    const XMLCh *getContentType () const;
-#endif // XERCES_VERSION_MAJOR >= 3
+    void load(std::string const &xmlFileName);
+    void load(std::istream &xmlInputStream);
+    void createEmpty();
+
+    void save(std::string const &xmlFileName) const;
+    void save(std::ostream &xmlOutputStream) const;
+
+    const XN::DOMDocument *getDocument() const;
+    XN::DOMDocument *getDocument();
+
+    ~Handler();
+  protected:
+    XStr topElementName;
+
+    XStr dtdUrl,   xsdUrl;
+    XStr dtdStr,   xsdStr;
+    bool dtdGiven, xsdGiven;
+
+    void load(XN::InputSource &in);
+    void save(XN::XMLFormatTarget *myFormTarget) const;
   };
-
+  
 } } } // namespace CoSupport::XML::Xerces
 
-#endif // _INCLUDED_COSUPPORT_XML_XERCES_STDISTREAMINPUTSTREAM_HPP
+#endif // _INCLUDED_COSUPPORT_XML_XERCES_HANDLER_HPP

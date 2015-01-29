@@ -1,6 +1,6 @@
-// vim: set sw=2 ts=8:
+// vim: set sw=2 sts=2 ts=8 et syn=cpp:
 /*
- * Copyright (c) 2015-2015 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -33,10 +33,8 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_XML_XERCES_SUPPORT_HPP
-#define _INCLUDED_COSUPPORT_XML_XERCES_SUPPORT_HPP
+#include <CoSupport/XML/Xerces/StdOstreamFormatTarget.hpp>
 
-#warning "This is a deprecated header, please use CoSupport/XML/Xerces/common.hpp"
-#include "Xerces/common.hpp"
+namespace CoSupport { namespace XML { namespace Xerces {
 
-#endif // _INCLUDED_COSUPPORT_XML_XERCES_SUPPORT_HPP
+} } } // namespace CoSupport::XML::Xerces
