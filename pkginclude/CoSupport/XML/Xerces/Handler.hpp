@@ -65,19 +65,17 @@ namespace CoSupport { namespace XML { namespace Xerces {
       { dtdUrl = dtdUrl_; }
     XStr getDTDUrl() const
       { return dtdUrl; }
-    void setDTD(XStr const &dtdStr_)
-      { dtdStr = dtdStr_; dtdGiven = true; }
-    XStr getDTD() const
-      { return dtdStr; }
+    void setDTD(std::string const &dtdStr_);
+    void setDTD(char const *dtdBuf_);
+    void setDTD(char const *dtdBuf_, size_t dtdSize_);
 
     void setXSDUrl(XStr const &xsdUrl_)
       { xsdUrl = xsdUrl_; }
     XStr getXSDUrl() const
       { return xsdUrl; }
-    void setXSD(XStr const &xsdStr_)
-      { xsdStr = xsdStr_; xsdGiven = true; }
-    XStr getXSD() const
-      { return xsdStr; }
+    void setXSD(std::string const &xsdStr_);
+    void setXSD(char const *xsdBuf_);
+    void setXSD(char const *xsdBuf_, size_t xsdSize_);
 
     void load(std::string const &xmlFileName);
     void load(std::istream &xmlInputStream);
@@ -93,9 +91,10 @@ namespace CoSupport { namespace XML { namespace Xerces {
   protected:
     XStr topElementName;
 
-    XStr dtdUrl,   xsdUrl;
-    XStr dtdStr,   xsdStr;
-    bool dtdGiven, xsdGiven;
+    XStr         dtdUrl,   xsdUrl;
+    std::string  dtdStr,   xsdStr;
+    char const  *dtdBuf,  *xsdBuf;
+    size_t       dtdSize,  xsdSize;
 
     void load(XN::InputSource &in);
     void save(XN::XMLFormatTarget *myFormTarget) const;
