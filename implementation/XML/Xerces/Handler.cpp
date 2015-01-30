@@ -60,6 +60,39 @@
 
 namespace CoSupport { namespace XML { namespace Xerces {
 
+  DOMErrorHandler::DOMErrorHandler(std::ostream &outDbg)
+    : outDbg(outDbg), failed(false) {}
+
+  /**
+   * Implementation of the DOM ErrorHandler interface
+   */
+  bool DOMErrorHandler::handleError(const XN::DOMError &domError){
+    outDbg << "Xerces DOMError: ";
+    switch (domError.getSeverity()) {
+      case XN::DOMError::DOM_SEVERITY_WARNING:
+        outDbg << "Warning at file ";
+        break;
+      case XN::DOMError::DOM_SEVERITY_ERROR:
+        outDbg << "Error at file ";
+        failed = true;
+        break;
+      case XN::DOMError::DOM_SEVERITY_FATAL_ERROR:
+        outDbg << "Fatal error at file ";
+        failed = true;
+        break;
+#ifndef NDEBUG
+      default:
+        assert(!"Unhandled domError.getSeverity() level!");
+#endif
+    }
+    XMLCh const *uri = domError.getLocation()->getURI();
+    outDbg << (uri ? NStr(uri) : NStr("unknown file or stream"))
+         << ", line " << domError.getLocation()->getLineNumber()
+         << ", char " << domError.getLocation()->getColumnNumber()
+         << "\n  Message: " << static_cast<const XMLCh *const>(domError.getMessage()) << std::endl;
+    return !failed;
+  }
+
   Handler::Handler()
     : dtdBuf(NULL),    xsdBuf(NULL),
       dtdSize(0),      xsdSize(0)
@@ -152,7 +185,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
     try {
       std::ostringstream parseErrors;
       // create an error handler
-      DOMParserErrorHandler<std::ostream> errorHandler(parseErrors);
+      DOMErrorHandler errorHandler(parseErrors);
       // We need a wrapper for the input source
       XN::Wrapper4InputSource   src(&in, false /* don't free &in */);
 #if XERCES_VERSION_MAJOR >= 3
