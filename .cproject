@@ -26,7 +26,11 @@
 					<folderInfo id="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.2003312537." name="/" resourcePath="">
 						<toolChain id="org.eclipse.linuxtools.cdt.autotools.core.toolChain.182454571" name="GNU Autotools Toolchain" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolChain">
 							<targetPlatform id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.targetPlatform.632901540" isAbstract="false" name="GNU Autotools Target Platform" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.targetPlatform"/>
-							<builder arguments="-j8" buildPath="${workspace_loc:/Support}/../obj/${ProjName}" command="make" id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder.760337321" keepEnvironmentInBuildfile="false" managedBuildOn="true" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder"/>
+							<builder arguments="-j8" buildPath="${workspace_loc:/Support}/../obj/${ProjName}" command="make" id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder.760337321" keepEnvironmentInBuildfile="false" managedBuildOn="true" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder">
+								<outputEntries>
+									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="obj"/>
+								</outputEntries>
+							</builder>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure.1816456039" name="configure" superClass="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure">
 								<option id="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name.2120538368" name="Name" superClass="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name" value="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.2003312537" valueType="string"/>
 							</tool>
