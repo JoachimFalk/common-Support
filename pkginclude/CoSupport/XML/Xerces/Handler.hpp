@@ -47,6 +47,30 @@
 
 namespace CoSupport { namespace XML { namespace Xerces {
 
+  /**
+   * Simple error handler to be installed in a parser
+   */
+  class DOMErrorHandler
+  : public XN::DOMErrorHandler,
+    private boost::noncopyable {
+  public:
+    DOMErrorHandler(std::ostream &outDbg);
+
+    /**
+     * Implementation of the DOM ErrorHandler interface
+     */
+    bool handleError(const XN::DOMError &domError);
+
+    /**
+     * Check if an error occurred.
+     */
+    bool parseFailed()
+      { return failed; }
+  private:
+    std::ostream &outDbg;
+    bool          failed;
+  };
+
   class Handler: public XercesInitializer {
   private:
     typedef Handler this_type;
