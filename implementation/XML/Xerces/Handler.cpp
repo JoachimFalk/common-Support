@@ -61,7 +61,8 @@
 namespace CoSupport { namespace XML { namespace Xerces {
 
   Handler::Handler()
-    : dtdGiven(false), xsdGiven(false)
+    : dtdBuf(NULL),    xsdBuf(NULL),
+      dtdSize(0),      xsdSize(0)
   {
 //  // process xml
 //  static const XMLCh gLS[] = { XN::chLatin_L, XN::chLatin_S, XN::chNull };
@@ -69,6 +70,39 @@ namespace CoSupport { namespace XML { namespace Xerces {
     domImpl = XN::DOMImplementationRegistry::getDOMImplementation(XMLCH("XML 1.0"));
     assert(domImpl != NULL);
   }
+
+  void Handler::setDTD(std::string const &dtdStr_) {
+    dtdStr   = dtdStr_;
+    dtdBuf   = dtdStr.c_str();
+    dtdSize  = dtdStr.size();
+  }
+  void Handler::setDTD(char const *dtdBuf_) {
+    dtdStr  = "";
+    dtdBuf  = dtdBuf_;
+    dtdSize = dtdBuf != NULL ? strlen(dtdBuf) : 0;
+  }
+  void Handler::setDTD(char const *dtdBuf_, size_t dtdSize_) {
+    dtdStr  = "";
+    dtdBuf  = dtdBuf_;
+    dtdSize = dtdBuf != NULL ? dtdSize_ : 0;
+  }
+
+  void Handler::setXSD(std::string const &xsdStr_) {
+    xsdStr   = xsdStr_;
+    xsdBuf   = xsdStr.c_str();
+    xsdSize  = xsdStr.size();
+  }
+  void Handler::setXSD(char const *xsdBuf_) {
+    xsdStr  = "";
+    xsdBuf  = xsdBuf_;
+    xsdSize = xsdBuf != NULL ? strlen(xsdBuf) : 0;
+  }
+  void Handler::setXSD(char const *xsdBuf_, size_t xsdSize_) {
+    xsdStr  = "";
+    xsdBuf  = xsdBuf_;
+    xsdSize = xsdBuf != NULL ? xsdSize_ : 0;
+  }
+
 
   void Handler::load(std::string const &xmlFileName) {
     XN::LocalFileInputSource src(XStr(xmlFileName).c_str());
@@ -240,10 +274,13 @@ namespace CoSupport { namespace XML { namespace Xerces {
       if (!xsdUrl.empty()) {
 //      domParser->setProperty(XN::XMLUni::fgXercesSchemaExternalSchemaLocation, (void *) xsdUrl.c_str());
         domParser->setProperty(XN::XMLUni::fgXercesSchemaExternalNoNameSpaceSchemaLocation, (void *) xsdUrl.c_str());
-        if (xsdGiven) {
+        if (xsdBuf) {
           // Preload XSD
 //        XN::LocalFileInputSource xsdIn(XStr(xsdUrl).c_str());
-          XN::MemBufInputSource xsdIn(xsdStr.c_str(), xsdStr.size(), xsdUrl.c_str());
+          XN::MemBufInputSource xsdIn(
+              reinterpret_cast<XMLByte const *>(xsdBuf),
+              xsdSize,
+              xsdUrl.c_str());
           // We need a wrapper for the XSD source
           XN::Wrapper4InputSource xsdSrc(&xsdIn, false /* don't free &xsdIn */);
           sassert(domParser->loadGrammar(xsdSrc, XN::Grammar::SchemaGrammarType, true) != NULL);
@@ -251,10 +288,13 @@ namespace CoSupport { namespace XML { namespace Xerces {
       }
       
       if (!dtdUrl.empty()) {
-        if (dtdGiven) {
+        if (dtdBuf) {
           // Preload DTD
 //        XN::LocalFileInputSource dtdIn(XStr(dtdUrl).c_str());
-          XN::MemBufInputSource dtdIn(dtdStr.c_str(), dtdStr.size(), dtdUrl.c_str());
+          XN::MemBufInputSource dtdIn(
+              reinterpret_cast<XMLByte const *>(dtdBuf),
+              dtdSize,
+              dtdUrl.c_str());
           // We need a wrapper for the DTD source
           XN::Wrapper4InputSource dtdSrc(&dtdIn, false /* don't free &dtdIn */);
           sassert(domParser->loadGrammar(dtdSrc, XN::Grammar::DTDGrammarType, true) != NULL);
