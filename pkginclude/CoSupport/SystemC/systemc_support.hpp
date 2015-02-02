@@ -560,7 +560,7 @@ namespace CoSupport { namespace SystemC {
     void insert(EventType &e) {
       if (eventList.insert(&e).second) {
         e.addListener(this);
-        if (!e.isActive() && ++missing == 0)
+        if (!e.isActive() && missing++ == 0)
           resetListener();
       }
     }
