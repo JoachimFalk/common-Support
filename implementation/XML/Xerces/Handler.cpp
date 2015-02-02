@@ -355,6 +355,10 @@ namespace CoSupport { namespace XML { namespace Xerces {
       assert(domDocument != NULL);
       assert(getDocument()->getDocumentElement() != NULL);
     }
+    catch (std::runtime_error &err) {
+      // std::runtime_error exceptions don't need a translation
+      throw;
+    }
     catch (const XN::XMLException &toCatch) {
       throw std::runtime_error(
           "Handler::load: Error while parsing XML file: "
@@ -369,10 +373,10 @@ namespace CoSupport { namespace XML { namespace Xerces {
       XMLCh errText[maxChars + 1];
       if (XN::DOMImplementation::loadDOMExceptionMsg(toCatch.code, errText, maxChars))
         msg << " \"" << errText << "\"";
-      throw(std::runtime_error(msg.str().c_str()));
+      throw std::runtime_error(msg.str().c_str());
     }
     catch (...) {
-      throw(std::runtime_error("Handler::load: Unexpected exception while parsing XML!"));
+      throw std::runtime_error("Handler::load: Unexpected exception while parsing XML!");
     }
   }
 
