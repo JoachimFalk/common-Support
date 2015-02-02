@@ -356,27 +356,44 @@ int sc_main(int argc, char *argv[]) {
     assert(graphScheduler0); // it is empty
     assert(!topMoC);         // it is empty
 
-
     topMoC            |= graphScheduler0;
+    assert(topMoC);
 
     graphMoC          |= graphTrans0;
+    assert(graphMoC);
     graphMoC          |= graphTrans1;
+    assert(graphMoC);
 
     graphScheduler0   &= graphMoC;
+    assert(graphScheduler0);
 
     graphTrans0       &= ap00;
+    assert(!graphTrans0); // has one inactive event
     graphTrans0       &= ap01;
+    assert(!graphTrans0); // has two inactive events
+    assert(graphMoC);     // has one inactive and one active and_lists
+
+    graphMoC.remove(graphTrans1);
+    assert(!graphMoC);    // has one inactive and_lists
+    graphMoC.insert(graphTrans1);
+    assert(graphMoC);     // has one inactive and one active and_lists
 
     graphTrans1       &= ap10;
-    graphTrans1       &= ap11;
-
-    assert(!graphTrans0); // has an inactive event
-    assert(!graphTrans1); // has two inactive events
-
+    assert(!graphTrans1); // has one inactive event
     assert(!graphMoC);    // has two inactive and_lists
+    graphTrans1.remove(ap10);
+    assert(graphTrans1);  // is empty
+    assert(graphMoC);     // has one inactive and one active and_lists
+    graphTrans1       &= ap10;
+    assert(!graphTrans1); // has one inactive event
+    assert(!graphMoC);    // has two inactive and_lists
+
+    graphTrans1       &= ap11;
+    assert(!graphTrans1); // has two inactive events
+    assert(!graphMoC);    // has two inactive and_lists
+
     assert(!graphScheduler0);     // at least one inactive or_list
     assert(!topMoC);              // has an inactive and_list
-
 
     ////
     notify(ap00);
@@ -460,12 +477,12 @@ int sc_main(int argc, char *argv[]) {
     graphTrans1       &= ap10;
     graphTrans1       &= ap11;
 
-    assert(!graphTrans0); // has an inactive event
-    assert(!graphTrans1); // has two inactive events
+    assert(!graphTrans0);       // has an inactive event
+    assert(!graphTrans1);       // has two inactive events
 
-    assert(!graphMoC);    // has two inactive and_lists
-    assert(!graphScheduler0);     // at least one inactive or_list
-    assert(!topMoC);              // has an inactive and_list
+    assert(!graphMoC);          // has two inactive and_lists
+    assert(!graphScheduler0);   // at least one inactive or_list
+    assert(!topMoC);            // has an inactive and_list
 
 
     ////
