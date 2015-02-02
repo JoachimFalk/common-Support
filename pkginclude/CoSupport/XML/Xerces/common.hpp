@@ -439,6 +439,9 @@ namespace CoSupport { namespace XML { namespace Xerces {
         return attrValueText;
       }
     };
+    template <>
+    struct GetNodeValueAs<XMLCh const *>
+    : public GetNodeValueAs<XMLCh *> {};
 
     template <>
     struct GetNodeValueAs<XStr> {
@@ -498,6 +501,9 @@ namespace CoSupport { namespace XML { namespace Xerces {
         node->setNodeValue(value);
       }
     };
+    template <>
+    struct SetNodeValueFrom<XMLCh const *>
+    : public SetNodeValueFrom<XMLCh *> {};
 
     template <>
     struct SetNodeValueFrom<XStr> {
