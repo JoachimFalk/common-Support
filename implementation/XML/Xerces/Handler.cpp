@@ -150,7 +150,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
   void Handler::createEmpty() {
     // build empty XML document
     assert(!topElementName.empty());
-    XN::DOMDocumentType *type = dtdUrl.empty()
+    XN::DOMDocumentType *type = dtdUrl.empty() || !xsdUrl.empty()
       ? NULL
       : domImpl->createDocumentType(topElementName, NULL, dtdUrl);
     domDocument.reset(domImpl->createDocument(NULL, topElementName, type));
