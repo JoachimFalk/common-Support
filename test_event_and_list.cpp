@@ -238,7 +238,7 @@ int sc_main(int argc, char *argv[]) {
   m_waiterII w2("w2"); 
   sc_start(100000, SC_NS);
 
-/*  Event* a = new Event();
+  Event* a = new Event();
   Event* b = new Event();
 
   EventAndList<EventWaiter> l;
@@ -255,13 +255,13 @@ int sc_main(int argc, char *argv[]) {
   l.remove(*a); // trigger 4
 
   b->reset(); // trigger 5
-  outDbg << "deleting " << *b << std::endl;
+  std::cout << "deleting " << *b << std::endl;
   delete b; // trigger 6
 
   l &= *a; // trigger 7
   l.clear(); // trigger 8
 
-  l.delListener(&bl);*/
+  l.delListener(&bl);
   
   return 0;
 }
