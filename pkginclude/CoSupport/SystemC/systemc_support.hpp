@@ -812,16 +812,16 @@ namespace CoSupport { namespace SystemC {
     }
   }
 
-class RefCountEvent
-: public CoSupport::SmartPtr::RefCountObject, public Event {
-public:
-  typedef RefCountEvent this_type;
-public:
-  RefCountEvent(bool startNotified = false)
-    : Event(startNotified) {}
-};
+  class RefCountEvent
+  : public CoSupport::SmartPtr::RefCountObject, public Event {
+  public:
+    typedef RefCountEvent this_type;
+  public:
+    RefCountEvent(bool startNotified = false)
+      : Event(startNotified) {}
+  };
 
-typedef boost::intrusive_ptr<RefCountEvent> RefCountEventPtr;
+  typedef boost::intrusive_ptr<RefCountEvent> RefCountEventPtr;
 
 } } // CoSupport::SystemC
 
