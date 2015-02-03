@@ -33,10 +33,25 @@
  */
 
 #include <iostream>
+#include <iomanip>
 
 #include <CoSupport/SystemC/systemc_support.hpp>
 
 using namespace CoSupport::SystemC;
+
+enum STATUS {
+  TESTED = 0,
+  NOTIFIED,
+  DENOTIFIED,
+  NOTIFIED_TESTED,
+  DENOTIFIED_TESTED,
+};
+
+std::pair<sc_core::sc_time, STATUS> w1Status(sc_core::sc_time(), DENOTIFIED_TESTED);
+std::pair<sc_core::sc_time, STATUS> w2Status(sc_core::sc_time(), DENOTIFIED_TESTED);
+
+static
+void update();
 
 class m_signaler: public sc_module {
 public:
@@ -48,12 +63,16 @@ protected:
   void process() {
     while ( 1 ) {
       wait(stime, SC_NS);
-      //std::cout << name() << ": Event notify at " << sc_time_stamp().to_default_time_units() << "ns" << std::endl;
-      s = true; notify(e);
+      std::cout << "@" << std::setw(5) << std::setfill('0') << sc_time_stamp().to_default_time_units() << "ns: " << name() << ": Event notified" << std::endl;
+      s = true;
+      update();
+      notify(e);
       //std::cout << std::endl;
       wait(rtime, SC_NS);
-      //std::cout << name() << ": Event reset at " << sc_time_stamp().to_default_time_units() << "ns" << std::endl;
-      s = false; reset(e);
+      std::cout << "@" << std::setw(5) << std::setfill('0') << sc_time_stamp().to_default_time_units() << "ns: " << name() << ": Event reseted" << std::endl;
+      s = false;
+      update();
+      reset(e);
       //std::cout << std::endl;
     }
   }
@@ -74,6 +93,41 @@ m_signaler a4("a4",  12, 13);
 m_signaler a5("a5",   3,  1);
 m_signaler a6("a6",  63, 57);
 
+static
+void update() {
+  if (w1Status.first != sc_time_stamp())
+    assert(
+      w1Status.second == TESTED ||
+      w1Status.second == NOTIFIED_TESTED ||
+      w1Status.second == DENOTIFIED_TESTED);
+  if (a2.s && a3.s && a4.s && a5.s && a6.s) {
+    if (w1Status.second != NOTIFIED_TESTED) {
+      w1Status.first  = sc_time_stamp();
+      w1Status.second = NOTIFIED;
+    }
+  } else {
+    if (w1Status.second != DENOTIFIED_TESTED) {
+      w1Status.first  = sc_time_stamp();
+      w1Status.second = DENOTIFIED;
+    }
+  }
+  if (w2Status.first != sc_time_stamp())
+    assert(
+      w2Status.second == TESTED ||
+      w2Status.second == NOTIFIED_TESTED ||
+      w2Status.second == DENOTIFIED_TESTED);
+  if (a1.s && a2.s && a3.s && a4.s && a5.s) {
+    if (w2Status.second != NOTIFIED_TESTED) {
+      w2Status.first  = sc_time_stamp();
+      w2Status.second = NOTIFIED;
+    }
+  } else {
+    if (w2Status.second != DENOTIFIED_TESTED) {
+      w2Status.first  = sc_time_stamp();
+      w2Status.second = DENOTIFIED;
+    }
+  }
+}
 
 class m_waiterI: public sc_module {
   EventAndList<EventWaiter> e;
@@ -81,14 +135,36 @@ class m_waiterI: public sc_module {
   void process() {
     while ( 1 ) {
       CoSupport::SystemC::wait(e);
-      std::cout << name() << ": Event waited at " << sc_time_stamp().to_default_time_units() << "ns";
-      if (e.reset()) {
+      std::cout << "@" << std::setw(5) << std::setfill('0') << sc_time_stamp().to_default_time_units() << "ns: " << name() << ": wait returned";
+      assert(
+          w1Status.second == NOTIFIED ||
+          w1Status.second == DENOTIFIED);
+      assert(w1Status.first == sc_time_stamp());
+      if (e) {
         std::cout << " (active) " << std::endl;
-        assert(a2.s && a3.s && a4.s && a5.s && a6.s);
+        assert(w1Status.second == NOTIFIED);
+        w1Status.second = NOTIFIED_TESTED;
+        assert(
+          a2.e.isActive() &&
+          a3.e.isActive() &&
+          a4.e.isActive() &&
+          a5.e.isActive() &&
+          a6.e.isActive());
         a2.s = a3.s = a4.s = a5.s = a6.s = false;
-      }
-      else {
+        update();
+        assert(w1Status.second == DENOTIFIED);
+        w1Status.second = DENOTIFIED_TESTED;
+        sassert(e.reset());
+        assert(
+          !a2.e.isActive() &&
+          !a3.e.isActive() &&
+          !a4.e.isActive() &&
+          !a5.e.isActive() &&
+          !a6.e.isActive());
+      } else {
         std::cout << " (inactive) " << std::endl;
+        assert(w1Status.second == DENOTIFIED);
+        w1Status.second = DENOTIFIED_TESTED;
       }
     }
   }
@@ -108,14 +184,36 @@ class m_waiterII: public sc_module {
   void process() {
     while ( 1 ) {
       CoSupport::SystemC::wait(e);
-      std::cout << name() << ": Event waited at " << sc_time_stamp().to_default_time_units() << "ns";
-      if (e.reset()) {
+      std::cout << "@" << std::setw(5) << std::setfill('0') << sc_time_stamp().to_default_time_units() << "ns: " << name() << ": wait returned";
+      assert(
+          w2Status.second == NOTIFIED ||
+          w2Status.second == DENOTIFIED);
+      assert(w2Status.first == sc_time_stamp());
+      if (e) {
         std::cout << " (active) " << std::endl;
-        assert(a1.s && a2.s && a3.s && a4.s && a5.s);
+        assert(w2Status.second == NOTIFIED);
+        w2Status.second = NOTIFIED_TESTED;
+        assert(
+          a1.e.isActive() &&
+          a2.e.isActive() &&
+          a3.e.isActive() &&
+          a4.e.isActive() &&
+          a5.e.isActive());
         a1.s = a2.s = a3.s = a4.s = a5.s = false;
-      }
-      else {
+        update();
+        assert(w2Status.second == DENOTIFIED);
+        w2Status.second = DENOTIFIED_TESTED;
+        sassert(e.reset());
+        assert(
+          !a1.e.isActive() &&
+          !a2.e.isActive() &&
+          !a3.e.isActive() &&
+          !a4.e.isActive() &&
+          !a5.e.isActive());
+      } else {
         std::cout << " (inactive) " << std::endl;
+        assert(w2Status.second == DENOTIFIED);
+        w2Status.second = DENOTIFIED_TESTED;
       }
     }
   }
