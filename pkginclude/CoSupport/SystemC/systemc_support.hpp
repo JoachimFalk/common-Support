@@ -786,21 +786,31 @@ namespace CoSupport { namespace SystemC {
     if (!e) {
       struct _: public EventListener {
         sc_event sce;
+#ifndef NDEBUG
+        EventWaiter &e;
+#endif //NDEBUG
+        _(EventWaiter &e)
+#ifndef NDEBUG
+          : e(e)
+#endif //NDEBUG
+        {
+          e.addListener(this);
+        }
         void signaled(EventWaiter *_e) {
+          assert(_e == &e);
+          assert(_e->isActive());
+          _e->delListener(this);
           sce.notify();
           return;// false;
         }
         void eventDestroyed(EventWaiter *_e) {
-          // sce.notify();
+          // waiting for destroyed events will hang forever
         }
         virtual ~_() {}
-      } w;
-      e.addListener(&w);
+      } w(e);
       wait(w.sce);
-      e.delListener(&w);
     }
   }
-
 
 class RefCountEvent
 : public CoSupport::SmartPtr::RefCountObject, public Event {
