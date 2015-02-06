@@ -380,7 +380,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
         domParser->setFeature(XN::XMLUni::fgXercesSkipDTDValidation, true);
 
         if (xsdBuf) {
-          std::cout << "preload xsd " << xsdUrl << std::endl;
+//        std::cout << "preload xsd " << xsdUrl << std::endl;
           // Preload XSD
 //        XN::LocalFileInputSource xsdIn(XStr(xsdUrl).c_str());
           XN::MemBufInputSource xsdIn(
@@ -399,7 +399,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
       
       if (!dtdUrl.empty()) {
         if (dtdBuf) {
-          std::cout << "preload dtd " << dtdUrl << std::endl;
+//        std::cout << "preload dtd " << dtdUrl << std::endl;
           // Preload DTD
 //        XN::LocalFileInputSource dtdIn(XStr(dtdUrl).c_str());
           XN::MemBufInputSource dtdIn(
