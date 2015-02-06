@@ -52,16 +52,10 @@
 #include <xercesc/framework/Wrapper4InputSource.hpp>
 #include <xercesc/framework/XMLGrammarDescription.hpp>
 
-#include <xercesc/internal/XMLGrammarPoolImpl.hpp>
-
 #include <xercesc/dom/DOMImplementationRegistry.hpp>
 
-#include <xercesc/validators/DTD/DTDValidator.hpp>
-#include <xercesc/validators/schema/SchemaValidator.hpp>
-
-#include <xercesc/parsers/DOMBuilderImpl.hpp>
-//#include <xercesc/parsers/XercesDOMParser.hpp>
-//#include <xercesc/sax/HandlerBase.hpp>
+//#include <xercesc/validators/DTD/DTDValidator.hpp>
+//#include <xercesc/validators/schema/SchemaValidator.hpp>
 
 #include <xercesc/util/XercesVersion.hpp>
 
@@ -69,8 +63,37 @@
 
 #include <algorithm>    // std::find_if
 
+#include <xercesc/dom/DOMErrorHandler.hpp>
+#if XERCES_VERSION_MAJOR == 2
+# include <xercesc/internal/XMLGrammarPoolImpl.hpp>
+# include <xercesc/dom/DOMEntityResolver.hpp>
+#endif //XERCES_VERSION_MAJOR == 2
 
 namespace CoSupport { namespace XML { namespace Xerces {
+
+  /**
+   * Simple error handler to be installed in a parser
+   */
+  class DOMErrorHandler
+  : public XN::DOMErrorHandler,
+    private boost::noncopyable {
+  public:
+    DOMErrorHandler(std::ostream &outDbg);
+
+    /**
+     * Implementation of the DOM ErrorHandler interface
+     */
+    bool handleError(const XN::DOMError &domError);
+
+    /**
+     * Check if an error occurred.
+     */
+    bool parseFailed()
+      { return failed; }
+  private:
+    std::ostream &outDbg;
+    bool          failed;
+  };
 
   DOMErrorHandler::DOMErrorHandler(std::ostream &outDbg)
     : outDbg(outDbg), failed(false) {}
@@ -105,6 +128,31 @@ namespace CoSupport { namespace XML { namespace Xerces {
     return !failed;
   }
 
+#if XERCES_VERSION_MAJOR == 2
+  class DOMEntityResolver
+  : public XN::DOMEntityResolver,
+    private boost::noncopyable {
+  public:
+    DOMEntityResolver();
+
+
+    /**
+     * Allow the application to resolve external entities.
+     *
+     * The DOMBuilder will call this method before opening any external
+     * entity except the top-level document entity (including the
+     * external DTD subset, external entities referenced within the
+     * DTD, and external entities referenced within the document
+     * element): the application may request that the DOMBuilder resolve
+     * the entity itself, that it use an alternative URI, or that it
+     * use an entirely different input source.
+     */
+    XN::DOMInputSource *resolveEntity(
+        XMLCh const *const publicId,
+        XMLCh const *const sytemId,
+        XMLCh const *const baseURI);
+  };
+
   DOMEntityResolver::DOMEntityResolver() {
   }
 
@@ -125,6 +173,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
         true /* free XN::MemBufInputSource */
       );
   }
+#endif //XERCES_VERSION_MAJOR == 2
 
   Handler::Handler()
     : dtdBuf(NULL),    xsdBuf(NULL),
@@ -219,8 +268,6 @@ namespace CoSupport { namespace XML { namespace Xerces {
       std::ostringstream parseErrors;
       // create an error handler
       DOMErrorHandler errorHandler(parseErrors);
-      // create an entitiy resolver
-      DOMEntityResolver entityResolver;
 
       // We need a wrapper for the input source
       XN::Wrapper4InputSource   src(&in, false /* don't free &in */);
@@ -283,8 +330,11 @@ namespace CoSupport { namespace XML { namespace Xerces {
       // Same as above but for Xerces-C++ 2 series, cf.
       // http://xerces.apache.org/xerces-c/program-dom-2.html
       
-//      XN::XMLGrammarPool* gramPool(
-//        new XN::XMLGrammarPoolImpl(XN::XMLPlatformUtils::fgMemoryManager));
+      // create an entitiy resolver
+      DOMEntityResolver entityResolver;
+      
+//    XN::XMLGrammarPool* gramPool(
+//      new XN::XMLGrammarPoolImpl(XN::XMLPlatformUtils::fgMemoryManager));
       // Get a parser
       ScopedXMLPtr<XN::DOMBuilder> domParser;
       if (!dtdUrl.empty() && xsdUrl.empty()) {

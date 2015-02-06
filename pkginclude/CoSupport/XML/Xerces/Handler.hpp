@@ -40,62 +40,12 @@
 #include <ostream>
 #include <map>
 
-#include <xercesc/dom/DOMErrorHandler.hpp>
-#include <xercesc/dom/DOMEntityResolver.hpp>
 #include <xercesc/dom/DOMImplementation.hpp>
 #include <xercesc/sax/InputSource.hpp>
 
 #include "common.hpp"
 
 namespace CoSupport { namespace XML { namespace Xerces {
-
-  /**
-   * Simple error handler to be installed in a parser
-   */
-  class DOMErrorHandler
-  : public XN::DOMErrorHandler,
-    private boost::noncopyable {
-  public:
-    DOMErrorHandler(std::ostream &outDbg);
-
-    /**
-     * Implementation of the DOM ErrorHandler interface
-     */
-    bool handleError(const XN::DOMError &domError);
-
-    /**
-     * Check if an error occurred.
-     */
-    bool parseFailed()
-      { return failed; }
-  private:
-    std::ostream &outDbg;
-    bool          failed;
-  };
-
-  class DOMEntityResolver
-  : public XN::DOMEntityResolver,
-    private boost::noncopyable {
-  public:
-    DOMEntityResolver();
-
-
-    /**
-     * Allow the application to resolve external entities.
-     *
-     * The DOMBuilder will call this method before opening any external
-     * entity except the top-level document entity (including the
-     * external DTD subset, external entities referenced within the
-     * DTD, and external entities referenced within the document
-     * element): the application may request that the DOMBuilder resolve
-     * the entity itself, that it use an alternative URI, or that it
-     * use an entirely different input source.
-     */
-    XN::DOMInputSource *resolveEntity(
-        XMLCh const *const publicId,
-        XMLCh const *const sytemId,
-        XMLCh const *const baseURI);
-  };
 
   class Handler: public XercesInitializer {
   private:
