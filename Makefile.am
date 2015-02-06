@@ -70,12 +70,14 @@ endif
 	     -e 's/\$${srctreemode_\(\w\+\)}/\$${\1}/g'			\
 	  < $^ > $@
 
+#%-xsd.c: %.xsd Makefile
 %-xsd.c: %.xsd
 	test -d  $(dir $*) || mkdir -p $(dir $*)
 	{ set -e; echo "static char const $(notdir $*)XSD[] ="; \
 	  sed -e 's/\(["\\]\)/\\\1/g' -e 's/^\(.*\)$$/  "\1\\n"/' $<; \
 	  echo ";"; \
 	} > $@
+#%-dtd.c: %.dtd Makefile
 %-dtd.c: %.dtd
 	test -d  $(dir $*) || mkdir -p $(dir $*)
 	{ set -e; echo "static char const $(notdir $*)DTD[] ="; \
