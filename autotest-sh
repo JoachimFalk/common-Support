@@ -20,12 +20,16 @@ bins="$bins test_event_and_list"
 bins="$bins test_event_or_list"
 bins="$bins test_facade"
 bins="$bins test_typename"
+bins="$bins test_xerces"
 
 for bin in $bins;
 do
   # set absolute path
   test_bin=$builddir/$bin
   gold=$golden_logs_dir/$bin.log #logfile has the name of the binary as prefix
+
+  TESTDATA=$golden_logs_dir/$bin
+  export TESTDATA
 
   # call binary
   $test_bin > $logoutfile 2> $err_log

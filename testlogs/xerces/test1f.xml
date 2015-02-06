@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<!DOCTYPE test1_top SYSTEM "test1-pass.dtd">
+<test1_top
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="test1-intern.xsd"/>

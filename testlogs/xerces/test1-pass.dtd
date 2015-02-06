@@ -1,0 +1,4 @@
+<!ELEMENT test1_top EMPTY>
+<!ATTLIST test1_top
+foo CDATA #IMPLIED
+bar ID #REQUIRED>

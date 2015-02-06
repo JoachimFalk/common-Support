@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<test1_top
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="test1-intern.xsd">
+  <flummy/>
+</test1_top>

@@ -1,0 +1,3 @@
+<?xml version="1.0"?>
+<!DOCTYPE test1_top SYSTEM "test1-pass.dtd">
+<test1_top bar="flummy"/>

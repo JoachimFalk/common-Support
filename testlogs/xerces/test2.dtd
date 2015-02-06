@@ -1,0 +1,6 @@
+<!ELEMENT test2_top EMPTY>
+<!ATTLIST test2_top
+xmlns:xsi CDATA #IMPLIED
+xsi:noNamespaceSchemaLocation CDATA #IMPLIED
+foo CDATA #IMPLIED
+bar ID #REQUIRED>
