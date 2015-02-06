@@ -1,0 +1,4 @@
+<!ELEMENT test2_top (#PCDATA)>
+<!ATTLIST test2_top
+foo CDATA #IMPLIED
+bar ID #REQUIRED>

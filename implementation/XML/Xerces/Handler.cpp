@@ -40,23 +40,35 @@
 #include <CoSupport/XML/Xerces/StdIstreamInputSource.hpp>
 
 #include <boost/noncopyable.hpp>
+//#include <boost/smart_ptr/scoped_ptr.hpp>
+
+
 
 #include <xercesc/validators/common/Grammar.hpp>
+
 #include <xercesc/framework/LocalFileFormatTarget.hpp>
 #include <xercesc/framework/LocalFileInputSource.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
 #include <xercesc/framework/Wrapper4InputSource.hpp>
-#include <xercesc/dom/DOMImplementation.hpp>
+#include <xercesc/framework/XMLGrammarDescription.hpp>
+
+#include <xercesc/internal/XMLGrammarPoolImpl.hpp>
+
 #include <xercesc/dom/DOMImplementationRegistry.hpp>
+
+#include <xercesc/validators/DTD/DTDValidator.hpp>
+#include <xercesc/validators/schema/SchemaValidator.hpp>
+
+#include <xercesc/parsers/DOMBuilderImpl.hpp>
+//#include <xercesc/parsers/XercesDOMParser.hpp>
+//#include <xercesc/sax/HandlerBase.hpp>
+
 #include <xercesc/util/XercesVersion.hpp>
 
 #include <sstream>
 
-//#include "../networkgraph-xsd.c" // get xsd
-////#include "../networkgraph-dtd.c" // get dtd
-//// DTD is ignored, i.e., domParser->setFeature(XN::XMLUni::fgXercesSkipDTDValidation, true).
-//// However, we still need a file to load. An empty one is sufficient!
-//static const XMLByte networkgraphDTD[] = ""; 
+#include <algorithm>    // std::find_if
+
 
 namespace CoSupport { namespace XML { namespace Xerces {
 
@@ -67,17 +79,17 @@ namespace CoSupport { namespace XML { namespace Xerces {
    * Implementation of the DOM ErrorHandler interface
    */
   bool DOMErrorHandler::handleError(const XN::DOMError &domError){
-    outDbg << "Xerces DOMError: ";
+    outDbg << "Xerces DOMError of severity ";
     switch (domError.getSeverity()) {
       case XN::DOMError::DOM_SEVERITY_WARNING:
-        outDbg << "Warning at file ";
+        outDbg << "warning at file ";
         break;
       case XN::DOMError::DOM_SEVERITY_ERROR:
-        outDbg << "Error at file ";
+        outDbg << "error at file ";
         failed = true;
         break;
       case XN::DOMError::DOM_SEVERITY_FATAL_ERROR:
-        outDbg << "Fatal error at file ";
+        outDbg << "fatal error at file ";
         failed = true;
         break;
 #ifndef NDEBUG
@@ -89,8 +101,29 @@ namespace CoSupport { namespace XML { namespace Xerces {
     outDbg << (uri ? NStr(uri) : NStr("unknown file or stream"))
          << ", line " << domError.getLocation()->getLineNumber()
          << ", char " << domError.getLocation()->getColumnNumber()
-         << "\n  Message: " << static_cast<const XMLCh *const>(domError.getMessage()) << std::endl;
+         << ": " << static_cast<const XMLCh *const>(domError.getMessage()) << std::endl;
     return !failed;
+  }
+
+  DOMEntityResolver::DOMEntityResolver() {
+  }
+
+  static
+  XMLByte const emptyXMLByte[] = {};
+  static
+  XMLCh const emptyXMLCh[] = { 0 };
+
+  XN::DOMInputSource *DOMEntityResolver::resolveEntity(
+      XMLCh const *const publicId,
+      XMLCh const *const sytemId,
+      XMLCh const *const baseURI) {
+    std::cout << "DOMEntityResolver::resolveEntity(" << publicId << ", " << sytemId << ", " << baseURI << ")" << std::endl;
+    return
+      // We need a wrapper for the empty entity source
+      new XN::Wrapper4InputSource(
+        new XN::MemBufInputSource(emptyXMLByte, sizeof(emptyXMLByte), sytemId),
+        true /* free XN::MemBufInputSource */
+      );
   }
 
   Handler::Handler()
@@ -186,6 +219,9 @@ namespace CoSupport { namespace XML { namespace Xerces {
       std::ostringstream parseErrors;
       // create an error handler
       DOMErrorHandler errorHandler(parseErrors);
+      // create an entitiy resolver
+      DOMEntityResolver entityResolver;
+
       // We need a wrapper for the input source
       XN::Wrapper4InputSource   src(&in, false /* don't free &in */);
 #if XERCES_VERSION_MAJOR >= 3
@@ -247,24 +283,35 @@ namespace CoSupport { namespace XML { namespace Xerces {
       // Same as above but for Xerces-C++ 2 series, cf.
       // http://xerces.apache.org/xerces-c/program-dom-2.html
       
+//      XN::XMLGrammarPool* gramPool(
+//        new XN::XMLGrammarPoolImpl(XN::XMLPlatformUtils::fgMemoryManager));
       // Get a parser
       ScopedXMLPtr<XN::DOMBuilder> domParser;
       if (!dtdUrl.empty() && xsdUrl.empty()) {
         // We use a DTD for verification
         domParser.reset(domImpl->createDOMBuilder(
             XN::DOMImplementationLS::MODE_SYNCHRONOUS,
-            XMLCH("http://www.w3.org/TR/REC-xml")));
+            XMLCH("http://www.w3.org/TR/REC-xml"),
+            XN::XMLPlatformUtils::fgMemoryManager/*,
+            gramPool*/));
       } else if (dtdUrl.empty() && !xsdUrl.empty()) {
         // We use a XSD for verification
         domParser.reset(domImpl->createDOMBuilder(
             XN::DOMImplementationLS::MODE_SYNCHRONOUS,
-            XMLCH("http://www.w3.org/2001/XMLSchema")));
+            XMLCH("http://www.w3.org/2001/XMLSchema"),
+            XN::XMLPlatformUtils::fgMemoryManager/*,
+            gramPool*/));
       } else {
         domParser.reset(domImpl->createDOMBuilder(
             XN::DOMImplementationLS::MODE_SYNCHRONOUS,
-            NULL));
+            NULL,
+            XN::XMLPlatformUtils::fgMemoryManager/*,
+            gramPool*/));
       }
       
+      // Set error handler.
+      domParser->setErrorHandler(&errorHandler);
+
       // Discard comment nodes in the document.
       domParser->setFeature(XN::XMLUni::fgDOMComments, false);
       
@@ -272,42 +319,68 @@ namespace CoSupport { namespace XML { namespace Xerces {
       domParser->setFeature(XN::XMLUni::fgDOMDatatypeNormalization, true);
       
       // Do not create EntityReference nodes in the DOM tree. No
-      // EntityReference nodes will be created, only the nodes
-      // corresponding to their fully expanded substitution text
-      // will be created.
+      // EntityReference nodes will be created, only the nodes corresponding to
+      // their fully expanded substitution text will be created.
       domParser->setFeature(XN::XMLUni::fgDOMEntities, false);
       
       // Do not include ignorable whitespace in the DOM tree.
       domParser->setFeature(XN::XMLUni::fgDOMWhitespaceInElementContent, false);
       
-      // Controls whether all validation errors are reported.
-      // - If this feature is set to true, the document must specify a grammar.
-      // - If this feature is set to false and document specifies a grammar,
-      //   that grammar might be parsed but no validation of the document
-      //   contents will be performed.
-      domParser->setFeature(XN::XMLUni::fgDOMValidation, true);
-      // Controls whether a external DTD is loaded. This feature is ignored and
-      // the DTD is always loaded when the validation feature is turned on.
-      domParser->setFeature(XN::XMLUni::fgXercesLoadExternalDTD, false);
-      // When this feature is on and the schema validation feature is on, then
-      // the parser will ignore the DTD, except for entities. 
-      domParser->setFeature(XN::XMLUni::fgXercesSkipDTDValidation, true);
-      // Enable the parser's schema support. If set to true, then namespace
-      // processing must also be turned on.
-      domParser->setFeature(XN::XMLUni::fgXercesSchema, true);
-      // Controls whether or not namespace processing is performed.  If the
-      // validation is on, then the document must contain a grammar that
-      // supports the use of namespaces
-      domParser->setFeature(XN::XMLUni::fgDOMNamespaces, true);
-      // Controls whether or not the schema itself is fully checked for
-      // additional errors that are time-consuming or memory-intensive to
-      // discover
-      domParser->setFeature(XN::XMLUni::fgXercesSchemaFullChecking, false);
-      
+      if (!xsdUrl.empty() || !dtdUrl.empty()) {
+        // Controls whether all validation errors are reported. If this feature
+        // is set to true, the document must specify a grammar. If this feature
+        // is set to false and document specifies a grammar, that grammar might
+        // be parsed but no validation of the document contents will be
+        // performed.
+        domParser->setFeature(XN::XMLUni::fgDOMValidation, true);
+        // If true, the parser will validate the document only if a grammar is
+        // specified.  If false (default), validation is determined by the
+        // state of the fgDOMValidation feature.
+        //domParser->setFeature(XN::XMLUni::fgDOMValidateIfSchema, false);
+        // Use cached grammar if it exists in the pool. If false (default),
+        // then we parse the schema grammar. If the
+        // fgXercesCacheGrammarFromParse feature is enabled, then this feature
+        // is set to true automatically and any setting to this feature by the
+        // user is a no-op.
+        domParser->setFeature(XN::XMLUni::fgXercesUseCachedGrammarInParse, true);
+        // If true, then the parser will not attempt to resolve the entity when
+        // the resolveEntity method returns NULL.  If false (default), then the
+        // the parser will attempt to resolve the entity when the resolveEntity
+        // method returns NULL.
+        // Don't load XSD or DTD entities from file system or via URL!
+        domParser->setFeature(XN::XMLUni::fgXercesDisableDefaultEntityResolution, true);
+        // Set entity resolver that always returns and empty object.
+        domParser->setEntityResolver(&entityResolver);
+      } else {
+        domParser->setFeature(XN::XMLUni::fgDOMValidation, false);
+        domParser->setFeature(XN::XMLUni::fgDOMValidateIfSchema, true);
+
+        // Controls whether a external DTD is loaded. This feature is ignored
+        // and the DTD is always loaded when the validation feature is turned
+        // on.  If true (default), the parser loads an external DTD.  If false,
+        // external DTD are ignored completely.  Note that this feature is
+        // ignored and a DTD is always loaded when validation is on.
+        //domParser->setFeature(XN::XMLUni::fgXercesLoadExternalDTD, false);
+      }
+
       if (!xsdUrl.empty()) {
-//      domParser->setProperty(XN::XMLUni::fgXercesSchemaExternalSchemaLocation, (void *) xsdUrl.c_str());
-        domParser->setProperty(XN::XMLUni::fgXercesSchemaExternalNoNameSpaceSchemaLocation, (void *) xsdUrl.c_str());
+        // Enable the parser's schema support. If set to true, then namespace
+        // processing must also be turned on.
+        domParser->setFeature(XN::XMLUni::fgXercesSchema, true);
+        // Controls whether or not namespace processing is performed.  If the
+        // validation is on, then the document must contain a grammar that
+        // supports the use of namespaces
+        domParser->setFeature(XN::XMLUni::fgDOMNamespaces, true);
+        // Controls whether or not the schema itself is fully checked for
+        // additional errors that are time-consuming or memory-intensive to
+        // discover
+        domParser->setFeature(XN::XMLUni::fgXercesSchemaFullChecking, false);
+        // When this feature is on and the schema validation feature is on,
+        // then the parser will ignore the DTD, except for entities.
+        domParser->setFeature(XN::XMLUni::fgXercesSkipDTDValidation, true);
+
         if (xsdBuf) {
+          std::cout << "preload xsd " << xsdUrl << std::endl;
           // Preload XSD
 //        XN::LocalFileInputSource xsdIn(XStr(xsdUrl).c_str());
           XN::MemBufInputSource xsdIn(
@@ -318,10 +391,15 @@ namespace CoSupport { namespace XML { namespace Xerces {
           XN::Wrapper4InputSource xsdSrc(&xsdIn, false /* don't free &xsdIn */);
           sassert(domParser->loadGrammar(xsdSrc, XN::Grammar::SchemaGrammarType, true) != NULL);
         }
+        domParser->setProperty(XN::XMLUni::fgXercesSchemaExternalSchemaLocation, (void *) emptyXMLCh);
+        domParser->setProperty(XN::XMLUni::fgXercesSchemaExternalNoNameSpaceSchemaLocation, (void *) xsdUrl.c_str());
+      } else {
+        domParser->setFeature(XN::XMLUni::fgXercesSchema, false);
       }
       
       if (!dtdUrl.empty()) {
         if (dtdBuf) {
+          std::cout << "preload dtd " << dtdUrl << std::endl;
           // Preload DTD
 //        XN::LocalFileInputSource dtdIn(XStr(dtdUrl).c_str());
           XN::MemBufInputSource dtdIn(
@@ -330,27 +408,49 @@ namespace CoSupport { namespace XML { namespace Xerces {
               dtdUrl.c_str());
           // We need a wrapper for the DTD source
           XN::Wrapper4InputSource dtdSrc(&dtdIn, false /* don't free &dtdIn */);
+          //XN::Grammar *gram = domParser->loadGrammar(dtdSrc, XN::Grammar::DTDGrammarType, false);
+          //assert(gram != NULL);
+          //gramPool->cacheGrammar(gram);
           sassert(domParser->loadGrammar(dtdSrc, XN::Grammar::DTDGrammarType, true) != NULL);
+
+          // Ignore a cached DTD when an XML document contains both an internal
+          // and external DTD, and the use cached grammar from parse option is
+          // enabled.  Currently, we do not allow using cached DTD grammar when
+          // an internal subset is present in the document. This option will
+          // only affect the behavior of the parser when an internal and
+          // external DTD both exist in a document (i.e. no effect if document
+          // has no internal subset).
+          domParser->setFeature(XN::XMLUni::fgXercesIgnoreCachedDTD, false);
         }
+        domParser->setProperty(XN::XMLUni::fgXercesSchemaExternalSchemaLocation, (void *) emptyXMLCh);
+        domParser->setProperty(XN::XMLUni::fgXercesSchemaExternalNoNameSpaceSchemaLocation, (void *) emptyXMLCh);
       }
 
-      // Instruct the parser to use the cached schema when processing XML documents.
-      domParser->setFeature(XN::XMLUni::fgXercesUseCachedGrammarInParse, true);
-      
+      // If true, then parser caches the grammar in the pool for re-use in subsequent parses.
+      // If false (defaul), the parser does not cache the grammar in the pool.
+      domParser->setFeature(XN::XMLUni::fgXercesCacheGrammarFromParse, false);
+
+/*    // Debug this! Did the preload work?
+      XN::RefHashTableOfEnumerator<XN::Grammar> iter = gramPool->getGrammarEnumerator();
+      while (iter.hasMoreElements()) {
+        XN::Grammar &gram = iter.nextElement();
+        std::cout << gram.getGrammarDescription()->getGrammarKey() << std::endl;
+      }
+ */
       // We will release the DOM document ourselves.
       domParser->setFeature (XN::XMLUni::fgXercesUserAdoptsDOMDocument, true);
-      
-      // Set error handler.
-      domParser->setErrorHandler (&errorHandler);
-      
-//    // reset document pool - clear all previous allocated data
-//    domParser->resetDocumentPool();                                    
       domDocument.reset(domParser->parse(src));
-#endif // XERCES_VERSION_MAJOR >= 3
+
+//    // reset document pool - clear all previous allocated data
+//    domParser->resetDocumentPool();
+
+#endif // XERCES_VERSION_MAJOR == 2
       //check if parsing failed
       if (errorHandler.parseFailed()) {
-//      outDbg << "Handler::load: Parsing of xml failed, aborting load!" << std::endl;
-        throw std::runtime_error("Malformed XML file: " + parseErrors.str());
+        std::string s(parseErrors.str());
+        // Trim whitespace and newline at end of string s
+        s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+        throw std::runtime_error(s);
       }
       assert(domDocument != NULL);
       assert(getDocument()->getDocumentElement() != NULL);

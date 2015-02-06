@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<!DOCTYPE test2_top SYSTEM "test2-intern.dtd">
+<test2_top bar="foo"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="test2-pass.xsd"></test2_top>

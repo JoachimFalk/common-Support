@@ -70,6 +70,23 @@ endif
 	     -e 's/\$${srctreemode_\(\w\+\)}/\$${\1}/g'			\
 	  < $^ > $@
 
+%-xsd.c: %.xsd
+	test -d  $(dir $*) || mkdir -p $(dir $*)
+	{ set -e; echo "static char const $(notdir $*)XSD[] ="; \
+	  sed -e 's/\(["\\]\)/\\\1/g' -e 's/^\(.*\)$$/  "\1\\n"/' $<; \
+	  echo ";"; \
+	} > $@
+%-dtd.c: %.dtd
+	test -d  $(dir $*) || mkdir -p $(dir $*)
+	{ set -e; echo "static char const $(notdir $*)DTD[] ="; \
+	  sed -e 's/\(["\\]\)/\\\1/g' -e 's/^\(.*\)$$/  "\1\\n"/' $<; \
+	  echo ";"; \
+	} > $@
+
+BUILT_SOURCES=				\
+	testlogs/xerces/test1-xsd.c	\
+	testlogs/xerces/test2-dtd.c
+
 lib_LTLIBRARIES=			\
 	libcosupport-initializer.la	\
 	libcosupport-smartptr.la	\
@@ -143,7 +160,9 @@ test_xerces_SOURCES		= test_xerces.cpp
 test_xerces_DEPENDENCIES	= libcosupport-xerces.la
 test_xerces_CPPFLAGS		= $(AM_CPPFLAGS) -std=gnu++0x
 test_xerces_LDFLAGS		= $(AM_LDFLAGS)	\
-	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-xerces)
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-xerces libcosupport-streams)
+test_xerces_LDADD		= \
+	-lboost_filesystem@BOOST_LIBMTPOSTFIX@ -lboost_system@BOOST_LIBMTPOSTFIX@
 endif
 
 if COSUPPORT_ENABLE_SYSTEMC

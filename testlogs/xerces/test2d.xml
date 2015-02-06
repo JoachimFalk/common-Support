@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<test2_top foo="foo"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="test2-pass.xsd">
+  <flummy/>
+</test2_top>
