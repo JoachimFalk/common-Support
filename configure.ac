@@ -29,6 +29,9 @@ AC_PROG_CPP
 AC_PROG_LIBTOOL
 PKG_PROG_PKG_CONFIG
 
+AC_PATH_PROG([BASH], [bash], [/bin:/usr/bin])
+AC_SUBST([BASH])
+
 dnl AC_DISABLE_STATIC
 # We need AC_ENABLE_SHARED for the libsgx python bindings
 AC_ENABLE_SHARED
