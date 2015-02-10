@@ -28,7 +28,7 @@ do
   test_bin=$builddir/$bin
   gold=$golden_logs_dir/$bin.log #logfile has the name of the binary as prefix
 
-  TESTDATA=$golden_logs_dir/$bin
+  TESTDATA=$golden_logs_dir/${bin##test_}
   export TESTDATA
 
   # call binary
