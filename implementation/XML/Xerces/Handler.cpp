@@ -149,7 +149,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
      */
     XN::DOMInputSource *resolveEntity(
         XMLCh const *const publicId,
-        XMLCh const *const sytemId,
+        XMLCh const *const systemId,
         XMLCh const *const baseURI);
   };
 
@@ -163,13 +163,17 @@ namespace CoSupport { namespace XML { namespace Xerces {
 
   XN::DOMInputSource *DOMEntityResolver::resolveEntity(
       XMLCh const *const publicId,
-      XMLCh const *const sytemId,
+      XMLCh const *const systemId,
       XMLCh const *const baseURI) {
-    std::cout << "DOMEntityResolver::resolveEntity(" << publicId << ", " << sytemId << ", " << baseURI << ")" << std::endl;
+/*  std::cout << "DOMEntityResolver::resolveEntity("
+        << (publicId ? NStr(publicId) : NStr("NULL")) << ", "
+        << (systemId ? NStr(systemId) : NStr("NULL")) << ", "
+        << (baseURI  ? NStr(baseURI)  : NStr("NULL"))
+        << ")" << std::endl; */
     return
       // We need a wrapper for the empty entity source
       new XN::Wrapper4InputSource(
-        new XN::MemBufInputSource(emptyXMLByte, sizeof(emptyXMLByte), sytemId),
+        new XN::MemBufInputSource(emptyXMLByte, sizeof(emptyXMLByte), systemId),
         true /* free XN::MemBufInputSource */
       );
   }
