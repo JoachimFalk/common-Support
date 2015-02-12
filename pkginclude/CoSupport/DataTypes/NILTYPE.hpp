@@ -41,7 +41,7 @@ namespace CoSupport { namespace DataTypes {
 /// be defined. The NILTYPE should be used for
 /// default template paramters to represent the
 /// empty type and for pointers which should only
-/// be assignable from the NULL ptr.
+/// be assignable from the nullptr ptr.
 struct NILTYPE;
 
 } } // namespace CoSupport::DataTypes

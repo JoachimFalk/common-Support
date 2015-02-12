@@ -36,6 +36,8 @@
 #ifndef _INCLUDED_COSUPPORT_BOOST_PYTHON_REGISTER_TOFROM_PYTHON_CONVERTER_STDLIST_HPP
 #define _INCLUDED_COSUPPORT_BOOST_PYTHON_REGISTER_TOFROM_PYTHON_CONVERTER_STDLIST_HPP
 
+#include "../../compatibility-glue/nullptr.h"
+
 #include <list>
 #include "init_namespace.hpp"
 
@@ -66,7 +68,7 @@ public:
 
   static void *convertible(PyObject *obj_ptr) {
     /// Check if PyObject is iterable.
-    return PyObject_GetIter(obj_ptr) ? obj_ptr : NULL;
+    return PyObject_GetIter(obj_ptr) ? obj_ptr : nullptr;
   }
 
   static void construct(

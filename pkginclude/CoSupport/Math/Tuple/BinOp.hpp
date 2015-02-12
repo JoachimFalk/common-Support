@@ -36,6 +36,7 @@
 #ifndef _INCLUDED_COSUPPORT_MATH_TUPLE_BINOP_HPP
 #define _INCLUDED_COSUPPORT_MATH_TUPLE_BINOP_HPP
 
+#include "../../compatibility-glue/nullptr.h"
 #include "../../DataTypes/VectorInterface.hpp"
 
 #include <boost/type_traits/remove_reference.hpp>
@@ -75,7 +76,7 @@ namespace Detail {
 #define MAKE_BIN_OP(NAME,op)                                                  \
   template<class TA, class TB>                                                \
   struct NAME {                                                               \
-    BOOST_TYPEOF_NESTED_TYPEDEF_TPL(nested, (*(TA*)(NULL)) op (*(TB*)(NULL))) \
+    BOOST_TYPEOF_NESTED_TYPEDEF_TPL(nested, (*(TA*)(nullptr)) op (*(TB*)(nullptr))) \
     typedef typename nested::type result_type;                                \
                                                                               \
     template<class ITERA, class ITERB>                                        \

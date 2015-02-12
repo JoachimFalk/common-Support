@@ -37,6 +37,7 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_MAYBEVALUE_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_MAYBEVALUE_HPP
 
+#include "../compatibility-glue/nullptr.h"
 #include "MaybeValueInterface.hpp"
 
 namespace CoSupport { namespace DataTypes {
@@ -64,7 +65,7 @@ protected:
   void implUndef()
     { value = boost::blank(); }
   bool implIsDefined() const
-    { return boost::get<boost::blank>(&value) == NULL; }
+    { return boost::get<boost::blank>(&value) == nullptr; }
 public:
   MaybeValue(boost::blank value = boost::blank())
     : value(value) {}

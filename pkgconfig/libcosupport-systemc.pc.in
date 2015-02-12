@@ -26,4 +26,4 @@ URL: http://www12.informatik.uni-erlangen.de/research/systemoc
 #Requires.private:
 Libs: -L${srctreemode_libdir} @SYSTEMC_LDFLAGS@ ${srctreemode_libdir}/libcosupport-systemc.la -lsystemc
 Libs.private:
-Cflags: -I${srctreemode_includedir} @SYSTEMC_INCLUDE@
+Cflags: @AM_CPPFLAGS@ @AM_CXXFLAGS@ -I${srctreemode_includedir} @SYSTEMC_INCLUDE@

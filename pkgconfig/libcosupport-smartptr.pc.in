@@ -26,4 +26,4 @@ URL: http://www12.informatik.uni-erlangen.de/research/systemoc
 #Requires.private:
 Libs: -L${srctreemode_libdir} ${srctreemode_libdir}/libcosupport-smartptr.la
 Libs.private: @BOOST_LDFLAGS@ -lboost_thread@BOOST_LIBMTPOSTFIX@
-Cflags: -I${srctreemode_includedir} @BOOST_INCLUDE@
+Cflags: @AM_CPPFLAGS@ @AM_CXXFLAGS@ -I${srctreemode_includedir} @BOOST_INCLUDE@

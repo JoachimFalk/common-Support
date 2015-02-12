@@ -4,6 +4,8 @@
 #include <iostream>
 #include <fstream>
 
+#include <CoSupport/compatibility-glue/nullptr.h>
+
 #include <CoSupport/Streams/DebugOStream.hpp>
 
 namespace CS = CoSupport::Streams;
@@ -11,7 +13,7 @@ namespace CS = CoSupport::Streams;
 int main(int argc, char *argv[]) {
   if (argc <= 1) {
     std::cerr << "Usage: "
-      << (argv[0] != NULL ? argv[0] : "???")
+      << (argv[0] != nullptr ? argv[0] : "???")
       << " testfile.txt" << std::endl;
     exit(-1);
   }

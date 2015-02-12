@@ -36,6 +36,7 @@
 #ifndef _INCLUDED_COSUPPORT_BOOST_PROGRAM_OPTIONS_VALUE_SEMANTIC_HPP
 #define _INCLUDED_COSUPPORT_BOOST_PROGRAM_OPTIONS_VALUE_SEMANTIC_HPP
 
+#include "../../compatibility-glue/nullptr.h"
 #include "init_namespace.hpp"
 
 #include <boost/program_options/value_semantic.hpp>
@@ -52,7 +53,7 @@ class typed_value: public ::boost::program_options::typed_value<T, charT> {
   typedef ::boost::program_options::typed_value<T, charT> base_type;
 public:
   /// Ctor. The 'store_to' parameter tells where to store
-  /// the value when it's known. The parameter can be NULL.
+  /// the value when it's known. The parameter can be nullptr.
   typed_value(T *store_to) 
     : base_type(store_to), m_override_allowed(false) {} 
 
@@ -81,7 +82,7 @@ private:
     value of option into program variable.
 */
 template<class T>
-typed_value<T> *value(T *v = NULL) {
+typed_value<T> *value(T *v = nullptr) {
   return new typed_value<T>(v);
 }
 

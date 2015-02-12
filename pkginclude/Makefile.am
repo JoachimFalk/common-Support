@@ -54,6 +54,7 @@ nobase_include_HEADERS = \
 	CoSupport/boost/python/register_tofrom_python_converter_stdlist.hpp \
 	CoSupport/commondefs.h \
 	CoSupport/compatibility-glue/integertypes.h \
+	CoSupport/compatibility-glue/nullptr.h \
 	CoSupport/cosupport_config.h \
 	CoSupport/DataTypes/ArrayFifo.hpp \
 	CoSupport/DataTypes/bit_buffer.hpp \

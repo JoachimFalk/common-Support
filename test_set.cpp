@@ -37,6 +37,8 @@
 
 #include <map>
 
+#include <CoSupport/compatibility-glue/nullptr.h>
+
 #include <CoSupport/Streams/stl_output_for_set.hpp>
 #include <CoSupport/Streams/stl_output_for_map.hpp>
 
@@ -409,7 +411,7 @@ int main(int argc, char *argv[]) {
       FSet::Ref ra(*pa);
       ra.insert("bar");
       assert(pa->size() == 2);
-      pa = NULL;
+      pa = nullptr;
       assert(ra.size() == 2);
       pa = &ra;
     }
@@ -418,7 +420,7 @@ int main(int argc, char *argv[]) {
       FSet::iterator iter = pa->begin();
       assert(*iter == "bar");
       assert(*--pa->end() == "foo");
-      pa = NULL;
+      pa = nullptr;
       assert(*iter == "bar");
     }
   }

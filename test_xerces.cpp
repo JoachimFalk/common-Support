@@ -39,6 +39,8 @@
 #include <list>
 #include <iostream>
 
+#include <CoSupport/compatibility-glue/nullptr.h>
+
 #include <CoSupport/Streams/DebugOStream.hpp>
 
 #include <CoSupport/XML/Xerces/common.hpp>
@@ -57,7 +59,7 @@ int main(int argc, char *argv[]) {
   CoSupport::Streams::DebugOStream out(std::cout);
 
   const char *testdata = getenv("TESTDATA");
-  assert(testdata != NULL);
+  assert(testdata != nullptr);
 
   bool allTestsPassed = true;
 

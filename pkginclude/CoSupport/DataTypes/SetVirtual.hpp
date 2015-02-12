@@ -37,6 +37,7 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_SETVIRTUAL_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_SETVIRTUAL_HPP
 
+#include "../compatibility-glue/nullptr.h"
 #include "SetInterface.hpp"
 
 #include <set>
@@ -180,7 +181,7 @@ namespace Detail {
     friend class boost::iterator_core_access;
     friend class SetVirtualIterBaseAccessor<CONTAINER>::type;
   public:
-    SetVirtualIter(): impl(NULL) {}
+    SetVirtualIter(): impl(nullptr) {}
     SetVirtualIter(this_type const &rhs): impl(rhs.impl->duplicate()) {}
 
     this_type &operator =(this_type const &rhs) { impl.reset(rhs.impl->duplicate()); return *this; }
@@ -224,7 +225,9 @@ namespace Detail {
       { return _impl()->implPEnd(); }
     std::pair<typename this_type::iterator, bool>  implInsert(const typename this_type::value_type &v) {
       std::pair<typename Impl::VIter *, bool> retval(_impl()->implPInsert(v));
-      return std::pair<typename this_type::iterator, bool>(retval.first, retval.second);
+      return std::pair<typename this_type::iterator, bool>(
+          typename this_type::iterator(retval.first),
+          retval.second);
     }
     void                          implErase(const typename this_type::iterator &iter)
       { return _impl()->implErase(*iter.impl); }

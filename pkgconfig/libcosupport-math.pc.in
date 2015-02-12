@@ -26,4 +26,4 @@ URL: http://www12.informatik.uni-erlangen.de/research/systemoc
 #Requires.private:
 Libs: -L${srctreemode_libdir} ${srctreemode_libdir}/libcosupport-math.la
 #Libs.private: -lm
-Cflags: -I${srctreemode_includedir}
+Cflags: @AM_CPPFLAGS@ @AM_CXXFLAGS@ -I${srctreemode_includedir}

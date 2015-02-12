@@ -35,6 +35,9 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_FACADE_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_FACADE_HPP
 
+#include "../compatibility-glue/nullptr.h"
+#include "../commondefs.h"
+
 #include <boost/intrusive_ptr.hpp>
 
 #include "ValueInterface.hpp"
@@ -45,8 +48,6 @@
 #include <boost/type_traits/is_same.hpp>
 
 #include <boost/utility/enable_if.hpp>
-
-#include "../commondefs.h"
 
 namespace CoSupport { namespace DataTypes {
 
@@ -86,8 +87,8 @@ public:
   FacadePtr(typename T::SmartPtr const &p)
     : storage(typename FacadeTraits<T>::Ref(p)) {}
 
-  FacadePtr(typename C<typename T::FFType>::type *ptr = NULL)
-    : storage(ptr == NULL
+  FacadePtr(typename C<typename T::FFType>::type *ptr = nullptr)
+    : storage(ptr == nullptr
         ? typename T::_StorageType()
         : static_cast<typename T::_StorageType const &>(*ptr)) {}
 
@@ -98,14 +99,14 @@ public:
       typename boost::enable_if<boost::is_convertible<
         typename CC<TT>::type *,
         typename C<T>::type *>, void
-      >::type *dummy = NULL)
+      >::type *dummy = nullptr)
     : storage(ptr.storage) {}
   template <class DD, typename TT, typename CRCR>
   FacadePtr(ValueInterface<DD,TT,CRCR> const &value,
       typename boost::enable_if<boost::is_convertible<
         TT,
         this_type>, void
-      >::type *dummy = NULL)
+      >::type *dummy = nullptr)
     : storage(this_type(value.get()).storage) {}
 
   deref_type  operator *() const {
@@ -123,9 +124,9 @@ public:
   // is valid] in (true != true), which is WRONG!!!)
   // -> define all comparison operators
   operator unspecified_bool_type() const {
-    return storage.pImpl.get() != NULL
+    return storage.pImpl.get() != nullptr
       ? static_cast<unspecified_bool_type>(&this_type::operator *)
-      : NULL;
+      : nullptr;
   }
 
   this_type &operator =(const this_type &rhs)
@@ -159,13 +160,13 @@ bool operator ==(
   { return lhs.storage.pImpl.get() == rhs.get(); }
 template <class T2, template <class> class C2>
 bool operator ==(
-    typeof(NULL) null,
+    std::nullptr_t null,
     FacadePtr<T2,C2> const &rhs)
   { assert(!null); return !rhs; }
 template <class T1, template <class> class C1>
 bool operator ==(
     FacadePtr<T1,C1> const &lhs,
-    typeof(NULL) null)
+    std::nullptr_t null)
   { assert(!null); return !lhs; }
 
 template <class T1, template <class> class C1, class T2, template <class> class C2>
@@ -195,13 +196,13 @@ bool operator !=(
   { return lhs.storage.pImpl.get() != rhs.get(); }
 template <class T2, template <class> class C2>
 bool operator !=(
-    typeof(NULL) null,
+    std::nullptr_t null,
     FacadePtr<T2,C2> const &rhs)
   { assert(!null); return rhs; }
 template <class T1, template <class> class C1>
 bool operator !=(
     FacadePtr<T1,C1> const &lhs,
-    typeof(NULL) null)
+    std::nullptr_t null)
   { assert(!null); return lhs; }
 
 template <class T1, template <class> class C1, class T2, template <class> class C2>
@@ -369,7 +370,7 @@ namespace Detail {
     operator unspecified_bool_type() const {
       return getDerived()->get()
         ? static_cast<unspecified_bool_type>(&this_type::getDerived)
-        : static_cast<unspecified_bool_type>(NULL);
+        : static_cast<unspecified_bool_type>(0);
     }
   };
 

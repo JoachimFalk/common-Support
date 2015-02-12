@@ -32,6 +32,8 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
+#include <CoSupport/compatibility-glue/nullptr.h>
+
 #include <CoSupport/Initializer/BasicInitializer.hpp>
 
 #include <boost/thread/mutex.hpp>
@@ -43,40 +45,40 @@ namespace Detail {
   typedef GlobalBasicInitializerRegistry::Map Map;
 
   size_t  GlobalBasicInitializerRegistry::refCount = 0;
-  void   *GlobalBasicInitializerRegistry::mtx      = NULL;
-  Map    *GlobalBasicInitializerRegistry::map      = NULL;
+  void   *GlobalBasicInitializerRegistry::mtx      = nullptr;
+  Map    *GlobalBasicInitializerRegistry::map      = nullptr;
 
   // This should be the first global object derived from
   // GlobalBasicInitializerRegistry. But you can never tell
   // as the C++ standard leaves global object initialization
   // sequence for global objects in different link units as
   // implementation defined!
-  static GlobalBasicInitializerRegistry globalStartup(NULL,NULL,NULL);
+  static GlobalBasicInitializerRegistry globalStartup(nullptr,nullptr,nullptr);
 
   GlobalBasicInitializerRegistry::GlobalBasicInitializerRegistry(
     const char *_key, void (_initialize)(), void (_terminate)())
     : key(_key), initialize(_initialize), terminate(_terminate)
   {
     // I surely hope global object ctor/dtor calls don't have any races!
-    if (mtx == NULL) {
+    if (mtx == nullptr) {
       // I am the first global object ctor!
-      assert(refCount == 0 && map == NULL);
+      assert(refCount == 0 && map == nullptr);
       // Allocate map and mutex
       try {
         mtx = new boost::mutex();
         map = new Map();
       } catch (...) {
-        delete reinterpret_cast<boost::mutex *>(mtx); mtx = NULL;
-        delete map; map = NULL;
+        delete reinterpret_cast<boost::mutex *>(mtx); mtx = nullptr;
+        delete map; map = nullptr;
         throw;
       }
     }
     // mtx and map must be setup!
-    assert(mtx != NULL && map != NULL);
+    assert(mtx != nullptr && map != nullptr);
     {
       boost::mutex::scoped_lock lck(*reinterpret_cast<boost::mutex *>(mtx));
       ++refCount;
-      if (_key != NULL && map->operator[](_key)++ == 0)
+      if (_key != nullptr && map->operator[](_key)++ == 0)
         (*_initialize)();
     }
   }
@@ -84,11 +86,11 @@ namespace Detail {
   GlobalBasicInitializerRegistry::~GlobalBasicInitializerRegistry() {
     bool cleanup;
     // mtx and map must be setup!
-    assert(mtx != NULL && map != NULL);
+    assert(mtx != nullptr && map != nullptr);
     {
       boost::mutex::scoped_lock lck(*reinterpret_cast<boost::mutex *>(mtx));
       cleanup = --refCount == 0;
-      if (key != NULL && --map->operator[](key) == 0) {
+      if (key != nullptr && --map->operator[](key) == 0) {
         map->erase(key);
         (*terminate)();
       }
@@ -97,8 +99,8 @@ namespace Detail {
     if (cleanup) {
       // I am the last global object dtor!
       assert(map->empty());
-      delete reinterpret_cast<boost::mutex *>(mtx); mtx = NULL;
-      delete map; map = NULL;
+      delete reinterpret_cast<boost::mutex *>(mtx); mtx = nullptr;
+      delete map; map = nullptr;
     }
   }
 

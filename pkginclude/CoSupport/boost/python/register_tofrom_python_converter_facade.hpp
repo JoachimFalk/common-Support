@@ -36,7 +36,9 @@
 #ifndef _INCLUDED_COSUPPORT_BOOST_PYTHON_REGISTER_TOFROM_PYTHON_CONVERTER_FACADE_HPP
 #define _INCLUDED_COSUPPORT_BOOST_PYTHON_REGISTER_TOFROM_PYTHON_CONVERTER_FACADE_HPP
 
+#include "../../compatibility-glue/nullptr.h"
 #include "../../DataTypes/Facade.hpp"
+
 #include "init_namespace.hpp"
 
 #include <boost/python.hpp>
@@ -66,7 +68,7 @@ public:
     if (obj_ptr != Py_None) {
       boost::python::extract<typename T::ImplType *> proxy(obj_ptr);
       if (!proxy.check())
-        return NULL;
+        return nullptr;
     }
     return obj_ptr;
   }
@@ -104,7 +106,7 @@ public:
   }
 
   static PyObject *convert(value_type const &v) {
-    return boost::python::incref((v != NULL
+    return boost::python::incref((v != nullptr
       ? boost::python::object(typename T::SmartPtr(CoSupport::DataTypes::FacadeCoreAccess::getImpl(v)))
       : boost::python::object()).ptr());
   }
@@ -142,7 +144,7 @@ public:
       if (proxy.check())
         return obj_ptr;
     }
-    return NULL;
+    return nullptr;
   }
 
   static void construct(

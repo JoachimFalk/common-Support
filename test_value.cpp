@@ -36,6 +36,8 @@
 #include <cassert>
 #include <cmath>
 
+#include <CoSupport/compatibility-glue/nullptr.h>
+
 #include <CoSupport/DataTypes/ValueInterface.hpp>
 #include <CoSupport/DataTypes/ValueVirtual.hpp>
 #include <CoSupport/DataTypes/ValueFacade.hpp>
@@ -402,7 +404,7 @@ int main(int argc, char *argv[]) {
     B b;
     C c;
 
-    Value<A *>                  pan(NULL);
+    Value<A *>                  pan(nullptr);
     ValueVirtual<A *>           pa1(&a);
     Value<B *>                  pb1(&b);
     ValueVirtualInterface<C *> *pc1Impl(new Detail::ValueVirtualImpl<C *>(&c));
@@ -413,14 +415,14 @@ int main(int argc, char *argv[]) {
 
     assert(pc1Impl->implGet() == pc1);
 
-    CHECK_OP_VW(NULL,==,pan); CHECK_OP_WV(pan,==,NULL);
-    CHECK_OP_VW(NULL,!=,pan); CHECK_OP_WV(pan,!=,NULL);
-    CHECK_OP_VW(NULL,==,pa1); CHECK_OP_WV(pa1,==,NULL);
-    CHECK_OP_VW(NULL,!=,pa1); CHECK_OP_WV(pa1,!=,NULL);
-    CHECK_OP_VW(NULL,==,pb1); CHECK_OP_WV(pb1,==,NULL);
-    CHECK_OP_VW(NULL,!=,pb1); CHECK_OP_WV(pb1,!=,NULL);
-    CHECK_OP_VW(NULL,==,pc1); CHECK_OP_WV(pc1,==,NULL);
-    CHECK_OP_VW(NULL,!=,pc1); CHECK_OP_WV(pc1,!=,NULL);
+    CHECK_OP_VW(nullptr,==,pan); CHECK_OP_WV(pan,==,nullptr);
+    CHECK_OP_VW(nullptr,!=,pan); CHECK_OP_WV(pan,!=,nullptr);
+    CHECK_OP_VW(nullptr,==,pa1); CHECK_OP_WV(pa1,==,nullptr);
+    CHECK_OP_VW(nullptr,!=,pa1); CHECK_OP_WV(pa1,!=,nullptr);
+    CHECK_OP_VW(nullptr,==,pb1); CHECK_OP_WV(pb1,==,nullptr);
+    CHECK_OP_VW(nullptr,!=,pb1); CHECK_OP_WV(pb1,!=,nullptr);
+    CHECK_OP_VW(nullptr,==,pc1); CHECK_OP_WV(pc1,==,nullptr);
+    CHECK_OP_VW(nullptr,!=,pc1); CHECK_OP_WV(pc1,!=,nullptr);
 
 
     CHECK_OP_WW(pa1,==,pa1); CHECK_OP_WW(pb1,==,pb1); CHECK_OP_WW(pc1,==,pc1);

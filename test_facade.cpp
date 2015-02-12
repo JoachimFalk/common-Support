@@ -34,6 +34,8 @@
 
 #include <iostream>
 
+#include <CoSupport/compatibility-glue/nullptr.h>
+
 #include <CoSupport/sassert.h>
 #include <CoSupport/String/TypeName.hpp>
 
@@ -538,10 +540,10 @@ int main(int argc, char *argv[]) {
   result = R <  &crc; \
   result = R >= &crc; \
   result = R >  &crc; \
-  result = R != NULL; \
-  result = R == NULL; \
-  result = NULL != R; \
-  result = NULL == R; \
+  result = R != nullptr; \
+  result = R == nullptr; \
+  result = nullptr != R; \
+  result = nullptr == R; \
   result = R;
 
   TESTCOMPOPS(pa)
@@ -567,14 +569,14 @@ int main(int argc, char *argv[]) {
   sassert(pa == cpa);
   pa = &a; cpa = &ca;
   sassert(pa != cpa);
-  pa = NULL;
-  sassert(pa == NULL);
-  cpa = NULL;
-  sassert(cpa == NULL);
+  pa = nullptr;
+  sassert(pa == nullptr);
+  cpa = nullptr;
+  sassert(cpa == nullptr);
   pa = &a;
-  sassert(pa != NULL);
+  sassert(pa != nullptr);
   cpa = &a;
-  sassert(cpa != NULL);
+  sassert(cpa != nullptr);
 
 #define TYPENAME(x) #x << ": " << CoSupport::String::TypeName<x>::name()
 

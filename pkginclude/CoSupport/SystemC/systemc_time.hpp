@@ -35,13 +35,16 @@
 
 #ifndef _INCLUDED_SYSTEMC_TIME_SUPPORT_HPP
 #define _INCLUDED_SYSTEMC_TIME_SUPPORT_HPP
+
+#include "../compatibility-glue/nullptr.h"
+#include "../sassert.h"
+
 #include <systemc.h>
 #include <algorithm>
 
 #include <iostream>
 #include <sstream>
 
-#include "../sassert.h"
 namespace CoSupport { namespace SystemC {
   /**
    * \brief Takes a string representation of a time (e.g. a delay)
@@ -50,7 +53,7 @@ namespace CoSupport { namespace SystemC {
   static sc_time createSCTime(const char* timeString)
     throw(std::string)
   {
-    assert(timeString != NULL);
+    assert(timeString != nullptr);
     double value = -1;
     std::string unit;
 

@@ -23,6 +23,8 @@ ACJF_CHECK_CROSSTOOL([AR], [ar])
 ACJF_CHECK_CROSSTOOL([RANLIB], [ranlib])
 ACJF_CHECK_CROSSTOOL([NM], [nm])
 
+ACJF_ENABLE_DIALECTS_C99_CXX11
+
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_PROG_CXXCPP
 AC_PROG_CPP
@@ -40,6 +42,7 @@ ACJF_ARG_DEBUG([yes], [], [-DNDEBUG])
 if test x"$enable_debug" = x"yes"; then
   AC_DEFINE([COSUPPORT_ENABLE_DEBUG], [yes], [Defined if debug support is enabled])
 fi
+
 
 AC_CONFIG_HEADER([config.h pkginclude/CoSupport/cosupport_config.h])
 
@@ -59,6 +62,43 @@ AC_EXEEXT
 # Checks for header files.
 # AC_FUNC_ALLOCA
 # AC_HEADER_STDC
+
+AC_LANG_PUSH([C++])
+AC_CHECK_HEADERS([cstddef stddef.h])
+AC_LANG_POP
+
+# create defines appropriate for pkginclude/CoSupport/cosupport_config.h
+if test x"$ac_cv_header_cstddef" = x"yes"; then
+  AC_DEFINE([COSUPPORT_HAVE_CSTDDEF], [1], [Define to 1 if you have the <cstddef> header file.])
+fi
+if test x"$ac_cv_header_stddef_h" = x"yes"; then
+  AC_DEFINE([COSUPPORT_HAVE_STDDEF_H], [1], [Define to 1 if you have the <stddef.h> header file.])
+fi
+
+AC_CACHE_CHECK([wether the C++ compiler supports nullptr],
+ [acjf_cv_cxx11_nullptr_support],
+ [AC_LANG_PUSH([C++])
+  acjf_var_CXXFLAGS="${CXXFLAGS}"
+  CXXFLAGS="${acjf_var_CXXFLAGS} ${CXX11FLAGS}"
+  AC_COMPILE_IFELSE(
+   [AC_LANG_PROGRAM([[
+#if defined(HAVE_CSTDDEF)
+# include <cstddef>
+#elif defined(HAVE_STDDEF_H)
+# include <stddef.h>
+#else
+# include <stdlib.h>
+#endif
+]], [[
+std::nullptr_t mynull = nullptr;
+]], [])],
+   [AC_MSG_RESULT([yes]); acjf_cv_cxx11_nullptr_support="yes";],
+   [AC_MSG_RESULT([no]); acjf_cv_cxx11_nullptr_support="no";])
+  CXXFLAGS="${acjf_var_CXXFLAGS}"
+  AC_LANG_POP])
+if test x"$acjf_cv_cxx11_nullptr_support" = x"yes"; then
+  AC_DEFINE([COSUPPORT_HAVE_STD_NULLPTR_T], [1], [Define to 1 if you have the <cstddef> header defining the std::nullptr_t data type.])
+fi
 
 # These tests are all for compatibility-glue/integertypes.h
 AC_CHECK_HEADERS([stddef.h stdint.h stdlib.h sys/types.h])

@@ -44,9 +44,11 @@
 #include <set>
 #include <algorithm>
 
-#include "../sassert.h"
-#include <CoSupport/SmartPtr/RefCountObject.hpp>
 #include <CoSupport/cosupport_config.h>
+
+#include "../sassert.h"
+#include "../compatibility-glue/nullptr.h"
+#include "../SmartPtr/RefCountObject.hpp"
 
 #include <boost/functional/hash.hpp>
 #include <boost/intrusive_ptr.hpp>
@@ -146,7 +148,7 @@ namespace CoSupport { namespace SystemC {
     }
 
     // forward event resets to all listeners except the specified one
-    void resetListener(EventListener *el = NULL) {
+    void resetListener(EventListener *el = nullptr) {
 #ifdef CHECK_SIGNALED_CONSISTENCY
       usedCounter++;
 #endif //CHECK_SIGNALED_CONSISTENCY 
@@ -176,10 +178,10 @@ namespace CoSupport { namespace SystemC {
     
     // determines if this instance is active
     operator unspecified_bool_type() const
-      { return isActive() ? &this_type::addListener : NULL; }
+      { return isActive() ? &this_type::addListener : nullptr; }
 
     // identify active element; reset it if found; return it 
-    virtual EventWaiter *reset(EventListener *el = NULL) = 0;
+    virtual EventWaiter *reset(EventListener *el = nullptr) = 0;
 
     // el must NOT be in set previously
     void addListener(EventListener *el, bool laxly = false)
@@ -260,9 +262,9 @@ namespace CoSupport { namespace SystemC {
     }
 
     // set event to inactive; first time deactivation will notify
-    // listeners (returns event upon notification; NULL otherwise)
-    EventWaiter *reset(EventListener *el = NULL) {
-      EventWaiter *ret = NULL;
+    // listeners (returns event upon notification; nullptr otherwise)
+    EventWaiter *reset(EventListener *el = nullptr) {
+      EventWaiter *ret = nullptr;
       if(isActive()) {
         active = false;
         resetListener(el);
@@ -404,11 +406,11 @@ namespace CoSupport { namespace SystemC {
           return **i;
       }
       assert(0);
-      return *((EventType*)(NULL));
+      return *((EventType*)(nullptr));
     }
 
-    EventWaiter *reset(EventListener *el = NULL) {
-      EventWaiter *ret = NULL;
+    EventWaiter *reset(EventListener *el = nullptr) {
+      EventWaiter *ret = nullptr;
       if(active) {
         ret = getEventTrigger().reset(this);
         if(!ret->isActive()) {
@@ -585,8 +587,8 @@ namespace CoSupport { namespace SystemC {
       return *this;
     }
 
-    EventType *reset(EventListener *el = NULL) {
-      EventWaiter *ret = NULL;
+    EventType *reset(EventListener *el = nullptr) {
+      EventWaiter *ret = nullptr;
       if (!missing) {
         for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
           assert((*i)->isActive());

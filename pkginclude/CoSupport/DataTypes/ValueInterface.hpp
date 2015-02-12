@@ -39,6 +39,8 @@
 
 #include <ostream>
 
+#include "../compatibility-glue/nullptr.h"
+
 #include <boost/utility/enable_if.hpp>
 #include <boost/mpl/or.hpp>
 #include <boost/mpl/and.hpp>
@@ -251,7 +253,7 @@ namespace Detail {
     operator unspecified_bool_type() const {
       return getDerived()->get()
         ? static_cast<unspecified_bool_type>(&this_type::getDerived)
-        : static_cast<unspecified_bool_type>(NULL);
+        : static_cast<unspecified_bool_type>(0);
     }
   };
 
@@ -336,7 +338,7 @@ typename boost::disable_if<boost::mpl::or_<
         Detail::value_type_pointer_tag_t,
         typename Detail::ValueTypeClassifier<T2>::tag
       >,
-      boost::is_same<T1, typeof(NULL)> 
+      boost::is_same<T1, std::nullptr_t> 
     >
   >, bool>::type
 operator ==(
@@ -349,7 +351,7 @@ typename boost::enable_if<boost::is_base_of<
     typename Detail::ValueTypeClassifier<T2>::tag
   >, bool>::type
 operator ==(
-    typeof(NULL) null,
+    std::nullptr_t null,
     const ValueInterface<D2, T2, CR2> &rhs)
   { assert(!null); return !rhs.get(); }
 template <class D1, typename T1, typename CR1, typename T2>
@@ -363,7 +365,7 @@ typename boost::disable_if<boost::mpl::or_<
         Detail::value_type_pointer_tag_t,
         typename Detail::ValueTypeClassifier<T1>::tag
       >,
-      boost::is_same<T2, typeof(NULL)> 
+      boost::is_same<T2, std::nullptr_t> 
     >
   >, bool>::type
 operator ==(
@@ -377,7 +379,7 @@ typename boost::enable_if<boost::is_base_of<
   >, bool>::type
 operator ==(
     const ValueInterface<D1, T1, CR1> &lhs,
-    typeof(NULL) null)
+    std::nullptr_t null)
   { assert(!null); return !lhs.get(); }
 
 template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
@@ -397,7 +399,7 @@ typename boost::disable_if<boost::mpl::or_<
         Detail::value_type_pointer_tag_t,
         typename Detail::ValueTypeClassifier<T2>::tag
       >,
-      boost::is_same<T1, typeof(NULL)> 
+      boost::is_same<T1, std::nullptr_t> 
     >
   >, bool>::type
 operator !=(
@@ -410,7 +412,7 @@ typename boost::enable_if<boost::is_base_of<
     typename Detail::ValueTypeClassifier<T2>::tag
   >, bool>::type
 operator !=(
-    typeof(NULL) null,
+    std::nullptr_t null,
     const ValueInterface<D2, T2, CR2> &rhs)
   { assert(!null); return rhs.get(); }
 template <class D1, typename T1, typename CR1, typename T2>
@@ -424,7 +426,7 @@ typename boost::disable_if<boost::mpl::or_<
         Detail::value_type_pointer_tag_t,
         typename Detail::ValueTypeClassifier<T1>::tag
       >,
-      boost::is_same<T2, typeof(NULL)> 
+      boost::is_same<T2, std::nullptr_t> 
     >
   >, bool>::type
 operator !=(
@@ -438,7 +440,7 @@ typename boost::enable_if<boost::is_base_of<
   >, bool>::type
 operator !=(
     const ValueInterface<D1, T1, CR1> &lhs,
-    typeof(NULL) null)
+    std::nullptr_t null)
   { assert(!null); return lhs.get(); }
 
 

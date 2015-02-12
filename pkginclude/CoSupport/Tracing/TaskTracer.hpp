@@ -37,7 +37,8 @@
 #ifndef _INCLUDED_COSUPPORT_TRACING_TASKTRACER_HPP
 #define _INCLUDED_COSUPPORT_TRACING_TASKTRACER_HPP
 
-#include <CoSupport/Tracing/PtpTracer.hpp>
+#include "PtpTracer.hpp"
+
 #include <string>
 #include <sstream>
 
