@@ -36,6 +36,7 @@
 #ifndef _INCLUDED_COSUPPORT_MATH_TUPLE_UNOP_HPP
 #define _INCLUDED_COSUPPORT_MATH_TUPLE_UNOP_HPP
 
+#include "../../compatibility-glue/nullptr.h"
 #include "../../DataTypes/VectorInterface.hpp"
 
 #include <boost/type_traits/remove_reference.hpp>
@@ -63,7 +64,7 @@ namespace Detail {
 #define MAKE_UN_OP(NAME,op)                                                   \
   template<class T>                                                           \
   struct NAME {                                                               \
-    BOOST_TYPEOF_NESTED_TYPEDEF_TPL(nested, op (*(T*)(NULL)))                 \
+    BOOST_TYPEOF_NESTED_TYPEDEF_TPL(nested, op (*(T*)(nullptr)))                 \
     typedef typename nested::type result_type;                                \
                                                                               \
     template<class A>                                                         \

@@ -37,6 +37,7 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_LISTVIRTUAL_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_LISTVIRTUAL_HPP
 
+#include "../compatibility-glue/nullptr.h"
 #include "ListInterface.hpp"
 
 #include <list>
@@ -150,12 +151,12 @@ namespace Detail {
     friend class ListVirtualIterBaseAccessor<CONTAINER>::type;
     friend class ListVirtualIter<typename boost::add_const<CONTAINER>::type>;
   public:
-    ListVirtualIter(): impl(NULL) {}
+    ListVirtualIter(): impl(nullptr) {}
     ListVirtualIter(this_type const &rhs)
       : impl(rhs.impl->duplicate()) {}
     template <class CC>
     ListVirtualIter(ListVirtualIter<CC> const &rhs,typename boost::enable_if<
-      boost::is_same<typename boost::remove_const<CONTAINER>::type, CC>, void *>::type _dummy = NULL)
+      boost::is_same<typename boost::remove_const<CONTAINER>::type, CC>, void *>::type _dummy = nullptr)
       : impl(rhs.impl->duplicate()) {}
 
     this_type &operator =(this_type const &rhs) { impl.reset(rhs.impl->duplicate()); return *this; }

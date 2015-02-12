@@ -12,6 +12,15 @@
 /* Defined if xerces support is enabled */
 #undef COSUPPORT_ENABLE_XERCES
 
+/* Defined if you have the <cstddef> header */
+#undef COSUPPORT_HAVE_CSTDDEF
+
+/* Defined if you have the <stddef.h> header */
+#undef COSUPPORT_HAVE_STDDEF_H
+
+/* Defined if you have the <cstddef> header defining the std::nullptr_t data type */
+#undef COSUPPORT_HAVE_STD_NULLPTR_T
+
 /* Define to 1 if you have the long long type. */
 #undef COSUPPORT_HAVE_LONG_LONG
 

@@ -33,6 +33,8 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
+#include <CoSupport/compatibility-glue/nullptr.h>
+
 #include <CoSupport/Path/resourcelocations.hpp>
 #include <CoSupport/Path/manipulation.hpp>
 
@@ -51,15 +53,15 @@ boost::filesystem::path getExecutableLocation(const char *argv0) {
   fs::path fsPrg(argv0);
   bool found = false;
   
-  if (!exists(fsPrg) && strchr(argv0, '/') == NULL) {
+  if (!exists(fsPrg) && strchr(argv0, '/') == nullptr) {
     const char *pathEnv = getenv("PATH");
-    if (pathEnv != NULL) {
+    if (pathEnv != nullptr) {
       // ugh => next try search in path
-      char *saveptr = NULL;
+      char *saveptr = nullptr;
       std::string path(pathEnv);
       for (char *pathElem = strtok_r(&path[0], ":", &saveptr);
-           pathElem != NULL;
-           pathElem = strtok_r(NULL, ":", &saveptr)) {
+           pathElem != nullptr;
+           pathElem = strtok_r(nullptr, ":", &saveptr)) {
         fsPrg = fs::path(pathElem) / argv0;
         if (exists(fsPrg))
           { found = true; break; }
@@ -77,7 +79,7 @@ boost::filesystem::path getExecutableLocation(const char *argv0) {
     size_t                    buf = 32;
     boost::scoped_array<char> cwd(new char[buf]);
     
-    while (getcwd(cwd.get(), buf) == NULL) {
+    while (getcwd(cwd.get(), buf) == nullptr) {
       if (errno != ERANGE) {
         std::ostringstream msg;
         msg << "Can't get current working directory: " << strerror(errno) << "!";

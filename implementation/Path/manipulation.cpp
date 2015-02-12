@@ -33,6 +33,8 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
+#include <CoSupport/compatibility-glue/nullptr.h>
+
 #include <CoSupport/Path/manipulation.hpp>
 
 #include <boost/filesystem/path.hpp>
@@ -194,7 +196,7 @@ boost::filesystem::path cleanup(
     fs::path cwd = fs::current_path();
     return cleanup(p, &cwd);
   } else {
-    return cleanup(p, NULL);
+    return cleanup(p, nullptr);
   }
 }
 

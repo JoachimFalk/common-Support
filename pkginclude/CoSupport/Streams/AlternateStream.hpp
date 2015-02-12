@@ -36,6 +36,8 @@
 #ifndef _INCLUDED_COSUPPORT_STREAMS_ALTERNATESTREAM_HPP
 #define _INCLUDED_COSUPPORT_STREAMS_ALTERNATESTREAM_HPP
 
+#include "../compatibility-glue/nullptr.h"
+
 #include <ostream>
 #include <istream>
 #include <fstream>
@@ -64,10 +66,10 @@ namespace CoSupport { namespace Streams {
     Base        *def;
   public:
     AlternateStream(Base &def, const std::string &cmp)
-      : Base(NULL), cmp(cmp), obj(NULL), def(&def) {}
+      : Base(nullptr), cmp(cmp), obj(nullptr), def(&def) {}
 
     AlternateStream(Base &def, const std::string &file, const std::string &cmp)
-      : Base(NULL), cmp(cmp), obj(NULL), def(&def) { open(file); }
+      : Base(nullptr), cmp(cmp), obj(nullptr), def(&def) { open(file); }
 
     void open(const std::string &file) {
       if (file == cmp)
@@ -91,16 +93,16 @@ namespace CoSupport { namespace Streams {
         if (fs != def)
           delete fs;
         if (obj == fs)
-          obj = NULL;
+          obj = nullptr;
         throw;
       }
     }
 
     void close() {
-      this->rdbuf(NULL);
+      this->rdbuf(nullptr);
       if (obj != def)
         delete obj;
-      obj = NULL;
+      obj = nullptr;
     }
 
     ~AlternateStream() { close(); }

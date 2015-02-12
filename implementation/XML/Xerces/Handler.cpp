@@ -35,6 +35,8 @@
 
 //#include "DebugOStream.hpp"
 
+#include <CoSupport/compatibility-glue/nullptr.h>
+
 #include <CoSupport/XML/Xerces/Handler.hpp>
 #include <CoSupport/XML/Xerces/StdOstreamFormatTarget.hpp>
 #include <CoSupport/XML/Xerces/StdIstreamInputSource.hpp>
@@ -191,13 +193,13 @@ namespace CoSupport { namespace XML { namespace Xerces {
 /*  std::cout << "DOMEntityResolver::resolveEntity(...)"
         <<  " publicId: " << (resourceIdentifier->getPublicId()
               ? NStr(resourceIdentifier->getPublicId())
-              : NStr("NULL"))
+              : NStr("nullptr"))
         << ", systemId: " << (resourceIdentifier->getSystemId()
               ? NStr(resourceIdentifier->getSystemId())
-              : NStr("NULL"))
+              : NStr("nullptr"))
         << ", baseURI: " << (resourceIdentifier->getBaseURI()
               ? NStr(resourceIdentifier->getBaseURI())
-              : NStr("NULL"))
+              : NStr("nullptr"))
         << std::endl; */
     return
       new XN::MemBufInputSource(emptyXMLByte, sizeof(emptyXMLByte), resourceIdentifier->getSystemId());
@@ -236,9 +238,9 @@ namespace CoSupport { namespace XML { namespace Xerces {
       XMLCh const *const systemId,
       XMLCh const *const baseURI) {
 /*  std::cout << "DOMEntityResolver::resolveEntity("
-        << (publicId ? NStr(publicId) : NStr("NULL")) << ", "
-        << (systemId ? NStr(systemId) : NStr("NULL")) << ", "
-        << (baseURI  ? NStr(baseURI)  : NStr("NULL"))
+        << (publicId ? NStr(publicId) : NStr("nullptr")) << ", "
+        << (systemId ? NStr(systemId) : NStr("nullptr")) << ", "
+        << (baseURI  ? NStr(baseURI)  : NStr("nullptr"))
         << ")" << std::endl; */
     return
       // We need a wrapper for the empty entity source
@@ -250,14 +252,14 @@ namespace CoSupport { namespace XML { namespace Xerces {
 #endif //XERCES_VERSION_MAJOR == 2
 
   Handler::Handler()
-    : dtdBuf(NULL),    xsdBuf(NULL),
+    : dtdBuf(nullptr),    xsdBuf(nullptr),
       dtdSize(0),      xsdSize(0)
   {
 //  // process xml
 //  static const XMLCh gLS[] = { XN::chLatin_L, XN::chLatin_S, XN::chNull };
 //  domImpl = XN::DOMImplementationRegistry::getDOMImplementation(XMLCH("XML 1.0 Traversal 2.0"));
     domImpl = XN::DOMImplementationRegistry::getDOMImplementation(XMLCH("XML 1.0"));
-    assert(domImpl != NULL);
+    assert(domImpl != nullptr);
   }
 
   void Handler::setDTD(std::string const &dtdStr_) {
@@ -268,12 +270,12 @@ namespace CoSupport { namespace XML { namespace Xerces {
   void Handler::setDTD(char const *dtdBuf_) {
     dtdStr  = "";
     dtdBuf  = dtdBuf_;
-    dtdSize = dtdBuf != NULL ? strlen(dtdBuf) : 0;
+    dtdSize = dtdBuf != nullptr ? strlen(dtdBuf) : 0;
   }
   void Handler::setDTD(char const *dtdBuf_, size_t dtdSize_) {
     dtdStr  = "";
     dtdBuf  = dtdBuf_;
-    dtdSize = dtdBuf != NULL ? dtdSize_ : 0;
+    dtdSize = dtdBuf != nullptr ? dtdSize_ : 0;
   }
 
   void Handler::setXSD(std::string const &xsdStr_) {
@@ -284,12 +286,12 @@ namespace CoSupport { namespace XML { namespace Xerces {
   void Handler::setXSD(char const *xsdBuf_) {
     xsdStr  = "";
     xsdBuf  = xsdBuf_;
-    xsdSize = xsdBuf != NULL ? strlen(xsdBuf) : 0;
+    xsdSize = xsdBuf != nullptr ? strlen(xsdBuf) : 0;
   }
   void Handler::setXSD(char const *xsdBuf_, size_t xsdSize_) {
     xsdStr  = "";
     xsdBuf  = xsdBuf_;
-    xsdSize = xsdBuf != NULL ? xsdSize_ : 0;
+    xsdSize = xsdBuf != nullptr ? xsdSize_ : 0;
   }
 
 
@@ -307,9 +309,9 @@ namespace CoSupport { namespace XML { namespace Xerces {
     // build empty XML document
     assert(!topElementName.empty());
     XN::DOMDocumentType *type = dtdUrl.empty() || !xsdUrl.empty()
-      ? NULL
-      : domImpl->createDocumentType(topElementName, NULL, dtdUrl);
-    domDocument.reset(domImpl->createDocument(NULL, topElementName, type));
+      ? nullptr
+      : domImpl->createDocumentType(topElementName, nullptr, dtdUrl);
+    domDocument.reset(domImpl->createDocument(nullptr, topElementName, type));
     if (!xsdUrl.empty()) {
       XN::DOMNode *topTag = getDocument()->getDocumentElement();
       setAttrValueFrom(topTag, XMLCH("xmlns:xsi"), XMLCH("http://www.w3.org/2001/XMLSchema-instance"));
@@ -368,7 +370,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
       } else {
         domParser.reset(domImpl->createLSParser(
             XN::DOMImplementationLS::MODE_SYNCHRONOUS,
-            NULL));
+            nullptr));
       }
       
       XN::DOMConfiguration *conf = domParser->getDomConfig();
@@ -408,9 +410,9 @@ namespace CoSupport { namespace XML { namespace Xerces {
         // user is a no-op.
         conf->setParameter(XN::XMLUni::fgXercesUseCachedGrammarInParse, true);
         // If true, then the parser will not attempt to resolve the entity when
-        // the resolveEntity method returns NULL.  If false (default), then the
+        // the resolveEntity method returns nullptr.  If false (default), then the
         // the parser will attempt to resolve the entity when the resolveEntity
-        // method returns NULL.
+        // method returns nullptr.
         // Don't load XSD or DTD entities from file system or via URL!
         conf->setParameter(XN::XMLUni::fgXercesDisableDefaultEntityResolution, true);
         // Set entity resolver that always returns and empty object.
@@ -453,7 +455,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
               xsdUrl.c_str());
           // We need a wrapper for the XSD source
           XN::Wrapper4InputSource xsdSrc(&xsdIn, false /* don't free &xsdIn */);
-          sassert(domParser->loadGrammar(&xsdSrc, XN::Grammar::SchemaGrammarType, true) != NULL);
+          sassert(domParser->loadGrammar(&xsdSrc, XN::Grammar::SchemaGrammarType, true) != nullptr);
         }
         conf->setParameter(XN::XMLUni::fgXercesSchemaExternalSchemaLocation, (void *) emptyXMLCh);
         conf->setParameter(XN::XMLUni::fgXercesSchemaExternalNoNameSpaceSchemaLocation, (void *) xsdUrl.c_str());
@@ -473,9 +475,9 @@ namespace CoSupport { namespace XML { namespace Xerces {
           // We need a wrapper for the DTD source
           XN::Wrapper4InputSource dtdSrc(&dtdIn, false /* don't free &dtdIn */);
           //XN::Grammar *gram = domParser->loadGrammar(dtdSrc, XN::Grammar::DTDGrammarType, false);
-          //assert(gram != NULL);
+          //assert(gram != nullptr);
           //gramPool->cacheGrammar(gram);
-          sassert(domParser->loadGrammar(&dtdSrc, XN::Grammar::DTDGrammarType, true) != NULL);
+          sassert(domParser->loadGrammar(&dtdSrc, XN::Grammar::DTDGrammarType, true) != nullptr);
 
           // Ignore a cached DTD when an XML document contains both an internal
           // and external DTD, and the use cached grammar from parse option is
@@ -533,7 +535,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
       } else {
         domParser.reset(domImpl->createDOMBuilder(
             XN::DOMImplementationLS::MODE_SYNCHRONOUS,
-            NULL,
+            nullptr,
             XN::XMLPlatformUtils::fgMemoryManager/*,
             gramPool*/));
       }
@@ -573,9 +575,9 @@ namespace CoSupport { namespace XML { namespace Xerces {
         // user is a no-op.
         domParser->setFeature(XN::XMLUni::fgXercesUseCachedGrammarInParse, true);
         // If true, then the parser will not attempt to resolve the entity when
-        // the resolveEntity method returns NULL.  If false (default), then the
+        // the resolveEntity method returns nullptr.  If false (default), then the
         // the parser will attempt to resolve the entity when the resolveEntity
-        // method returns NULL.
+        // method returns nullptr.
         // Don't load XSD or DTD entities from file system or via URL!
         domParser->setFeature(XN::XMLUni::fgXercesDisableDefaultEntityResolution, true);
         // Set entity resolver that always returns and empty object.
@@ -618,7 +620,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
               xsdUrl.c_str());
           // We need a wrapper for the XSD source
           XN::Wrapper4InputSource xsdSrc(&xsdIn, false /* don't free &xsdIn */);
-          sassert(domParser->loadGrammar(xsdSrc, XN::Grammar::SchemaGrammarType, true) != NULL);
+          sassert(domParser->loadGrammar(xsdSrc, XN::Grammar::SchemaGrammarType, true) != nullptr);
         }
         domParser->setProperty(XN::XMLUni::fgXercesSchemaExternalSchemaLocation, (void *) emptyXMLCh);
         domParser->setProperty(XN::XMLUni::fgXercesSchemaExternalNoNameSpaceSchemaLocation, (void *) xsdUrl.c_str());
@@ -638,9 +640,9 @@ namespace CoSupport { namespace XML { namespace Xerces {
           // We need a wrapper for the DTD source
           XN::Wrapper4InputSource dtdSrc(&dtdIn, false /* don't free &dtdIn */);
           //XN::Grammar *gram = domParser->loadGrammar(dtdSrc, XN::Grammar::DTDGrammarType, false);
-          //assert(gram != NULL);
+          //assert(gram != nullptr);
           //gramPool->cacheGrammar(gram);
-          sassert(domParser->loadGrammar(dtdSrc, XN::Grammar::DTDGrammarType, true) != NULL);
+          sassert(domParser->loadGrammar(dtdSrc, XN::Grammar::DTDGrammarType, true) != nullptr);
 
           // Ignore a cached DTD when an XML document contains both an internal
           // and external DTD, and the use cached grammar from parse option is
@@ -681,8 +683,8 @@ namespace CoSupport { namespace XML { namespace Xerces {
         s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
         throw std::runtime_error(s);
       }
-      assert(domDocument != NULL);
-      assert(getDocument()->getDocumentElement() != NULL);
+      assert(domDocument != nullptr);
+      assert(getDocument()->getDocumentElement() != nullptr);
     }
     catch (std::runtime_error &err) {
       // std::runtime_error exceptions don't need a translation

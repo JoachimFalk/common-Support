@@ -42,12 +42,14 @@
 #include <memory>
 #include <iostream>
 #include <fstream>
-#include <CoSupport/Tracing/Tracer.hpp>
-#include <CoSupport/Tracing/PtpTracer.hpp>
-#include <CoSupport/Tracing/TaskTracer.hpp>
 #include <map>
 
 #include <deque>
+
+#include "Tracer.hpp"
+#include "PtpTracer.hpp"
+#include "TaskTracer.hpp"
+
 
 namespace CoSupport { namespace Tracing {
 

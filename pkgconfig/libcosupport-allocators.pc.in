@@ -25,4 +25,4 @@ URL: http://www12.informatik.uni-erlangen.de/research/systemoc
 #Conflicts: foobar <= 4.5
 Libs: -L${srctreemode_libdir} ${srctreemode_libdir}/libcosupport-allocators.la
 #Libs.private: -lm
-Cflags: -I${srctreemode_includedir}
+Cflags: @AM_CPPFLAGS@ @AM_CXXFLAGS@ -I${srctreemode_includedir}

@@ -36,6 +36,8 @@
 #ifndef _INCLUDED_COSUPPORT_MATH_MODULOGROUP_HPP
 #define _INCLUDED_COSUPPORT_MATH_MODULOGROUP_HPP
 
+#include <CoSupport/compatibility-glue/nullptr.h>
+
 #include <boost/utility/enable_if.hpp>
 #include <boost/mpl/and.hpp>
 #include <boost/type_traits/make_unsigned.hpp>
@@ -219,7 +221,7 @@ namespace Detail {
       { return between(DERIVED(a, *this), DERIVED(b, *this)); }
 
     operator unspecified_bool_type() const // never throws
-      { return e ? &this_type::getValue : NULL; }
+      { return e ? &this_type::getValue : nullptr; }
 
     DERIVED &operator ++() {
       return getDerived() += value_type(1);

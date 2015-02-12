@@ -36,7 +36,9 @@
 #ifndef _INCLUDED_COSUPPORT_BOOST_PYTHON_REGISTER_TOFROM_PYTHON_CONVERTER_MAYBEVALUE_HPP
 #define _INCLUDED_COSUPPORT_BOOST_PYTHON_REGISTER_TOFROM_PYTHON_CONVERTER_MAYBEVALUE_HPP
 
+#include "../../compatibility-glue/nullptr.h"
 #include "../../DataTypes/MaybeValue.hpp"
+
 #include "init_namespace.hpp"
 
 #include <boost/python.hpp>
@@ -66,7 +68,7 @@ public:
     if (obj_ptr != Py_None) {
       boost::python::extract<T> proxy(obj_ptr);
       if (!proxy.check())
-        return NULL;
+        return nullptr;
     }
     return obj_ptr;
   }

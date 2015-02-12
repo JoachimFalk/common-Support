@@ -26,4 +26,4 @@ URL: http://www12.informatik.uni-erlangen.de/research/systemoc
 #Requires.private:
 Libs: -L${srctreemode_libdir} @BOOST_LDFLAGS@ ${srctreemode_libdir}/libcosupport-path.la -lboost_filesystem@BOOST_LIBMTPOSTFIX@ -lboost_system@BOOST_LIBMTPOSTFIX@
 Libs.private:
-Cflags: -I${srctreemode_includedir} @BOOST_INCLUDE@
+Cflags: @AM_CPPFLAGS@ @AM_CXXFLAGS@ -I${srctreemode_includedir} @BOOST_INCLUDE@

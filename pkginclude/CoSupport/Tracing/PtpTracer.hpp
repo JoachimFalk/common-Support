@@ -37,7 +37,8 @@
 #ifndef _INCLUDED_COSUPPORT_TRACING_PTPTRACER_HPP
 #define _INCLUDED_COSUPPORT_TRACING_PTPTRACER_HPP
 
-#include <CoSupport/Tracing/Tracer.hpp>
+#include "Tracer.hpp"
+
 #include <systemc.h>
 #include <memory>
 #include <deque>

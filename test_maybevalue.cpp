@@ -36,6 +36,8 @@
 #include <cassert>
 #include <climits>
 
+#include <CoSupport/compatibility-glue/nullptr.h>
+
 #include <CoSupport/DataTypes/MaybeValue.hpp>
 #include <CoSupport/DataTypes/MaybeValueVirtual.hpp>
 #include <CoSupport/DataTypes/MaybeValueFacade.hpp>
@@ -268,33 +270,33 @@ int main(int argc, char *argv[]) {
     MaybeValue<char *>       cp(foo);
     
     // This is not really string comparison put pointer comparison.
-    CHECK_OP_WV(NULL,ccp,==,aaa); CHECK_OP_VW(NULL,foo,==,ccp);
-    CHECK_OP_WV(NULL,ccp,!=,aaa); CHECK_OP_VW(NULL,foo,!=,ccp);
-    CHECK_OP_WV(NULL,ccp,< ,aaa); CHECK_OP_VW(NULL,foo,< ,ccp);
-    CHECK_OP_WV(NULL,ccp,<=,aaa); CHECK_OP_VW(NULL,foo,<=,ccp);
-    CHECK_OP_WV(NULL,ccp,> ,aaa); CHECK_OP_VW(NULL,foo,> ,ccp);
-    CHECK_OP_WV(NULL,ccp,>=,aaa); CHECK_OP_VW(NULL,foo,>=,ccp);
+    CHECK_OP_WV(nullptr,ccp,==,aaa); CHECK_OP_VW(nullptr,foo,==,ccp);
+    CHECK_OP_WV(nullptr,ccp,!=,aaa); CHECK_OP_VW(nullptr,foo,!=,ccp);
+    CHECK_OP_WV(nullptr,ccp,< ,aaa); CHECK_OP_VW(nullptr,foo,< ,ccp);
+    CHECK_OP_WV(nullptr,ccp,<=,aaa); CHECK_OP_VW(nullptr,foo,<=,ccp);
+    CHECK_OP_WV(nullptr,ccp,> ,aaa); CHECK_OP_VW(nullptr,foo,> ,ccp);
+    CHECK_OP_WV(nullptr,ccp,>=,aaa); CHECK_OP_VW(nullptr,foo,>=,ccp);
 
-    CHECK_OP_WV(NULL,ccp,==,caaa); CHECK_OP_VW(NULL,cfoo,==,ccp);
-    CHECK_OP_WV(NULL,ccp,!=,caaa); CHECK_OP_VW(NULL,cfoo,!=,ccp);
-    CHECK_OP_WV(NULL,ccp,< ,caaa); CHECK_OP_VW(NULL,cfoo,< ,ccp);
-    CHECK_OP_WV(NULL,ccp,<=,caaa); CHECK_OP_VW(NULL,cfoo,<=,ccp);
-    CHECK_OP_WV(NULL,ccp,> ,caaa); CHECK_OP_VW(NULL,cfoo,> ,ccp);
-    CHECK_OP_WV(NULL,ccp,>=,caaa); CHECK_OP_VW(NULL,cfoo,>=,ccp);
+    CHECK_OP_WV(nullptr,ccp,==,caaa); CHECK_OP_VW(nullptr,cfoo,==,ccp);
+    CHECK_OP_WV(nullptr,ccp,!=,caaa); CHECK_OP_VW(nullptr,cfoo,!=,ccp);
+    CHECK_OP_WV(nullptr,ccp,< ,caaa); CHECK_OP_VW(nullptr,cfoo,< ,ccp);
+    CHECK_OP_WV(nullptr,ccp,<=,caaa); CHECK_OP_VW(nullptr,cfoo,<=,ccp);
+    CHECK_OP_WV(nullptr,ccp,> ,caaa); CHECK_OP_VW(nullptr,cfoo,> ,ccp);
+    CHECK_OP_WV(nullptr,ccp,>=,caaa); CHECK_OP_VW(nullptr,cfoo,>=,ccp);
 
-    CHECK_OP_WV(NULL,cp,==,aaa); CHECK_OP_VW(NULL,foo,==,cp);
-    CHECK_OP_WV(NULL,cp,!=,aaa); CHECK_OP_VW(NULL,foo,!=,cp);
-    CHECK_OP_WV(NULL,cp,< ,aaa); CHECK_OP_VW(NULL,foo,< ,cp);
-    CHECK_OP_WV(NULL,cp,<=,aaa); CHECK_OP_VW(NULL,foo,<=,cp);
-    CHECK_OP_WV(NULL,cp,> ,aaa); CHECK_OP_VW(NULL,foo,> ,cp);
-    CHECK_OP_WV(NULL,cp,>=,aaa); CHECK_OP_VW(NULL,foo,>=,cp);
+    CHECK_OP_WV(nullptr,cp,==,aaa); CHECK_OP_VW(nullptr,foo,==,cp);
+    CHECK_OP_WV(nullptr,cp,!=,aaa); CHECK_OP_VW(nullptr,foo,!=,cp);
+    CHECK_OP_WV(nullptr,cp,< ,aaa); CHECK_OP_VW(nullptr,foo,< ,cp);
+    CHECK_OP_WV(nullptr,cp,<=,aaa); CHECK_OP_VW(nullptr,foo,<=,cp);
+    CHECK_OP_WV(nullptr,cp,> ,aaa); CHECK_OP_VW(nullptr,foo,> ,cp);
+    CHECK_OP_WV(nullptr,cp,>=,aaa); CHECK_OP_VW(nullptr,foo,>=,cp);
 
-    CHECK_OP_WV(NULL,cp,==,caaa); CHECK_OP_VW(NULL,cfoo,==,cp);
-    CHECK_OP_WV(NULL,cp,!=,caaa); CHECK_OP_VW(NULL,cfoo,!=,cp);
-    CHECK_OP_WV(NULL,cp,< ,caaa); CHECK_OP_VW(NULL,cfoo,< ,cp);
-    CHECK_OP_WV(NULL,cp,<=,caaa); CHECK_OP_VW(NULL,cfoo,<=,cp);
-    CHECK_OP_WV(NULL,cp,> ,caaa); CHECK_OP_VW(NULL,cfoo,> ,cp);
-    CHECK_OP_WV(NULL,cp,>=,caaa); CHECK_OP_VW(NULL,cfoo,>=,cp);
+    CHECK_OP_WV(nullptr,cp,==,caaa); CHECK_OP_VW(nullptr,cfoo,==,cp);
+    CHECK_OP_WV(nullptr,cp,!=,caaa); CHECK_OP_VW(nullptr,cfoo,!=,cp);
+    CHECK_OP_WV(nullptr,cp,< ,caaa); CHECK_OP_VW(nullptr,cfoo,< ,cp);
+    CHECK_OP_WV(nullptr,cp,<=,caaa); CHECK_OP_VW(nullptr,cfoo,<=,cp);
+    CHECK_OP_WV(nullptr,cp,> ,caaa); CHECK_OP_VW(nullptr,cfoo,> ,cp);
+    CHECK_OP_WV(nullptr,cp,>=,caaa); CHECK_OP_VW(nullptr,cfoo,>=,cp);
   }
   {
     MaybeValueFacade<int>            a(12);

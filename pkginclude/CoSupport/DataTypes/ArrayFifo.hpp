@@ -46,11 +46,12 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_ARRAYFIFO_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_ARRAYFIFO_HPP
 
-#include <boost/iterator/iterator_facade.hpp>
-#include <boost/type_traits/remove_const.hpp>
-
+#include "../compatibility-glue/nullptr.h"
 #include "../sassert.h"
 #include "../Math/ModuloGroup.hpp"
+
+#include <boost/iterator/iterator_facade.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
 namespace CoSupport { namespace DataTypes {
 
@@ -81,7 +82,7 @@ namespace CoSupport { namespace DataTypes {
       Math::ModuloGroup<Math::CTModulus<size_t, N+1> >  i;
     public:
       IterTemplate()
-        : f(NULL) {}
+        : f(nullptr) {}
       
       // Copy Constructor from const_iterator
       IterTemplate(

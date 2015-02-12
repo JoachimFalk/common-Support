@@ -33,6 +33,8 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
+#include <CoSupport/compatibility-glue/nullptr.h>
+
 #include <CoSupport/Streams/FilterStreambuf.hpp>
 
 #include <cassert>
@@ -47,7 +49,7 @@ FilterStreambuf::FilterStreambuf(std::streambuf *next) :
 }
 
 int FilterStreambuf::sync() {
-  assert(next != NULL && "WTF?! No real streambuf at end of FilterStreambuf chain?");
+  assert(next != nullptr && "WTF?! No real streambuf at end of FilterStreambuf chain?");
   return next->pubsync();
 }
   

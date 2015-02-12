@@ -36,6 +36,7 @@
 #ifndef _INCLUDED_COSUPPORT_SMARTPTR_INTRUSIVE_COPYONWRITE_PTR_HPP
 #define _INCLUDED_COSUPPORT_SMARTPTR_INTRUSIVE_COPYONWRITE_PTR_HPP
 
+#include "../compatibility-glue/nullptr.h"
 #include "RefCount.hpp"
 
 #include <boost/intrusive_ptr.hpp>
@@ -67,7 +68,7 @@ namespace CoSupport { namespace SmartPtr {
     typedef void (this_type::*unspecified_bool_type) ( this_type & );
     
     operator unspecified_bool_type () const {
-      return sptr.get() == NULL ? 0: &this_type::swap;
+      return sptr.get() == nullptr ? 0: &this_type::swap;
     }
     
     // operator! is a Borland-specific workaround

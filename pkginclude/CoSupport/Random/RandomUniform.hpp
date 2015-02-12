@@ -35,6 +35,7 @@
 #ifndef _INCLUDED_COSUPPORT_RANDOM_RANDOMUNIFORM_HPP
 #define _INCLUDED_COSUPPORT_RANDOM_RANDOMUNIFORM_HPP
 
+#include "../compatibility-glue/nullptr.h"
 #include "randomSource.hpp"
 #include "RandomGenerator.hpp"
 
@@ -50,7 +51,7 @@ namespace CoSupport { namespace Random {
 template <typename T>
 struct RandomUniform: public RandomGenerator<T> {
   RandomUniform(T const &min, T const &max)
-      : RandomGenerator<T>(create(min, max, (typename boost::is_integral<T>::type *) NULL)) {}
+      : RandomGenerator<T>(create(min, max, (typename boost::is_integral<T>::type *) nullptr)) {}
 private:
   static boost::function<T (void)> create(T const &min, T const &max, boost::true_type *) {
     boost::random::uniform_int_distribution<> dist(min, max);

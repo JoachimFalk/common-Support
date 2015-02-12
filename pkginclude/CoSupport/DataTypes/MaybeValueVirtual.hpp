@@ -37,6 +37,7 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_MAYBEVALUEVIRTUAL_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_MAYBEVALUEVIRTUAL_HPP
 
+#include "../compatibility-glue/nullptr.h"
 #include "MaybeValueInterface.hpp"
 #include "ValueVirtual.hpp"
 
@@ -83,7 +84,7 @@ namespace Detail {
     void  implSet(const T &v) { value = v; }
     CR    implGet() const { return boost::get<T>(value); }
     void  implUndef() { value = boost::blank(); }
-    bool  implIsDefined() const { return boost::get<T>(&value) != NULL; }
+    bool  implIsDefined() const { return boost::get<T>(&value) != nullptr; }
   };
 
   template <

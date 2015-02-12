@@ -43,6 +43,7 @@
 #include <memory>
 #include <alloca.h>
 
+#include "../../compatibility-glue/nullptr.h"
 #include "../../sassert.h"
 #include "../../String/convert.hpp"
 #include "../../Initializer/BasicInitializer.hpp"
@@ -96,12 +97,12 @@ namespace CoSupport { namespace XML { namespace Xerces {
     typedef T element_type;
 
     // never throws
-    explicit ScopedXMLPtr(T *p = NULL): ptr(p)
+    explicit ScopedXMLPtr(T *p = nullptr): ptr(p)
       {}
 
     ~ScopedXMLPtr() {
       // don't use delete use the release() method all xerces nodes have.
-      if (ptr != NULL)
+      if (ptr != nullptr)
         ptr->release();
     }
 
@@ -113,8 +114,8 @@ namespace CoSupport { namespace XML { namespace Xerces {
     }
 
     // never throws
-    void reset(T *p = NULL) {
-      assert(p == NULL || p != ptr); // catch self-reset errors
+    void reset(T *p = nullptr) {
+      assert(p == nullptr || p != ptr); // catch self-reset errors
       this_type(p).swap(*this);
     }
 
@@ -137,12 +138,12 @@ namespace CoSupport { namespace XML { namespace Xerces {
 
     // implicit conversion to "bool", never throws
     operator unspecified_bool_type() const {
-      return ptr == NULL ? NULL: &this_type::ptr;
+      return ptr == nullptr ? nullptr: &this_type::ptr;
     }
 
     // never throws
     bool operator !() const  {
-      return ptr == NULL;
+      return ptr == nullptr;
     }
   };
 
@@ -329,13 +330,13 @@ namespace CoSupport { namespace XML { namespace Xerces {
 
   inline
   XN::DOMAttr *getMaybeAttrNode(XN::DOMNode const *const node, XMLCh const *const attr) {
-    assert(node != NULL || !"WTF?! Missing node!");
+    assert(node != nullptr || !"WTF?! Missing node!");
     assert(
         node->getNodeType() == XN::DOMNode::ELEMENT_NODE ||
         node->getNodeType() == XN::DOMNode::DOCUMENT_NODE);
     const XN::DOMNamedNodeMap *attrs  = node->getAttributes();
-    return attrs == NULL
-      ? NULL
+    return attrs == nullptr
+      ? nullptr
       : static_cast<XN::DOMAttr *>(attrs->getNamedItem(attr));
   }
   inline
@@ -345,7 +346,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
   inline
   XN::DOMAttr *getAttrNode(XN::DOMNode const *const node, XMLCh const *const attr) {
     XN::DOMAttr *retval = getMaybeAttrNode(node, attr);
-    if (retval == NULL) {
+    if (retval == nullptr) {
       std::stringstream msg;
 
       msg << "Tag \"" <<  NStr(node->getNodeName()) << "\""
@@ -362,14 +363,14 @@ namespace CoSupport { namespace XML { namespace Xerces {
   /// Create the attribute node if it does not exist.
   inline
   XN::DOMAttr *createAttrNode(XN::DOMNode *const node, XMLCh const *const attr) {
-    assert(node != NULL || !"WTF?! Missing node!");
+    assert(node != nullptr || !"WTF?! Missing node!");
     assert(
         node->getNodeType() == XN::DOMNode::ELEMENT_NODE ||
         node->getNodeType() == XN::DOMNode::DOCUMENT_NODE);
     XN::DOMNamedNodeMap *attrs = node->getAttributes();
-    assert(attrs != NULL);
+    assert(attrs != nullptr);
     XN::DOMAttr *retval = static_cast<XN::DOMAttr *>(attrs->getNamedItem(attr));
-    if (retval == NULL) {
+    if (retval == nullptr) {
       // Attribute missing => create it
       retval = node->getOwnerDocument()->createAttribute(attr);
       attrs->setNamedItem(retval);
@@ -384,14 +385,14 @@ namespace CoSupport { namespace XML { namespace Xerces {
   /// Delete the attribute node if it does exist.
   inline
   void destroyAttrNode(XN::DOMNode *const node, XMLCh const *const attr) {
-    assert(node != NULL || !"WTF?! Missing node!");
+    assert(node != nullptr || !"WTF?! Missing node!");
     assert(
         node->getNodeType() == XN::DOMNode::ELEMENT_NODE ||
         node->getNodeType() == XN::DOMNode::DOCUMENT_NODE);
     XN::DOMNamedNodeMap *attrs = node->getAttributes();
-    assert(attrs != NULL);
+    assert(attrs != nullptr);
     XN::DOMAttr *retval = static_cast<XN::DOMAttr *>(attrs->getNamedItem(attr));
-    if (retval != NULL)
+    if (retval != nullptr)
       // Delete attribute node
       attrs->removeNamedItem(attr)->release();
   }
@@ -407,9 +408,9 @@ namespace CoSupport { namespace XML { namespace Xerces {
 
       static
       result_type apply(XN::DOMNode const *const node) {
-        assert(node != NULL || !"WTF?! Missing node!");
+        assert(node != nullptr || !"WTF?! Missing node!");
         XMLCh const *const attrValueText = node->getNodeValue();
-        assert(attrValueText != NULL);
+        assert(attrValueText != nullptr);
         return CoSupport::String::strAs<T>(NStr(attrValueText));
       }
     };
@@ -420,7 +421,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
 
       static
       result_type apply(XN::DOMNode const *const node) {
-        if (node == NULL)
+        if (node == nullptr)
           return boost::blank();
         else
           return GetNodeValueAs<T>::apply(node);
@@ -433,9 +434,9 @@ namespace CoSupport { namespace XML { namespace Xerces {
 
       static
       result_type apply(XN::DOMNode const *const node) {
-        assert(node != NULL || !"WTF?! Missing node!");
+        assert(node != nullptr || !"WTF?! Missing node!");
         XMLCh const *const attrValueText = node->getNodeValue();
-        assert(attrValueText != NULL || !"WTF?! Missing node value!");
+        assert(attrValueText != nullptr || !"WTF?! Missing node value!");
         return attrValueText;
       }
     };
@@ -449,9 +450,9 @@ namespace CoSupport { namespace XML { namespace Xerces {
 
       static
       result_type apply(XN::DOMNode const *const node) {
-        assert(node != NULL || !"WTF?! Missing node!");
+        assert(node != nullptr || !"WTF?! Missing node!");
         XMLCh const *const attrValueText = node->getNodeValue();
-        assert(attrValueText != NULL || !"WTF?! Missing node value!");
+        assert(attrValueText != nullptr || !"WTF?! Missing node value!");
         return XStr(attrValueText);
       }
     };
@@ -462,9 +463,9 @@ namespace CoSupport { namespace XML { namespace Xerces {
 
       static
       result_type apply(XN::DOMNode const *const node) {
-        assert(node != NULL || !"WTF?! Missing node!");
+        assert(node != nullptr || !"WTF?! Missing node!");
         XMLCh const *const attrValueText = node->getNodeValue();
-        assert(attrValueText != NULL || !"WTF?! Missing node value!");
+        assert(attrValueText != nullptr || !"WTF?! Missing node value!");
         return NStr(attrValueText);
       }
     };
@@ -475,7 +476,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
 
       static
       void apply(XN::DOMNode *node, value_type value) {
-        assert(node != NULL || !"WTF?! Missing node!");
+        assert(node != nullptr || !"WTF?! Missing node!");
         node->setNodeValue(XStr(String::asStr<T>(value)).c_str());
       }
     };
@@ -497,7 +498,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
 
       static
       void apply(XN::DOMNode *node, value_type value) {
-        assert(node != NULL || !"WTF?! Missing node!");
+        assert(node != nullptr || !"WTF?! Missing node!");
         node->setNodeValue(value);
       }
     };
@@ -511,7 +512,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
 
       static
       void apply(XN::DOMNode *node, value_type value) {
-        assert(node != NULL || !"WTF?! Missing node!");
+        assert(node != nullptr || !"WTF?! Missing node!");
         node->setNodeValue(value.c_str());
       }
     };
@@ -522,7 +523,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
 
       static
       void apply(XN::DOMNode *node, value_type value) {
-        assert(node != NULL || !"WTF?! Missing node!");
+        assert(node != nullptr || !"WTF?! Missing node!");
         node->setNodeValue(XStr(value).c_str());
       }
     };
