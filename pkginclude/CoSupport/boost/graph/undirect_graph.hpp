@@ -180,11 +180,13 @@ namespace CoSupport { namespace boost {
     vertex_descriptor null_vertex() { return G::null_vertex(); }
   };
 
+  using ::boost::num_vertices;
   template <class G>
   typename graph_traits<G>::vertices_size_type
   num_vertices(const undirect_graph<G> &g)
     { return num_vertices(g.g); }
 
+  using ::boost::vertices;
   template <class G>
   std::pair<
     typename graph_traits<G>::vertex_iterator,
@@ -192,6 +194,7 @@ namespace CoSupport { namespace boost {
   vertices(const undirect_graph<G> &g)
     { return vertices(g.g); }
 
+  using ::boost::out_edges;
   template <class G>
   std::pair<
     typename undirect_graph<G>::out_edge_iterator,
@@ -213,6 +216,7 @@ namespace CoSupport { namespace boost {
         (p1.second, p2.first, p2.second));
   }
 
+  using ::boost::in_edges;
   template <class G>
   std::pair<
     typename undirect_graph<G>::in_edge_iterator,
@@ -234,6 +238,7 @@ namespace CoSupport { namespace boost {
         (p1.second, p2.first, p2.second));
   }
 
+  using ::boost::target;
   template <class G>
   typename undirect_graph<G>::vertex_descriptor
   target(const typename undirect_graph<G>::edge_descriptor &e,
@@ -244,6 +249,7 @@ namespace CoSupport { namespace boost {
       return target(e.e, g.g);
   }
 
+  using ::boost::source;
   template <class G>
   typename undirect_graph<G>::vertex_descriptor
   source(const typename undirect_graph<G>::edge_descriptor &e,
@@ -254,6 +260,7 @@ namespace CoSupport { namespace boost {
       return source(e.e, g.g);
   }
 
+  using ::boost::out_degree;
   template <class G>
   typename undirect_graph<G>::degree_size_type
   out_degree(const typename undirect_graph<G>::vertex_descriptor &v,
@@ -261,6 +268,7 @@ namespace CoSupport { namespace boost {
     return out_degree(v, g.g) + in_degree(v, g.g);
   }
 
+  using ::boost::get;
   template <class G, typename P>
   typename property_map<undirect_graph<G>, P>::type
   get(P p, undirect_graph<G> &g)
