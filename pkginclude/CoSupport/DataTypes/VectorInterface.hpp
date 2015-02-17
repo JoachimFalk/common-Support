@@ -103,10 +103,14 @@ public:
     { return base_type::construct<iterator>(derived().first()); }
   const_iterator begin() const
     { return base_type::construct<const_iterator>(derived().first()); }
+  const_iterator cbegin() const
+    { return base_type::construct<const_iterator>(derived().first()); }
 
   iterator end()
     { return base_type::construct<iterator>(derived().last()); }
   const_iterator end() const
+    { return base_type::construct<const_iterator>(derived().last()); }
+  const_iterator cend() const
     { return base_type::construct<const_iterator>(derived().last()); }
 
   reference front()

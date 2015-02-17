@@ -174,10 +174,14 @@ public:
     { return derived().implBegin(); }
   const_iterator begin() const
     { return derived().implBegin(); }
+  const_iterator cbegin() const
+    { return derived().implBegin(); }
 
   iterator end()
     { return derived().implEnd(); }
   const_iterator end() const
+    { return derived().implEnd(); }
+  const_iterator cend() const
     { return derived().implEnd(); }
 
   bool empty() const
