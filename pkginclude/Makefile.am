@@ -66,6 +66,7 @@ nobase_include_HEADERS = \
 	CoSupport/DataTypes/EMPTY.hpp \
 	CoSupport/DataTypes/Facade.hpp \
 	CoSupport/DataTypes/Iter/BidirectionalTraversalVIf.hpp \
+	CoSupport/DataTypes/Iter/BidirectionalTraversalExampleImpl.hpp \
 	CoSupport/DataTypes/Iter/Detail/BidirectionalTraversalBase.hpp \
 	CoSupport/DataTypes/Iter/Detail/BidirectionalTraversalVFImpl.hpp \
 	CoSupport/DataTypes/Iter/Detail/BidirectionalTraversalVImpl.hpp \
