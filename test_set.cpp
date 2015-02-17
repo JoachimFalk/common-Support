@@ -45,58 +45,11 @@
 #include <CoSupport/DataTypes/SetInterface.hpp>
 #include <CoSupport/DataTypes/SetVirtual.hpp>
 #include <CoSupport/DataTypes/SetFacade.hpp>
+#include <CoSupport/DataTypes/Iter/BidirectionalTraversalExampleImpl.hpp>
 
 #include <cstring>
 
 #include <set>
-
-/// This class implements the interface for a std::set containing values of type T.
-template <
-  typename T,
-  typename R,
-  typename CR,
-  typename P,
-  typename CP
->
-class Set;
-
-namespace Detail {
-
-  template <class CONTAINER>
-  struct SetIterBaseAccessor {
-    typedef typename CONTAINER::template IterBase<CONTAINER>::type type;
-  };
-
-  template <class CONTAINER>
-  class SetIter: public SetIterBaseAccessor<CONTAINER>::type {
-    typedef SetIter<CONTAINER> this_type;
-
-    template <
-      typename T,
-      typename R,
-      typename CR,
-      typename P,
-      typename CP
-    >
-    friend class Set;
-    friend class boost::iterator_core_access;
-  public:
-    SetIter() {}
-    SetIter(SetIter<typename boost::remove_const<CONTAINER>::type> const &rhs)
-      : iter(rhs.iter) {}
-  private:
-    typename std::set<typename CONTAINER::value_type>::iterator iter;
-
-    SetIter(typename std::set<typename CONTAINER::value_type>::iterator const &iter): iter(iter) {}
-
-    void increment() { ++iter; }
-    void decrement() { --iter; }
-    bool equal(const this_type &rhs) const { return iter == rhs.iter; }
-
-    typename this_type::reference dereference() const { return *iter; }
-  };
-
-} // namespace Detail
 
 /// This class implements the interface for a std::set containing values of type T.
 template <
@@ -107,13 +60,36 @@ template <
   typename CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
 >
 class Set
-: public CoSupport::DataTypes::SetInterface<Set<T,R,CR,P,CP>,Detail::SetIter,T,R,CR,P,CP>
+: public CoSupport::DataTypes::SetInterface<
+    Set<T,R,CR,P,CP>,
+    CoSupport::DataTypes::Iter::BidirectionalTraversalExampleImpl,
+    T,R,CR,P,CP>
 {
-  typedef Set<T,R,CR,P,CP>                                                          this_type;
-  typedef CoSupport::DataTypes::SetInterface<this_type,Detail::SetIter,T,R,CR,P,CP> base_type;
+  typedef Set<T,R,CR,P,CP>                                          this_type;
+  typedef CoSupport::DataTypes::SetInterface<
+    this_type,
+    CoSupport::DataTypes::Iter::BidirectionalTraversalExampleImpl,
+    T,R,CR,P,CP>                                                    base_type;
 
-  friend class CoSupport::DataTypes::SetInterface<this_type,Detail::SetIter,T,R,CR,P,CP>;
-  template <class CONTAINER, bool REVERSE> friend class Detail::SetIterBaseAccessor;
+  friend class CoSupport::DataTypes::SetInterface<
+    this_type,
+    CoSupport::DataTypes::Iter::BidirectionalTraversalExampleImpl,
+    T,R,CR,P,CP>;
+  friend class CoSupport::DataTypes::Iter::ContainerAccessor<this_type>;
+  friend class CoSupport::DataTypes::Iter::ContainerAccessor<this_type const>;
+
+  typedef typename std::set<T>::iterator UnderlyingIterator;
+public:
+  Set()
+    : set() {}
+  Set(this_type const &val)
+    : set(val.set) {}
+  template <class DD>
+  Set(std::set<DD> const &val)
+    : set(val.begin(), val.end()) {}
+  template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
+  Set(CoSupport::DataTypes::SetInterface<DD,II,T,RR,CRCR,PP,CPCP> const &val)
+    : set(val.begin(), val.end()) {}
 protected:
   std::set<T> set;
 

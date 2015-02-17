@@ -43,59 +43,11 @@
 #include <CoSupport/DataTypes/ListInterface.hpp>
 #include <CoSupport/DataTypes/ListVirtual.hpp>
 #include <CoSupport/DataTypes/ListFacade.hpp>
+#include <CoSupport/DataTypes/Iter/BidirectionalTraversalExampleImpl.hpp>
 
 #include <cstring>
 
 #include <list>
-
-/// This class implements the interface for a std::list containing values of type T.
-template <
-  typename T,
-  typename R,
-  typename CR,
-  typename P,
-  typename CP
->
-class List;
-
-namespace Detail {
-
-  template <class CONTAINER>
-  struct ListIterBaseAccessor {
-    typedef typename CONTAINER::template IterBase<CONTAINER>::type type;
-  };
-
-  template <class CONTAINER>
-  class ListIter: public ListIterBaseAccessor<CONTAINER>::type {
-    typedef ListIter<CONTAINER> this_type;
-
-    template <
-      typename T,
-      typename R,
-      typename CR,
-      typename P,
-      typename CP
-    >
-    friend class List;
-    friend class ListIter<typename boost::add_const<CONTAINER>::type>;
-    friend class boost::iterator_core_access;
-  public:
-    ListIter() {}
-    ListIter(ListIter<typename boost::remove_const<CONTAINER>::type> const &rhs)
-      : iter(rhs.iter) {}
-  private:
-    typename std::list<typename CONTAINER::value_type>::iterator iter;
-
-    ListIter(typename std::list<typename CONTAINER::value_type>::iterator const &iter): iter(iter) {}
-
-    void increment() { ++iter; }
-    void decrement() { --iter; }
-    bool equal(const this_type &rhs) const { return iter == rhs.iter; }
-
-    typename this_type::reference dereference() const { return *iter; }
-  };
-
-} // namespace Detail
 
 /// This class implements the interface for a std::list containing values of type T.
 template <
@@ -106,13 +58,25 @@ template <
   typename CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
 >
 class List
-: public CoSupport::DataTypes::ListInterface<List<T,R,CR,P,CP>,Detail::ListIter,T,R,CR,P,CP>
+: public CoSupport::DataTypes::ListInterface<
+    List<T,R,CR,P,CP>,
+    CoSupport::DataTypes::Iter::BidirectionalTraversalExampleImpl,
+    T,R,CR,P,CP>
 {
-  typedef List<T,R,CR,P,CP>                                                          this_type;
-  typedef CoSupport::DataTypes::ListInterface<this_type,Detail::ListIter,T,R,CR,P,CP> base_type;
+  typedef List<T,R,CR,P,CP>                                         this_type;
+  typedef CoSupport::DataTypes::ListInterface<
+    this_type,
+    CoSupport::DataTypes::Iter::BidirectionalTraversalExampleImpl,
+    T,R,CR,P,CP>                                                    base_type;
 
-  friend class CoSupport::DataTypes::ListInterface<this_type,Detail::ListIter,T,R,CR,P,CP>;
-  template <class CONTAINER, bool REVERSE> friend class Detail::ListIterBaseAccessor;
+  friend class CoSupport::DataTypes::ListInterface<
+    this_type,
+    CoSupport::DataTypes::Iter::BidirectionalTraversalExampleImpl,
+    T,R,CR,P,CP>;
+  friend class CoSupport::DataTypes::Iter::ContainerAccessor<this_type>;
+  friend class CoSupport::DataTypes::Iter::ContainerAccessor<this_type const>;
+
+  typedef typename std::list<T>::iterator UnderlyingIterator;
 public:
   List()
     : list() {}
