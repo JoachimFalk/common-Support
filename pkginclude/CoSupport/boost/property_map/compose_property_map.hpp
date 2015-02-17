@@ -57,12 +57,14 @@ public:
   GPMap g;
 };
 
+using ::boost::get;
 template <class FPMap, class GPMap>
 typename boost::property_traits<FPMap>::reference
 get(compose_property_map<FPMap, GPMap> const &pmap,
     typename boost::property_traits<GPMap>::key_type const &key)
   { return get(pmap.f, get(pmap.g, key)); }
 
+using ::boost::put;
 template <class FPMap, class GPMap>
 void
 put(compose_property_map<FPMap, GPMap> const &pmap,
