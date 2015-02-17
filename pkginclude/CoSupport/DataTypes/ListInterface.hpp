@@ -103,10 +103,14 @@ public:
     { return derived().implBegin(); }
   const_iterator begin() const
     { return const_cast<this_type *>(this)->derived().implBegin(); }
+  const_iterator cbegin() const
+    { return const_cast<this_type *>(this)->derived().implBegin(); }
 
   iterator end()
     { return derived().implEnd(); }
   const_iterator end() const
+    { return const_cast<this_type *>(this)->derived().implEnd(); }
+  const_iterator cend() const
     { return const_cast<this_type *>(this)->derived().implEnd(); }
 
   bool empty() const
