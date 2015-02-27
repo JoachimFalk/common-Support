@@ -158,11 +158,11 @@ namespace CoSupport { namespace Math { namespace Tuple {
 
   // If k = i div j and \forall x: j[x] != 0 , then
   //   if j > 0, then
-  //     k such that 0 <= i-j*k \ngeq j
+  //     k \in Z such that 0 <= i-j*k \ngeq j
   //   else if j < 0, then
-  //     k such that 0 >= i-j*k \nleq j
+  //     k \in Z such that 0 >= i-j*k \nleq j
   //   else
-  //     k such that \nexists k' > k:
+  //     k \in Z such that \nexists k' > k:
   //       \forall x such that j[x] > 0: i[x]-j[x]*k' >= 0 and
   //       \forall x such that j[x] < 0: i[x]-j[x]*k' <= 0
   template <class B1, class B2>
@@ -183,9 +183,9 @@ namespace CoSupport { namespace Math { namespace Tuple {
 
   // If m = i mod j and \forall x: j[x] != 0 , then
   //   if j > 0, then
-  //     m = i-j*k such that 0 <= r \ngeq j
+  //     m = i-j*k such that k \in Z and 0 <= m \ngeq j
   //   else if j < 0, then
-  //     m = i-j*k such that 0 >= r \nleq j
+  //     m = i-j*k such that k \in Z and 0 >= m \nleq j
   //   else
   //     m = i-j*div(i,j) see description of div
   template <class B1, class B2>
