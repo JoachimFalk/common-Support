@@ -312,6 +312,10 @@ int main(int argc, char *argv[]) {
          ++iter) {
       std::cout << iter->first << std::endl;
     }
+    assert(t1map == t1map);
+    assert(!(t1map != t1map));
+//  assert(t1map <= t1map); std::pair operator < is used!!!
+//  assert(t1map >= t1map); std::pair operator < is used!!!
   }
   return 0;
 }
