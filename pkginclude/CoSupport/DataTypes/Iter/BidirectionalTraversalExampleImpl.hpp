@@ -47,14 +47,14 @@ template <class CONTAINER>
 class BidirectionalTraversalExampleImpl: public ContainerAccessor<CONTAINER>::IterBase {
   typedef BidirectionalTraversalExampleImpl<CONTAINER> this_type;
 
-  friend BidirectionalTraversalExampleImpl<typename boost::add_const<CONTAINER>::type>;
-  friend CONTAINER;
+  friend class BidirectionalTraversalExampleImpl<typename boost::add_const<CONTAINER>::type>;
+//friend CONTAINER;
   friend class boost::iterator_core_access;
 public:
   BidirectionalTraversalExampleImpl() {}
   BidirectionalTraversalExampleImpl(BidirectionalTraversalExampleImpl<typename boost::remove_const<CONTAINER>::type> const &rhs)
     : iter(rhs.iter) {}
-private:
+//private: // FIXME: when we drop the old compilers
   typename ContainerAccessor<CONTAINER>::UnderlyingIterator iter;
 
   BidirectionalTraversalExampleImpl(typename ContainerAccessor<CONTAINER>::UnderlyingIterator const &iter): iter(iter) {}
