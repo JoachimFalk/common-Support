@@ -73,6 +73,9 @@ nobase_include_HEADERS = \
 	CoSupport/DataTypes/ListFacade.hpp \
 	CoSupport/DataTypes/ListInterface.hpp \
 	CoSupport/DataTypes/ListVirtual.hpp \
+	CoSupport/DataTypes/MapFacade.hpp \
+	CoSupport/DataTypes/MapInterface.hpp \
+	CoSupport/DataTypes/MapVirtual.hpp \
 	CoSupport/DataTypes/MaybeValueFacade.hpp \
 	CoSupport/DataTypes/MaybeValue.hpp \
 	CoSupport/DataTypes/MaybeValueInterface.hpp \
