@@ -70,7 +70,7 @@ struct FacadeTraits<const T> {
   typedef typename FacadeTraits<T>::ConstPtr   Ptr;
 };
 
-struct FacadeCoreAccess;
+class FacadeCoreAccess;
 
 template <class T, template <class> class C>
 class FacadePtr {
@@ -96,10 +96,8 @@ public:
     : storage(ptr.storage) {}
   template <typename TT, template <class> class CC>
   FacadePtr(FacadePtr<TT, CC> const &ptr,
-      typename boost::enable_if<boost::is_convertible<
-        typename CC<TT>::type *,
-        typename C<T>::type *>, void
-      >::type *dummy = nullptr)
+        // This is a conversion check from CC<TT>::type * to C<T>::type *
+        typename C<T>::type *dummy = static_cast<typename CC<TT>::type *>(nullptr))
     : storage(ptr.storage) {}
   template <class DD, typename TT, typename CRCR>
   FacadePtr(ValueInterface<DD,TT,CRCR> const &value,
@@ -489,7 +487,8 @@ private:
   FacadeFoundation &operator =(const this_type &);
 };
 
-struct FacadeCoreAccess {
+class FacadeCoreAccess {
+public:
   template <class T, template <class> class C>
   static
   typename T::FFType::ImplType *getImpl(FacadeRef<T,C> const &ref)
