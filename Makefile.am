@@ -137,21 +137,21 @@ noinst_PROGRAMS +=			\
 endif
 
 libcosupport_initializer_la_SOURCES =			\
-	implementation/BasicInitializer.cpp
+	src/cosupport-initializer/cpp/BasicInitializer.cpp
 libcosupport_initializer_la_LDFLAGS = $(AM_LDFLAGS)	\
 	$(filter-out %/libcosupport-initializer.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-initializer))
 
 libcosupport_smartptr_la_SOURCES =			\
-	implementation/RefCountObject.cpp
+	src/cosupport-smartptr/cpp/RefCountObject.cpp
 libcosupport_smartptr_la_LDFLAGS = $(AM_LDFLAGS)	\
 	$(filter-out %/libcosupport-smartptr.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-smartptr))
 
 if COSUPPORT_ENABLE_XERCES
 libcosupport_xerces_la_SOURCES =				\
-	implementation/XML/Xerces/StdIstreamInputSource.cpp	\
-	implementation/XML/Xerces/StdIstreamInputStream.cpp	\
-	implementation/XML/Xerces/StdOstreamFormatTarget.cpp	\
-	implementation/XML/Xerces/Handler.cpp
+	src/cosupport-xerces/cpp/StdIstreamInputSource.cpp	\
+	src/cosupport-xerces/cpp/StdIstreamInputStream.cpp	\
+	src/cosupport-xerces/cpp/StdOstreamFormatTarget.cpp	\
+	src/cosupport-xerces/cpp/Handler.cpp
 libcosupport_xerces_la_DEPENDENCIES =				\
 	libcosupport-initializer.la
 libcosupport_xerces_la_CPPFLAGS = $(AM_CPPFLAGS)
@@ -169,8 +169,8 @@ endif
 
 if COSUPPORT_ENABLE_SYSTEMC
 libcosupport_systemc_la_SOURCES =			\
-	implementation/par_manager.cpp			\
-	implementation/PerformanceEvaluation.cpp
+	src/cosupport-systemc/cpp/par_manager.cpp	\
+	src/cosupport-systemc/cpp/PerformanceEvaluation.cpp
 libcosupport_systemc_la_LDFLAGS = $(AM_LDFLAGS)		\
 	$(filter-out %/libcosupport-systemc.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-systemc))
 
@@ -190,40 +190,40 @@ test_nested_event_lists_LDFLAGS		= $(AM_LDFLAGS)	\
 	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-systemc libcosupport-streams)
 endif
 
-libcosupport_streams_la_SOURCES =			\
-	implementation/DebugOStream.cpp			\
-	implementation/FilterOStream.cpp		\
-	implementation/ColorStreambuf.cpp		\
-	implementation/DebugStreambuf.cpp		\
-	implementation/FilterStreambuf.cpp		\
-	implementation/HeaderFooterStreambuf.cpp	\
-	implementation/IndentStreambuf.cpp		\
-	implementation/LineNumberStreambuf.cpp		\
-	implementation/NullStreambuf.cpp		\
-	implementation/TranslationStreambuf.cpp		\
-	implementation/SocketTCPClient.cpp
+libcosupport_streams_la_SOURCES =				\
+	src/cosupport-streams/cpp/DebugOStream.cpp		\
+	src/cosupport-streams/cpp/FilterOStream.cpp		\
+	src/cosupport-streams/cpp/ColorStreambuf.cpp		\
+	src/cosupport-streams/cpp/DebugStreambuf.cpp		\
+	src/cosupport-streams/cpp/FilterStreambuf.cpp		\
+	src/cosupport-streams/cpp/HeaderFooterStreambuf.cpp	\
+	src/cosupport-streams/cpp/IndentStreambuf.cpp		\
+	src/cosupport-streams/cpp/LineNumberStreambuf.cpp	\
+	src/cosupport-streams/cpp/NullStreambuf.cpp		\
+	src/cosupport-streams/cpp/TranslationStreambuf.cpp	\
+	src/cosupport-streams/cpp/SocketTCPClient.cpp
 libcosupport_streams_la_LDFLAGS = $(AM_LDFLAGS)		\
 	$(filter-out %/libcosupport-streams.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-streams))
 
-libcosupport_string_la_SOURCES =			\
-	implementation/TemplateProcessor.cpp		\
-	implementation/UniquePool.cpp			\
-	implementation/UniqueCIdentifierPool.cpp	\
-	implementation/DoubleQuotedString.cpp		\
-	implementation/identifiermanipulation.cpp	\
-	implementation/QuotedString.cpp			\
-	implementation/SingleQuotedString.cpp		\
-	implementation/UnQuotedString.cpp
+libcosupport_string_la_SOURCES =				\
+	src/cosupport-string/cpp/TemplateProcessor.cpp		\
+	src/cosupport-string/cpp/UniquePool.cpp			\
+	src/cosupport-string/cpp/UniqueCIdentifierPool.cpp	\
+	src/cosupport-string/cpp/DoubleQuotedString.cpp		\
+	src/cosupport-string/cpp/identifiermanipulation.cpp	\
+	src/cosupport-string/cpp/QuotedString.cpp		\
+	src/cosupport-string/cpp/SingleQuotedString.cpp		\
+	src/cosupport-string/cpp/UnQuotedString.cpp
 libcosupport_string_la_LDFLAGS = $(AM_LDFLAGS)		\
 	$(filter-out %/libcosupport-string.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-string))
 
 libcosupport_math_la_SOURCES =				\
-	implementation/flog2.cpp
+	src/cosupport-math/cpp/flog2.cpp
 libcosupport_math_la_LDFLAGS = $(AM_LDFLAGS)		\
 	$(filter-out %/libcosupport-math.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-math))
 
 libcosupport_random_la_SOURCES =			\
-	implementation/Random/randomSource.cpp
+	src/cosupport-random/cpp/randomSource.cpp
 libcosupport_random_la_LDFLAGS = $(AM_LDFLAGS)		\
 	$(filter-out %/libcosupport-random.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-random))
 
@@ -232,15 +232,15 @@ libcosupport_allocators_la_LDFLAGS = $(AM_LDFLAGS)	\
 	$(filter-out %/libcosupport-allocators.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-allocators))
 
 libcosupport_tracing_la_SOURCES =			\
-	implementation/PtpTracer.cpp			\
-	implementation/Tracer.cpp			\
-	implementation/TracingFactory.cpp
+	src/cosupport-tracing/cpp/PtpTracer.cpp		\
+	src/cosupport-tracing/cpp/Tracer.cpp		\
+	src/cosupport-tracing/cpp/TracingFactory.cpp
 libcosupport_tracing_la_LDFLAGS = $(AM_LDFLAGS)		\
 	$(filter-out %/libcosupport-tracing.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-tracing))
 
 libcosupport_path_la_SOURCES =				\
-	implementation/Path/manipulation.cpp		\
-	implementation/Path/resourcelocations.cpp
+	src/cosupport-path/cpp/manipulation.cpp		\
+	src/cosupport-path/cpp/resourcelocations.cpp
 libcosupport_path_la_LDFLAGS = $(AM_LDFLAGS)		\
 	$(filter-out %/libcosupport-path.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-path))
 
