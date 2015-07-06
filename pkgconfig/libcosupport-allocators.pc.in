@@ -12,7 +12,7 @@ includedir=@includedir@
 srctreemode_srcdir=@abs_top_srcdir@
 srctreemode_builddir=@abs_top_builddir@
 srctreemode_libdir=${srctreemode_builddir}
-srctreemode_includedir=${srctreemode_builddir}/pkginclude -I${srctreemode_srcdir}/pkginclude
+srctreemode_includedir=${srctreemode_srcdir}/src/cosupport-allocators/headers
 
 # pkg-config fields
 # human-readable name
@@ -21,7 +21,8 @@ Name: libcosupport-allocators
 Description: Library of supporting infrastructure of the chair of HW/SW CoDesign at Uni Erlangen
 Version: @PACKAGE_VERSION@
 URL: http://www12.informatik.uni-erlangen.de/research/systemoc
-#Requires: glib-2.0 = 1.3.1
+Requires: libcosupport-base = ${PACKAGE_VERSION}, libcosupport-math = ${PACKAGE_VERSION}
+#Requires.private: glib-2.0 = 1.3.1
 #Conflicts: foobar <= 4.5
 Libs: -L${srctreemode_libdir} ${srctreemode_libdir}/libcosupport-allocators.la
 #Libs.private: -lm
