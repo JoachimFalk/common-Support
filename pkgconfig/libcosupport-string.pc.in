@@ -12,7 +12,7 @@ includedir=@includedir@
 srctreemode_srcdir=@abs_top_srcdir@
 srctreemode_builddir=@abs_top_builddir@
 srctreemode_libdir=${srctreemode_builddir}
-srctreemode_includedir=${srctreemode_builddir}/pkginclude -I${srctreemode_srcdir}/pkginclude
+srctreemode_includedir=${srctreemode_srcdir}/src/cosupport-string/headers
 
 # pkg-config fields
 # human-readable name
@@ -22,7 +22,7 @@ Description: Library of supporting infrastructure of the chair of HW/SW CoDesign
 Version: @PACKAGE_VERSION@
 URL: http://www12.informatik.uni-erlangen.de/research/systemoc
 #Conflicts: foobar <= 4.5
-#Requires: glib-2.0 = 1.3.1
+Requires: libcosupport-base = ${PACKAGE_VERSION}
 #Requires.private:
 Libs: -L${srctreemode_libdir} ${srctreemode_libdir}/libcosupport-string.la
 Libs.private: @BOOST_LDFLAGS@ -lboost_regex@BOOST_LIBMTPOSTFIX@

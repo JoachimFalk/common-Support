@@ -12,7 +12,7 @@ includedir=@includedir@
 srctreemode_srcdir=@abs_top_srcdir@
 srctreemode_builddir=@abs_top_builddir@
 srctreemode_libdir=${srctreemode_builddir}
-srctreemode_includedir=${srctreemode_builddir}/pkginclude -I${srctreemode_srcdir}/pkginclude
+srctreemode_includedir=${srctreemode_srcdir}/src/cosupport-xerces/headers
 
 # pkg-config fields
 # human-readable name
@@ -22,9 +22,9 @@ Description: Library of supporting infrastructure of the chair of HW/SW CoDesign
 Version: @PACKAGE_VERSION@
 URL: http://www12.informatik.uni-erlangen.de/research/systemoc
 #Conflicts: foobar <= 4.5
+Requires: libcosupport-base = ${PACKAGE_VERSION}, libcosupport-initializer = ${PACKAGE_VERSION}, libcosupport-string = ${PACKAGE_VERSION}
 #Requires: glib-2.0 = 1.3.1
 #Requires.private: libcosupport-initializer = @PACKAGE_VERSION@
-Requires: libcosupport-initializer = @PACKAGE_VERSION@
 Libs: -L${srctreemode_libdir} @XERCES_LDFLAGS@ -lxerces-c @XERCES_AUXLIBS@ ${srctreemode_libdir}/libcosupport-xerces.la
 Libs.private:
 Cflags: @AM_CPPFLAGS@ @AM_CXXFLAGS@ -I${srctreemode_includedir} @BOOST_INCLUDE@ @XERCES_INCLUDE@

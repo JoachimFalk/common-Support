@@ -9,7 +9,7 @@ AC_INIT(
 AC_PREREQ(2.57)
 ACJF_INIT
 
-AC_CONFIG_SRCDIR([implementation/RefCountObject.cpp])
+AC_CONFIG_SRCDIR([src/cosupport-string/cpp/TemplateProcessor.cpp])
 AC_CONFIG_AUX_DIR([../BuildSystem])
 AC_CONFIG_MACRO_DIR([../BuildSystem/m4])
 
@@ -44,7 +44,7 @@ if test x"$enable_debug" = x"yes"; then
 fi
 
 
-AC_CONFIG_HEADER([config.h pkginclude/CoSupport/cosupport_config.h])
+AC_CONFIG_HEADER([config.h src/cosupport-base/headers/CoSupport/cosupport_config.h])
 
 DX_HTML_FEATURE(ON)
 DX_CHM_FEATURE(OFF)
@@ -447,18 +447,19 @@ SUBDIRS="$subdirs"
 AC_SUBST([SUBDIRS])
 
 AC_CONFIG_FILES([
-  pkginclude/Makefile
+  src/Makefile
   Makefile
   pkgconfig/libcosupport.pc
+  pkgconfig/libcosupport-allocators.pc
+  pkgconfig/libcosupport-base.pc
   pkgconfig/libcosupport-initializer.pc
+  pkgconfig/libcosupport-math.pc
+  pkgconfig/libcosupport-path.pc
+  pkgconfig/libcosupport-random.pc
   pkgconfig/libcosupport-smartptr.pc
   pkgconfig/libcosupport-streams.pc
   pkgconfig/libcosupport-string.pc
-  pkgconfig/libcosupport-math.pc
-  pkgconfig/libcosupport-random.pc
-  pkgconfig/libcosupport-allocators.pc
   pkgconfig/libcosupport-tracing.pc
-  pkgconfig/libcosupport-path.pc
 ])
 
 ACJF_DONE
