@@ -7,8 +7,6 @@
  * user guide available at http://gradle.org/docs/2.2.1/userguide/tutorial_java_projects.html
  */
 
-apply plugin: 'eclipse'
-
 /*
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
@@ -36,6 +34,7 @@ dependencies {
 project.buildDir = 'obj'
 
 apply plugin: 'cpp'
+apply plugin: 'eclipse'
 //apply plugin: 'eclipse-cdt'
 apply plugin: 'visual-studio'
 
@@ -57,7 +56,9 @@ task VisualStudio(dependsOn: [
   "cosupport-stringVisualStudio",
   "cosupport-systemcVisualStudio",
   "cosupport-xercesVisualStudio"]) {
-  println 'Creating VisualStudio solution files!'
+  doFirst {
+    println 'Creating VisualStudio solution files!'
+  }
   doLast {
     println 'Created VisualStudio solution files!'
   }
@@ -70,83 +71,162 @@ task VisualStudio(dependsOn: [
 //}
 
 model {
-    components {
-        "cosupport-base"(NativeLibrarySpec)
-        "cosupport-initializer"(NativeLibrarySpec) {
-            sources {
-                cpp {
-                    lib library: "cosupport-base"
-                }
-            }
+  repositories {
+    libs(PrebuiltLibraries) {
+      boost_iostreams {
+  //    headers.srcDir "3rd-party-lib/boost_1_55_0/boost"
+        binaries.withType(StaticLibraryBinary) {
+          staticLibraryFile = file("libboost_iostreams-static")
         }
-        "cosupport-smartptr"(NativeLibrarySpec) {
-            sources {
-                cpp {
-                    lib library: "cosupport-base"
-                }
-            }
+        binaries.withType(SharedLibraryBinary) {
+          sharedLibraryFile = file("libboost_iostreams-shared")
         }
-        "cosupport-xerces"(NativeLibrarySpec) {
-            sources {
-                cpp {
-                    lib library: "cosupport-base"
-                    lib library: "cosupport-initializer"
-                    lib library: "cosupport-string"
-                }
-            }
+  //    headers.srcDir "3rd-party-lib/boost_1_55_0/boost"
+  //    binaries.withType(StaticLibraryBinary) {
+  //      def libName = targetPlatform.operatingSystem.windows ? 'flummy windows name' : 'boost_iostreams'
+  //      staticLibraryFile = file("3rd-party-lib/util/build/binaries/utilStaticLibrary/${buildType.name}/${libName}")
+  //      staticLibraryFile = "-lboost_iostreams"
+  //    }
+  //    binaries.withType(SharedLibraryBinary) {
+  //      sharedLibraryFile = "-lboost_iostreams"
+  //      def os = targetPlatform.operatingSystem
+  //      def baseDir = "3rd-party-lib/util/build/binaries/utilSharedLibrary/${buildType.name}"
+  //      if (os.windows) {
+  //          // Windows uses a .dll file, with a different link file if it exists (not Cygwin or MinGW)
+  //          sharedLibraryFile = file("${baseDir}/util.dll")
+  //          if (file("${baseDir}/util.lib").exists()) {
+  //              sharedLibraryLinkFile = file("${baseDir}/util.lib")
+  //          }
+  //      } else if (os.macOsX) {
+  //          sharedLibraryFile = file("${baseDir}/libhello.dylib")
+  //      } else {
+  //          sharedLibraryFile = file("${baseDir}/libutil.so")
+  //      }
+  //    }
+      }
+      boost_system {
+  //    headers.srcDir "3rd-party-lib/boost_1_55_0/boost"
+        binaries.withType(StaticLibraryBinary) {
+          staticLibraryFile = file("libboost_system-static")
         }
-        "cosupport-systemc"(NativeLibrarySpec) {
-            sources {
-                cpp {
-                    lib library: "cosupport-base"
-                }
-            }
+        binaries.withType(SharedLibraryBinary) {
+          sharedLibraryFile = file("libboost_system-shared")
         }
-        "cosupport-streams"(NativeLibrarySpec) {
-            sources {
-                cpp {
-                    lib library: "cosupport-base"
-                    lib library: "cosupport-string"
-                }
-            }
+      }
+      boost_regex {
+  //    headers.srcDir "3rd-party-lib/boost_1_55_0/boost"
+        binaries.withType(StaticLibraryBinary) {
+          staticLibraryFile = file("libboost_regex-static")
         }
-        "cosupport-string"(NativeLibrarySpec) {
-            sources {
-                cpp {
-                    lib library: "cosupport-base"
-                }
-            }
+        binaries.withType(SharedLibraryBinary) {
+          sharedLibraryFile = file("libboost_regex-shared")
         }
-        "cosupport-math"(NativeLibrarySpec) {
-            sources {
-                cpp {
-                    lib library: "cosupport-base"
-                }
-            }
-        }
-        "cosupport-random"(NativeLibrarySpec) {
-            sources {
-                cpp {
-                    lib library: "cosupport-base"
-                }
-            }
-        }
-        "cosupport-allocators"(NativeLibrarySpec) {
-            sources {
-                cpp {
-                    lib library: "cosupport-base"
-                    lib library: "cosupport-math"
-                }
-            }
-        }
-        "cosupport-path"(NativeLibrarySpec) {
-            sources {
-                cpp {
-                    lib library: "cosupport-base"
-                }
-            }
-        }
+      }
     }
+  }
+
+  /*
+  components {
+    main(NativeExecutableSpec) {
+      sources {
+          cpp.lib library: 'boost', linkage: 'api'
+          cpp.lib library: 'util', linkage: 'static'
+      }
+    }
+  }
+   */
+
+
+
+  components {
+    "cosupport-base"(NativeLibrarySpec)
+    "cosupport-initializer"(NativeLibrarySpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "cosupport-smartptr"(NativeLibrarySpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "cosupport-xerces"(NativeLibrarySpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+          lib library: "cosupport-initializer"
+          lib library: "cosupport-string"
+        }
+      }
+    }
+    "cosupport-systemc"(NativeLibrarySpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "cosupport-streams"(NativeLibrarySpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+          lib library: "cosupport-string"
+          lib library: "boost_iostreams"
+          lib library: "boost_system"
+        }
+      }
+    }
+    "cosupport-string"(NativeLibrarySpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+          lib library: "boost_regex"
+        }
+      }
+    }
+    "cosupport-math"(NativeLibrarySpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "cosupport-random"(NativeLibrarySpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "cosupport-allocators"(NativeLibrarySpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+          lib library: "cosupport-math"
+        }
+      }
+    }
+    "cosupport-path"(NativeLibrarySpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "test_dbgstream"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+          lib library: "cosupport-streams"
+          lib library: "cosupport-string"
+        }
+      }
+    }
+  }
 }
 
 //model {

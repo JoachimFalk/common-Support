@@ -284,7 +284,7 @@ libcosupport_path_la_DEPENDENCIES =			\
 libcosupport_path_la_LDFLAGS = $(AM_LDFLAGS)		\
 	$(filter-out %/libcosupport-path.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-path))
 
-test_dbgstream_SOURCES		= test_dbgstream.cpp
+test_dbgstream_SOURCES		= src/test_dbgstream/cpp/test_dbgstream.cpp
 test_dbgstream_DEPENDENCIES	= libcosupport-streams.la
 test_dbgstream_LDFLAGS		= $(AM_LDFLAGS)		\
 	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-streams)
