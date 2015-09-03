@@ -35,16 +35,33 @@ dependencies {
 
 project.buildDir = 'obj'
 
-
-task hello {
-    doLast {
-        println 'Hello world!'
-    }
-}
-
 apply plugin: 'cpp'
 //apply plugin: 'eclipse-cdt'
 apply plugin: 'visual-studio'
+
+task hello {
+  doLast {
+    println 'Hello world!'
+  }
+}
+
+task VisualStudio(dependsOn: [
+  "cosupport-allocatorsVisualStudio",
+  "cosupport-baseVisualStudio",
+  "cosupport-initializerVisualStudio",
+  "cosupport-mathVisualStudio",
+  "cosupport-pathVisualStudio",
+  "cosupport-randomVisualStudio",
+  "cosupport-smartptrVisualStudio",
+  "cosupport-streamsVisualStudio",
+  "cosupport-stringVisualStudio",
+  "cosupport-systemcVisualStudio",
+  "cosupport-xercesVisualStudio"]) {
+  println 'Creating VisualStudio solution files!'
+  doLast {
+    println 'Created VisualStudio solution files!'
+  }
+}
 
 //task build(dependsOn: 'assemble') {
 //    doLast {
