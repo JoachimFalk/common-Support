@@ -13,3 +13,7 @@ Release-VPC
 Release-VPC-noVCD
 *.user
 .gradle
+*.sln
+*.vcxProj*
+*.sdf
+*.opensdf
