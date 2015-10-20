@@ -71,59 +71,6 @@ task VisualStudio(dependsOn: [
 //}
 
 model {
-  repositories {
-    libs(PrebuiltLibraries) {
-      boost_iostreams {
-  //    headers.srcDir "3rd-party-lib/boost_1_55_0/boost"
-        binaries.withType(StaticLibraryBinary) {
-          staticLibraryFile = file("libboost_iostreams-static")
-        }
-        binaries.withType(SharedLibraryBinary) {
-          sharedLibraryFile = file("libboost_iostreams-shared")
-        }
-  //    headers.srcDir "3rd-party-lib/boost_1_55_0/boost"
-  //    binaries.withType(StaticLibraryBinary) {
-  //      def libName = targetPlatform.operatingSystem.windows ? 'flummy windows name' : 'boost_iostreams'
-  //      staticLibraryFile = file("3rd-party-lib/util/build/binaries/utilStaticLibrary/${buildType.name}/${libName}")
-  //      staticLibraryFile = "-lboost_iostreams"
-  //    }
-  //    binaries.withType(SharedLibraryBinary) {
-  //      sharedLibraryFile = "-lboost_iostreams"
-  //      def os = targetPlatform.operatingSystem
-  //      def baseDir = "3rd-party-lib/util/build/binaries/utilSharedLibrary/${buildType.name}"
-  //      if (os.windows) {
-  //          // Windows uses a .dll file, with a different link file if it exists (not Cygwin or MinGW)
-  //          sharedLibraryFile = file("${baseDir}/util.dll")
-  //          if (file("${baseDir}/util.lib").exists()) {
-  //              sharedLibraryLinkFile = file("${baseDir}/util.lib")
-  //          }
-  //      } else if (os.macOsX) {
-  //          sharedLibraryFile = file("${baseDir}/libhello.dylib")
-  //      } else {
-  //          sharedLibraryFile = file("${baseDir}/libutil.so")
-  //      }
-  //    }
-      }
-      boost_system {
-  //    headers.srcDir "3rd-party-lib/boost_1_55_0/boost"
-        binaries.withType(StaticLibraryBinary) {
-          staticLibraryFile = file("libboost_system-static")
-        }
-        binaries.withType(SharedLibraryBinary) {
-          sharedLibraryFile = file("libboost_system-shared")
-        }
-      }
-      boost_regex {
-  //    headers.srcDir "3rd-party-lib/boost_1_55_0/boost"
-        binaries.withType(StaticLibraryBinary) {
-          staticLibraryFile = file("libboost_regex-static")
-        }
-        binaries.withType(SharedLibraryBinary) {
-          sharedLibraryFile = file("libboost_regex-shared")
-        }
-      }
-    }
-  }
 
   /*
   components {
@@ -135,8 +82,6 @@ model {
     }
   }
    */
-
-
 
   components {
     "cosupport-base"(NativeLibrarySpec)
@@ -175,8 +120,8 @@ model {
         cpp {
           lib library: "cosupport-base"
           lib library: "cosupport-string"
-          lib library: "boost_iostreams"
-          lib library: "boost_system"
+          lib project: ':PrebuiltLibraries', library: "boost_iostreams"
+          lib project: ':PrebuiltLibraries', library: "boost_system"
         }
       }
     }
@@ -184,7 +129,7 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
-          lib library: "boost_regex"
+          lib project: ':PrebuiltLibraries', library: "boost_regex"
         }
       }
     }
@@ -265,4 +210,3 @@ binaries.withType(SharedLibraryBinarySpec) {
         cppCompiler.define "DLL_EXPORT"
     }
 }
-
