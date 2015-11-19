@@ -44,9 +44,13 @@
 
 #include <sstream>
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
+#ifndef _MSC_VER
+// Not windows, hopefully a unix os
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <unistd.h>
+# define UNIX_LIKE_OS
+#endif //!defined(_MSC_VER)
 
 namespace CoSupport { namespace Path {
 
@@ -115,6 +119,7 @@ boost::filesystem::path stripPrefix(boost::filesystem::path const &p, size_t n) 
 
 static
 boost::filesystem::path cleanup(boost::filesystem::path p, boost::filesystem::path const *cwd) {
+#ifdef UNIX_LIKE_OS
   struct stat st1, st2;
   
   // Filter out ".." and "." from p.
@@ -123,6 +128,7 @@ boost::filesystem::path cleanup(boost::filesystem::path p, boost::filesystem::pa
     msg << "Can't stat " << p << ": " << strerror(errno) << "!";
     throw std::runtime_error(msg.str().c_str());
   }
+#endif //UNIX_LIKE_OS
   fs::path pBase = p.is_absolute() ? p.root_path() : *cwd;
   fs::path pCleaned;
   for (fs::path::iterator iter = p.begin();
@@ -138,8 +144,9 @@ boost::filesystem::path cleanup(boost::filesystem::path p, boost::filesystem::pa
                pCleaned.filename() == ".." ||
                pCleaned.empty()) {
       pCleaned /= *iter; ++iter;
-    } else {
+    } else { // *iter == ".." && pCleaned.filename() != ".." (also != ".") && !pCleaned.empty()
       ++iter;
+#ifdef UNIX_LIKE_OS
       fs::path tryClean = pBase/pCleaned.parent_path();
       for (fs::path::iterator jter = iter;
            jter != p.end();
@@ -180,6 +187,10 @@ boost::filesystem::path cleanup(boost::filesystem::path p, boost::filesystem::pa
         iter      = p.begin();
 //      std::cout << "start over with: " << p << std::endl;
       }
+#else //!defined(UNIX_LIKE_OS)
+      // No symbolic links, hence we should always be able to simplify flummy/aaa/../bbb to flummy/bbb.
+      pCleaned = pCleaned.parent_path();
+#endif //!defined(UNIX_LIKE_OS)
     }
   }
   return pCleaned;
@@ -207,6 +218,7 @@ std::pair<bool, boost::filesystem::path> pathTrailingGraft(
   retval.first  = false;
   retval.second = p;
   
+#ifdef UNIX_LIKE_OS
   struct stat st1, st2;
   
   if (stat(p.string().c_str(), &st1) != 0) {
@@ -214,11 +226,17 @@ std::pair<bool, boost::filesystem::path> pathTrailingGraft(
     msg << "Can't stat " << p << ": " << strerror(errno) << "!";
     throw std::runtime_error(msg.str().c_str());
   }
+#endif //UNIX_LIKE_OS
   do {
     boost::filesystem::path graft = (retval.second = p) / g;
+#ifdef UNIX_LIKE_OS
     if (stat(graft.string().c_str(), &st2) == 0 &&
         st1.st_ino == st2.st_ino &&
-        st1.st_dev == st2.st_dev) {
+        st1.st_dev == st2.st_dev)
+#else //!defined(UNIX_LIKE_OS)
+    if (exists(graft))
+#endif //!defined(UNIX_LIKE_OS)
+    {
       retval.first = true;
       for (std::vector<boost::filesystem::path>::const_iterator iter = concat.begin();
            iter != concat.end();
