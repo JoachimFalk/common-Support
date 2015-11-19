@@ -40,6 +40,7 @@ apply plugin: 'eclipse'
 apply plugin: 'visual-studio'
 
 def analysis(String prefix, Object obj) {
+  println "================================================================================"
   println prefix+": " + obj 
   try {
     obj.properties.sort().each  { prop, val ->
@@ -51,13 +52,14 @@ def analysis(String prefix, Object obj) {
     println all
   }
   try {
-    obj.metaClass.methods.each { method ->
+    obj.metaClass.methods.sort { it.name }.each { method ->
   //  println prefix+"."+method.name+" of type "+method.descriptor
       println prefix+"."+method.signature
     }
   } catch (all) {
     println all
   }
+  println "================================================================================"
 }
 
 // this is a project
@@ -126,19 +128,22 @@ task VisualStudio(dependsOn: [
 //}
 
 model {
-
-  /*
   components {
-    main(NativeExecutableSpec) {
-      sources {
-          cpp.lib library: 'boost', linkage: 'api'
-          cpp.lib library: 'util', linkage: 'static'
-      }
-    }
-  }
-   */
+//  hello(NativeLibrarySpec)
+//  main(NativeExecutableSpec) {
+//    sources {
+//      cpp {
+//        lib library: "hello"
+//      }
+//    }
+//  }
+//  main(NativeExecutableSpec) {
+//    sources {
+//      cpp.lib library: 'boost', linkage: 'api'
+//      cpp.lib library: 'util', linkage: 'static'
+//    }
+//  }
 
-  components {
     "cosupport-base"(NativeLibrarySpec)
     "cosupport-initializer"(NativeLibrarySpec) {
       sources {
@@ -161,6 +166,7 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
@@ -249,42 +255,29 @@ model {
       }
     }
   }
-}
+  binaries {
+    all {
+      // Define a preprocessor macro for every binary
+      cppCompiler.define "NDEBUG"
 
-//model {
-//    components {
-//        hello(NativeLibrarySpec)
-//        main(NativeExecutableSpec) {
-//            sources {
-//                cpp {
-//                    lib library: "hello"
-//                }
-//            }
-//        }
-//    }
-//}
+  //  println "TOOLCHAIN: " + toolChain
 
-binaries.all {
-    // Define a preprocessor macro for every binary
-    cppCompiler.define "NDEBUG"
-
-//  println "TOOLCHAIN: " + toolChain
-
-    // Define toolchain-specific compiler and linker options
-    if (toolChain in Gcc) {
-        cppCompiler.args "-O2", "-std=gnu++11"
-//      cCompiler.args "-O2", "-std=gnu99"
-        linker.args "-Xlinker", "-S"
+      // Define toolchain-specific compiler and linker options
+      if (toolChain in Gcc) {
+          cppCompiler.args "-O2", "-std=gnu++11"
+  //      cCompiler.args "-O2", "-std=gnu99"
+          linker.args "-Xlinker", "-S"
+      }
+      if (toolChain in VisualCpp) {
+          cppCompiler.args "/Zi", "/EHsc"
+          linker.args "/DEBUG", "/LIBPATH:" + rootProject.childProjects.get('PrebuiltLibraries').projectDir + "\\x86_64-msvc120-win\\lib"
+      }
     }
-    if (toolChain in VisualCpp) {
-        cppCompiler.args "/Zi", "/EHsc"
-        linker.args "/DEBUG", "/LIBPATH:" + rootProject.childProjects.get('PrebuiltLibraries').projectDir + "\\x86_64-msvc120-win\\lib"
+    // For any shared library binaries built with Visual C++, define the DLL_EXPORT macro
+    withType(SharedLibraryBinarySpec) {
+      if (toolChain in VisualCpp) {
+          cppCompiler.define "DLL_EXPORT"
+      }
     }
-}
-
-// For any shared library binaries built with Visual C++, define the DLL_EXPORT macro
-binaries.withType(SharedLibraryBinarySpec) {
-    if (toolChain in VisualCpp) {
-        cppCompiler.define "DLL_EXPORT"
-    }
+  }
 }
