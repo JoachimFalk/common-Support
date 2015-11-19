@@ -45,11 +45,20 @@
 
 #include <sstream>
 
+#ifdef _MSC_VER
+# include <windows.h>
+#endif //_MSC_VER
+
 namespace CoSupport { namespace Path {
 
 namespace fs = boost::filesystem;
 
 boost::filesystem::path getExecutableLocation(const char *argv0) {
+#ifdef _MSC_VER
+  char ownPath[MAX_PATH]; 
+  GetModuleFileName(GetModuleHandle(NULL), ownPath, (sizeof(ownPath))); 
+  return fs::path(ownPath);
+#else //!defined(_MSC_VER)
   fs::path fsPrg(argv0);
   bool found = false;
   
@@ -120,6 +129,7 @@ boost::filesystem::path getExecutableLocation(const char *argv0) {
   }
   fsPrg = cleanup(fsPrg);
   return fsPrg;
+#endif //!defined(_MSC_VER)
 }
 
 /*
