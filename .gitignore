@@ -1,3 +1,4 @@
+.gradle
 config.h.in
 configure
 Makefile.in
@@ -6,14 +7,10 @@ autom4te.cache
 tags
 *.ncb
 *.suo
-Debug
-Debug-VPC
-Release
-Release-VPC
-Release-VPC-noVCD
-*.user
-.gradle
 *.sln
 *.vcxProj*
+*.vcxproj*
 *.sdf
 *.opensdf
+Debug*
+Release*
