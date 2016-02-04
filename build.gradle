@@ -36,8 +36,7 @@ dependencies {
 apply plugin: 'cpp'
 apply plugin: 'native-component'
 apply plugin: 'eclipse'
-//apply plugin: 'eclipse-cdt'
-apply plugin: 'visual-studio'
+//apply plugin: 'eclipse-cdt' <= This does not really work at the moment
 
 def analysis(String prefix, Object obj) {
   println "================================================================================"
@@ -65,41 +64,49 @@ def analysis(String prefix, Object obj) {
 // this is a project
 this.buildDir = 'obj'
 
-task hello {
-  doLast {
-    println 'Hello world!'
-  }
-}
+//task hello {
+//  doLast {
+//    println 'Hello world!'
+//  }
+//}
+//
+//def x = "y"
+//
+//def flummyTestFun(String msg) {
+//  println "I am flummy test function with msg: "  + msg
+//}
+//
+//task flummy { myTask ->
+//  def a = "b"
+//
+////analysis("in flummy this", this) // This is the containing class of this closure, i.e., the current project.
+////analysis("in flummy myTask", myTask)
+//  println '==== START ===='
+////this.binding.variables.each {k,v -> println "$k = $v"}
+//  binding.variables.each {k,v -> println "$k"}
+//  println '===== END ====='
+//  println "x = $x"
+//  println "a = $a"
+//  flummyTestFun "the test message"
+//  println rootProject.buildDir
+//  println rootProject.childProjects.get('PrebuiltLibraries').buildDir
+//}
+//
+//task dumpTasks << {
+//  def allTasks = project.getAllTasks(true)
+//  allTasks[project].each { task ->
+////  println task.toString() + " of " + task.class
+//    analysis(task.toString(), task)
+//  }
+//}
 
-def x = "y"
+//task build(dependsOn: 'assemble') {
+//    doLast {
+//        println 'Build done!'
+//    }
+//}
 
-def flummyTestFun(String msg) {
-  println "I am flummy test function with msg: "  + msg
-}
-
-task flummy { myTask ->
-  def a = "b"
-
-//analysis("in flummy this", this) // This is the containing class of this closure, i.e., the current project.
-//analysis("in flummy myTask", myTask)
-  println '==== START ===='
-//this.binding.variables.each {k,v -> println "$k = $v"}
-  binding.variables.each {k,v -> println "$k"}
-  println '===== END ====='
-  println "x = $x"
-  println "a = $a"
-  flummyTestFun "the test message"
-  println rootProject.buildDir
-  println rootProject.childProjects.get('PrebuiltLibraries').buildDir
-}
-
-task dumpTasks << {
-  def allTasks = project.getAllTasks(true)
-  allTasks[project].each { task ->
-//  println task.toString() + " of " + task.class
-    analysis(task.toString(), task)
-  }
-}
+apply plugin: 'visual-studio'
 
 task VisualStudio(dependsOn: [
   "cosupport-allocatorsVisualStudio",
@@ -120,12 +127,6 @@ task VisualStudio(dependsOn: [
     println 'Created VisualStudio solution files!'
   }
 }
-
-//task build(dependsOn: 'assemble') {
-//    doLast {
-//        println 'Build done!'
-//    }
-//}
 
 model {
   components {
