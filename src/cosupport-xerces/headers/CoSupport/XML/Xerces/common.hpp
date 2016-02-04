@@ -41,7 +41,10 @@
 #include <sstream>
 #include <stdexcept>
 #include <memory>
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+#else
 #include <alloca.h>
+#endif
 
 #include <CoSupport/compatibility-glue/nullptr.h>
 #include <CoSupport/sassert.h>
