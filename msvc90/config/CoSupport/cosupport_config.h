@@ -91,4 +91,7 @@
 /* Define to the replacement type for uint64_t if this type is missing. */
 /* #undef COSUPPORT_REPLTYP_UINT64_T */
 
+/* Defined if you have the <cstddef> header defining the std::nullptr_t data type */
+#define COSUPPORT_HAVE_STD_NULLPTR_T 1
+
 #endif /* _INCLUDED_COSUPPORT_CONFIG_H */

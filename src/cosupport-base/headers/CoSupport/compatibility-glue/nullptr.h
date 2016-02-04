@@ -51,22 +51,16 @@
 namespace std {
 #endif
 
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-#else
 #ifndef COSUPPORT_HAVE_STD_NULLPTR_T
 typedef typeof(NULL) nullptr_t;
 #endif //!COSUPPORT_HAVE_STD_NULLPTR_T
-#endif
 
 #ifdef __cplusplus
 } // namespace std
 #endif
 
 #ifndef COSUPPORT_HAVE_STD_NULLPTR_T
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-#else
 # define nullptr NULL
 #endif //!COSUPPORT_HAVE_STD_NULLPTR_T
-#endif
 
 #endif //_INCLUDED_COSUPPORT_COMPAT_NULLPTR_H
