@@ -147,8 +147,8 @@ struct NAME<R, R (T::*)(PLIST) CONST> {						\
     bool canRunInParallel;						\
                                                                                 \
 	template<class X>							\
-	NAME(CONST X *_obj, R (T::*_func)(PLIST) CONST, const char *_name)	\
-	  : obj(dynamic_cast<CONST T *>(_obj)), func(_func), name(_name)	\
+	NAME(CONST X *_obj, R (T::*_func)(PLIST) CONST, const char *_name, bool _canRunInParallel=false)	\
+	  : obj(dynamic_cast<CONST T *>(_obj)), func(_func), name(_name), canRunInParallel(_canRunInParallel)	\
 	  { assert(obj != 0 && func != 0); }					\
 										\
 	R call(const ParamList &pl) const {					\
