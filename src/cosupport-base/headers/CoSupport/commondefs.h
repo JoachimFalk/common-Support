@@ -92,6 +92,21 @@
 # define COSUPPORT_ATTRIBUTE_DEPRECATED
 #endif
 
+#if __GNUC__ > 3
+// GCC
+# define COSUPPORT_ATTRIBUTE_EXPORT __attribute__((visibility("default")))
+# define COSUPPORT_ATTRIBUTE_IMPORT
+#elif defined(_MSC_VER)
+// Microsoft 
+# define COSUPPORT_ATTRIBUTE_EXPORT __declspec(dllexport)
+# define COSUPPORT_ATTRIBUTE_IMPORT __declspec(dllimport)
+#else
+// Do nothing and hope for the best?
+# define COSUPPORT_ATTRIBUTE_EXPORT
+# define COSUPPORT_ATTRIBUTE_IMPORT
+# warning "Warning Unknown dynamic link import/export semantics."
+#endif
+
 #define BITS_TYPE(TYPE) (sizeof(TYPE)*CHAR_BIT)
 
 /*
