@@ -185,16 +185,16 @@ namespace CoSupport { namespace DataTypes {
   >
   class VectorInterface;
 
-  template <class D1, class I1, class V1, class R1, class CR1, class P1, class CP1,
+  template <class D1, class I1, class V1, class TR1, class TCR1, class TP1, class TCP1,
             typename T2, class A2>
-  Projection<VectorInterface<D1,I1,V1,R1,CR1,P1,CP1> &, std::vector<T2, A2> const &>
-  proj(VectorInterface<D1,I1,V1,R1,CR1,P1,CP1> &v, std::vector<T2, A2> const &idx)
-    { return Projection<VectorInterface<D1,I1,V1,R1,CR1,P1,CP1> &, std::vector<T2, A2> const &>(v, idx); }
-  template <class D1, class I1, class V1, class R1, class CR1, class P1, class CP1,
+  Projection<VectorInterface<D1,I1,V1,TR1,TCR1,TP1,TCP1> &, std::vector<T2, A2> const &>
+  proj(VectorInterface<D1,I1,V1,TR1,TCR1,TP1,TCP1> &v, std::vector<T2, A2> const &idx)
+    { return Projection<VectorInterface<D1,I1,V1,TR1,TCR1,TP1,TCP1> &, std::vector<T2, A2> const &>(v, idx); }
+  template <class D1, class I1, class V1, class TR1, class TCR1, class TP1, class TCP1,
             typename T2, class A2>
-  Projection<VectorInterface<D1,I1,V1,R1,CR1,P1,CP1> const &, std::vector<T2, A2> const &>
-  proj(VectorInterface<D1,I1,V1,R1,CR1,P1,CP1> const &v, std::vector<T2, A2> const &idx)
-    { return Projection<VectorInterface<D1,I1,V1,R1,CR1,P1,CP1> const &, std::vector<T2, A2> const &>(v, idx); }
+  Projection<VectorInterface<D1,I1,V1,TR1,TCR1,TP1,TCP1> const &, std::vector<T2, A2> const &>
+  proj(VectorInterface<D1,I1,V1,TR1,TCR1,TP1,TCP1> const &v, std::vector<T2, A2> const &idx)
+    { return Projection<VectorInterface<D1,I1,V1,TR1,TCR1,TP1,TCP1> const &, std::vector<T2, A2> const &>(v, idx); }
 
 } } // namespace CoSupport::DataTypes
 
