@@ -163,22 +163,22 @@ struct NAME<R, R (T::*)(PLIST) CONST> {						\
 };
 
 #define MISSING_0 Detail::MissingNode<void>
-#define MISSING_1 Detail::MissingNode<P1 , MISSING_0 >
-#define MISSING_2 Detail::MissingNode<P2 , MISSING_1 >
-#define MISSING_3 Detail::MissingNode<P3 , MISSING_2 >
-#define MISSING_4 Detail::MissingNode<P4 , MISSING_3 >
+#define MISSING_1 Detail::MissingNode<TP1 , MISSING_0 >
+#define MISSING_2 Detail::MissingNode<TP2 , MISSING_1 >
+#define MISSING_3 Detail::MissingNode<TP3 , MISSING_2 >
+#define MISSING_4 Detail::MissingNode<TP4 , MISSING_3 >
 
 #define TEMPLATELIST_0 
-#define TEMPLATELIST_1 , typename P1 TEMPLATELIST_0
-#define TEMPLATELIST_2 , typename P2 TEMPLATELIST_1
-#define TEMPLATELIST_3 , typename P3 TEMPLATELIST_2
-#define TEMPLATELIST_4 , typename P4 TEMPLATELIST_3
+#define TEMPLATELIST_1 , typename TP1 TEMPLATELIST_0
+#define TEMPLATELIST_2 , typename TP2 TEMPLATELIST_1
+#define TEMPLATELIST_3 , typename TP3 TEMPLATELIST_2
+#define TEMPLATELIST_4 , typename TP4 TEMPLATELIST_3
 
 #define PARAMLIST_0
-#define PARAMLIST_1 P1
-#define PARAMLIST_2 P2 , PARAMLIST_1
-#define PARAMLIST_3 P3 , PARAMLIST_2
-#define PARAMLIST_4 P4 , PARAMLIST_3
+#define PARAMLIST_1 TP1
+#define PARAMLIST_2 TP2 , PARAMLIST_1
+#define PARAMLIST_3 TP3 , PARAMLIST_2
+#define PARAMLIST_4 TP4 , PARAMLIST_3
 
 #define PARAMCALL_0
 #define PARAMCALL_1 pl.p

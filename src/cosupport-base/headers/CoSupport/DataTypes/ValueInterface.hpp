@@ -321,13 +321,13 @@ template <class DD, typename TT, typename CRCR>
 std::ostream &operator << (std::ostream &out, ValueInterface<DD,TT,CRCR> const &x)
   { return out << x.get(); }
 
-template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
+template <class D1, typename T1, typename TCR1, class D2, typename T2, typename TCR2>
 bool
 operator ==(
-    const ValueInterface<D1, T1, CR1> &lhs,
-    const ValueInterface<D2, T2, CR2> &rhs)
+    const ValueInterface<D1, T1, TCR1> &lhs,
+    const ValueInterface<D2, T2, TCR2> &rhs)
   { return lhs.get() == rhs.get(); }
-template <typename T1, class D2, typename T2, typename CR2>
+template <typename T1, class D2, typename T2, typename TCR2>
 typename boost::disable_if<boost::mpl::or_<
     boost::is_base_of<
       Detail::ValueInterfaceTag,
@@ -343,18 +343,18 @@ typename boost::disable_if<boost::mpl::or_<
   >, bool>::type
 operator ==(
     T1 const &lhs,
-    const ValueInterface<D2, T2, CR2> &rhs)
+    const ValueInterface<D2, T2, TCR2> &rhs)
   { return lhs == rhs.get(); }
-template <class D2, typename T2, typename CR2>
+template <class D2, typename T2, typename TCR2>
 typename boost::enable_if<boost::is_base_of<
     Detail::value_type_pointer_tag_t,
     typename Detail::ValueTypeClassifier<T2>::tag
   >, bool>::type
 operator ==(
     std::nullptr_t null,
-    const ValueInterface<D2, T2, CR2> &rhs)
+    const ValueInterface<D2, T2, TCR2> &rhs)
   { assert(!null); return !rhs.get(); }
-template <class D1, typename T1, typename CR1, typename T2>
+template <class D1, typename T1, typename TCR1, typename T2>
 typename boost::disable_if<boost::mpl::or_<
     boost::is_base_of<
       Detail::ValueInterfaceTag,
@@ -369,26 +369,26 @@ typename boost::disable_if<boost::mpl::or_<
     >
   >, bool>::type
 operator ==(
-    const ValueInterface<D1, T1, CR1> &lhs,
+    const ValueInterface<D1, T1, TCR1> &lhs,
     T2 const &rhs)
   { return lhs.get() == rhs; }
-template <class D1, typename T1, typename CR1>
+template <class D1, typename T1, typename TCR1>
 typename boost::enable_if<boost::is_base_of<
     Detail::value_type_pointer_tag_t,
     typename Detail::ValueTypeClassifier<T1>::tag
   >, bool>::type
 operator ==(
-    const ValueInterface<D1, T1, CR1> &lhs,
+    const ValueInterface<D1, T1, TCR1> &lhs,
     std::nullptr_t null)
   { assert(!null); return !lhs.get(); }
 
-template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
+template <class D1, typename T1, typename TCR1, class D2, typename T2, typename TCR2>
 bool
 operator !=(
-    const ValueInterface<D1, T1, CR1> &lhs,
-    const ValueInterface<D2, T2, CR2> &rhs)
+    const ValueInterface<D1, T1, TCR1> &lhs,
+    const ValueInterface<D2, T2, TCR2> &rhs)
   { return lhs.get() != rhs.get(); }
-template <typename T1, class D2, typename T2, typename CR2>
+template <typename T1, class D2, typename T2, typename TCR2>
 typename boost::disable_if<boost::mpl::or_<
     boost::is_base_of<
       Detail::ValueInterfaceTag,
@@ -404,18 +404,18 @@ typename boost::disable_if<boost::mpl::or_<
   >, bool>::type
 operator !=(
     T1 const &lhs,
-    const ValueInterface<D2, T2, CR2> &rhs)
+    const ValueInterface<D2, T2, TCR2> &rhs)
   { return lhs != rhs.get(); }
-template <class D2, typename T2, typename CR2>
+template <class D2, typename T2, typename TCR2>
 typename boost::enable_if<boost::is_base_of<
     Detail::value_type_pointer_tag_t,
     typename Detail::ValueTypeClassifier<T2>::tag
   >, bool>::type
 operator !=(
     std::nullptr_t null,
-    const ValueInterface<D2, T2, CR2> &rhs)
+    const ValueInterface<D2, T2, TCR2> &rhs)
   { assert(!null); return rhs.get(); }
-template <class D1, typename T1, typename CR1, typename T2>
+template <class D1, typename T1, typename TCR1, typename T2>
 typename boost::disable_if<boost::mpl::or_<
     boost::is_base_of<
       Detail::ValueInterfaceTag,
@@ -430,93 +430,93 @@ typename boost::disable_if<boost::mpl::or_<
     >
   >, bool>::type
 operator !=(
-    const ValueInterface<D1, T1, CR1> &lhs,
+    const ValueInterface<D1, T1, TCR1> &lhs,
     T2 const &rhs)
   { return lhs.get() != rhs; }
-template <class D1, typename T1, typename CR1>
+template <class D1, typename T1, typename TCR1>
 typename boost::enable_if<boost::is_base_of<
     Detail::value_type_pointer_tag_t,
     typename Detail::ValueTypeClassifier<T1>::tag
   >, bool>::type
 operator !=(
-    const ValueInterface<D1, T1, CR1> &lhs,
+    const ValueInterface<D1, T1, TCR1> &lhs,
     std::nullptr_t null)
   { assert(!null); return lhs.get(); }
 
 
-template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
+template <class D1, typename T1, typename TCR1, class D2, typename T2, typename TCR2>
 bool
 operator < (
-    const ValueInterface<D1, T1, CR1> &lhs,
-    const ValueInterface<D2, T2, CR2> &rhs)
+    const ValueInterface<D1, T1, TCR1> &lhs,
+    const ValueInterface<D2, T2, TCR2> &rhs)
   { return lhs.get() <  rhs.get(); }
-template <typename T1, class D2, typename T2, typename CR2>
+template <typename T1, class D2, typename T2, typename TCR2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T1>, bool>::type
 operator < (
     T1 const &lhs,
-    const ValueInterface<D2, T2, CR2> &rhs)
+    const ValueInterface<D2, T2, TCR2> &rhs)
   { return lhs <  rhs.get(); }
-template <class D1, typename T1, typename CR1, typename T2>
+template <class D1, typename T1, typename TCR1, typename T2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T2>, bool>::type
 operator < (
-    const ValueInterface<D1, T1, CR1> &lhs,
+    const ValueInterface<D1, T1, TCR1> &lhs,
     T2 const &rhs)
   { return lhs.get() <  rhs; }
 
-template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
+template <class D1, typename T1, typename TCR1, class D2, typename T2, typename TCR2>
 bool
 operator <=(
-    const ValueInterface<D1, T1, CR1> &lhs,
-    const ValueInterface<D2, T2, CR2> &rhs)
+    const ValueInterface<D1, T1, TCR1> &lhs,
+    const ValueInterface<D2, T2, TCR2> &rhs)
   { return lhs.get() <= rhs.get(); }
-template <typename T1, class D2, typename T2, typename CR2>
+template <typename T1, class D2, typename T2, typename TCR2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T1>, bool>::type
 operator <=(
     T1 const &lhs,
-    const ValueInterface<D2, T2, CR2> &rhs)
+    const ValueInterface<D2, T2, TCR2> &rhs)
   { return lhs <= rhs.get(); }
-template <class D1, typename T1, typename CR1, typename T2>
+template <class D1, typename T1, typename TCR1, typename T2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T2>, bool>::type
 operator <=(
-    const ValueInterface<D1, T1, CR1> &lhs,
+    const ValueInterface<D1, T1, TCR1> &lhs,
     T2 const &rhs)
   { return lhs.get() <= rhs; }
 
-template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
+template <class D1, typename T1, typename TCR1, class D2, typename T2, typename TCR2>
 bool
 operator > (
-    const ValueInterface<D1, T1, CR1> &lhs,
-    const ValueInterface<D2, T2, CR2> &rhs)
+    const ValueInterface<D1, T1, TCR1> &lhs,
+    const ValueInterface<D2, T2, TCR2> &rhs)
   { return lhs.get() >  rhs.get(); }
-template <typename T1, class D2, typename T2, typename CR2>
+template <typename T1, class D2, typename T2, typename TCR2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T1>, bool>::type
 operator > (
     T1 const &lhs,
-    const ValueInterface<D2, T2, CR2> &rhs)
+    const ValueInterface<D2, T2, TCR2> &rhs)
   { return lhs >  rhs.get(); }
-template <class D1, typename T1, typename CR1, typename T2>
+template <class D1, typename T1, typename TCR1, typename T2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T2>, bool>::type
 operator > (
-    const ValueInterface<D1, T1, CR1> &lhs,
+    const ValueInterface<D1, T1, TCR1> &lhs,
     T2 const &rhs)
   { return lhs.get() >  rhs; }
 
-template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
+template <class D1, typename T1, typename TCR1, class D2, typename T2, typename TCR2>
 bool
 operator >=(
-    const ValueInterface<D1, T1, CR1> &lhs,
-    const ValueInterface<D2, T2, CR2> &rhs)
+    const ValueInterface<D1, T1, TCR1> &lhs,
+    const ValueInterface<D2, T2, TCR2> &rhs)
   { return lhs.get() >= rhs.get(); }
-template <typename T1, class D2, typename T2, typename CR2>
+template <typename T1, class D2, typename T2, typename TCR2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T1>, bool>::type
 operator >=(
     T1 const &lhs,
-    const ValueInterface<D2, T2, CR2> &rhs)
+    const ValueInterface<D2, T2, TCR2> &rhs)
   { return lhs >= rhs.get(); }
-template <class D1, typename T1, typename CR1, typename T2>
+template <class D1, typename T1, typename TCR1, typename T2>
 typename boost::disable_if<boost::is_base_of<Detail::ValueInterfaceTag, T2>, bool>::type
 operator >=(
-    const ValueInterface<D1, T1, CR1> &lhs,
+    const ValueInterface<D1, T1, TCR1> &lhs,
     T2 const &rhs)
   { return lhs.get() >= rhs; }
 

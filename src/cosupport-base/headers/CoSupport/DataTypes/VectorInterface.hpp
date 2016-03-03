@@ -197,20 +197,20 @@ template <
   class D1, class D2,
   class I1, class I2,
   class V,
-  class R1, class R2,
-  class CR1, class CR2,
-  class P1, class P2,
-  class CP1, class CP2
+  class TR1, class TR2,
+  class TCR1, class TCR2,
+  class TP1, class TP2,
+  class TCP1, class TCP2
 >
 inline
 bool operator == (
-    const VectorInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
-    const VectorInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+    const VectorInterface<D1,I1,V,TR1,TCR1,TP1,TCP1> &lhs,
+    const VectorInterface<D2,I2,V,TR2,TCR2,TP2,TCP2> &rhs)
 {
-  typename VectorInterface<D1,I1,V,R1,CR1,P1,CP1>::const_iterator iter = lhs.begin();
-  typename VectorInterface<D1,I1,V,R1,CR1,P1,CP1>::const_iterator iend = lhs.end();
-  typename VectorInterface<D2,I2,V,R2,CR2,P2,CP2>::const_iterator jter = rhs.begin();
-  typename VectorInterface<D2,I2,V,R2,CR2,P2,CP2>::const_iterator jend = rhs.end();
+  typename VectorInterface<D1,I1,V,TR1,TCR1,TP1,TCP1>::const_iterator iter = lhs.begin();
+  typename VectorInterface<D1,I1,V,TR1,TCR1,TP1,TCP1>::const_iterator iend = lhs.end();
+  typename VectorInterface<D2,I2,V,TR2,TCR2,TP2,TCP2>::const_iterator jter = rhs.begin();
+  typename VectorInterface<D2,I2,V,TR2,TCR2,TP2,TCP2>::const_iterator jend = rhs.end();
   while (iter != iend && jter != jend && *iter == *jter) {
     ++iter; ++jter;
   }
@@ -232,15 +232,15 @@ template <
   class D1, class D2,
   class I1, class I2,
   class V,
-  class R1, class R2,
-  class CR1, class CR2,
-  class P1, class P2,
-  class CP1, class CP2
+  class TR1, class TR2,
+  class TCR1, class TCR2,
+  class TP1, class TP2,
+  class TCP1, class TCP2
 >
 inline
 bool operator < (
-    const VectorInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
-    const VectorInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+    const VectorInterface<D1,I1,V,TR1,TCR1,TP1,TCP1> &lhs,
+    const VectorInterface<D2,I2,V,TR2,TCR2,TP2,TCP2> &rhs)
   { return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()); }
 
 /// Based on operator==
@@ -248,15 +248,15 @@ template <
   class D1, class D2,
   class I1, class I2,
   class V,
-  class R1, class R2,
-  class CR1, class CR2,
-  class P1, class P2,
-  class CP1, class CP2
+  class TR1, class TR2,
+  class TCR1, class TCR2,
+  class TP1, class TP2,
+  class TCP1, class TCP2
 >
 inline
 bool operator != (
-    const VectorInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
-    const VectorInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+    const VectorInterface<D1,I1,V,TR1,TCR1,TP1,TCP1> &lhs,
+    const VectorInterface<D2,I2,V,TR2,TCR2,TP2,TCP2> &rhs)
   { return !(lhs == rhs); }
 
 /// Based on operator<
@@ -264,15 +264,15 @@ template <
   class D1, class D2,
   class I1, class I2,
   class V,
-  class R1, class R2,
-  class CR1, class CR2,
-  class P1, class P2,
-  class CP1, class CP2
+  class TR1, class TR2,
+  class TCR1, class TCR2,
+  class TP1, class TP2,
+  class TCP1, class TCP2
 >
 inline
 bool operator > (
-    const VectorInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
-    const VectorInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+    const VectorInterface<D1,I1,V,TR1,TCR1,TP1,TCP1> &lhs,
+    const VectorInterface<D2,I2,V,TR2,TCR2,TP2,TCP2> &rhs)
   { return rhs < lhs; }
 
 /// Based on operator<
@@ -280,15 +280,15 @@ template <
   class D1, class D2,
   class I1, class I2,
   class V,
-  class R1, class R2,
-  class CR1, class CR2,
-  class P1, class P2,
-  class CP1, class CP2
+  class TR1, class TR2,
+  class TCR1, class TCR2,
+  class TP1, class TP2,
+  class TCP1, class TCP2
 >
 inline
 bool operator <= (
-    const VectorInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
-    const VectorInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+    const VectorInterface<D1,I1,V,TR1,TCR1,TP1,TCP1> &lhs,
+    const VectorInterface<D2,I2,V,TR2,TCR2,TP2,TCP2> &rhs)
   { return !(rhs < lhs); }
 
 /// Based on operator<
@@ -296,15 +296,15 @@ template <
   class D1, class D2,
   class I1, class I2,
   class V,
-  class R1, class R2,
-  class CR1, class CR2,
-  class P1, class P2,
-  class CP1, class CP2
+  class TR1, class TR2,
+  class TCR1, class TCR2,
+  class TP1, class TP2,
+  class TCP1, class TCP2
 >
 inline
 bool operator >= (
-    const VectorInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
-    const VectorInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+    const VectorInterface<D1,I1,V,TR1,TCR1,TP1,TCP1> &lhs,
+    const VectorInterface<D2,I2,V,TR2,TCR2,TP2,TCP2> &rhs)
   { return !(lhs < rhs); }
 
 } } // namespace CoSupport::DataTypes

@@ -201,20 +201,20 @@ template <
   class D1, class D2,
   template<class> class I1, template<class> class I2,
   class V,
-  class R1, class R2,
-  class CR1, class CR2,
-  class P1, class P2,
-  class CP1, class CP2
+  class TR1, class TR2,
+  class TCR1, class TCR2,
+  class TP1, class TP2,
+  class TCP1, class TCP2
 >
 inline
 bool operator == (
-    const ListInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
-    const ListInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+    const ListInterface<D1,I1,V,TR1,TCR1,TP1,TCP1> &lhs,
+    const ListInterface<D2,I2,V,TR2,TCR2,TP2,TCP2> &rhs)
 {
-  typename ListInterface<D1,I1,V,R1,CR1,P1,CP1>::const_iterator iter = lhs.begin();
-  typename ListInterface<D1,I1,V,R1,CR1,P1,CP1>::const_iterator iend = lhs.end();
-  typename ListInterface<D2,I2,V,R2,CR2,P2,CP2>::const_iterator jter = rhs.begin();
-  typename ListInterface<D2,I2,V,R2,CR2,P2,CP2>::const_iterator jend = rhs.end();
+  typename ListInterface<D1,I1,V,TR1,TCR1,TP1,TCP1>::const_iterator iter = lhs.begin();
+  typename ListInterface<D1,I1,V,TR1,TCR1,TP1,TCP1>::const_iterator iend = lhs.end();
+  typename ListInterface<D2,I2,V,TR2,TCR2,TP2,TCP2>::const_iterator jter = rhs.begin();
+  typename ListInterface<D2,I2,V,TR2,TCR2,TP2,TCP2>::const_iterator jend = rhs.end();
   while (iter != iend && jter != jend && *iter == *jter) {
     ++iter; ++jter;
   }
@@ -236,15 +236,15 @@ template <
   class D1, class D2,
   template<class> class I1, template<class> class I2,
   class V,
-  class R1, class R2,
-  class CR1, class CR2,
-  class P1, class P2,
-  class CP1, class CP2
+  class TR1, class TR2,
+  class TCR1, class TCR2,
+  class TP1, class TP2,
+  class TCP1, class TCP2
 >
 inline
 bool operator < (
-    const ListInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
-    const ListInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+    const ListInterface<D1,I1,V,TR1,TCR1,TP1,TCP1> &lhs,
+    const ListInterface<D2,I2,V,TR2,TCR2,TP2,TCP2> &rhs)
   { return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()); }
 
 /// Based on operator==
@@ -252,15 +252,15 @@ template <
   class D1, class D2,
   template<class> class I1, template<class> class I2,
   class V,
-  class R1, class R2,
-  class CR1, class CR2,
-  class P1, class P2,
-  class CP1, class CP2
+  class TR1, class TR2,
+  class TCR1, class TCR2,
+  class TP1, class TP2,
+  class TCP1, class TCP2
 >
 inline
 bool operator != (
-    const ListInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
-    const ListInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+    const ListInterface<D1,I1,V,TR1,TCR1,TP1,TCP1> &lhs,
+    const ListInterface<D2,I2,V,TR2,TCR2,TP2,TCP2> &rhs)
   { return !(lhs == rhs); }
 
 /// Based on operator<
@@ -268,15 +268,15 @@ template <
   class D1, class D2,
   template<class> class I1, template<class> class I2,
   class V,
-  class R1, class R2,
-  class CR1, class CR2,
-  class P1, class P2,
-  class CP1, class CP2
+  class TR1, class TR2,
+  class TCR1, class TCR2,
+  class TP1, class TP2,
+  class TCP1, class TCP2
 >
 inline
 bool operator > (
-    const ListInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
-    const ListInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+    const ListInterface<D1,I1,V,TR1,TCR1,TP1,TCP1> &lhs,
+    const ListInterface<D2,I2,V,TR2,TCR2,TP2,TCP2> &rhs)
   { return rhs < lhs; }
 
 /// Based on operator<
@@ -284,15 +284,15 @@ template <
   class D1, class D2,
   template<class> class I1, template<class> class I2,
   class V,
-  class R1, class R2,
-  class CR1, class CR2,
-  class P1, class P2,
-  class CP1, class CP2
+  class TR1, class TR2,
+  class TCR1, class TCR2,
+  class TP1, class TP2,
+  class TCP1, class TCP2
 >
 inline
 bool operator <= (
-    const ListInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
-    const ListInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+    const ListInterface<D1,I1,V,TR1,TCR1,TP1,TCP1> &lhs,
+    const ListInterface<D2,I2,V,TR2,TCR2,TP2,TCP2> &rhs)
   { return !(rhs < lhs); }
 
 /// Based on operator<
@@ -300,15 +300,15 @@ template <
   class D1, class D2,
   template<class> class I1, template<class> class I2,
   class V,
-  class R1, class R2,
-  class CR1, class CR2,
-  class P1, class P2,
-  class CP1, class CP2
+  class TR1, class TR2,
+  class TCR1, class TCR2,
+  class TP1, class TP2,
+  class TCP1, class TCP2
 >
 inline
 bool operator >= (
-    const ListInterface<D1,I1,V,R1,CR1,P1,CP1> &lhs,
-    const ListInterface<D2,I2,V,R2,CR2,P2,CP2> &rhs)
+    const ListInterface<D1,I1,V,TR1,TCR1,TP1,TCP1> &lhs,
+    const ListInterface<D2,I2,V,TR2,TCR2,TP2,TCP2> &rhs)
   { return !(lhs < rhs); }
 
 } } // namespace CoSupport::DataTypes

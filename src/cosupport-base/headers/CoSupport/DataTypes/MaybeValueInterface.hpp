@@ -158,56 +158,56 @@ template <class DD, typename TT, typename CRCR>
 std::ostream &operator << (std::ostream &out, MaybeValueInterface<DD,TT,CRCR> const &x)
   { return x.isDefined() ? out << x.get() : out << "undef"; }
 
-template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
+template <class D1, typename T1, typename TCR1, class D2, typename T2, typename TCR2>
 bool
 operator ==(
-    const MaybeValueInterface<D1, T1, CR1> &lhs,
-    const MaybeValueInterface<D2, T2, CR2> &rhs) {
+    const MaybeValueInterface<D1, T1, TCR1> &lhs,
+    const MaybeValueInterface<D2, T2, TCR2> &rhs) {
   bool def;
   return (def = lhs.isDefined()) == rhs.isDefined() &&
     (!def || lhs.get() == rhs.get());
 }
-template <typename T1, class D2, typename T2, typename CR2>
+template <typename T1, class D2, typename T2, typename TCR2>
 typename boost::disable_if<boost::is_base_of<Detail::MaybeValueInterfaceTag, T1>, bool>::type
 operator ==(
     T1 const &lhs,
-    const MaybeValueInterface<D2, T2, CR2> &rhs)
+    const MaybeValueInterface<D2, T2, TCR2> &rhs)
   { return rhs.isDefined() && lhs == rhs.get(); }
-template <class D1, typename T1, typename CR1, typename T2>
+template <class D1, typename T1, typename TCR1, typename T2>
 typename boost::disable_if<boost::is_base_of<Detail::MaybeValueInterfaceTag, T2>, bool>::type
 operator ==(
-    const MaybeValueInterface<D1, T1, CR1> &lhs,
+    const MaybeValueInterface<D1, T1, TCR1> &lhs,
     T2 const &rhs)
   { return lhs.isDefined() && lhs.get() == rhs; }
 
-template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
+template <class D1, typename T1, typename TCR1, class D2, typename T2, typename TCR2>
 bool
 operator !=(
-    const MaybeValueInterface<D1, T1, CR1> &lhs,
-    const MaybeValueInterface<D2, T2, CR2> &rhs) {
+    const MaybeValueInterface<D1, T1, TCR1> &lhs,
+    const MaybeValueInterface<D2, T2, TCR2> &rhs) {
   bool def;
   return (def = lhs.isDefined()) != rhs.isDefined() ||
     (def && lhs.get() != rhs.get());
 }
-template <typename T1, class D2, typename T2, typename CR2>
+template <typename T1, class D2, typename T2, typename TCR2>
 typename boost::disable_if<boost::is_base_of<Detail::MaybeValueInterfaceTag, T1>, bool>::type
 operator !=(
     T1 const &lhs,
-    const MaybeValueInterface<D2, T2, CR2> &rhs)
+    const MaybeValueInterface<D2, T2, TCR2> &rhs)
   { return !rhs.isDefined() || lhs != rhs.get(); }
-template <class D1, typename T1, typename CR1, typename T2>
+template <class D1, typename T1, typename TCR1, typename T2>
 typename boost::disable_if<boost::is_base_of<Detail::MaybeValueInterfaceTag, T2>, bool>::type
 operator !=(
-    const MaybeValueInterface<D1, T1, CR1> &lhs,
+    const MaybeValueInterface<D1, T1, TCR1> &lhs,
     T2 const &rhs)
   { return !lhs.isDefined() || lhs.get() != rhs; }
 
 // We postolate undef as smaller than all valid values.
-template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
+template <class D1, typename T1, typename TCR1, class D2, typename T2, typename TCR2>
 bool
 operator < (
-    const MaybeValueInterface<D1, T1, CR1> &lhs,
-    const MaybeValueInterface<D2, T2, CR2> &rhs) {
+    const MaybeValueInterface<D1, T1, TCR1> &lhs,
+    const MaybeValueInterface<D2, T2, TCR2> &rhs) {
   bool def;
   // 0 0 => def=0 => 0
   // 0 1 => 1
@@ -216,24 +216,24 @@ operator < (
   return lhs.isDefined() < (def = rhs.isDefined()) ||
     (def && lhs.get() <  rhs.get());
 }
-template <typename T1, class D2, typename T2, typename CR2>
+template <typename T1, class D2, typename T2, typename TCR2>
 typename boost::disable_if<boost::is_base_of<Detail::MaybeValueInterfaceTag, T1>, bool>::type
 operator < (
     T1 const &lhs,
-    const MaybeValueInterface<D2, T2, CR2> &rhs)
+    const MaybeValueInterface<D2, T2, TCR2> &rhs)
   { return rhs.isDefined() && lhs <  rhs.get(); }
-template <class D1, typename T1, typename CR1, typename T2>
+template <class D1, typename T1, typename TCR1, typename T2>
 typename boost::disable_if<boost::is_base_of<Detail::MaybeValueInterfaceTag, T2>, bool>::type
 operator < (
-    const MaybeValueInterface<D1, T1, CR1> &lhs,
+    const MaybeValueInterface<D1, T1, TCR1> &lhs,
     T2 const &rhs)
   { return !lhs.isDefined() || lhs.get() <  rhs; }
 
-template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
+template <class D1, typename T1, typename TCR1, class D2, typename T2, typename TCR2>
 bool
 operator <=(
-    const MaybeValueInterface<D1, T1, CR1> &lhs,
-    const MaybeValueInterface<D2, T2, CR2> &rhs) {
+    const MaybeValueInterface<D1, T1, TCR1> &lhs,
+    const MaybeValueInterface<D2, T2, TCR2> &rhs) {
   // 0 0 => 1
   // 0 1 => 1
   // 1 0 => 0
@@ -241,24 +241,24 @@ operator <=(
   return !lhs.isDefined() ||
     (rhs.isDefined() && lhs.get() <= rhs.get());
 }
-template <typename T1, class D2, typename T2, typename CR2>
+template <typename T1, class D2, typename T2, typename TCR2>
 typename boost::disable_if<boost::is_base_of<Detail::MaybeValueInterfaceTag, T1>, bool>::type
 operator <=(
     T1 const &lhs,
-    const MaybeValueInterface<D2, T2, CR2> &rhs)
+    const MaybeValueInterface<D2, T2, TCR2> &rhs)
   { return rhs.isDefined() && lhs <= rhs.get(); }
-template <class D1, typename T1, typename CR1, typename T2>
+template <class D1, typename T1, typename TCR1, typename T2>
 typename boost::disable_if<boost::is_base_of<Detail::MaybeValueInterfaceTag, T2>, bool>::type
 operator <=(
-    const MaybeValueInterface<D1, T1, CR1> &lhs,
+    const MaybeValueInterface<D1, T1, TCR1> &lhs,
     T2 const &rhs)
   { return !lhs.isDefined() || lhs.get() <= rhs; }
 
-template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
+template <class D1, typename T1, typename TCR1, class D2, typename T2, typename TCR2>
 bool
 operator > (
-    const MaybeValueInterface<D1, T1, CR1> &lhs,
-    const MaybeValueInterface<D2, T2, CR2> &rhs) {
+    const MaybeValueInterface<D1, T1, TCR1> &lhs,
+    const MaybeValueInterface<D2, T2, TCR2> &rhs) {
   bool def;
   // 0 0 => def=0 => 0
   // 0 1 => def=0 => 0
@@ -267,24 +267,24 @@ operator > (
   return (def = lhs.isDefined()) > rhs.isDefined() ||
     (def && lhs.get() >  rhs.get());
 }
-template <typename T1, class D2, typename T2, typename CR2>
+template <typename T1, class D2, typename T2, typename TCR2>
 typename boost::disable_if<boost::is_base_of<Detail::MaybeValueInterfaceTag, T1>, bool>::type
 operator > (
     T1 const &lhs,
-    const MaybeValueInterface<D2, T2, CR2> &rhs)
+    const MaybeValueInterface<D2, T2, TCR2> &rhs)
   { return !rhs.isDefined() || lhs >  rhs.get(); }
-template <class D1, typename T1, typename CR1, typename T2>
+template <class D1, typename T1, typename TCR1, typename T2>
 typename boost::disable_if<boost::is_base_of<Detail::MaybeValueInterfaceTag, T2>, bool>::type
 operator > (
-    const MaybeValueInterface<D1, T1, CR1> &lhs,
+    const MaybeValueInterface<D1, T1, TCR1> &lhs,
     T2 const &rhs)
   { return lhs.isDefined() && lhs.get() >  rhs; }
 
-template <class D1, typename T1, typename CR1, class D2, typename T2, typename CR2>
+template <class D1, typename T1, typename TCR1, class D2, typename T2, typename TCR2>
 bool
 operator >=(
-    const MaybeValueInterface<D1, T1, CR1> &lhs,
-    const MaybeValueInterface<D2, T2, CR2> &rhs) {
+    const MaybeValueInterface<D1, T1, TCR1> &lhs,
+    const MaybeValueInterface<D2, T2, TCR2> &rhs) {
   // 0 0 => 1
   // 0 1 => 0
   // 1 0 => 1
@@ -292,16 +292,16 @@ operator >=(
   return !rhs.isDefined() ||
     (lhs.isDefined() && lhs.get() >= rhs.get());
 }
-template <typename T1, class D2, typename T2, typename CR2>
+template <typename T1, class D2, typename T2, typename TCR2>
 typename boost::disable_if<boost::is_base_of<Detail::MaybeValueInterfaceTag, T1>, bool>::type
 operator >=(
     T1 const &lhs,
-    const MaybeValueInterface<D2, T2, CR2> &rhs)
+    const MaybeValueInterface<D2, T2, TCR2> &rhs)
   { return !rhs.isDefined() || lhs >= rhs.get(); }
-template <class D1, typename T1, typename CR1, typename T2>
+template <class D1, typename T1, typename TCR1, typename T2>
 typename boost::disable_if<boost::is_base_of<Detail::MaybeValueInterfaceTag, T2>, bool>::type
 operator >=(
-    const MaybeValueInterface<D1, T1, CR1> &lhs,
+    const MaybeValueInterface<D1, T1, TCR1> &lhs,
     T2 const &rhs)
   { return lhs.isDefined() && lhs.get() >= rhs; }
 
