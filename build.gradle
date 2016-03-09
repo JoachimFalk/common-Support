@@ -38,28 +38,7 @@ apply plugin: 'native-component'
 apply plugin: 'eclipse'
 //apply plugin: 'eclipse-cdt' <= This does not really work at the moment
 
-def analysis(String prefix, Object obj) {
-  println "================================================================================"
-  println prefix+": " + obj 
-  try {
-    obj.properties.sort().each  { prop, val ->
-      println prefix+"."+prop+": " + val
-    //if(prop in ["metaClass","class"]) return
-    //if(f.hasProperty(prop)) f[prop] = val
-    }
-  } catch (all) {
-    println all
-  }
-  try {
-    obj.metaClass.methods.sort { it.name }.each { method ->
-  //  println prefix+"."+method.name+" of type "+method.descriptor
-      println prefix+"."+method.signature
-    }
-  } catch (all) {
-    println all
-  }
-  println "================================================================================"
-}
+apply plugin: de.jfalk.GradleJFPlugins.JFHelperFunctions;
 
 // this is a project
 this.buildDir = 'obj'
@@ -116,18 +95,25 @@ apply plugin: 'visual-studio'
 //  }
 //}
 
-task VisualStudio(dependsOn: [
-  "cosupport-allocatorsVisualStudio",
-  "cosupport-baseVisualStudio",
-  "cosupport-initializerVisualStudio",
-  "cosupport-mathVisualStudio",
-  "cosupport-pathVisualStudio",
-  "cosupport-randomVisualStudio",
-  "cosupport-smartptrVisualStudio",
-  "cosupport-streamsVisualStudio",
-  "cosupport-stringVisualStudio",
-  "cosupport-systemcVisualStudio",
-  "cosupport-xercesVisualStudio"]) {
+def cosupportAllLibs = [
+    "cosupport-allocators",
+    "cosupport-base",
+    "cosupport-initializer",
+    "cosupport-math",
+    "cosupport-path",
+    "cosupport-random",
+    "cosupport-smartptr",
+    "cosupport-streams",
+    "cosupport-string",
+    "cosupport-systemc",
+    "cosupport-xerces"
+  ];
+
+task VisualStudio(
+    dependsOn:
+      cosupportAllLibs.collect { it + "VisualStudio" } +
+      "cosupportVisualStudio"
+  ) {
   doFirst {
     println 'Creating VisualStudio solution files!'
   }
@@ -257,6 +243,15 @@ model {
           }
           lib library: "cosupport-base"
           lib project: ':PrebuiltLibraries', library: "boost_filesystem"
+        }
+      }
+    }
+    "cosupport"(NativeLibrarySpec) {
+      sources {
+        cpp {
+          cosupportAllLibs.each {
+              lib library: it
+            }
         }
       }
     }
