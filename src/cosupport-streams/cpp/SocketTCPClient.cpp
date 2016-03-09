@@ -43,10 +43,12 @@
 #include <string.h>
 #include <errno.h>
 
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#if !defined(_WIN32) && !defined(_WIN64)
+# include <netinet/in.h>
+# include <arpa/inet.h>
 //#include <sys/select.h>
-#include <netdb.h>
+# include <netdb.h>
+#endif // !defined(_WIN32) && !defined(_WIN64)
 
 #include <boost/asio.hpp>
 #include <boost/version.hpp>
@@ -87,7 +89,11 @@ SocketTCPClient::SocketTCPClient(const char *host, uint16_t port)
         break;
       }
 //      throw std::runtime_error(std::string("connect: ") + strerror(errno));
+#if !defined(_WIN32) && !defined(_WIN64)
       close(sockClient);
+#else //defined(_WIN32) || defined(_WIN64)
+      closesocket(sockClient);
+#endif //defined(_WIN32) || defined(_WIN64)
       sockClient = -1;
     }
 //    throw std::runtime_error(std::string("socket: ") + strerror(errno));
@@ -108,14 +114,22 @@ SocketTCPClient::SocketTCPClient(const char *host, uint16_t port)
 void SocketTCPClient::shutdownWrite() {
   out.flush();
   // No more output
+#if !defined(_WIN32) && !defined(_WIN64)
   shutdown(sockClient, SHUT_WR);
+#else //defined(_WIN32) || defined(_WIN64)
+  shutdown(sockClient, SD_SEND);
+#endif //defined(_WIN32) || defined(_WIN64)
   out.setstate(out.badbit);
   // out.close(); danger this closes sockClient and therefore in too
 }
 
 SocketTCPClient::~SocketTCPClient() {
   assert(sockClient != -1);
+#if !defined(_WIN32) && !defined(_WIN64)
   close(sockClient);
+#else //defined(_WIN32) || defined(_WIN64)
+  closesocket(sockClient);
+#endif //defined(_WIN32) || defined(_WIN64)
 }
 
 } } // namespace CoSupport::Streams
