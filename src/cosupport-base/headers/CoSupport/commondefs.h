@@ -107,6 +107,17 @@
 # warning "Warning Unknown dynamic link import/export semantics."
 #endif
 
+#define COSUPPORT_STRINGISE_IMPL(x) #x
+#define COSUPPORT_STRINGISE(x) COSUPPORT_STRINGISE_IMPL(x)
+#define COSUPPORT_FILE_LINE_LINK __FILE__ "(" COSUPPORT_STRINGISE(__LINE__) ") : "
+
+// Use: #pragma message WARN("My message")
+#ifdef _MSC_VER
+# define COSUPPORT_WARN(exp) (FILE_LINE_LINK "warning: " exp)
+#else //__GNUC__ - may need other defines for different compilers
+# define COSUPPORT_WARN(exp) ("warning: " exp)
+#endif
+
 #define BITS_TYPE(TYPE) (sizeof(TYPE)*CHAR_BIT)
 
 /*
