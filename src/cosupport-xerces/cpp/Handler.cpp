@@ -64,6 +64,7 @@
 #include <sstream>
 
 #include <algorithm>    // std::find_if
+#include <functional>   // std::not1
 
 #include <xercesc/dom/DOMErrorHandler.hpp>
 #if XERCES_VERSION_MAJOR >= 3
@@ -134,8 +135,8 @@ namespace CoSupport { namespace XML { namespace Xerces {
     return !failed;
   }
 
-  static
-  XMLByte const emptyXMLByte[] = {};
+  // MSVC requires at least one byte in the array!
+  static XMLByte const emptyXMLByte[] = { 0 }; 
 
 #if XERCES_VERSION_MAJOR >= 3 // XERCES_VERSION_MAJOR >= 3
   class DOMEntityResolver
@@ -202,7 +203,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
               : NStr("nullptr"))
         << std::endl; */
     return
-      new XN::MemBufInputSource(emptyXMLByte, sizeof(emptyXMLByte), resourceIdentifier->getSystemId());
+      new XN::MemBufInputSource(emptyXMLByte, sizeof(emptyXMLByte)-1, resourceIdentifier->getSystemId());
   }
 
 #elif XERCES_VERSION_MAJOR == 2 // XERCES_VERSION_MAJOR == 2
@@ -245,7 +246,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
     return
       // We need a wrapper for the empty entity source
       new XN::Wrapper4InputSource(
-        new XN::MemBufInputSource(emptyXMLByte, sizeof(emptyXMLByte), systemId),
+        new XN::MemBufInputSource(emptyXMLByte, sizeof(emptyXMLByte)-1, systemId),
         true /* free XN::MemBufInputSource */
       );
   }
