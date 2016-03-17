@@ -180,6 +180,8 @@ model {
           lib library: "cosupport-base"
           lib library: "cosupport-initializer"
           lib library: "cosupport-string"
+          lib project: ':PrebuiltLibraries', library: "xerces-c"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
@@ -277,9 +279,12 @@ model {
       }
       if (buildType.name == 'release') {
         cppCompiler.define "NDEBUG"
+        if (toolChain in VisualCpp) {
+          cppCompiler.args "/MD"
+        }
       } else if (buildType.name == 'debug') {
         if (toolChain in VisualCpp) {
-          cppCompiler.args "/Z7"
+          cppCompiler.args "/Z7", "/MDd"
         }
       }
 //    println "TOOLCHAIN: " + toolChain
@@ -290,7 +295,7 @@ model {
           linker.args "-Xlinker", "-S"
       }
       if (toolChain in VisualCpp) {
-          cppCompiler.args "/Z7", "/EHsc" //, '/I"C:/Program Files (x86)/Windows Kits/10/Include/10.0.10586.0/ucrt/"'
+          cppCompiler.args "/EHsc" //, '/I"C:/Program Files (x86)/Windows Kits/10/Include/10.0.10586.0/ucrt/"'
           linker.args "/DEBUG", "/LIBPATH:" + rootProject.childProjects.get('PrebuiltLibraries').projectDir + "\\i686-msvc120-win\\libboost-1_55\\lib"
       }
     }
