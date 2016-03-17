@@ -33,12 +33,15 @@ dependencies {
 }
 */
 
+import de.jfalk.GradleJFPlugins.JFHelperFunctions;
+
+
 apply plugin: 'cpp'
 apply plugin: 'native-component'
 apply plugin: 'eclipse'
 //apply plugin: 'eclipse-cdt' <= This does not really work at the moment
 
-apply plugin: de.jfalk.GradleJFPlugins.JFHelperFunctions;
+apply plugin: JFHelperFunctions;
 
 // this is a project
 this.buildDir = 'obj'
@@ -184,6 +187,7 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib project: ':PrebuiltLibraries', library: "systemc"
         }
       }
     }
@@ -267,15 +271,22 @@ model {
   }
   binaries {
     all {
-      // Define a preprocessor macro for every binary
-      cppCompiler.define "NDEBUG"
-
-  //  println "TOOLCHAIN: " + toolChain
-
+      if (toolChain in VisualCpp) {
+        // Enable standard C++ exception for visual studio
+        cppCompiler.args "/EHsc"
+      }
+      if (buildType.name == 'release') {
+        cppCompiler.define "NDEBUG"
+      } else if (buildType.name == 'debug') {
+        if (toolChain in VisualCpp) {
+          cppCompiler.args "/Z7"
+        }
+      }
+//    println "TOOLCHAIN: " + toolChain
       // Define toolchain-specific compiler and linker options
       if (toolChain in Gcc) {
           cppCompiler.args "-O2", "-std=gnu++11"
-  //      cCompiler.args "-O2", "-std=gnu99"
+//        cCompiler.args "-O2", "-std=gnu99"
           linker.args "-Xlinker", "-S"
       }
       if (toolChain in VisualCpp) {
@@ -285,6 +296,7 @@ model {
     }
     // For any shared library binaries built with Visual C++, define the DLL_EXPORT macro
     withType(SharedLibraryBinarySpec) {
+      println it.component.name
       if (toolChain in VisualCpp) {
           cppCompiler.define "DLL_EXPORT"
       }
