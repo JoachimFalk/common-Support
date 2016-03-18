@@ -48,9 +48,7 @@ namespace CoSupport { namespace SmartPtr {
 
 } } // namespace CoSupport::SmartPtr
 
-#ifndef _COMPILEHEADER_INTRUSIVE_PTR_RELEASE_REFCOUNTOBJECT
-GNU89_EXTERN_INLINE
-#endif
+inline
 void intrusive_ptr_release(CoSupport::SmartPtr::RefCountObject *p) {
   if (p->del_ref())
     // RefCountObject has virtual destructor

@@ -33,58 +33,10 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-/*
- * $Log: commondefs.h,v $
- * Revision 1.2  2003/01/24 13:49:25  joachim
- * Now use new build system headers in cosupport/xxxx
- *
- * Revision 1.1  2001/09/01 17:51:54  joachim
- * Initial revision
- *
- */
+#ifndef _INCLUDED_COSUPPORT_COMMONDEFS_H
+#define _INCLUDED_COSUPPORT_COMMONDEFS_H
 
-#ifndef _INCLUDED_COMMONDEFS_H
-#define _INCLUDED_COMMONDEFS_H
-
-#include <limits.h>
 #include <CoSupport/cosupport_config.h>
-
-#define PE_PTROK(x)		( ((unsigned long) (x)) >= 0x400 )
-#define PE_PTRERROR(x)		((void *) (x))
-#define PE_PTRERRORNR(x)	((unsigned long) (x))
-
-#ifndef __SCFE__
-# ifdef __cplusplus
-#   define GNU89_STATIC_INLINE	static inline
-#   define GNU89_EXTERN_INLINE  inline
-#   define GNU89_INLINE         inline
-# else // !__cplusplus
-#   ifndef HAVE_C99_INLINE
-#     define GNU89_STATIC_INLINE	static inline
-#     define GNU89_EXTERN_INLINE	extern inline
-#     define GNU89_INLINE		inline
-#   else
-#     define GNU89_STATIC_INLINE	static inline
-#     define GNU89_EXTERN_INLINE	inline
-#     define GNU89_INLINE		extern inline
-#   endif
-# endif // __cplusplus
-#else
-# define GNU89_STATIC_INLINE	
-# define GNU89_EXTERN_INLINE	
-# define GNU89_INLINE		
-#endif
-
-#define GNUC_EXPLICIT_TEMPLATE(x) \
-  extern template x
-
-#ifndef COSUPPORT_ENABLE_DEBUG
-# define GROWALGO(x)    ( (x) + ((x) >> 1) + 256 )
-# define SHRINKALGO(x)  ( (x) / 3 * 2 )
-#else
-# define GROWALGO(x)    ( (x) + ((x) >> 1) + 1 )
-# define SHRINKALGO(x)  ( (x) / 3 * 2 )
-#endif
 
 #if __GNUC__ > 3 || (__GNUC__ == 3 && (__GNUC_MINOR__ > 3 || (__GNUC_MINOR__ == 3 && __GNUC_PATCHLEVEL__ > 5)))
 # define COSUPPORT_ATTRIBUTE_DEPRECATED __attribute__ ((deprecated))
@@ -118,38 +70,4 @@
 # define COSUPPORT_WARN(exp) ("warning: " exp)
 #endif
 
-#define BITS_TYPE(TYPE) (sizeof(TYPE)*CHAR_BIT)
-
-/*
- * macros for getting the TYPE and its respective min,max values
- */
-
-#ifdef HAVE_LONG_LONG
-# define MAX_STYPE(TYPE) ((long long) ((unsigned long long) -1 >>			\
-                            ((sizeof(unsigned long long)-sizeof(TYPE))*CHAR_BIT+1)))
-# define MIN_STYPE(TYPE) ((long long) ((long long) -1 <<				\
-                            (sizeof(TYPE)*CHAR_BIT-1)))
-# define MAX_UTYPE(TYPE) ((unsigned long long) ((unsigned long long) -1 >>		\
-                            ((sizeof(unsigned long long)-sizeof(TYPE))*CHAR_BIT)))
-# define MIN_UTYPE(TYPE) ((unsigned long long) 0)
-
-//# define LONGLONG_MAX  MAX_STYPE(long long)
-//# define LONGLONG_MIN  MIN_STYPE(long long)
-//# define ULONGLONG_MAX MAX_UTYPE(unsigned long long)
-
-#else // !defined(HAVE_LONG_LONG)
-# define MAX_STYPE(TYPE) ((long) ((unsigned long) -1 >>					\
-                            ((sizeof(unsigned long)-sizeof(TYPE))*CHAR_BIT+1)))
-# define MIN_STYPE(TYPE) ((long) ((long) -1 <<						\
-                            (sizeof(TYPE)*CHAR_BIT-1) ) )
-# define MAX_UTYPE(TYPE) ((unsigned long) ((unsigned long) -1 >>			\
-                            ((sizeof(unsigned long)-sizeof(TYPE))*CHAR_BIT)))
-# define MIN_UTYPE(TYPE) ((unsigned long) 0 )
-#endif // !defined(HAVE_LONG_LONG)
-
-#define ISSIGNED_TYPE(TYPE) ((TYPE)-1 < 0)
-
-#define MAX_TYPE(TYPE) ((TYPE) (ISSIGNED_TYPE(TYPE) ? MAX_STYPE(TYPE) : MAX_UTYPE(TYPE)))
-#define MIN_TYPE(TYPE) ((TYPE) (ISSIGNED_TYPE(TYPE) ? MIN_STYPE(TYPE) : MIN_UTYPE(TYPE)))
-
-#endif /* _INCLUDED_COMMONDEFS_H */
+#endif /* _INCLUDED_COSUPPORT_COMMONDEFS_H */

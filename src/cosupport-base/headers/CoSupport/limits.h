@@ -33,79 +33,45 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_SMARTPTR_REFCOUNT_HPP
-#define _INCLUDED_COSUPPORT_SMARTPTR_REFCOUNT_HPP
+#ifndef _INCLUDED_COSUPPORT_LIMITS_H
+#define _INCLUDED_COSUPPORT_LIMITS_H
 
-#include <CoSupport/commondefs.h>
-#include <CoSupport/sassert.h>
-#include <cassert>
+#include <limits.h>
 
-#if defined(_REENTRANT)
-// boost/thread/mutex.hpp seems to define _REENTRANT
-# include <boost/thread/mutex.hpp>
-#endif
-#include <boost/noncopyable.hpp>
+#include <CoSupport/cosupport_config.h>
 
-namespace CoSupport { namespace SmartPtr {
+/*
+ * macros for getting the TYPE and its respective min,max values
+ */
 
-  class RefCount {
-  private:
-#if defined(_REENTRANT)
-    typedef boost::mutex mutex_type;
+#define BITS_TYPE(TYPE) (sizeof(TYPE)*CHAR_BIT)
 
-    mutable mutex_type mtx_;
-#endif
+#ifdef HAVE_LONG_LONG
+# define MAX_STYPE(TYPE) ((long long) ((unsigned long long) -1 >>			\
+                            ((sizeof(unsigned long long)-sizeof(TYPE))*CHAR_BIT+1)))
+# define MIN_STYPE(TYPE) ((long long) ((long long) -1 <<				\
+                            (sizeof(TYPE)*CHAR_BIT-1)))
+# define MAX_UTYPE(TYPE) ((unsigned long long) ((unsigned long long) -1 >>		\
+                            ((sizeof(unsigned long long)-sizeof(TYPE))*CHAR_BIT)))
+# define MIN_UTYPE(TYPE) ((unsigned long long) 0)
 
-    /* how many references are there */
-    unsigned long use_count_;
-  public:
-    RefCount()
-      : use_count_(0) {}
-    /* each copy start refcounting anew */
-    RefCount(const RefCount &x)
-      : use_count_(0) {}
+//# define LONGLONG_MAX  MAX_STYPE(long long)
+//# define LONGLONG_MIN  MIN_STYPE(long long)
+//# define ULONGLONG_MAX MAX_UTYPE(unsigned long long)
 
-    /* Do not overwrite reference counter ! */
-    RefCount &operator = (const RefCount &) {
-      return *this;
-    }
+#else // !defined(HAVE_LONG_LONG)
+# define MAX_STYPE(TYPE) ((long) ((unsigned long) -1 >>					\
+                            ((sizeof(unsigned long)-sizeof(TYPE))*CHAR_BIT+1)))
+# define MIN_STYPE(TYPE) ((long) ((long) -1 <<						\
+                            (sizeof(TYPE)*CHAR_BIT-1) ) )
+# define MAX_UTYPE(TYPE) ((unsigned long) ((unsigned long) -1 >>			\
+                            ((sizeof(unsigned long)-sizeof(TYPE))*CHAR_BIT)))
+# define MIN_UTYPE(TYPE) ((unsigned long) 0 )
+#endif // !defined(HAVE_LONG_LONG)
 
-    ~RefCount() {
-      assert(use_count_ == 0);
-#ifndef NDEBUG
-      use_count_ = 0xDEADBEAF;
-#endif
-    }
+#define ISSIGNED_TYPE(TYPE) ((TYPE)-1 < 0)
 
-    void add_ref( void ) {
-#if defined(_REENTRANT)
-      mutex_type::scoped_lock lock(mtx_);
-#endif
-      assert(use_count_ != 0xDEADBEAF && "WTF?! Taking ownership of deleted object!");
-      ++use_count_;
-    }
+#define MAX_TYPE(TYPE) ((TYPE) (ISSIGNED_TYPE(TYPE) ? MAX_STYPE(TYPE) : MAX_UTYPE(TYPE)))
+#define MIN_TYPE(TYPE) ((TYPE) (ISSIGNED_TYPE(TYPE) ? MIN_STYPE(TYPE) : MIN_UTYPE(TYPE)))
 
-    bool del_ref( void ) {
-#if defined(_REENTRANT)
-      mutex_type::scoped_lock lock(mtx_);
-#endif
-      --use_count_;
-      return use_count_ == 0;
-    }
-
-    bool unique_ref() const { // nothrow
-#if defined(_REENTRANT)
-      mutex_type::scoped_lock lock(mtx_);
-#endif
-      return use_count_ == 1;
-    }
-  };
-
-} } // namespace CoSupport::SmartPtr
-
-inline
-void intrusive_ptr_add_ref(CoSupport::SmartPtr::RefCount *p) {
-  p->add_ref();
-}
-
-#endif // _INCLUDED_COSUPPORT_SMARTPTR_REFCOUNT_HPP
+#endif /* _INCLUDED_COSUPPORT_LIMITS_H */

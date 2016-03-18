@@ -39,7 +39,7 @@
 #include <string>
 #include <assert.h>
 
-#include <CoSupport/commondefs.h>
+#include <CoSupport/limits.h>
 #include <CoSupport/Math/string_hash.hpp>
 
 namespace CoSupport { namespace Allocators {
