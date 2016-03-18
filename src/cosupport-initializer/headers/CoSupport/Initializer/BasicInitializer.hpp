@@ -40,11 +40,14 @@
 #include <map>
 #include <typeinfo>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace Initializer {
 
 namespace Detail {
 
-  class GlobalBasicInitializerRegistry {
+  class COSUPPORT_INITIALIZER_API
+  GlobalBasicInitializerRegistry {
   public:
     typedef std::map<std::string, size_t> Map;
   private:
@@ -64,16 +67,17 @@ namespace Detail {
 
 } // namespace Detail
 
-template <typename T>
-struct BasicInitializerTraits {
+
+template <typename T> struct COSUPPORT_INITIALIZER_API
+BasicInitializerTraits {
   static void initialize()
     { T::initialize(); }
   static void terminate()
     { T::terminate(); }
 };
 
-template <typename T>
-struct BasicInitializer: public Detail::GlobalBasicInitializerRegistry {
+template <typename T> struct COSUPPORT_INITIALIZER_API
+BasicInitializer: public Detail::GlobalBasicInitializerRegistry {
   BasicInitializer()
     : Detail::GlobalBasicInitializerRegistry(
         typeid(T()).name(),

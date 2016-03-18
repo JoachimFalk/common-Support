@@ -46,63 +46,67 @@
 #endif
 #include <boost/noncopyable.hpp>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace SmartPtr {
 
-  class RefCount {
-  private:
+class COSUPPORT_SMARTPTR_API
+RefCount {
+private:
 #if defined(_REENTRANT)
-    typedef boost::mutex mutex_type;
+  typedef boost::mutex mutex_type;
 
-    mutable mutex_type mtx_;
+  mutable mutex_type mtx_;
 #endif
 
-    /* how many references are there */
-    unsigned long use_count_;
-  public:
-    RefCount()
-      : use_count_(0) {}
-    /* each copy start refcounting anew */
-    RefCount(const RefCount &x)
-      : use_count_(0) {}
+  /* how many references are there */
+  unsigned long use_count_;
+public:
+  RefCount()
+    : use_count_(0) {}
+  /* each copy start refcounting anew */
+  RefCount(const RefCount &x)
+    : use_count_(0) {}
 
-    /* Do not overwrite reference counter ! */
-    RefCount &operator = (const RefCount &) {
-      return *this;
-    }
+  /* Do not overwrite reference counter ! */
+  RefCount &operator = (const RefCount &) {
+    return *this;
+  }
 
-    ~RefCount() {
-      assert(use_count_ == 0);
+  ~RefCount() {
+    assert(use_count_ == 0);
 #ifndef NDEBUG
-      use_count_ = 0xDEADBEAF;
+    use_count_ = 0xDEADBEAF;
 #endif
-    }
+  }
 
-    void add_ref( void ) {
+  void add_ref( void ) {
 #if defined(_REENTRANT)
-      mutex_type::scoped_lock lock(mtx_);
+    mutex_type::scoped_lock lock(mtx_);
 #endif
-      assert(use_count_ != 0xDEADBEAF && "WTF?! Taking ownership of deleted object!");
-      ++use_count_;
-    }
+    assert(use_count_ != 0xDEADBEAF && "WTF?! Taking ownership of deleted object!");
+    ++use_count_;
+  }
 
-    bool del_ref( void ) {
+  bool del_ref( void ) {
 #if defined(_REENTRANT)
-      mutex_type::scoped_lock lock(mtx_);
+    mutex_type::scoped_lock lock(mtx_);
 #endif
-      --use_count_;
-      return use_count_ == 0;
-    }
+    --use_count_;
+    return use_count_ == 0;
+  }
 
-    bool unique_ref() const { // nothrow
+  bool unique_ref() const { // nothrow
 #if defined(_REENTRANT)
-      mutex_type::scoped_lock lock(mtx_);
+    mutex_type::scoped_lock lock(mtx_);
 #endif
-      return use_count_ == 1;
-    }
-  };
+    return use_count_ == 1;
+  }
+};
 
 } } // namespace CoSupport::SmartPtr
 
+COSUPPORT_SMARTPTR_API
 inline
 void intrusive_ptr_add_ref(CoSupport::SmartPtr::RefCount *p) {
   p->add_ref();

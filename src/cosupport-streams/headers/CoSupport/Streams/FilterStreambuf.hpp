@@ -39,6 +39,8 @@
 #include <streambuf>
 #include <ostream>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace Streams {
 
 /// forward declarations 
@@ -47,7 +49,8 @@ class FilterOStream;
 /**
  * the base class for all custom streambuffers
  */  
-class FilterStreambuf
+class COSUPPORT_STREAMS_API
+FilterStreambuf
 : public std::streambuf {
 protected:
   /// pointer to the next streambuffer in the buffer chain

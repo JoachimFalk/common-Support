@@ -44,9 +44,12 @@
 
 #include "TypeName.hpp"
 
+#include "export_config.h"
+
 namespace CoSupport { namespace String {
 
-struct InvalidConversion: public std::exception {
+struct COSUPPORT_STRING_API
+InvalidConversion: public std::exception {
 };
 
 template <typename T>

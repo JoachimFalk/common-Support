@@ -39,14 +39,21 @@
 #include <iostream>
 #include <string>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace String {
 
-class SingleQuotedString;
+class COSUPPORT_STRING_API
+SingleQuotedString;
 
+COSUPPORT_STRING_API
 std::istream &operator >>(std::istream &, SingleQuotedString &);
+
+COSUPPORT_STRING_API
 std::ostream &operator <<(std::ostream &, const SingleQuotedString &);
 
-class SingleQuotedString
+class COSUPPORT_STRING_API
+SingleQuotedString
 : public std::string {
   typedef SingleQuotedString this_type;
 

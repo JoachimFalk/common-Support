@@ -43,48 +43,48 @@
 
 namespace CoSupport { namespace SmartPtr {
 
-  template<class T>
-  class intrusive_copyonwrite_ptr {
-  private:
-    typedef intrusive_copyonwrite_ptr this_type;
-    boost::intrusive_ptr<T> sptr;
-  public:
-    typedef T element_type;
-    
-    intrusive_copyonwrite_ptr() {}
-    
-    intrusive_copyonwrite_ptr(T * p, bool add_ref = true)
-      : sptr( p, add_ref ) {}
-    
+template<class T>
+class intrusive_copyonwrite_ptr {
+private:
+  typedef intrusive_copyonwrite_ptr this_type;
+  boost::intrusive_ptr<T> sptr;
+public:
+  typedef T element_type;
+  
+  intrusive_copyonwrite_ptr() {}
+  
+  intrusive_copyonwrite_ptr(T * p, bool add_ref = true)
+    : sptr( p, add_ref ) {}
+  
 #if !defined(BOOST_NO_MEMBER_TEMPLATES) || defined(BOOST_MSVC6_MEMBER_TEMPLATES)
-    template<class U> intrusive_copyonwrite_ptr(intrusive_copyonwrite_ptr<U> const & rhs)
-      : sptr( rhs.sptr ) {}
+  template<class U> intrusive_copyonwrite_ptr(intrusive_copyonwrite_ptr<U> const & rhs)
+    : sptr( rhs.sptr ) {}
 #endif
-    intrusive_copyonwrite_ptr( this_type const & rh )
-      : sptr( rh.sptr ) {}
-    
-    void swap(this_type & rhs) { sptr.swap( rhs.sptr ); }
-    
-    typedef void (this_type::*unspecified_bool_type) ( this_type & );
-    
-    operator unspecified_bool_type () const {
-      return sptr.get() == nullptr ? 0: &this_type::swap;
-    }
-    
-    // operator! is a Borland-specific workaround
-    bool operator! () const { return !sptr; }
-    
-    const T * get() const { return sptr.get(); }
-    const T & operator*() const { return *get(); }
-    const T * operator->() const { return get(); }
-    
-    T * get() {
-      intrusive_ptr_mkunique( *this );
-      return sptr.get();
-    }
-    T & operator*() { return *get(); }
-    T * operator->() { return get(); }
-  };
+  intrusive_copyonwrite_ptr( this_type const & rh )
+    : sptr( rh.sptr ) {}
+  
+  void swap(this_type & rhs) { sptr.swap( rhs.sptr ); }
+  
+  typedef void (this_type::*unspecified_bool_type) ( this_type & );
+  
+  operator unspecified_bool_type () const {
+    return sptr.get() == nullptr ? 0: &this_type::swap;
+  }
+  
+  // operator! is a Borland-specific workaround
+  bool operator! () const { return !sptr; }
+  
+  const T * get() const { return sptr.get(); }
+  const T & operator*() const { return *get(); }
+  const T * operator->() const { return get(); }
+  
+  T * get() {
+    intrusive_ptr_mkunique( *this );
+    return sptr.get();
+  }
+  T & operator*() { return *get(); }
+  T * operator->() { return get(); }
+};
 
 #define DECL_INTRUSIVE_COPYONWRITE_PTR(T,PST)	                  \
   typedef ::CoSupport::SmartPtr::intrusive_copyonwrite_ptr<T> PST;\

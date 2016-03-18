@@ -41,9 +41,12 @@
 
 #include "FilterStreambuf.hpp"
 
+#include "export_config.h"
+
 namespace CoSupport { namespace Streams {
 
-struct TranslationOp {
+struct COSUPPORT_STREAMS_API
+TranslationOp {
   char from;
   const char* to;
 };
@@ -52,7 +55,8 @@ struct TranslationOp {
  * stream manipulator for the TranslationStreambuf custom
  * streambuffer
  */
-struct TranslationMap {
+struct COSUPPORT_STREAMS_API
+TranslationMap {
   /// @brief Translation map
   std::map<char,const char*> tm;
 
@@ -75,7 +79,8 @@ struct TranslationMap {
 /**
  * replaces characters according to translation map
  */
-class TranslationStreambuf
+class COSUPPORT_STREAMS_API
+TranslationStreambuf
 : public FilterStreambuf {
 private:
   /// current translation map
@@ -93,10 +98,8 @@ protected:
   int overflow(int c);
   
 public:
-#ifndef KASCPAR_PARSING
   /// index obtained with std::ostream::xalloc
   static const int index;
-#endif
  
   /// see TranslationMap
   bool hasManip() const;
@@ -106,6 +109,7 @@ public:
 };
 
 /// output operator for the TranslationMap manipulator
+COSUPPORT_STREAMS_API
 std::ostream &operator<<(std::ostream &os, const TranslationMap &t);
 
 } } // namespace CoSupport::Streams

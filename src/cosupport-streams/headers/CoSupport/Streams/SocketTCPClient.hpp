@@ -44,28 +44,31 @@
 #include <boost/iostreams/stream_buffer.hpp>
 #include <boost/iostreams/stream.hpp>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace Streams {
 
-  class SocketTCPClient
-  : public boost::noncopyable {
-  protected:
-    int         sockClient;
-    std::string peerAddress;
+class COSUPPORT_STREAMS_API
+SocketTCPClient
+: public boost::noncopyable {
+protected:
+  int         sockClient;
+  std::string peerAddress;
 
-    boost::iostreams::stream<boost::iostreams::file_descriptor_source> in;
-    boost::iostreams::stream<boost::iostreams::file_descriptor_sink>   out;
-  public:
-    SocketTCPClient(const char *host, uint16_t port);
+  boost::iostreams::stream<boost::iostreams::file_descriptor_source> in;
+  boost::iostreams::stream<boost::iostreams::file_descriptor_sink>   out;
+public:
+  SocketTCPClient(const char *host, uint16_t port);
 
-    const std::string &name() const { return peerAddress; }
+  const std::string &name() const { return peerAddress; }
 
-    std::istream &getIn() { return in; }
-    std::ostream &getOut() { return out; }
+  std::istream &getIn() { return in; }
+  std::ostream &getOut() { return out; }
 
-    void shutdownWrite();
+  void shutdownWrite();
 
-    ~SocketTCPClient();
-  };
+  ~SocketTCPClient();
+};
 
 } } // namespace CoSupport::Streams
 

@@ -33,64 +33,14 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_STREAMS_NULLSTREAMBUF_HPP
-#define _INCLUDED_COSUPPORT_STREAMS_NULLSTREAMBUF_HPP
+#include <CoSupport/XML/Xerces/common.hpp>
 
-#include "FilterStreambuf.hpp"
-#include "FilterOStream.hpp"
+void CoSupport::Initializer::BasicInitializerTraits<XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils>::initialize() {
+//std::cerr << "BasicInitializerTraits<XML::Xerces::XN::XMLPlatformUtils>::initialize()" << std::endl;
+  XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::Initialize();
+}
 
-#include "export_config.h"
-
-namespace CoSupport { namespace Streams {
-
-/**
- * discards everything
- */
-class COSUPPORT_STREAMS_API
-NullStreambuf
-: public FilterStreambuf {
-public:
-  template <class Base = FilterOStream> class Stream;
-public:
-  /// constructs a new FilterStreambuf discarding all output
-  NullStreambuf(std::streambuf *next = 0);
-protected:
-  int overflow(int c);
-};
-
-template <class Base>
-class NullStreambuf::Stream: public Base {
-  typedef Stream<Base> this_type;
-public:
-  /// construct a new object which uses the streambuffer
-  /// of the specified stream as initial target
-  Stream(std::ostream &os)
-    : Base(os) { this->insert(devnull); }
-
-  /// discard output for any type
-  template<class T>
-  inline
-  const this_type &operator<<(const T &t) const
-    { return *this; }
-
-  /// discard output for stream manipulators
-  inline
-  const this_type &operator<<(std::ostream &(*manip)(std::ostream &)) const
-    { return *this; }
-
-  /// discard output for stream manipulators
-  inline
-  const this_type &operator<<(std::ios &(*manip)(std::ios &)) const
-    { return *this; }
-
-  /// discard output for stream manipulators
-  inline
-  const this_type &operator<<(std::ios_base &(*manip)(std::ios_base &)) const
-    { return *this; }
-private:
-  NullStreambuf devnull;
-};
-
-} } // namespace CoSupport::Streams
-
-#endif // _INCLUDED_COSUPPORT_STREAMS_NULLSTREAMBUF_HPP
+void CoSupport::Initializer::BasicInitializerTraits<XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils>::terminate() {
+//std::cerr << "BasicInitializerTraits<XML::Xerces::XN::XMLPlatformUtils>::terminate()" << std::endl;
+  XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::Terminate();
+}

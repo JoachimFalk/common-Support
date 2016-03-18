@@ -41,9 +41,12 @@
 #include <fstream>
 #include <map>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace String {
 
-class TemplateProcessor {
+class COSUPPORT_STRING_API
+TemplateProcessor {
   typedef TemplateProcessor this_type;
 protected:
   std::string           templateFileName;

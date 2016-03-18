@@ -40,10 +40,10 @@
 #include <utility>
 
 namespace std {
-                                                                                
-template <typename TA, typename TB>
-std::ostream &operator <<(std::ostream &out, const std::pair<TA,TB> &p)
-  { out << "[pair:" << p.first << "," << p.second << "]"; return out; }
+
+  template <typename TA, typename TB>
+  std::ostream &operator <<(std::ostream &out, const std::pair<TA,TB> &p)
+    { out << "[pair:" << p.first << "," << p.second << "]"; return out; }
 
 } // namespace std
 

@@ -40,6 +40,8 @@
 #include <sstream>
 #include <string>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace String {
 
 /**
@@ -47,7 +49,8 @@ namespace CoSupport { namespace String {
  * already exists in the uniqe pool it will generate the same name postfixed
  * with an index starting from 1, i.e., <name>_<index>.
  */
-class UniquePool {
+class COSUPPORT_STRING_API
+UniquePool {
 private:
   typedef std::map<std::string, size_t> Pool;
 private:

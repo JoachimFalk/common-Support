@@ -41,13 +41,18 @@
 
 #include <ctype.h>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace String {
 
-class UnQuotedString;
+class COSUPPORT_STRING_API
+UnQuotedString;
 
+COSUPPORT_STRING_API
 std::ostream &operator <<(std::ostream &, const UnQuotedString &);
 
-class UnQuotedString
+class COSUPPORT_STRING_API
+UnQuotedString
 : public std::string {
   typedef UnQuotedString this_type;
 

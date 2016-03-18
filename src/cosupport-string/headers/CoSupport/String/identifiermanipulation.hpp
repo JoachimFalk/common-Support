@@ -39,6 +39,8 @@
 #include <iostream>
 #include <string>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace String {
 
 /// Searches the string for the last occurancre of the string specified
@@ -47,6 +49,7 @@ namespace CoSupport { namespace String {
 /// \param[in] str       input string
 /// \param[in] delimiter delimiter string
 /// \return substring starting after the last occurrence of specified character
+COSUPPORT_STRING_API
 std::string hierarchyBasename (const std::string &str, std::string delimiter);
 
 /// Searches the string for the last occurancre of the string specified
@@ -55,6 +58,7 @@ std::string hierarchyBasename (const std::string &str, std::string delimiter);
 /// \param[in] str       input string
 /// \param[in] delimiter delimiter string
 /// \return substring from the first character up to and including the last occurance of the delimiter string
+COSUPPORT_STRING_API
 std::string hierarchyDirname(const std::string &str, std::string delimiter);
 
 } } // namespace CoSupport::String

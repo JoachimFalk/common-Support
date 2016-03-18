@@ -39,15 +39,19 @@
 #include "RefCount.hpp"
 #include <CoSupport/commondefs.h>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace SmartPtr {
 
-  class RefCountObject: public RefCount {
-  public:
-    virtual ~RefCountObject();
-  };
+class COSUPPORT_SMARTPTR_API
+RefCountObject: public RefCount {
+public:
+  virtual ~RefCountObject();
+};
 
 } } // namespace CoSupport::SmartPtr
 
+COSUPPORT_SMARTPTR_API
 inline
 void intrusive_ptr_release(CoSupport::SmartPtr::RefCountObject *p) {
   if (p->del_ref())

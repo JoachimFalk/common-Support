@@ -33,70 +33,29 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_SYSTEMC_TIME_SUPPORT_HPP
-#define _INCLUDED_SYSTEMC_TIME_SUPPORT_HPP
+#ifndef _INCLUDED_COSUPPORT_SYSTEMC_SYSTEMC_TIME_SUPPORT_HPP
+#define _INCLUDED_COSUPPORT_SYSTEMC_SYSTEMC_TIME_SUPPORT_HPP
 
 #include <CoSupport/compatibility-glue/nullptr.h>
 #include <CoSupport/sassert.h>
 
-#include <systemc.h>
-#include <algorithm>
+#include <systemc>
 
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace SystemC {
-  /**
-   * \brief Takes a string representation of a time (e.g. a delay)
-   *        and constructs a sc_time object.
-   */
-  static sc_time createSCTime(const char* timeString)
-    throw(std::string)
-  {
-    assert(timeString != nullptr);
-    double value = -1;
-    std::string unit;
 
-    sc_time_unit scUnit = SC_NS;
-
-    std::stringstream data(timeString);
-    if(data.good()){
-      data >> value;
-    }else{
-      std::string msg("Parsing Error: Unknown argument: <");
-      msg += timeString;
-      msg += "> How to creating a sc_time from?";
-      throw msg;
-    }
-    if( data.fail() ){
-      std::string msg("Parsing Error: Unknown argument: <");
-      msg += timeString;
-      msg += "> How to creating a sc_time from?";
-      throw msg;
-    }
-    if(data.good()){
-      data >> unit;
-      if(data.fail()){
-        //std::cerr << "No time unit, taking default: SC_NS!"
-        //          << std::endl;
-        scUnit = SC_NS;
-      }else{
-        std::transform (unit.begin(),
-                        unit.end(),
-                        unit.begin(),
-                        (int(*)(int))tolower);
-        if(      0==unit.compare(0, 2, "fs") ) scUnit = SC_FS;
-        else if( 0==unit.compare(0, 2, "ps") ) scUnit = SC_PS;
-        else if( 0==unit.compare(0, 2, "ns") ) scUnit = SC_NS;
-        else if( 0==unit.compare(0, 2, "us") ) scUnit = SC_US;
-        else if( 0==unit.compare(0, 2, "ms") ) scUnit = SC_MS;
-        else if( 0==unit.compare(0, 1, "s" ) ) scUnit = SC_SEC;
-      }
-    }
-
-    return sc_time(value, scUnit);
-  }
+/**
+ * \brief Takes a string representation of a time (e.g. a delay)
+ *        and constructs a sc_core::sc_time object.
+ */
+COSUPPORT_SYSTEMC_API
+sc_core::sc_time createSCTime(const char* timeString) throw(std::string);
 
 } } // CoSupport::SystemC
 
-#endif // _INCLUDED_SYSTEMC_TIME_SUPPORT_HPP
+#endif // _INCLUDED_COSUPPORT_SYSTEMC_SYSTEMC_TIME_SUPPORT_HPP

@@ -38,13 +38,16 @@
 
 #include "FilterStreambuf.hpp"
 
+#include "export_config.h"
+
 namespace CoSupport { namespace Streams {
 
 /**
  * convenience class for managing a custom streambuffer
  * chain
  */
-class FilterOStream
+class COSUPPORT_STREAMS_API
+FilterOStream
 : public std::ostream {
 public:
   /// construct a new object which uses the streambuffer

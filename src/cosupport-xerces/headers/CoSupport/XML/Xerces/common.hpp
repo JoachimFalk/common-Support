@@ -59,18 +59,14 @@
 #include <boost/noncopyable.hpp>
 #include <boost/static_assert.hpp>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace Initializer {
 
-  template <>
-  struct BasicInitializerTraits<XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils> {
-    static void initialize() {
-//    std::cerr << "BasicInitializerTraits<XML::Xerces::XN::XMLPlatformUtils>::initialize()" << std::endl;
-      XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::Initialize();
-    }
-    static void terminate() {
-//    std::cerr << "BasicInitializerTraits<XML::Xerces::XN::XMLPlatformUtils>::terminate()" << std::endl;
-      XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::Terminate();
-    }
+  template <> struct COSUPPORT_XERCES_API
+  BasicInitializerTraits<XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils> {
+    static void initialize();
+    static void terminate();
   };
 
 } } // namespace CoSupport::Initializer
@@ -170,7 +166,8 @@ namespace CoSupport { namespace XML { namespace Xerces {
 # error "No support for XMLCH macro"
 #endif
 
-  class XStr: public std::basic_string<XMLCh> {
+  class COSUPPORT_XERCES_API
+  XStr: public std::basic_string<XMLCh> {
   public:
     XStr()
       : std::basic_string<XMLCh>() {}
@@ -287,7 +284,8 @@ namespace CoSupport { namespace XML { namespace Xerces {
     return static_cast<const std::basic_string<XMLCh> &>(lhs) >= rhs;
   }
 
-  class NStr: public std::basic_string<char> {
+  class COSUPPORT_XERCES_API
+  NStr: public std::basic_string<char> {
   public:
     NStr(const char  *const str)
       :  std::basic_string<char>(str) {}
@@ -317,20 +315,24 @@ namespace CoSupport { namespace XML { namespace Xerces {
     }
   };
 
+  COSUPPORT_XERCES_API
   inline
   XStr::operator std::string () const
     { return NStr(c_str()); }
 
+  COSUPPORT_XERCES_API
   inline
   std::ostream &operator << (std::ostream &out, const XMLCh *const str)
     { out << NStr(str); return out; }
 
-  struct AttrNotFoundError : public std::runtime_error {
+  struct COSUPPORT_XERCES_API
+  AttrNotFoundError : public std::runtime_error {
     AttrNotFoundError(std::string const &what) :
       std::runtime_error(what)
     {}
   };
 
+  COSUPPORT_XERCES_API
   inline
   XN::DOMAttr *getMaybeAttrNode(XN::DOMNode const *const node, XMLCh const *const attr) {
     assert(node != nullptr || !"WTF?! Missing node!");
@@ -342,10 +344,13 @@ namespace CoSupport { namespace XML { namespace Xerces {
       ? nullptr
       : static_cast<XN::DOMAttr *>(attrs->getNamedItem(attr));
   }
+
+  COSUPPORT_XERCES_API
   inline
   XN::DOMAttr *getMaybeAttrNode(XN::DOMNode const *const node, char const *const attr)
     { return getMaybeAttrNode(node, XStr(attr).c_str()); }
 
+  COSUPPORT_XERCES_API
   inline
   XN::DOMAttr *getAttrNode(XN::DOMNode const *const node, XMLCh const *const attr) {
     XN::DOMAttr *retval = getMaybeAttrNode(node, attr);
@@ -358,12 +363,15 @@ namespace CoSupport { namespace XML { namespace Xerces {
     }
     return retval;
   }
+
+  COSUPPORT_XERCES_API
   inline
   XN::DOMAttr *getAttrNode(XN::DOMNode const *const node, char const *const attr)
     { return getAttrNode(node, XStr(attr).c_str()); }
 
   /// get XML attribute node attr of XML node node.
   /// Create the attribute node if it does not exist.
+  COSUPPORT_XERCES_API
   inline
   XN::DOMAttr *createAttrNode(XN::DOMNode *const node, XMLCh const *const attr) {
     assert(node != nullptr || !"WTF?! Missing node!");
@@ -380,12 +388,15 @@ namespace CoSupport { namespace XML { namespace Xerces {
     }
     return retval;
   }
+
+  COSUPPORT_XERCES_API
   inline
   XN::DOMAttr *createAttrNode(XN::DOMNode *const node, char const *const attr)
     { return createAttrNode(node, XStr(attr).c_str()); }
 
   /// destroy XML attribute node attr of XML node node.
   /// Delete the attribute node if it does exist.
+  COSUPPORT_XERCES_API
   inline
   void destroyAttrNode(XN::DOMNode *const node, XMLCh const *const attr) {
     assert(node != nullptr || !"WTF?! Missing node!");
@@ -399,6 +410,8 @@ namespace CoSupport { namespace XML { namespace Xerces {
       // Delete attribute node
       attrs->removeNamedItem(attr)->release();
   }
+
+  COSUPPORT_XERCES_API
   inline
   void destroyAttrNode(XN::DOMNode *const node, char const *const attr)
     { return destroyAttrNode(node, XStr(attr).c_str()); }

@@ -45,61 +45,64 @@
 
 #include "common.hpp"
 
+#include "export_config.h"
+
 namespace CoSupport { namespace XML { namespace Xerces {
 
-  class Handler: public XercesInitializer {
-  private:
-    typedef Handler this_type;
+class COSUPPORT_XERCES_API
+Handler: public XercesInitializer {
+private:
+  typedef Handler this_type;
 
-    XN::DOMImplementation         *domImpl; // we don't own this pointer
-    ScopedXMLPtr<XN::DOMDocument>  domDocument;
-  public:
-    Handler();
+  XN::DOMImplementation         *domImpl; // we don't own this pointer
+  ScopedXMLPtr<XN::DOMDocument>  domDocument;
+public:
+  Handler();
 
-    void setTopElementName(XStr const &topElementName_)
-      { topElementName = topElementName_; }
-    XStr getTopElementName() const
-      { return topElementName; }
+  void setTopElementName(XStr const &topElementName_)
+    { topElementName = topElementName_; }
+  XStr getTopElementName() const
+    { return topElementName; }
 
-    void setDTDUrl(XStr const &dtdUrl_)
-      { dtdUrl = dtdUrl_; }
-    XStr getDTDUrl() const
-      { return dtdUrl; }
-    void setDTD(std::string const &dtdStr_);
-    void setDTD(char const *dtdBuf_);
-    void setDTD(char const *dtdBuf_, size_t dtdSize_);
+  void setDTDUrl(XStr const &dtdUrl_)
+    { dtdUrl = dtdUrl_; }
+  XStr getDTDUrl() const
+    { return dtdUrl; }
+  void setDTD(std::string const &dtdStr_);
+  void setDTD(char const *dtdBuf_);
+  void setDTD(char const *dtdBuf_, size_t dtdSize_);
 
-    void setXSDUrl(XStr const &xsdUrl_)
-      { xsdUrl = xsdUrl_; }
-    XStr getXSDUrl() const
-      { return xsdUrl; }
-    void setXSD(std::string const &xsdStr_);
-    void setXSD(char const *xsdBuf_);
-    void setXSD(char const *xsdBuf_, size_t xsdSize_);
+  void setXSDUrl(XStr const &xsdUrl_)
+    { xsdUrl = xsdUrl_; }
+  XStr getXSDUrl() const
+    { return xsdUrl; }
+  void setXSD(std::string const &xsdStr_);
+  void setXSD(char const *xsdBuf_);
+  void setXSD(char const *xsdBuf_, size_t xsdSize_);
 
-    void load(std::string const &xmlFileName);
-    void load(std::istream &xmlInputStream);
-    void createEmpty();
+  void load(std::string const &xmlFileName);
+  void load(std::istream &xmlInputStream);
+  void createEmpty();
 
-    void save(std::string const &xmlFileName) const;
-    void save(std::ostream &xmlOutputStream) const;
+  void save(std::string const &xmlFileName) const;
+  void save(std::ostream &xmlOutputStream) const;
 
-    const XN::DOMDocument *getDocument() const;
-    XN::DOMDocument *getDocument();
+  const XN::DOMDocument *getDocument() const;
+  XN::DOMDocument *getDocument();
 
-    ~Handler();
-  protected:
-    XStr topElementName;
+  ~Handler();
+protected:
+  XStr topElementName;
 
-    XStr         dtdUrl,   xsdUrl;
-    std::string  dtdStr,   xsdStr;
-    char const  *dtdBuf,  *xsdBuf;
-    size_t       dtdSize,  xsdSize;
+  XStr         dtdUrl,   xsdUrl;
+  std::string  dtdStr,   xsdStr;
+  char const  *dtdBuf,  *xsdBuf;
+  size_t       dtdSize,  xsdSize;
 
-    void load(XN::InputSource &in);
-    void save(XN::XMLFormatTarget *myFormTarget) const;
-  };
-  
+  void load(XN::InputSource &in);
+  void save(XN::XMLFormatTarget *myFormTarget) const;
+};
+
 } } } // namespace CoSupport::XML::Xerces
 
 #endif // _INCLUDED_COSUPPORT_XML_XERCES_HANDLER_HPP

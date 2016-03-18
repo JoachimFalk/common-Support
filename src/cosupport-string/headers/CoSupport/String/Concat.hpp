@@ -39,6 +39,8 @@
 #include <sstream>
 #include <string>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace String {
 
 /**
@@ -47,7 +49,8 @@ namespace CoSupport { namespace String {
  * this class is much more efficient, and allows stream
  * manipulators)
  */
-class Concat {
+class COSUPPORT_STRING_API
+Concat {
 private:
   std::ostringstream ret;
 public:

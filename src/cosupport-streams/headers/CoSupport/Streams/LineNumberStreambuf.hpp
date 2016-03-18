@@ -40,12 +40,15 @@
 
 #include "FilterStreambuf.hpp"
 
+#include "export_config.h"
+
 namespace CoSupport { namespace Streams {
 
 /**
  * prefixes each line with the current line number
  */
-class LineNumberStreambuf
+class COSUPPORT_STREAMS_API
+LineNumberStreambuf
 : public FilterStreambuf {
 private:
   /// current line number (starting with 1)

@@ -40,9 +40,12 @@
 #include <map>
 #include <memory>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace SystemC {
 
-class par_manager {
+class COSUPPORT_SYSTEMC_API
+par_manager {
 private:
   std::map<std::string, int> config;
 public:

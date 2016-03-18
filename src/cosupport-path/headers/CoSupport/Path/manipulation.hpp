@@ -39,6 +39,8 @@
 #include <vector>
 #include <boost/filesystem/path.hpp>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace Path {
 
 /// Compute difference between p1 and p2 and return the trailing difference of p1
@@ -49,6 +51,7 @@ namespace CoSupport { namespace Path {
 /// \par Example
 /// pathTrailingDifferent("a/b/c/d", "a/b/e/f/g") == "c/d"<br>
 /// pathTrailingDifferent("a/b/e/f/g", "a/b/c/d") == "e/f/g"
+COSUPPORT_PATH_API
 boost::filesystem::path pathTrailingDifferent(boost::filesystem::path const &p1, boost::filesystem::path const &p2);
 
 /// Compute difference between p1 and p2 and return the leading difference of p1
@@ -59,6 +62,7 @@ boost::filesystem::path pathTrailingDifferent(boost::filesystem::path const &p1,
 /// \par Example
 /// pathLeadingDifferent("d/c/b/a", "g/f/e/b/a") == "d/c"<br>
 /// pathLeadingDifferent("g/f/e/b/a", "d/c/b/a") == "g/f/e"
+COSUPPORT_PATH_API
 boost::filesystem::path pathLeadingDifferent(boost::filesystem::path const &p1, boost::filesystem::path const &p2);
 
 /// Compute number of components in path
@@ -70,6 +74,7 @@ boost::filesystem::path pathLeadingDifferent(boost::filesystem::path const &p1, 
 /// numParts("a/./b/") == 4<br>
 /// numParts("a/./b") == 3<br>
 /// numParts("//x/y/../z") == 5<br>
+COSUPPORT_PATH_API
 size_t numParts(boost::filesystem::path const &p);
                                         
 /// Compute prefix with n parts of path p
@@ -85,6 +90,7 @@ size_t numParts(boost::filesystem::path const &p);
 /// prefix("/a/..//b/", 3) == "/a/.."
 /// prefix("/a/..//b/", 4) == "/a/../b"
 /// prefix("/a/..//b/", 5) == "/a/../b/."
+COSUPPORT_PATH_API
 boost::filesystem::path prefix(boost::filesystem::path const &p, size_t n = 1);
                                         
 /// Strip n parts from the beginning of the path
@@ -101,11 +107,16 @@ boost::filesystem::path prefix(boost::filesystem::path const &p, size_t n = 1);
 /// stripPrefix("/a/..//b/", 3) == "b/."
 /// stripPrefix("/a/..//b/", 4) == "."
 /// stripPrefix("/a/..//b/", 5) == ""
+COSUPPORT_PATH_API
 boost::filesystem::path stripPrefix(boost::filesystem::path const &p, size_t n = 1);
 
+COSUPPORT_PATH_API
 boost::filesystem::path cleanup(boost::filesystem::path const &p);
+
+COSUPPORT_PATH_API
 boost::filesystem::path cleanup(boost::filesystem::path const &p, boost::filesystem::path const &cwd);
 
+COSUPPORT_PATH_API
 std::pair<bool, boost::filesystem::path> pathTrailingGraft(
     boost::filesystem::path p, boost::filesystem::path const &g, std::vector<boost::filesystem::path> const &concat);
 

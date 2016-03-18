@@ -38,11 +38,14 @@
 
 #include <boost/filesystem/path.hpp>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace Path {
 
 /// Derive an absolute path of the executable location from argv0
 /// \param[in] argv0 The argv[0] argument of the main function
 /// \return The absolute path of the executable location
+COSUPPORT_PATH_API
 boost::filesystem::path getExecutableLocation(const char *argv0);
 
 } } // namespace CoSupport::Path

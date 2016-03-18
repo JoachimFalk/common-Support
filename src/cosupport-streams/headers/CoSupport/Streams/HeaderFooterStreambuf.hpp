@@ -40,13 +40,16 @@
 
 #include "FilterStreambuf.hpp"
 
+#include "export_config.h"
+
 namespace CoSupport { namespace Streams {
 
 /**
  * stream manipulator for the HeaderFooterStreambuf
  * streambuffer (set a new header)
  */
-struct Header {
+struct COSUPPORT_STREAMS_API
+Header {
   /// new header
   std::string value;
   
@@ -69,7 +72,8 @@ struct Header {
  * stream manipulator for the HeaderFooterStreambuf
  * streambuffer (set a new footer)
  */
-struct Footer {
+struct COSUPPORT_STREAMS_API
+Footer {
   // new footer
   std::string value;
   
@@ -92,7 +96,8 @@ struct Footer {
  * prefixes each line with a custom header string and
  * appends to each line a custom footer string
  */
-class HeaderFooterStreambuf
+class COSUPPORT_STREAMS_API
+HeaderFooterStreambuf
 : public FilterStreambuf {
 public:
   template <class Base = FilterOStream> class Stream;
@@ -126,10 +131,8 @@ public:
   /// to the current footer
   void setAddFooter(bool value);
   
-#ifndef KASCPAR_PARSING
   /// index obtained with std::ostream::xalloc
   static const int index;
-#endif
 protected:
   int overflow(int c);
   
@@ -171,9 +174,11 @@ public:
 };
 
 /// output operator for the Header manipulator
+COSUPPORT_STREAMS_API
 std::ostream &operator<<(std::ostream &os, const Header &p);
 
 /// output operator for the Footer manipulator
+COSUPPORT_STREAMS_API
 std::ostream &operator<<(std::ostream &os, const Footer &p);
 
 } } // namespace CoSupport::Streams

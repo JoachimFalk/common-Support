@@ -37,11 +37,9 @@
 
 #include <stddef.h>
 #include <CoSupport/commondefs.h>
-#ifdef _MSC_VER
 #include <CoSupport/compatibility-glue/integertypes.h>
-#else
-#include <stdint.h>
-#endif // _MSC_VER
+
+#include "export_config.h"
 
 namespace CoSupport { namespace Math {
 
@@ -52,7 +50,10 @@ namespace CoSupport { namespace Math {
 //      flog2f(8) == 3
 //      flog2f(9) == 3
 
+COSUPPORT_MATH_API
 size_t flog2f(uint32_t n);
+
+COSUPPORT_MATH_API
 size_t flog2f(uint64_t n);
 
 // Returns the log base 2 of an integer (ceil variant)
@@ -61,7 +62,10 @@ size_t flog2f(uint64_t n);
 //      flog2c(9) == 4
 //      (Special case: flog2c(1) == 1)
 
+COSUPPORT_MATH_API
 size_t flog2c(uint32_t n);
+
+COSUPPORT_MATH_API
 size_t flog2c(uint64_t n);
 
 } } // namespace CoSupport::Math
