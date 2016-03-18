@@ -36,13 +36,15 @@
 #ifndef _INCLUDED_COSUPPORT_SYSTEMC_ALGORITHM_HPP
 #define _INCLUDED_COSUPPORT_SYSTEMC_ALGORITHM_HPP
 
-#include <systemc.h>
+#include <systemc>
 
+#include "export_config.h"
 
 namespace CoSupport { namespace SystemC {
-  static sc_time modulus(const sc_time& a, const sc_time&b){
-    return (a.value() % b.value()) * sc_get_time_resolution();
-  }
+
+COSUPPORT_SYSTEMC_API
+inline sc_core::sc_time modulus(const sc_core::sc_time &a, const sc_core::sc_time &b)
+  { return (a.value() % b.value()) * sc_get_time_resolution(); }
 
 } } // CoSupport::SystemC
 

@@ -37,20 +37,22 @@
 #ifndef _INCLUDED_COSUPPORT_SYSTEMC_PERFORMANCEEVALUATION_HPP
 #define _INCLUDED_COSUPPORT_SYSTEMC_PERFORMANCEEVALUATION_HPP
 
-#include <systemc.h>
+#include <systemc>
 
 #include <memory>
 #include <iostream>
 #include <fstream>
-
 #include <deque>
+
+#include "export_config.h"
 
 namespace CoSupport { namespace SystemC {
 
 /**
  * \brief Enables logging of simulation times
  */
-class PerformanceEvaluation {
+class COSUPPORT_SYSTEMC_API
+PerformanceEvaluation {
 private:
   /**
    * Singleton design pattern
@@ -64,10 +66,10 @@ private:
     
     
   // contains all logs associated with function calls
-  std::deque<sc_time> startTimes; 
-  std::deque<sc_time> stopTimes; 
+  std::deque<sc_core::sc_time> startTimes; 
+  std::deque<sc_core::sc_time> stopTimes; 
 
-  sc_time measureStart;
+  sc_core::sc_time measureStart;
 public:
   
   /**

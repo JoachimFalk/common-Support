@@ -56,70 +56,70 @@ namespace CoSupport { namespace SmartPtr {
       delete p;					                \
   }
 
-  // This object temporarily boosts the reference
-  // count of obj to prevent another temporary
-  // reference pointer from deleting said object.
-  template <typename T = RefCount>
-  class ScopedRefCountBooster
-  : private boost::noncopyable {
-  private:
-    T *obj;
-  public:
-    explicit ScopedRefCountBooster(T *obj)
-      : obj(obj) { intrusive_ptr_add_ref(obj); }
-    // Decrement reference count but never delete object!
-    ~ScopedRefCountBooster()
-      { obj->del_ref(); }
-  };
+// This object temporarily boosts the reference
+// count of obj to prevent another temporary
+// reference pointer from deleting said object.
+template <typename T = RefCount>
+class ScopedRefCountBooster
+: private boost::noncopyable {
+private:
+  T *obj;
+public:
+  explicit ScopedRefCountBooster(T *obj)
+    : obj(obj) { intrusive_ptr_add_ref(obj); }
+  // Decrement reference count but never delete object!
+  ~ScopedRefCountBooster()
+    { obj->del_ref(); }
+};
 
-  template <typename T>
-  class ScopedRefCountPtr {
-  private:
-    T obj;
-  public:
-    explicit ScopedRefCountPtr()
-      : obj() { intrusive_ptr_add_ref(&obj); }
-    template <typename T1>
-    explicit ScopedRefCountPtr(const T1 &p1)
-      : obj(p1) { intrusive_ptr_add_ref(&obj); }
-    template <typename T1, typename T2>
-    explicit ScopedRefCountPtr(const T1 &p1, const T2 &p2)
-      : obj(p1, p2) { intrusive_ptr_add_ref(&obj); }
-    template <typename T1, typename T2, typename T3>
-    explicit ScopedRefCountPtr(const T1 &p1, const T2 &p2, const T3 &p3)
-      : obj(p1, p2, p3) { intrusive_ptr_add_ref(&obj); }
-    template <typename T1, typename T2, typename T3, typename T4>
-    explicit ScopedRefCountPtr(const T1 &p1, const T2 &p2, const T3 &p3, const T4 &p4)
-      : obj(p1, p2, p3, p4) { intrusive_ptr_add_ref(&obj); }
-    template <typename T1, typename T2, typename T3, typename T4, typename T5>
-    explicit ScopedRefCountPtr(const T1 &p1, const T2 &p2, const T3 &p3, const T4 &p4, const T5 &p5)
-      : obj(p1, p2, p3, p4, p5) { intrusive_ptr_add_ref(&obj); }
+template <typename T>
+class ScopedRefCountPtr {
+private:
+  T obj;
+public:
+  explicit ScopedRefCountPtr()
+    : obj() { intrusive_ptr_add_ref(&obj); }
+  template <typename T1>
+  explicit ScopedRefCountPtr(const T1 &p1)
+    : obj(p1) { intrusive_ptr_add_ref(&obj); }
+  template <typename T1, typename T2>
+  explicit ScopedRefCountPtr(const T1 &p1, const T2 &p2)
+    : obj(p1, p2) { intrusive_ptr_add_ref(&obj); }
+  template <typename T1, typename T2, typename T3>
+  explicit ScopedRefCountPtr(const T1 &p1, const T2 &p2, const T3 &p3)
+    : obj(p1, p2, p3) { intrusive_ptr_add_ref(&obj); }
+  template <typename T1, typename T2, typename T3, typename T4>
+  explicit ScopedRefCountPtr(const T1 &p1, const T2 &p2, const T3 &p3, const T4 &p4)
+    : obj(p1, p2, p3, p4) { intrusive_ptr_add_ref(&obj); }
+  template <typename T1, typename T2, typename T3, typename T4, typename T5>
+  explicit ScopedRefCountPtr(const T1 &p1, const T2 &p2, const T3 &p3, const T4 &p4, const T5 &p5)
+    : obj(p1, p2, p3, p4, p5) { intrusive_ptr_add_ref(&obj); }
 
-    operator T *()
-      { return &obj; }
-    operator const T *() const
-      { return &obj; }
+  operator T *()
+    { return &obj; }
+  operator const T *() const
+    { return &obj; }
 
-    template <typename TT>
-    operator ::boost::intrusive_ptr<TT>()
-      { return static_cast<TT *>(&obj); }
-    template <typename TT>
-    operator ::boost::intrusive_ptr<const TT>() const
-      { return static_cast<const TT *>(&obj); }
+  template <typename TT>
+  operator ::boost::intrusive_ptr<TT>()
+    { return static_cast<TT *>(&obj); }
+  template <typename TT>
+  operator ::boost::intrusive_ptr<const TT>() const
+    { return static_cast<const TT *>(&obj); }
 
-    T *operator ->()
-      { return &obj; }
-    const T *operator ->() const
-      { return &obj; }
+  T *operator ->()
+    { return &obj; }
+  const T *operator ->() const
+    { return &obj; }
 
-    T &operator *()
-      { return obj; }
-    const T &operator *() const
-      { return obj; }
+  T &operator *()
+    { return obj; }
+  const T &operator *() const
+    { return obj; }
 
-    ~ScopedRefCountPtr()
-      { sassert(obj.del_ref()); }
-  };
+  ~ScopedRefCountPtr()
+    { sassert(obj.del_ref()); }
+};
 
 } } // namespace CoSupport::SmartPtr
 

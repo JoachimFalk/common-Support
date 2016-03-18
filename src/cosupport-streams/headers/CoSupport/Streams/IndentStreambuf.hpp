@@ -41,13 +41,16 @@
 #include "FilterStreambuf.hpp"
 #include "FilterOStream.hpp"
 
+#include "export_config.h"
+
 namespace CoSupport { namespace Streams {
 
 /**
  * stream manipulator for the IndentStreambuf custom stream
  * buffer
  */
-struct Indent {
+struct COSUPPORT_STREAMS_API
+Indent {
   /// how many levels to indent
   int delta_level;
   
@@ -62,7 +65,8 @@ struct Indent {
 /**
  * prefixes each line with spaces
  */
-class IndentStreambuf
+class COSUPPORT_STREAMS_API
+IndentStreambuf
 : public FilterStreambuf {
 public:
   template <class Base = FilterOStream> class Stream;
@@ -80,10 +84,8 @@ public:
   /// modify the indentation (delta)
   void setDeltaLevel(int value);
 
-#ifndef KASCPAR_PARSING
   /// index obtained with std::ostream::xalloc
   static const int index;
-#endif
 protected:
   int overflow(int c);
 
@@ -116,13 +118,15 @@ private:
 };
 
 /// output operator for the Indent manipulator
+COSUPPORT_STREAMS_API
 std::ostream &operator << (std::ostream &os, const Indent &i);
 
 /**
  * indents specified stream at the point of instantiation;
  * reverses indentation if it goes out of scope
  */
-class ScopedIndent {
+class COSUPPORT_STREAMS_API
+ScopedIndent {
 private:
   std::ostream &out;
   int delta;

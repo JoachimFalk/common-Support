@@ -41,6 +41,8 @@
 #include "HeaderFooterStreambuf.hpp"
 #include "IndentStreambuf.hpp"
 
+#include "export_config.h"
+
 namespace CoSupport { namespace Streams {
 
 typedef DebugStreambuf::Stream<
@@ -50,6 +52,7 @@ typedef DebugStreambuf::Stream<
         > > > >
   DebugOStream;
 
+COSUPPORT_STREAMS_API
 extern DebugOStream dout;
 
 } } // namespace CoSupport::Streams

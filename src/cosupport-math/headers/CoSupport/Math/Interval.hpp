@@ -45,17 +45,21 @@
 #include <boost/type_traits/make_unsigned.hpp>
 #include <boost/type_traits/make_signed.hpp>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace Math {
 
 namespace Exception {
 
-  struct IntervalBoundUnderflow
+  struct COSUPPORT_MATH_API
+  IntervalBoundUnderflow
     : public std::underflow_error {
 
     IntervalBoundUnderflow()
       : std::underflow_error("Ugh: Interval bounds underflow!") {}
   };
-  struct IntervalBoundOverflow
+  struct COSUPPORT_MATH_API
+  IntervalBoundOverflow
     : public std::overflow_error {
 
     IntervalBoundOverflow()
@@ -66,8 +70,11 @@ namespace Exception {
 
 namespace Detail {
 
-  struct IntervalEmpty {};
-  struct IntervalAll   {};
+  struct COSUPPORT_MATH_API
+  IntervalEmpty {};
+
+  struct COSUPPORT_MATH_API
+  IntervalAll   {};
 
   template <typename T, bool USE_EXCEPTION, bool IS_SIGNED>
   class IntervalLower;

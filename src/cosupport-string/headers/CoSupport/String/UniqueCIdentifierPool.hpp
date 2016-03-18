@@ -41,6 +41,7 @@
 #include <string>
 
 #include "UniquePool.hpp"
+#include "export_config.h"
 
 namespace CoSupport { namespace String {
 
@@ -50,7 +51,8 @@ namespace CoSupport { namespace String {
  * already exists in the pool, then it will generate the modified same name
  * postfixed with an index starting from 1, that is <modified name>_<index>.
  */
-class UniqueCIdentifierPool: public UniquePool {
+class COSUPPORT_STRING_API
+UniqueCIdentifierPool: public UniquePool {
   typedef UniquePool base_type;
 public:
   /// Return a string derived from name which is modified to be

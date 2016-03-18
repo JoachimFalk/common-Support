@@ -33,64 +33,53 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_STREAMS_NULLSTREAMBUF_HPP
-#define _INCLUDED_COSUPPORT_STREAMS_NULLSTREAMBUF_HPP
+#include <CoSupport/SystemC/systemc_time.hpp>
 
-#include "FilterStreambuf.hpp"
-#include "FilterOStream.hpp"
+namespace CoSupport { namespace SystemC {
 
-#include "export_config.h"
+sc_core::sc_time createSCTime(const char* timeString) {
+  assert(timeString != nullptr);
+  double value = -1;
+  std::string unit;
 
-namespace CoSupport { namespace Streams {
+  sc_core::sc_time_unit scUnit = sc_core::SC_NS;
 
-/**
- * discards everything
- */
-class COSUPPORT_STREAMS_API
-NullStreambuf
-: public FilterStreambuf {
-public:
-  template <class Base = FilterOStream> class Stream;
-public:
-  /// constructs a new FilterStreambuf discarding all output
-  NullStreambuf(std::streambuf *next = 0);
-protected:
-  int overflow(int c);
-};
+  std::stringstream data(timeString);
+  if(data.good()){
+    data >> value;
+  }else{
+    std::string msg("Parsing Error: Unknown argument: <");
+    msg += timeString;
+    msg += "> How to creating a sc_core::sc_time from?";
+    throw msg;
+  }
+  if( data.fail() ){
+    std::string msg("Parsing Error: Unknown argument: <");
+    msg += timeString;
+    msg += "> How to creating a sc_core::sc_time from?";
+    throw msg;
+  }
+  if(data.good()){
+    data >> unit;
+    if(data.fail()){
+      //std::cerr << "No time unit, taking default: SC_NS!"
+      //          << std::endl;
+      scUnit = sc_core::SC_NS;
+    }else{
+      std::transform (unit.begin(),
+                      unit.end(),
+                      unit.begin(),
+                      (int(*)(int))tolower);
+      if(      0==unit.compare(0, 2, "fs") ) scUnit = sc_core::SC_FS;
+      else if( 0==unit.compare(0, 2, "ps") ) scUnit = sc_core::SC_PS;
+      else if( 0==unit.compare(0, 2, "ns") ) scUnit = sc_core::SC_NS;
+      else if( 0==unit.compare(0, 2, "us") ) scUnit = sc_core::SC_US;
+      else if( 0==unit.compare(0, 2, "ms") ) scUnit = sc_core::SC_MS;
+      else if( 0==unit.compare(0, 1, "s" ) ) scUnit = sc_core::SC_SEC;
+    }
+  }
 
-template <class Base>
-class NullStreambuf::Stream: public Base {
-  typedef Stream<Base> this_type;
-public:
-  /// construct a new object which uses the streambuffer
-  /// of the specified stream as initial target
-  Stream(std::ostream &os)
-    : Base(os) { this->insert(devnull); }
+  return sc_core::sc_time(value, scUnit);
+}
 
-  /// discard output for any type
-  template<class T>
-  inline
-  const this_type &operator<<(const T &t) const
-    { return *this; }
-
-  /// discard output for stream manipulators
-  inline
-  const this_type &operator<<(std::ostream &(*manip)(std::ostream &)) const
-    { return *this; }
-
-  /// discard output for stream manipulators
-  inline
-  const this_type &operator<<(std::ios &(*manip)(std::ios &)) const
-    { return *this; }
-
-  /// discard output for stream manipulators
-  inline
-  const this_type &operator<<(std::ios_base &(*manip)(std::ios_base &)) const
-    { return *this; }
-private:
-  NullStreambuf devnull;
-};
-
-} } // namespace CoSupport::Streams
-
-#endif // _INCLUDED_COSUPPORT_STREAMS_NULLSTREAMBUF_HPP
+} } // CoSupport::SystemC

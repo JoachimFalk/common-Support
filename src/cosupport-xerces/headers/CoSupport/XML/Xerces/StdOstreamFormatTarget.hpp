@@ -36,40 +36,43 @@
 #ifndef _INCLUDED_COSUPPORT_XML_XERCES_STDOSTREAMFORMATTARGET_HPP
 #define _INCLUDED_COSUPPORT_XML_XERCES_STDOSTREAMFORMATTARGET_HPP
 
-#include "common.hpp"
 #include <ostream>
 #include <boost/noncopyable.hpp>
 
 #include <xercesc/util/XercesVersion.hpp>
 #include <xercesc/framework/XMLFormatter.hpp>
 
+#include "common.hpp"
+#include "export_config.h"
+
 namespace CoSupport { namespace XML { namespace Xerces {
 
-  class StdOstreamFormatTarget
-  : public XN::XMLFormatTarget, private boost::noncopyable {
-  private:
-    std::ostream &out;
-  public:
-    StdOstreamFormatTarget(std::ostream &out)
-      : out(out) {}
+class COSUPPORT_XERCES_API
+StdOstreamFormatTarget
+: public XN::XMLFormatTarget, private boost::noncopyable {
+private:
+  std::ostream &out;
+public:
+  StdOstreamFormatTarget(std::ostream &out)
+    : out(out) {}
 
 #if XERCES_VERSION_MAJOR == 2
-    void writeChars(
-        const XMLByte *const toWrite,
-        unsigned int count,
-        XN::XMLFormatter *const)
-      { out.write(reinterpret_cast<const char*>(toWrite), count); }
+  void writeChars(
+      const XMLByte *const toWrite,
+      unsigned int count,
+      XN::XMLFormatter *const)
+    { out.write(reinterpret_cast<const char*>(toWrite), count); }
 #elif XERCES_VERSION_MAJOR >= 3
-    void writeChars(
-        const XMLByte *const toWrite,
-        const XMLSize_t count,
-        XN::XMLFormatter *const)
-      { out.write(reinterpret_cast<const char*>(toWrite), count); }
+  void writeChars(
+      const XMLByte *const toWrite,
+      const XMLSize_t count,
+      XN::XMLFormatter *const)
+    { out.write(reinterpret_cast<const char*>(toWrite), count); }
 #endif // XERCES_VERSION_MAJOR >= 3
 
-    void flush()
-      { out.flush(); }
-  };
+  void flush()
+    { out.flush(); }
+};
 
 } } } // namespace CoSupport::XML::Xerces
 

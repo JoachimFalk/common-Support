@@ -48,7 +48,7 @@ std::auto_ptr<PerformanceEvaluation> PerformanceEvaluation::singleton(new Perfor
  *
  */
 PerformanceEvaluation::PerformanceEvaluation()
-  : measureStart(SC_ZERO_TIME) {};
+  : measureStart(sc_core::SC_ZERO_TIME) {};
 
 /**
  *
@@ -61,21 +61,21 @@ PerformanceEvaluation& PerformanceEvaluation::getInstance(){
  *
  */
 void PerformanceEvaluation::startUnit(){
-  startTimes.push_back( sc_time_stamp() );
+  startTimes.push_back( sc_core::sc_time_stamp() );
 }
 
 /**
  *
  */
 void PerformanceEvaluation::stopUnit(){
-  stopTimes.push_back( sc_time_stamp() );
+  stopTimes.push_back( sc_core::sc_time_stamp() );
 }
 
 /**
  *
  */
 void PerformanceEvaluation::startSimulation(){
-  measureStart = sc_time_stamp();
+  measureStart = sc_core::sc_time_stamp();
 }
 
 
@@ -89,16 +89,16 @@ PerformanceEvaluation::~PerformanceEvaluation(){
   if (!startTimes.empty()) {
     // store number of samples
     size_t sampleCount = startTimes.size();
-    sc_time averageLatency;
+    sc_core::sc_time averageLatency;
     
     // calculate inverse throughput
-    sc_time lastSample = stopTimes.back();
-    sc_time averageInverseThroughput = (lastSample - measureStart)/sampleCount;
+    sc_core::sc_time lastSample = stopTimes.back();
+    sc_core::sc_time averageInverseThroughput = (lastSample - measureStart)/sampleCount;
     
     // sum up latencies
     while( startTimes.size() ){
-      const sc_time& start = startTimes.front();
-      const sc_time& stop  = stopTimes.front();
+      const sc_core::sc_time& start = startTimes.front();
+      const sc_core::sc_time& stop  = stopTimes.front();
       
       //std::cerr << "sample: " << start << " -> " << stop << std::endl;
       averageLatency  += stop-start;

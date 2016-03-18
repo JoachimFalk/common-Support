@@ -42,13 +42,16 @@
 
 #include "FilterStreambuf.hpp"
 
+#include "export_config.h"
+
 namespace CoSupport { namespace Streams {
 
 /**
  * stream manipulator for the ColorStreambuf custom
  * streambuffer
  */
-struct Color {
+struct COSUPPORT_STREAMS_API
+Color {
   /// console escape code for this color
   std::string escape;
   
@@ -98,7 +101,8 @@ struct Color {
 /**
  * colors each line with the specified color
  */
-class ColorStreambuf
+class COSUPPORT_STREAMS_API
+ColorStreambuf
 : public FilterStreambuf {
 public:
   template <class Base = FilterOStream> class Stream;
@@ -116,10 +120,8 @@ public:
   /// set a new reset color
   void setReset(const Color &c);
  
-#ifndef KASCPAR_PARSING
   /// index obtained with std::ostream::xalloc
   static const int index;
-#endif
 protected:
   int overflow(int c);
   
@@ -152,6 +154,7 @@ private:
 };
 
 /// output operator for the Color manipulator
+COSUPPORT_STREAMS_API
 std::ostream &operator << (std::ostream &os, const Color &c);
 
 } } // namespace CoSupport::Streams

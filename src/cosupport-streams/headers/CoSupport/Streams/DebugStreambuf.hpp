@@ -44,13 +44,16 @@
 #include "FilterOStream.hpp"
 #include <CoSupport/commondefs.h>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace Streams {
 
 /**
  * stream manipulator for the DebugStreambuf custom
  * streambuffer
  */
-struct Debug {
+struct COSUPPORT_STREAMS_API
+Debug {
   /// new debug level
   size_t level;
 
@@ -76,7 +79,8 @@ struct Debug {
  * prints or discards output according to the current
  * debug level
  */
-class DebugStreambuf
+class COSUPPORT_STREAMS_API
+DebugStreambuf
 : public FilterStreambuf {
 public:
   template <class Base = FilterOStream> class Stream;
@@ -106,10 +110,8 @@ public:
   /// Would the output debug level dbg be visible on the stream?
   bool isVisible(Debug const &dbg) const;
 
-#ifndef KASCPAR_PARSING
   /// index obtained with std::ostream::xalloc
   static const int index;
-#endif
 protected:
   int overflow(int c);
 
@@ -157,7 +159,8 @@ std::ostream &operator << (std::ostream &os, const Debug &d);
  * Sets output debug level dbg for stream out;
  * reverses debug level if it goes out of scope
  */
-class ScopedDebug {
+class COSUPPORT_STREAMS_API
+ScopedDebug {
 private:
   DebugStreambuf *dbgBuf;
   Debug           oldDbg;

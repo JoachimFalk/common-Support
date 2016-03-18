@@ -1,6 +1,6 @@
 /* vim: set sw=2 ts=8: */
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2009-2016 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -44,20 +44,22 @@
 # define COSUPPORT_ATTRIBUTE_DEPRECATED
 #endif
 
-#if __GNUC__ > 3
-// GCC
-# define COSUPPORT_ATTRIBUTE_EXPORT __attribute__((visibility("default")))
-# define COSUPPORT_ATTRIBUTE_IMPORT
-#elif defined(_MSC_VER)
-// Microsoft 
-# define COSUPPORT_ATTRIBUTE_EXPORT __declspec(dllexport)
-# define COSUPPORT_ATTRIBUTE_IMPORT __declspec(dllimport)
-#else
-// Do nothing and hope for the best?
-# define COSUPPORT_ATTRIBUTE_EXPORT
-# define COSUPPORT_ATTRIBUTE_IMPORT
-# warning "Warning Unknown dynamic link import/export semantics."
-#endif
+// Generic helper definitions for shared library support
+#if defined _WIN32 || defined _WIN64 || defined __CYGWIN__ // Windows, either gcc or msvc
+# define COSUPPORT_ATTRIBUTE_DLL_IMPORT __declspec(dllimport)
+# define COSUPPORT_ATTRIBUTE_DLL_EXPORT __declspec(dllexport)
+# define COSUPPORT_ATTRIBUTE_DLL_LOCAL
+#else // Not windows
+# if __GNUC__ >= 4 // Visibility support
+#   define COSUPPORT_ATTRIBUTE_DLL_IMPORT __attribute__ ((visibility ("default")))
+#   define COSUPPORT_ATTRIBUTE_DLL_EXPORT __attribute__ ((visibility ("default")))
+#   define COSUPPORT_ATTRIBUTE_DLL_LOCAL  __attribute__ ((visibility ("hidden")))
+# else // No visibility support
+#   define COSUPPORT_ATTRIBUTE_DLL_IMPORT
+#   define COSUPPORT_ATTRIBUTE_DLL_EXPORT
+#   define COSUPPORT_ATTRIBUTE_DLL_LOCAL
+# endif
+#endif // Not windows
 
 #define COSUPPORT_STRINGISE_IMPL(x) #x
 #define COSUPPORT_STRINGISE(x) COSUPPORT_STRINGISE_IMPL(x)

@@ -1,6 +1,6 @@
-// vim: set sw=2 ts=8:
+/* vim: set sw=2 ts=8: */
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2016 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -33,64 +33,25 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_STREAMS_NULLSTREAMBUF_HPP
-#define _INCLUDED_COSUPPORT_STREAMS_NULLSTREAMBUF_HPP
+#ifndef _INCLUDED_COSUPPORT_PATH_EXPORT_CONFIG_H
+#define _INCLUDED_COSUPPORT_PATH_EXPORT_CONFIG_H
 
-#include "FilterStreambuf.hpp"
-#include "FilterOStream.hpp"
+#include <CoSupport/commondefs.h>
 
-#include "export_config.h"
+#if defined(COSUPPORT_PATH_DLL_EXPORT)
+  //  defined(COSUPPORT_PATH_DLL_EXPORT)
+# define COSUPPORT_PATH_API    COSUPPORT_ATTRIBUTE_DLL_EXPORT
+# define COSUPPORT_PATH_LOCAL  COSUPPORT_ATTRIBUTE_DLL_LOCAL
+#elif defined(COSUPPORT_DLL_IMPORT)
+  // !defined(COSUPPORT_PATH_DLL_EXPORT) &&
+  //  defined(COSUPPORT_DLL_IMPORT)
+# define COSUPPORT_PATH_API    COSUPPORT_ATTRIBUTE_DLL_IMPORT
+# define COSUPPORT_PATH_LOCAL
+#else
+  // !defined(COSUPPORT_PATH_DLL_EXPORT) &&
+  // !defined(COSUPPORT_DLL_IMPORT)
+# define COSUPPORT_PATH_API
+# define COSUPPORT_PATH_LOCAL
+#endif
 
-namespace CoSupport { namespace Streams {
-
-/**
- * discards everything
- */
-class COSUPPORT_STREAMS_API
-NullStreambuf
-: public FilterStreambuf {
-public:
-  template <class Base = FilterOStream> class Stream;
-public:
-  /// constructs a new FilterStreambuf discarding all output
-  NullStreambuf(std::streambuf *next = 0);
-protected:
-  int overflow(int c);
-};
-
-template <class Base>
-class NullStreambuf::Stream: public Base {
-  typedef Stream<Base> this_type;
-public:
-  /// construct a new object which uses the streambuffer
-  /// of the specified stream as initial target
-  Stream(std::ostream &os)
-    : Base(os) { this->insert(devnull); }
-
-  /// discard output for any type
-  template<class T>
-  inline
-  const this_type &operator<<(const T &t) const
-    { return *this; }
-
-  /// discard output for stream manipulators
-  inline
-  const this_type &operator<<(std::ostream &(*manip)(std::ostream &)) const
-    { return *this; }
-
-  /// discard output for stream manipulators
-  inline
-  const this_type &operator<<(std::ios &(*manip)(std::ios &)) const
-    { return *this; }
-
-  /// discard output for stream manipulators
-  inline
-  const this_type &operator<<(std::ios_base &(*manip)(std::ios_base &)) const
-    { return *this; }
-private:
-  NullStreambuf devnull;
-};
-
-} } // namespace CoSupport::Streams
-
-#endif // _INCLUDED_COSUPPORT_STREAMS_NULLSTREAMBUF_HPP
+#endif /* _INCLUDED_COSUPPORT_PATH_EXPORT_CONFIG_H */

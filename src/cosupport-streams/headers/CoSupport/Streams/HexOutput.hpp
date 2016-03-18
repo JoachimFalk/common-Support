@@ -43,90 +43,90 @@ namespace CoSupport { namespace Streams {
 
 namespace Detail {
 
-/// @brief Prints integer as hex number
-template<class T>
-void printHex(std::ostream &os, T t, bool prefix, bool plz, size_t bits) {
-  size_t d = bits / 8;
-  size_t m = bits % 8;
+  /// @brief Prints integer as hex number
+  template<class T>
+  void printHex(std::ostream &os, T t, bool prefix, bool plz, size_t bits) {
+    size_t d = bits / 8;
+    size_t m = bits % 8;
 
-  static char lut[] = {'0','1','2','3','4','5','6','7',
-                       '8','9','A','B','C','D','E','F'};
+    static char lut[] = {'0','1','2','3','4','5','6','7',
+                         '8','9','A','B','C','D','E','F'};
 
-  const unsigned char* x = (const unsigned char*)&t;
-  unsigned char p;
+    const unsigned char* x = (const unsigned char*)&t;
+    unsigned char p;
 
-  if(prefix)
-    os << "0x";
+    if(prefix)
+      os << "0x";
 
-  if(m > 4) {
-    p = (x[d] >> 4) & ((1 << (m-4)) - 1);
-    if(p || plz) {
-      os << lut[p];
-      plz = true;
+    if(m > 4) {
+      p = (x[d] >> 4) & ((1 << (m-4)) - 1);
+      if(p || plz) {
+        os << lut[p];
+        plz = true;
+      }
+      p = x[d] & 0xF;
+      if(p || plz) {
+        os << lut[p];
+        plz = true;
+      }
     }
-    p = x[d] & 0xF;
-    if(p || plz) {
-      os << lut[p];
-      plz = true;
+    else if(m) {
+      p = x[d] & ((1 << m) - 1);
+      if(p || plz) {
+        os << lut[p];
+        plz = true;
+      }
+    }
+
+    for(size_t i = d; i; --i) {
+      p = x[i-1] >> 4;
+      if(p || plz) {
+        os << lut[p];
+        plz = true;
+      }
+      p = x[i-1] & 0xF;
+      if(p || plz) {
+        os << lut[p];
+        plz = true;
+      }
     }
   }
-  else if(m) {
-    p = x[d] & ((1 << m) - 1);
-    if(p || plz) {
-      os << lut[p];
-      plz = true;
-    }
-  }
 
-  for(size_t i = d; i; --i) {
-    p = x[i-1] >> 4;
-    if(p || plz) {
-      os << lut[p];
-      plz = true;
-    }
-    p = x[i-1] & 0xF;
-    if(p || plz) {
-      os << lut[p];
-      plz = true;
-    }
-  }
-}
+  /**
+   * @brief Hex output manipulator class
+   */
+  template<class T>
+  struct HexOutput {
+    /// @brief Number
+    T t;
 
-/**
- * @brief Hex output manipulator class
- */
-template<class T>
-struct hexManip {
-  /// @brief Number
-  T t;
+    /// @brief True, if "0x" should be printed
+    bool prefix;
 
-  /// @brief True, if "0x" should be printed
-  bool prefix;
+    /// @brief True, if leading zeros should be printed
+    bool plz;
+    
+    /// @brief Number of ls. bits to be printed
+    size_t bits;
 
-  /// @brief True, if leading zeros should be printed
-  bool plz;
-  
-  /// @brief Number of ls. bits to be printed
-  size_t bits;
+    /// @brief Constructor
+    HexOutput(T t, bool prefix, bool plz, size_t bits)
+      : t(t), prefix(prefix), plz(plz), bits(bits)
+    {}
+  };
 
-  /// @brief Constructor
-  hexManip(T t, bool prefix, bool plz, size_t bits)
-    : t(t), prefix(prefix), plz(plz), bits(bits)
-  {}
-};
-
-/// @brief Output operator for hexManip
-template<class T>
-std::ostream& operator<<(std::ostream& os, const hexManip<T>& m)
-  { printHex<T>(os, m.t, m.prefix, m.plz, m.bits); return os; }
+  /// @brief Output operator for HexOutput
+  template<class T>
+  std::ostream& operator<<(std::ostream& os, const HexOutput<T>& m)
+    { printHex<T>(os, m.t, m.prefix, m.plz, m.bits); return os; }
 
 } // namespace Detail
 
 /// @brief Convenience function for creating an hex output manipulator
 template<class T>
-Detail::hexManip<T> hex(
+Detail::HexOutput<T> hex(
     T t, bool prefix = true, bool plz = true, size_t bits = sizeof(T) * 8)
-  { return Detail::hexManip<T>(t, prefix, plz, bits); }
+  { return Detail::HexOutput<T>(t, prefix, plz, bits); }
 
 template<class T>
 std::string asHexStr(const T& t, bool prefix = true, bool plz = true, size_t bits = sizeof(T) * 8) {

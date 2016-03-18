@@ -37,9 +37,12 @@
 
 #include <boost/random/mersenne_twister.hpp>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace Random {
 
 // Mersenne twister pseudo randomness source
+COSUPPORT_RANDOM_API
 extern boost::random::mt19937 randomSource;
 
 } } // namespace CoSupport::Random

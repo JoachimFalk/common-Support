@@ -36,24 +36,27 @@
 #ifndef _INCLUDED_COSUPPORT_XML_XERCES_STDISTREAMINPUTSOURCE_HPP
 #define _INCLUDED_COSUPPORT_XML_XERCES_STDISTREAMINPUTSOURCE_HPP
 
-#include "common.hpp"
 #include <xercesc/sax/InputSource.hpp>
 #include <istream>
 #include <boost/noncopyable.hpp>
 
+#include "common.hpp"
+#include "export_config.h"
+
 namespace CoSupport { namespace XML { namespace Xerces {
 
-  class StdIstreamInputSource
-  : public XN::InputSource, private boost::noncopyable {
-  private:
-    std::istream &in;
-  public:
-    StdIstreamInputSource(
-        std::istream &in,
-        XN::MemoryManager *const manager = XN::XMLPlatformUtils::fgMemoryManager);
+class COSUPPORT_XERCES_API
+StdIstreamInputSource
+: public XN::InputSource, private boost::noncopyable {
+private:
+  std::istream &in;
+public:
+  StdIstreamInputSource(
+      std::istream &in,
+      XN::MemoryManager *const manager = XN::XMLPlatformUtils::fgMemoryManager);
 
-    XN::BinInputStream *makeStream() const;
-  };
+  XN::BinInputStream *makeStream() const;
+};
 
 } } } // namespace CoSupport::XML::Xerces
 

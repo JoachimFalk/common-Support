@@ -40,11 +40,14 @@
 #include <cstdlib>
 #include <string>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace SystemC {
 
 typedef size_t ChannelId;
 
-class ChannelModificationListener {
+class COSUPPORT_SYSTEMC_API
+ChannelModificationListener {
 public:
   ChannelModificationListener() : readCount(0) {}
 
