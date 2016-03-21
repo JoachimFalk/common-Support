@@ -52,6 +52,10 @@ nobase_include_HEADERS = \
 	cosupport-base/headers/CoSupport/boost/python/register_tofrom_python_converter_facade.hpp \
 	cosupport-base/headers/CoSupport/boost/python/register_tofrom_python_converter_maybevalue.hpp \
 	cosupport-base/headers/CoSupport/boost/python/register_tofrom_python_converter_stdlist.hpp \
+	cosupport-base/headers/CoSupport/commondefs.h \
+	cosupport-base/headers/CoSupport/compatibility-glue/integertypes.h \
+	cosupport-base/headers/CoSupport/compatibility-glue/nullptr.h \
+	cosupport-base/headers/CoSupport/cosupport_config.h \
 	cosupport-base/headers/CoSupport/DataTypes/ArrayFifo.hpp \
 	cosupport-base/headers/CoSupport/DataTypes/bit_buffer.hpp \
 	cosupport-base/headers/CoSupport/DataTypes/CheckedVector.hpp \
@@ -90,13 +94,18 @@ nobase_include_HEADERS = \
 	cosupport-base/headers/CoSupport/DataTypes/Vector.hpp \
 	cosupport-base/headers/CoSupport/DataTypes/VectorInterface.hpp \
 	cosupport-base/headers/CoSupport/DataTypes/VectorProjection.hpp \
+	cosupport-base/headers/CoSupport/endianess.h \
 	cosupport-base/headers/CoSupport/Lambda/functor.hpp \
+	cosupport-base/headers/CoSupport/limits.h \
+	cosupport-base/headers/CoSupport/sassert.h \
 	cosupport-base/headers/CoSupport/Type/constpropagate.hpp \
 	cosupport-base/headers/CoSupport/Type/STLIteratorSelector.hpp \
 	cosupport-base/headers/CoSupport/Type/STLPointerSelector.hpp \
 	cosupport-base/headers/CoSupport/Type/STLReferenceSelector.hpp \
 	cosupport-base/headers/CoSupport/Type/STLReverseIteratorSelector.hpp \
 	cosupport-initializer/headers/CoSupport/Initializer/BasicInitializer.hpp \
+	cosupport-initializer/headers/CoSupport/Initializer/export_config.h \
+	cosupport-math/headers/CoSupport/Math/export_config.h \
 	cosupport-math/headers/CoSupport/Math/flog2.hpp \
 	cosupport-math/headers/CoSupport/Math/Interval.hpp \
 	cosupport-math/headers/CoSupport/Math/ModuloGroup.hpp \
@@ -107,8 +116,10 @@ nobase_include_HEADERS = \
 	cosupport-math/headers/CoSupport/Math/Tuple/POVector.hpp \
 	cosupport-math/headers/CoSupport/Math/Tuple/ScalarConstant.hpp \
 	cosupport-math/headers/CoSupport/Math/Tuple/UnOp.hpp \
+	cosupport-path/headers/CoSupport/Path/export_config.h \
 	cosupport-path/headers/CoSupport/Path/manipulation.hpp \
 	cosupport-path/headers/CoSupport/Path/resourcelocations.hpp \
+	cosupport-random/headers/CoSupport/Random/export_config.h \
 	cosupport-random/headers/CoSupport/Random.hpp \
 	cosupport-random/headers/CoSupport/Random/RandomConst.hpp \
 	cosupport-random/headers/CoSupport/Random/RandomGenerator.hpp \
@@ -117,6 +128,7 @@ nobase_include_HEADERS = \
 	cosupport-random/headers/CoSupport/Random/randomSource.hpp \
 	cosupport-random/headers/CoSupport/Random/RandomUniform.hpp \
 	cosupport-random/headers/CoSupport/Random/RandomUrn.hpp \
+	cosupport-smartptr/headers/CoSupport/SmartPtr/export_config.h \
 	cosupport-smartptr/headers/CoSupport/SmartPtr/intrusive_copyonwrite_ptr.hpp \
 	cosupport-smartptr/headers/CoSupport/SmartPtr/intrusive_refcount_ptr.hpp \
 	cosupport-smartptr/headers/CoSupport/SmartPtr/RefCount.hpp \
@@ -126,6 +138,7 @@ nobase_include_HEADERS = \
 	cosupport-streams/headers/CoSupport/Streams/ColorStreambuf.hpp \
 	cosupport-streams/headers/CoSupport/Streams/DebugOStream.hpp \
 	cosupport-streams/headers/CoSupport/Streams/DebugStreambuf.hpp \
+	cosupport-streams/headers/CoSupport/Streams/export_config.h \
 	cosupport-streams/headers/CoSupport/Streams/FilterOStream.hpp \
 	cosupport-streams/headers/CoSupport/Streams/FilterStreambuf.hpp \
 	cosupport-streams/headers/CoSupport/Streams/HeaderFooterStreambuf.hpp \
@@ -144,6 +157,7 @@ nobase_include_HEADERS = \
 	cosupport-string/headers/CoSupport/String/Concat.hpp \
 	cosupport-string/headers/CoSupport/String/convert.hpp \
 	cosupport-string/headers/CoSupport/String/DoubleQuotedString.hpp \
+	cosupport-string/headers/CoSupport/String/export_config.h \
 	cosupport-string/headers/CoSupport/String/identifiermanipulation.hpp \
 	cosupport-string/headers/CoSupport/String/QuotedString.hpp \
 	cosupport-string/headers/CoSupport/String/SingleQuotedString.hpp \
@@ -152,6 +166,7 @@ nobase_include_HEADERS = \
 	cosupport-string/headers/CoSupport/String/UniqueCIdentifierPool.hpp \
 	cosupport-string/headers/CoSupport/String/UniquePool.hpp \
 	cosupport-string/headers/CoSupport/String/UnQuotedString.hpp \
+	cosupport-tracing/headers/CoSupport/Tracing/export_config.h \
 	cosupport-tracing/headers/CoSupport/Tracing/PtpTracer.hpp \
 	cosupport-tracing/headers/CoSupport/Tracing/TaskTracer.hpp \
 	cosupport-tracing/headers/CoSupport/Tracing/Tracer.hpp \
@@ -160,6 +175,7 @@ nobase_include_HEADERS = \
 if COSUPPORT_ENABLE_XERCES
 nobase_include_HEADERS += \
 	cosupport-xerces/headers/CoSupport/XML/Xerces/common.hpp \
+	cosupport-xerces/headers/CoSupport/XML/Xerces/export_config.h \
 	cosupport-xerces/headers/CoSupport/XML/Xerces/Handler.hpp \
 	cosupport-xerces/headers/CoSupport/XML/Xerces/StdIstreamInputSource.hpp \
 	cosupport-xerces/headers/CoSupport/XML/Xerces/StdIstreamInputStream.hpp \
@@ -171,11 +187,9 @@ if COSUPPORT_ENABLE_SYSTEMC
 nobase_include_HEADERS += \
 	cosupport-systemc/headers/CoSupport/SystemC/algorithm.hpp \
 	cosupport-systemc/headers/CoSupport/SystemC/ChannelModificationListener.hpp \
+	cosupport-systemc/headers/CoSupport/SystemC/export_config.h \
 	cosupport-systemc/headers/CoSupport/SystemC/par_manager.hpp \
 	cosupport-systemc/headers/CoSupport/SystemC/PerformanceEvaluation.hpp \
 	cosupport-systemc/headers/CoSupport/SystemC/systemc_support.hpp \
-	cosupport-systemc/headers/CoSupport/SystemC/systemc_time.hpp \
-	cosupport-systemc/headers/CoSupport/SystemC/VcdFile.hpp
+	cosupport-systemc/headers/CoSupport/SystemC/systemc_time.hpp
 endif
-
-

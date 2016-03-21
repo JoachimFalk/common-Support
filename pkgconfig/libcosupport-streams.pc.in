@@ -25,5 +25,5 @@ URL: http://www12.informatik.uni-erlangen.de/research/systemoc
 Requires: libcosupport-base = ${PACKAGE_VERSION}
 #Requires.private:
 Libs: -L${srctreemode_libdir} ${srctreemode_libdir}/libcosupport-streams.la
-Libs.private: @BOOST_LDFLAGS@ -lboost_iostreams@BOOST_LIBMTPOSTFIX@ -lboost_system@BOOST_LIBMTPOSTFIX@
+Libs.private: @BOOST_LDFLAGS@ -lboost_iostreams@BOOST_LIBMTPOSTFIX@ -lboost_system@BOOST_LIBMTPOSTFIX@ -lpthread
 Cflags: @AM_CPPFLAGS@ @AM_CXXFLAGS@ -I${srctreemode_includedir} @BOOST_INCLUDE@

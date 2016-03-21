@@ -24,6 +24,6 @@ URL: http://www12.informatik.uni-erlangen.de/research/systemoc
 #Conflicts: foobar <= 4.5
 Requires: libcosupport-base = ${PACKAGE_VERSION}
 #Requires.private:
-Libs: -L${srctreemode_libdir} ${srctreemode_libdir}/libcosupport-tracing.la
+Libs: -L${srctreemode_libdir} @SYSTEMC_LDFLAGS@ ${srctreemode_libdir}/libcosupport-tracing.la -lsystemc
 #Libs.private: -lm
 Cflags: @AM_CPPFLAGS@ @AM_CXXFLAGS@ -I${srctreemode_includedir}
