@@ -44,7 +44,7 @@ namespace CoSupport { namespace SystemC {
 
 COSUPPORT_SYSTEMC_API
 inline sc_core::sc_time modulus(const sc_core::sc_time &a, const sc_core::sc_time &b)
-  { return (a.value() % b.value()) * sc_get_time_resolution(); }
+  { return (a.value() % b.value()) * sc_core::sc_get_time_resolution(); }
 
 } } // CoSupport::SystemC
 
