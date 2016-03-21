@@ -37,7 +37,7 @@
 
 namespace CoSupport { namespace SystemC {
 
-sc_core::sc_time createSCTime(const char* timeString) {
+sc_core::sc_time createSCTime(const char* timeString) throw (std::string) {
   assert(timeString != nullptr);
   double value = -1;
   std::string unit;
