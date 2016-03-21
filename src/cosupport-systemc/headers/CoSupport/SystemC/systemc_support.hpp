@@ -767,7 +767,7 @@ private:
     // Also, we can't use immediate notification (because
     // wait() will not return)
     if(_e.isActive())
-      scev.notify(SC_ZERO_TIME);
+      scev.notify(sc_core::SC_ZERO_TIME);
     else
       scev.cancel(); // allowed but should not happen??
   }

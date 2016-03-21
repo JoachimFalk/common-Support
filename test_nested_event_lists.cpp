@@ -43,7 +43,7 @@ using namespace CoSupport;
 using CoSupport::Streams::Color;
 
 int sc_main(int argc, char *argv[]) {
-  CoSupport::Streams::DebugOStream out(cout);
+  CoSupport::Streams::DebugOStream out(std::cout);
 
   {
     Event e0, e1;
