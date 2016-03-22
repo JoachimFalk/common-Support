@@ -33,18 +33,21 @@ dependencies {
 }
 */
 
-import de.jfalk.GradleJFPlugins.JFHelperFunctions;
-
-
-apply plugin: 'cpp'
-apply plugin: 'native-component'
-apply plugin: 'eclipse'
-//apply plugin: 'eclipse-cdt' <= This does not really work at the moment
-
-apply plugin: JFHelperFunctions;
-
 // this is a project
 this.buildDir = 'obj'
+
+apply plugin: 'cpp'
+//apply plugin: 'native-component'
+apply plugin: 'visual-studio'
+//apply plugin: 'eclipse'
+//apply plugin: 'eclipse-cdt' <= This does not really work at the moment
+
+import de.jfalk.GradleJFPlugins.JFHelperFunctions;
+import de.jfalk.GradleJFPlugins.JFalkPrebuiltLibrary;
+import de.jfalk.GradleJFPlugins.JFCppPlugin;
+
+apply plugin: JFHelperFunctions;
+apply plugin: JFCppPlugin;
 
 //task hello {
 //  doLast {
@@ -87,8 +90,6 @@ this.buildDir = 'obj'
 //        println 'Build done!'
 //    }
 //}
-
-apply plugin: 'visual-studio'
 
 //task dumpTasks << {
 //  def allTasks = project.getAllTasks(true)
