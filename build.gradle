@@ -194,7 +194,7 @@ model {
         }
       }
     }
-    "cosupport-streams"(NativeLibrarySpec) {
+    "cosupport-streams"(JFNativeLibrarySpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -202,6 +202,10 @@ model {
           lib project: ':PrebuiltLibraries', library: "boost_iostreams"
           lib project: ':PrebuiltLibraries', library: "boost_system"
         }
+      }
+      binaries.withType(SharedLibraryBinarySpec) { bin ->
+        analysis("bin", bin);
+//      bin.flummy "-DFLUMMY"
       }
     }
     "cosupport-string"(NativeLibrarySpec) {
@@ -280,6 +284,7 @@ model {
       if (buildType.name == 'release') {
         cppCompiler.define "NDEBUG"
       }
+//    cppCompiler.define "COSUPPORT_DLL_IMPORT"
       // Define toolchain-specific compiler and linker options
       if (toolChain in VisualCpp) {
         // Enable standard C++ exception for visual studio
