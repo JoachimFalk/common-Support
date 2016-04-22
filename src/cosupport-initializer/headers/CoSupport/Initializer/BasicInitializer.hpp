@@ -68,7 +68,7 @@ namespace Detail {
 } // namespace Detail
 
 
-template <typename T> struct COSUPPORT_INITIALIZER_API
+template <typename T> struct
 BasicInitializerTraits {
   static void initialize()
     { T::initialize(); }
@@ -76,7 +76,7 @@ BasicInitializerTraits {
     { T::terminate(); }
 };
 
-template <typename T> struct COSUPPORT_INITIALIZER_API
+template <typename T> struct
 BasicInitializer: public Detail::GlobalBasicInitializerRegistry {
   BasicInitializer()
     : Detail::GlobalBasicInitializerRegistry(
