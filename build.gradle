@@ -171,13 +171,7 @@ model {
     }
     "cosupport-xerces"(NativeLibrarySpec) {
       sources {
-	    cpp {
-		//	source {
-		//		srcDirs "C:/Program Files (x86)/Windows Kits/10/Include/10.0.10586.0/ucrt/"
-		//		//include "**/*.cpp"
-		//	}
-		  //lib library: "C:/Program Files (x86)/Windows Kits/10/Lib/10.0.10586.0/ucrt/x64/ucrt"
-      
+        cpp {
           lib library: "cosupport-base"
           lib library: "cosupport-initializer"
           lib library: "cosupport-string"
@@ -203,9 +197,13 @@ model {
           lib project: ':PrebuiltLibraries', library: "boost_system"
         }
       }
-      binaries.withType(SharedLibraryBinarySpec) { bin ->
-        analysis("bin", bin);
-//      bin.flummy "-DFLUMMY"
+      binaries.withType(SharedLibraryBinarySpec) {
+//      analysis("bin", it);
+        flummy "-DFLUMMY"
+      }
+      binaries.withType(StaticLibraryBinarySpec) {
+//      analysis("bin", it);
+        flammy "-DFLAMMY"
       }
     }
     "cosupport-string"(NativeLibrarySpec) {
@@ -278,6 +276,14 @@ model {
   }
   binaries {
     all {
+      println "YYYY: class: " + it.class + ", name: " + it.name
+//    for (NativeDependencySet lib : it.getBackingNode().getPrivateData().libs) {
+//      println "YYYY:    lib.class: " + lib.getClass();
+//    }
+//    for (LanguageSourceSet foo : it.getInputs()) {
+//      println "YYYY:  foo.class: " + foo.getClass();
+//    }
+
 //    analysis("binary", it)
 //    println "TOOLCHAIN: " + toolChain
       // Specify toolchain-agnostic stuff
@@ -317,7 +323,14 @@ model {
           } + "_DLL_EXPORT"
 //      println "FLUMMY: " + dllExportDefine
         cppCompiler.define dllExportDefine
+
       }
+    }
+    withType(SharedLibraryBinarySpec) {
+      cppCompiler.define "COSUPPORT_DLL_IMPORT"
+    }
+    withType(NativeExecutableBinarySpec) {
+      cppCompiler.define "COSUPPORT_DLL_IMPORT"
     }
   }
 }
