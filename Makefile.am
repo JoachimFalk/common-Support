@@ -181,7 +181,7 @@ libcosupport_xerces_la_LDFLAGS = $(AM_LDFLAGS)			\
 	-Wl,--no-undefined					\
 	$(filter-out %/libcosupport-xerces.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-xerces))
 
-test_xerces_SOURCES		= test_xerces.cpp
+test_xerces_SOURCES		= src/test_xerces/cpp/test_xerces.cpp
 test_xerces_DEPENDENCIES	= libcosupport-xerces.la libcosupport-streams.la
 test_xerces_CPPFLAGS		= $(AM_CPPFLAGS)
 test_xerces_LDFLAGS		= $(AM_LDFLAGS)			\
@@ -201,17 +201,17 @@ libcosupport_systemc_la_LDFLAGS = $(AM_LDFLAGS)			\
 	-Wl,--no-undefined					\
 	$(filter-out %/libcosupport-systemc.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-systemc))
 
-test_event_and_list_SOURCES		= test_event_and_list.cpp
+test_event_and_list_SOURCES		= src/test_event_and_list/cpp/test_event_and_list.cpp
 test_event_and_list_DEPENDENCIES	= libcosupport-systemc.la
 test_event_and_list_LDFLAGS		= $(AM_LDFLAGS)		\
 	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-systemc)
 
-test_event_or_list_SOURCES		= test_event_or_list.cpp
+test_event_or_list_SOURCES		= src/test_event_or_list/cpp/test_event_or_list.cpp
 test_event_or_list_DEPENDENCIES		= libcosupport-systemc.la
 test_event_or_list_LDFLAGS		= $(AM_LDFLAGS)		\
 	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-systemc)
 
-test_nested_event_lists_SOURCES		= test_nested_event_lists.cpp
+test_nested_event_lists_SOURCES		= src/test_nested_event_lists/cpp/test_nested_event_lists.cpp
 test_nested_event_lists_DEPENDENCIES	= libcosupport-systemc.la libcosupport-streams.la
 test_nested_event_lists_LDFLAGS		= $(AM_LDFLAGS)		\
 	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-systemc libcosupport-streams)
@@ -303,44 +303,44 @@ test_dbgstream_DEPENDENCIES	= libcosupport-streams.la
 test_dbgstream_LDFLAGS		= $(AM_LDFLAGS)		\
 	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-streams)
 
-test_maybevalue_SOURCES		= test_maybevalue.cpp
+test_maybevalue_SOURCES		= src/test_maybevalue/cpp/test_maybevalue.cpp
 
-test_arrayfifo_SOURCES		= test_arrayfifo.cpp
+test_arrayfifo_SOURCES		= src/test_arrayfifo/cpp/test_arrayfifo.cpp
 
-test_interval_SOURCES		= test_interval.cpp
+test_interval_SOURCES		= src/test_interval/cpp/test_interval.cpp
 
-test_idpool_SOURCES		= test_idpool.cpp
+test_idpool_SOURCES		= src/test_idpool/cpp/test_idpool.cpp
 test_idpool_DEPENDENCIES	= libcosupport-allocators.la
 test_idpool_LDFLAGS		= $(AM_LDFLAGS)		\
 	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-allocators)
 
-test_stl_output_for_xxx_SOURCES	= test_stl_output_for_xxx.cpp
+test_stl_output_for_xxx_SOURCES	= src/test_stl_output_for_xxx/cpp/test_stl_output_for_xxx.cpp
 
-test_facade_SOURCES		= test_facade.cpp test_facade_lib.cpp
+test_facade_SOURCES		= src/test_facade/cpp/test_facade.cpp src/test_facade/cpp/test_facade_lib.cpp
 test_facade_DEPENDENCIES	= libcosupport-smartptr.la
 test_facade_LDFLAGS		= $(AM_LDFLAGS)		\
 	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-smartptr)
 
-test_typename_SOURCES		= test_typename.cpp
+test_typename_SOURCES		= src/test_typename/cpp/test_typename.cpp
 test_typename_DEPENDENCIES	= libcosupport-string.la
 test_typename_LDFLAGS		= $(AM_LDFLAGS)		\
 	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-string)
 
-test_value_SOURCES		= test_value.cpp
+test_value_SOURCES		= src/test_value/cpp/test_value.cpp
 
-test_list_SOURCES		= test_list.cpp
+test_list_SOURCES		= src/test_list/cpp/test_list.cpp
 
-test_set_SOURCES		= test_set.cpp
+test_set_SOURCES		= src/test_set/cpp/test_set.cpp
 
-test_vector_SOURCES		= test_vector.cpp
+test_vector_SOURCES		= src/test_vector/cpp/test_vector.cpp
 
-test_modulo_SOURCES		= test_modulo.cpp
+test_modulo_SOURCES		= src/test_modulo/cpp/test_modulo.cpp
 
-test_projection_SOURCES		= test_projection.cpp
+test_projection_SOURCES		= src/test_projection/cpp/test_projection.cpp
 
-test_po_SOURCES			= test_po.cpp
+test_po_SOURCES			= src/test_po/cpp/test_po.cpp
 
-test_path_SOURCES		= test_path.cpp
+test_path_SOURCES		= src/test_path/cpp/test_path.cpp
 test_path_DEPENDENCIES		= libcosupport-path.la
 test_path_LDFLAGS		= $(AM_LDFLAGS)			\
 	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-path)
