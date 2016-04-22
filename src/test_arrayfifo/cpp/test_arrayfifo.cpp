@@ -68,7 +68,7 @@ int main( int argc, char *argv[] ) {
     if ( fifo.empty() )
       std::cout << "fifo empty !" << std::endl;
     assert( fifo.size() + fifo.space() == fifo.capacity() );
-    assert( fifo.end() - fifo.begin() == static_cast<ssize_t>(fifo.size()) );
+    assert( fifo.end() - fifo.begin() == static_cast<int>(fifo.size()) );
     for ( int j = 0; j < i; ++j )
       fifo.pop_front();
     for ( int j = 0; j < 23 - i; ++j )

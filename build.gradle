@@ -264,12 +264,159 @@ model {
         }
       }
     }
+    "test_arrayfifo"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+          lib library: "cosupport-math"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
+        }
+      }
+    }
     "test_dbgstream"(NativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
           lib library: "cosupport-streams"
           lib library: "cosupport-string"
+        }
+      }
+    }
+    "test_event_and_list"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+          lib library: "cosupport-smartptr"
+          lib library: "cosupport-systemc"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
+          lib project: ':PrebuiltLibraries', library: "systemc"
+        }
+      }
+    }
+    "test_event_or_list"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+          lib library: "cosupport-smartptr"
+          lib library: "cosupport-systemc"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
+          lib project: ':PrebuiltLibraries', library: "systemc"
+        }
+      }
+    }
+    "test_nested_event_lists"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+          lib library: "cosupport-smartptr"
+          lib library: "cosupport-systemc"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
+          lib project: ':PrebuiltLibraries', library: "systemc"
+        }
+      }
+    }
+    "test_facade"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "test_idpool"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "test_interval"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "test_list"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "test_maybevalue"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "test_modulo"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "test_path"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "test_po"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "test_projection"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "test_set"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "test_stl_output_for_xxx"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "test_typename"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "test_value"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "test_vector"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
+        }
+      }
+    }
+    "test_xerces"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-base"
         }
       }
     }
