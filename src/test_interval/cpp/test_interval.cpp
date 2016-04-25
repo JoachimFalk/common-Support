@@ -10,14 +10,14 @@ typedef Detail::IntervalLower<unsigned int, true, false> UILower;
 #define EXPECT_PASS(T, I, C) \
   try { \
     typedef T IT; \
-    T x I; C; \
+    IT x I; C; \
   } catch (...) { \
     assert(!"WTF?! " #T " x " #I "; " #C "; failed!"); \
   }
 #define EXPECT_FAIL(T, I, C, E) \
   try { \
     typedef T IT; \
-    T x I; C; \
+    IT x I; C; \
     assert(!"WTF?! " #T " x " #I "; " #C "; passed!"); \
   } catch (Exception::E) { \
   } catch (...) { \
