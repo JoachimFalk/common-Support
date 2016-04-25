@@ -43,15 +43,13 @@
 namespace CoSupport { namespace Tracing {
 
 
-//
-  PtpTracer::PtpTracer(std::string id)
-  : measureStart(SC_ZERO_TIME) {
-    name = id;
-  };
+PtpTracer::PtpTracer(std::string id)
+: measureStart(sc_core::SC_ZERO_TIME) {
+  name = id;
+};
 
-//
 void PtpTracer::startSimulation(){
-  measureStart = sc_time_stamp();
+  measureStart = sc_core::sc_time_stamp();
 }
 
 template<typename T>
@@ -74,12 +72,12 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
 
       // filter missing end times
 
-      sc_time averageLatency;
-      sc_time last_trip;
-      sc_time min_trip = sc_time(-1, SC_NS);
-      sc_time max_trip = sc_time(0,SC_NS);
+      sc_core::sc_time averageLatency;
+      sc_core::sc_time last_trip;
+      sc_core::sc_time min_trip = sc_core::sc_time(-1, sc_core::SC_NS);
+      sc_core::sc_time max_trip = sc_core::sc_time( 0, sc_core::SC_NS);
 
-      sc_time lastSample = measureStart;
+      sc_core::sc_time lastSample = measureStart;
       size_t sampleCount = 0;
 
       std::string start_stop = "";
@@ -92,8 +90,8 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
         countMax = startTimes.size();
       }
       for(size_t count = 0; count < countMax; ++count){
-        const sc_time& start = startTimes[count];
-        const sc_time& stop  = stopTimes[count];
+        const sc_core::sc_time& start = startTimes[count];
+        const sc_core::sc_time& stop  = stopTimes[count];
         if(&start == 0){
           std::cout<<"strange error for " << this->name << " no startTime, but a stopTime (" << stop << "!" << " last start was: " << startTimes[count-1] << std::endl;
           std::cout<<"and it has: " << startTimes.size() << " start and stop: " << stopTimes.size() << std::endl;
@@ -119,7 +117,7 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
       }
 
       // calculate inverse throughput
-      sc_time averageInverseThroughput = (lastSample - measureStart)/sampleCount;
+      sc_core::sc_time averageInverseThroughput = (lastSample - measureStart)/sampleCount;
 
       // compute average latency
       averageLatency = averageLatency / sampleCount;
@@ -149,12 +147,12 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
 std::string PtpTracer::getRAWData(){
     std::stringstream result;
     if (!stopTimes.empty() && !startTimes.empty()) {
-    sc_time last_trip;
+    sc_core::sc_time last_trip;
     unsigned int count = 0;
     // sum up latencies
-    for(std::deque<sc_time>::const_iterator it = stopTimes.begin(); it != stopTimes.end(); ++it){
-      const sc_time& start = startTimes[count];
-      const sc_time& stop  = *it;
+    for(std::deque<sc_core::sc_time>::const_iterator it = stopTimes.begin(); it != stopTimes.end(); ++it){
+      const sc_core::sc_time& start = startTimes[count];
+      const sc_core::sc_time& stop  = *it;
       if(count < startTimes.size() && count < stopTimes.size()){
         last_trip = stop - start;
         result << start.to_default_time_units()  <<"\t" << stop.to_default_time_units()  << "\t" << last_trip.to_default_time_units() << std::endl;

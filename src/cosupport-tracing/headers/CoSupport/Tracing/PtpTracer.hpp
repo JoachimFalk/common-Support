@@ -39,7 +39,8 @@
 
 #include "Tracer.hpp"
 
-#include <systemc.h>
+#include <systemc>
+
 #include <memory>
 #include <deque>
 #include <string>
@@ -84,7 +85,7 @@ public:
    * but thats future work
    */
   void start(){
-    startTimes.push_back( sc_time_stamp() );
+    startTimes.push_back(sc_core::sc_time_stamp());
   }
 
   /**
@@ -94,7 +95,7 @@ public:
    * but thats future work
    */
   void stop(){
-    stopTimes.push_back( sc_time_stamp() );
+    stopTimes.push_back(sc_core::sc_time_stamp());
   }
 
   /**
@@ -119,8 +120,8 @@ public:
    * start and return sequence Id (used by OooTicket)
    */
   Ticket startOoo() {
-    startTimes.push_back( sc_time_stamp() );
-    stopTimes.push_back( SC_ZERO_TIME );
+    startTimes.push_back(sc_core::sc_time_stamp());
+    stopTimes.push_back(sc_core::SC_ZERO_TIME);
     return (startTimes.size() - 1);
   }
 
@@ -131,15 +132,15 @@ public:
     //  if (ticket>= stopTimes.size()){
     //    stopTimes.resize(ticket+ 100, SC_ZERO_TIME);
     //  }
-      stopTimes[ticket] = sc_time_stamp();
-    }
+    stopTimes[ticket] = sc_core::sc_time_stamp();
+  }
 private:
 
   // contains all logs associated with function calls
-  std::deque<sc_time> startTimes;
-  std::deque<sc_time> stopTimes;
+  std::deque<sc_core::sc_time> startTimes;
+  std::deque<sc_core::sc_time> stopTimes;
 
-  sc_time measureStart;
+  sc_core::sc_time measureStart;
   std::string name;
 };
 

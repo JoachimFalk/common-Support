@@ -37,8 +37,6 @@
 #ifndef _INCLUDED_COSUPPORT_TRACING_TRACER_HPP
 #define _INCLUDED_COSUPPORT_TRACING_TRACER_HPP
 
-#include <systemc.h>
-
 #include <memory>
 #include <iostream>
 #include <fstream>
