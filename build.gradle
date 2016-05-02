@@ -184,7 +184,9 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib library: "cosupport-smartptr"
           lib project: ':PrebuiltLibraries', library: "systemc"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
