@@ -90,7 +90,7 @@ namespace Detail {
   template<class PL>
   struct MissingToParamList<MissingNode<void>, PL>
   {
-    typedef PL					      ParamList;
+    typedef PL                                          ParamList;
   };
 } // namespace Detail
 
@@ -126,34 +126,36 @@ template<template <class,class> class A, class F, class PL>
 struct ParamAccumulator<A, F, Detail::MissingNode<void>, PL>
 {
   typedef ParamAccumulator<A, F, Detail::MissingNode<void>, PL> this_type;
-  typedef typename A<F,PL>::type			        accumulated_type;
+  typedef typename A<F,PL>::type                                accumulated_type;
 };
 
 //
 // FUNCTOR-macro: Creates Function-Objects
 // 
-#define CONSTRUCT(NAME, TLIST, PLIST, CONST, PCALL, PDUMP,MISSING)		\
-template<class R, class T TLIST>						\
-struct NAME<R, R (T::*)(PLIST) CONST> {						\
-	typedef NAME<R, R (T::*)(PLIST) CONST>			    this_type;	\
-	typedef MISSING						    MissingList;\
-	typedef R						    return_type;\
-	typedef typename Detail::MissingToParamList                             \
-          <MissingList>::ParamList                                  ParamList;  \
-										\
-	CONST T *obj;								\
-	R (T::*func)(PLIST) CONST;						\
-	const char *name;							\
-    bool canRunInParallel;						\
+#define CONSTRUCT(NAME, TLIST, PLIST, CONST, PCALL, PDUMP,MISSING)              \
+template<class R, class T TLIST>                                                \
+struct NAME<R, R (T::*)(PLIST) CONST> {                                         \
+        typedef NAME<R, R (T::*)(PLIST) CONST>       this_type;                 \
+        typedef MISSING                              MissingList;               \
+        typedef R                                    return_type;               \
+        typedef typename Detail::MissingToParamList                             \
+          <MissingList>::ParamList                   ParamList;                 \
                                                                                 \
-	template<class X>							\
-	NAME(CONST X *_obj, R (T::*_func)(PLIST) CONST, const char *_name, bool _canRunInParallel=false)	\
-	  : obj(dynamic_cast<CONST T *>(_obj)), func(_func), name(_name), canRunInParallel(_canRunInParallel)	\
-	  { assert(obj != 0 && func != 0); }					\
-										\
-	R call(const ParamList &pl) const {					\
-		return (obj->*func)(PCALL);					\
-	}                                                                       \
+        CONST T    *obj;                                                        \
+        R      (T::*func)(PLIST) CONST;                                         \
+        const char *name;                                                       \
+        bool        canRunInParallel;                                           \
+                                                                                \
+        template<class X>                                                       \
+        NAME(CONST X *_obj, R (T::*_func)(PLIST) CONST,                         \
+             const char *_name, bool _canRunInParallel=false)                   \
+          : obj(dynamic_cast<CONST T *>(_obj)), func(_func),                    \
+            name(_name), canRunInParallel(_canRunInParallel)                    \
+          { assert(obj != 0 && func != 0); }                                    \
+                                                                                \
+        R call(const ParamList &pl) const {                                     \
+                return (obj->*func)(PCALL);                                     \
+        }                                                                       \
         template<class V>                                                       \
         static void paramListVisit(const ParamList &pl, const V& v = V())       \
           { PDUMP }                                                             \
