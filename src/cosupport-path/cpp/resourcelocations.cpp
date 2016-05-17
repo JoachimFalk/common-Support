@@ -55,7 +55,7 @@ namespace fs = boost::filesystem;
 
 boost::filesystem::path getExecutableLocation(const char *argv0) {
 #ifdef _MSC_VER
-  char ownPath[MAX_PATH]; 
+  TCHAR ownPath[MAX_PATH];
   GetModuleFileName(GetModuleHandle(NULL), ownPath, (sizeof(ownPath))); 
   return fs::path(ownPath);
 #else //!defined(_MSC_VER)
