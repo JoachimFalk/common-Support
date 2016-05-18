@@ -294,6 +294,11 @@ model {
           lib project: ':PrebuiltLibraries', library: "systemc"
         }
       }
+      binaries.all {
+        if (toolChain in VisualCpp) {
+          linker.args "/SUBSYSTEM:CONSOLE"
+        }
+      }
     }
     "test_event_or_list"(NativeExecutableSpec) {
       sources {
@@ -303,6 +308,11 @@ model {
           lib library: "cosupport-systemc"
           lib project: ':PrebuiltLibraries', library: "boost_headers"
           lib project: ':PrebuiltLibraries', library: "systemc"
+        }
+      }
+      binaries.all {
+        if (toolChain in VisualCpp) {
+          linker.args "/SUBSYSTEM:CONSOLE"
         }
       }
     }
@@ -316,11 +326,19 @@ model {
           lib project: ':PrebuiltLibraries', library: "systemc"
         }
       }
+      binaries.all {
+        if (toolChain in VisualCpp) {
+          linker.args "/SUBSYSTEM:CONSOLE"
+        }
+      }
     }
     "test_facade"(NativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib library: "cosupport-smartptr"
+          lib library: "cosupport-string"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
