@@ -136,8 +136,7 @@ class ListFacade
 
   friend class ListInterface<this_type,Detail::ListVirtualIter,T,R,CR,P,CP>;
   friend class Detail::ListVirtualUser<this_type,T,R,CR,P,CP>;
-//template <class CONTAINER, bool REVERSE> friend class Detail::ListVirtualIterBaseAccessor;
-  template <class CONTAINER, bool REVERSE> friend class Detail::ListVirtualIter;
+  template <class CONTAINER> friend class Detail::ListVirtualIter;
 public:
   template <class DD>
   ListFacade(std::list<DD> const &val)
