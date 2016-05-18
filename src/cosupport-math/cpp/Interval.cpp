@@ -32,29 +32,18 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#include <CoSupport/compatibility-glue/nullptr.h>
+#include <CoSupport/Math/Interval.hpp>
 
-#include <CoSupport/Allocators/IdPool.hpp>
+namespace CoSupport { namespace Math {
 
-#include <map>
-#include <iostream>
+namespace Exception {
 
-using namespace CoSupport::Allocators;
+  IntervalBoundUnderflow::IntervalBoundUnderflow()
+    : std::underflow_error("Ugh: Interval bounds underflow!") {}
 
-class foo {};
+  IntervalBoundOverflow::IntervalBoundOverflow()
+    : std::overflow_error("Ugh: Interval bounds overflow!") {}
 
-IdPool<std::map<uint64_t, foo *> > idPool;
+} // namespace Exception
 
-int main(int argc, char *argv[]) {
-  for (size_t i = 0; i < 15; ++i) {
-    std::cout << "idAlloc => " << idPool.idAlloc(nullptr)->first << std::endl;
-  }
-  idPool.idFree(7);  std::cout << "idFree(7)" << std::endl;
-  idPool.idFree(3);  std::cout << "idFree(3)" << std::endl;
-  idPool.idFree(13); std::cout << "idFree(13)" << std::endl;
-  for (size_t i = 0; i < 15; ++i) {
-    std::cout << "idAlloc => " << idPool.idAlloc(nullptr)->first << std::endl;
-  }
-
-  return 0;
-}
+} } // namespace CoSupport::Math

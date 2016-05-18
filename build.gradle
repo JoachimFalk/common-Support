@@ -220,6 +220,7 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
@@ -346,6 +347,9 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib library: "cosupport-math"
+          lib library: "cosupport-allocators"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
@@ -353,6 +357,8 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib library: "cosupport-math"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
@@ -360,6 +366,9 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib library: "cosupport-smartptr"
+          lib library: "cosupport-streams"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }

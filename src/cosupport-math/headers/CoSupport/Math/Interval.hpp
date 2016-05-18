@@ -37,10 +37,11 @@
 #define _INCLUDED_COSUPPORT_MATH_INTERVAL_HPP
 
 #include <limits>
-#include <stdint.h>
-#include <assert.h>
+#include <cstdint>
+#include <cassert>
 #include <stdexcept>
 #include <iostream>
+#include <algorithm>
 
 #include <boost/type_traits/make_unsigned.hpp>
 #include <boost/type_traits/make_signed.hpp>
@@ -55,26 +56,22 @@ namespace Exception {
   IntervalBoundUnderflow
     : public std::underflow_error {
 
-    IntervalBoundUnderflow()
-      : std::underflow_error("Ugh: Interval bounds underflow!") {}
+    IntervalBoundUnderflow();
   };
   struct COSUPPORT_MATH_API
   IntervalBoundOverflow
     : public std::overflow_error {
 
-    IntervalBoundOverflow()
-      : std::overflow_error("Ugh: Interval bounds overflow!") {}
+    IntervalBoundOverflow();
   };
 
-}
+} // namespace Exception
 
 namespace Detail {
 
-  struct COSUPPORT_MATH_API
-  IntervalEmpty {};
-
-  struct COSUPPORT_MATH_API
-  IntervalAll   {};
+  struct COSUPPORT_MATH_API IntervalEmpty {};
+  struct COSUPPORT_MATH_API IntervalAll   {};
+  struct COSUPPORT_MATH_API DummyNINF     {};
 
   template <typename T, bool USE_EXCEPTION, bool IS_SIGNED>
   class IntervalLower;
@@ -87,8 +84,6 @@ namespace Detail {
   template <typename T>
   class IntervalConstantsHelper<T, false> {
   public:
-    class DummyNINF {};
-
     static const IntervalEmpty EMPTY;
     static const DummyNINF     NINF;
     static const T             INF;
@@ -105,29 +100,35 @@ namespace Detail {
   };
 
   template <typename T>
-  bool operator ==(T, typename IntervalConstantsHelper<T, false>::DummyNINF)
+  bool operator ==(T, DummyNINF)
     { return false; }
   template <typename T>
-  bool operator ==(typename IntervalConstantsHelper<T, false>::DummyNINF, T)
+  bool operator ==(DummyNINF, T)
     { return false; }
   template <typename T>
-  bool operator !=(T, typename IntervalConstantsHelper<T, false>::DummyNINF)
+  bool operator !=(T, DummyNINF)
     { return true; }
   template <typename T>
-  bool operator !=(typename IntervalConstantsHelper<T, false>::DummyNINF, T)
+  bool operator !=(DummyNINF, T)
     { return true; }
 
   template <typename T>
-  const T           IntervalConstantsHelper<T, false>::INF = std::numeric_limits<T>::max();
+  const IntervalEmpty IntervalConstantsHelper<T, false>::EMPTY;
   template <typename T>
-  const T           IntervalConstantsHelper<T, false>::MIN = 0;
+  const DummyNINF     IntervalConstantsHelper<T, false>::NINF;
   template <typename T>
-  const T           IntervalConstantsHelper<T, false>::MAX = std::numeric_limits<T>::max()-1;
+  const T             IntervalConstantsHelper<T, false>::INF = std::numeric_limits<T>::max();
+  template <typename T>
+  const T             IntervalConstantsHelper<T, false>::MIN = 0;
+  template <typename T>
+  const T             IntervalConstantsHelper<T, false>::MAX = std::numeric_limits<T>::max()-1;
 
   template <typename T>
-  const T           IntervalConstantsHelper<T, true>::NINF = std::numeric_limits<T>::min();
+  const IntervalAll   IntervalConstantsHelper<T, true>::ALL;
   template <typename T>
-  const T           IntervalConstantsHelper<T, true>::MIN =  std::numeric_limits<T>::min()+1;
+  const T             IntervalConstantsHelper<T, true>::NINF = std::numeric_limits<T>::min();
+  template <typename T>
+  const T             IntervalConstantsHelper<T, true>::MIN =  std::numeric_limits<T>::min()+1;
 
   template <typename T>
   struct IntervalConstants
