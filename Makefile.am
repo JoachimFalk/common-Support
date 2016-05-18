@@ -309,6 +309,9 @@ test_maybevalue_SOURCES		= src/test_maybevalue/cpp/test_maybevalue.cpp
 test_arrayfifo_SOURCES		= src/test_arrayfifo/cpp/test_arrayfifo.cpp
 
 test_interval_SOURCES		= src/test_interval/cpp/test_interval.cpp
+test_interval_DEPENDENCIES	= libcosupport-math.la
+test_interval_LDFLAGS		= $(AM_LDFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-math)
 
 test_idpool_SOURCES		= src/test_idpool/cpp/test_idpool.cpp
 test_idpool_DEPENDENCIES	= libcosupport-allocators.la
