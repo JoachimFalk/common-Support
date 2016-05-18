@@ -11,3 +11,5 @@ tags
 *.opensdf
 Debug*
 Release*
+Support*.sln
+Support*.vcxproj*
