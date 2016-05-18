@@ -35,16 +35,17 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_ITER_BIDIRECTIONALTRAVERSALEXAMPLEIMPL_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_ITER_BIDIRECTIONALTRAVERSALEXAMPLEIMPL_HPP
 
+#include "Detail/BidirectionalTraversalBase.hpp"
+
 namespace CoSupport { namespace DataTypes { namespace Iter {
 
 template <class CONTAINER>
 struct ContainerAccessor {
-  typedef typename CONTAINER::template IterBase<CONTAINER>::type IterBase;
-  typedef typename CONTAINER::UnderlyingIterator                 UnderlyingIterator;
+  typedef typename CONTAINER::UnderlyingIterator UnderlyingIterator;
 };
 
 template <class CONTAINER>
-class BidirectionalTraversalExampleImpl: public ContainerAccessor<CONTAINER>::IterBase {
+class BidirectionalTraversalExampleImpl: public Detail::BidirectionalTraversalBase<CONTAINER> {
   typedef BidirectionalTraversalExampleImpl<CONTAINER> this_type;
 
   friend class BidirectionalTraversalExampleImpl<typename boost::add_const<CONTAINER>::type>;

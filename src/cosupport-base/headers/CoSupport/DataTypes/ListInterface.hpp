@@ -79,12 +79,6 @@ private:
 
   DERIVED const &derived() const
     { return *static_cast<DERIVED const *>(this); }
-protected:
-  /// Base class for the iterator template given by ITER
-  template <class CONTAINER>
-  struct IterBase {
-    typedef Iter::Detail::BidirectionalTraversalBase<CONTAINER> type;
-  };
 public:
 
   typedef VALUE           value_type;

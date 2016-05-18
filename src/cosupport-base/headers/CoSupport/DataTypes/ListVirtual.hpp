@@ -130,12 +130,7 @@ namespace Detail {
   class ListVirtualUser;
 
   template <class CONTAINER>
-  struct ListVirtualIterBaseAccessor {
-    typedef typename CONTAINER::template IterBase<CONTAINER>::type type;
-  };
-
-  template <class CONTAINER>
-  class ListVirtualIter: public ListVirtualIterBaseAccessor<CONTAINER>::type {
+  class ListVirtualIter: public Iter::Detail::BidirectionalTraversalBase<CONTAINER> {
     typedef ListVirtualIter<CONTAINER> this_type;
 
     template <
@@ -148,7 +143,7 @@ namespace Detail {
     >
     friend class ListVirtualUser;
     friend class boost::iterator_core_access;
-    friend class ListVirtualIterBaseAccessor<CONTAINER>::type;
+    friend class Iter::Detail::BidirectionalTraversalBase<CONTAINER>;
     friend class ListVirtualIter<typename boost::add_const<CONTAINER>::type>;
   public:
     ListVirtualIter(): impl(nullptr) {}
@@ -224,7 +219,6 @@ class ListVirtual
 
   friend class ListInterface<this_type,Detail::ListVirtualIter,T,R,CR,P,CP>;
   friend class Detail::ListVirtualUser<this_type,T,R,CR,P,CP>;
-  template <class CONTAINER> friend class Detail::ListVirtualIterBaseAccessor;
   template <class CONTAINER> friend class Detail::ListVirtualIter;
 protected:
   boost::scoped_ptr<typename base_type::Impl> impl;
