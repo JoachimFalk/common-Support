@@ -9,7 +9,7 @@
  * 
  *   This library is distributed in the hope that it will be useful, but WITHOUT
  *   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- *   FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ *   FOR AFacade PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
  *   details.
  * 
  *   You should have received a copy of the GNU Lesser General Public License
@@ -26,7 +26,7 @@
  * 
  * HARDWARE-SOFTWARE-CODESIGN, UNIVERSITY OF ERLANGEN NUREMBERG, SPECIFICALLY
  * DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE SOFTWARE PROVIDED
+ * OF MERCHANTABILITY AND FITNESS FOR AFacade PARTICULAR PURPOSE. THE SOFTWARE PROVIDED
  * HEREUNDER IS ON AN "AS IS" BASIS, AND HARDWARE-SOFTWARE-CODESIGN, UNIVERSITY OF
  * ERLANGEN NUREMBERG HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
  * ENHANCEMENTS, OR MODIFICATIONS.
@@ -53,72 +53,70 @@ namespace Detail {
 
 } // namespace Detail
 
-class A
+class AFacade
 : public CoSupport::DataTypes::FacadeFoundation<
-    A,
+    AFacade,
     Detail::AImpl>
 {
-  typedef A this_type;
+  typedef AFacade this_type;
 
   friend class CoSupport::DataTypes::FacadeFoundation<this_type, ImplType>;
 protected:
 
-  explicit A(const _StorageType &x) : FFType(x) {}
-  explicit A(const SmartPtr &p);
+  explicit AFacade(const _StorageType &x) : FFType(x) {}
+  explicit AFacade(const SmartPtr &p);
 public:
-  A();
-  A(const this_type &);
+  AFacade();
+  AFacade(const this_type &);
 
   void aNonConst();
   void aConst() const;
 };
 
-class B
+class BFacade
 : public CoSupport::DataTypes::FacadeFoundation<
-    B,
+    BFacade,
     Detail::BImpl,
-    A>
+    AFacade>
 {
-  typedef B this_type;
-  typedef A base_type;
+  typedef BFacade this_type;
+  typedef AFacade base_type;
 
   friend class CoSupport::DataTypes::FacadeFoundation<this_type, ImplType, base_type>;
 protected:
   ImplType *getImpl() const;
 
-  explicit B(const _StorageType &x) : FFType(x) {}
-  explicit B(const SmartPtr &p);
+  explicit BFacade(const _StorageType &x) : FFType(x) {}
+  explicit BFacade(const SmartPtr &p);
 public:
-  B();
-  B(const this_type &);
+  BFacade();
+  BFacade(const this_type &);
 
-  static Ptr upcast(const A &);
+  static Ptr upcast(const AFacade &);
 };
 
-class C
+class CFacade
 : public CoSupport::DataTypes::FacadeFoundation<
-    C,
+    CFacade,
     Detail::CImpl,
-    A>
+    AFacade>
 {
-  typedef C this_type;
-  typedef A base_type;
+  typedef CFacade this_type;
+  typedef AFacade base_type;
 
   friend class CoSupport::DataTypes::FacadeFoundation<this_type, ImplType, base_type>;
 protected:
   ImplType *getImpl() const;
 
-  explicit C(const _StorageType &x) : FFType(x) {}
-  explicit C(const SmartPtr &p);
+  explicit CFacade(const _StorageType &x) : FFType(x) {}
+  explicit CFacade(const SmartPtr &p);
 public:
-  C();
-  C(const this_type &);
+  CFacade();
+  CFacade(const this_type &);
 
-  static Ptr upcast(const A &);
+  static Ptr upcast(const AFacade &);
 };
 
 } // namespace Something
 
 #endif // _INCLUDED_TEST_FACADE_LIB_HPP
-
-
