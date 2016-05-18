@@ -251,7 +251,8 @@ libcosupport_string_la_LDFLAGS = $(AM_LDFLAGS)			\
 	$(filter-out %/libcosupport-string.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-string))
 
 libcosupport_math_la_SOURCES =					\
-	src/cosupport-math/cpp/flog2.cpp
+	src/cosupport-math/cpp/flog2.cpp			\
+	src/cosupport-math/cpp/Interval.cpp
 libcosupport_math_la_DEPENDENCIES =				\
 	libcosupport-base.la
 libcosupport_math_la_LDFLAGS = $(AM_LDFLAGS)			\
