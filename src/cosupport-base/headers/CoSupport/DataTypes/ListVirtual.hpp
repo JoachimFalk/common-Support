@@ -231,13 +231,11 @@ public:
 
   ListVirtual()
     : impl(new Detail::ListVirtualImpl<T,R,CR,P,CP>()) {}
-  ListVirtual(this_type &val)
-    : impl(new Detail::ListVirtualImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
   ListVirtual(this_type const &val)
     : impl(new Detail::ListVirtualImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
-  template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
-  ListVirtual(ListInterface<DD,II,T,RR,CRCR,PP,CPCP> &val)
-    : impl(new Detail::ListVirtualImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
+//template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
+//ListVirtual(ListInterface<DD,II,T,RR,CRCR,PP,CPCP> &val)
+//  : impl(new Detail::ListVirtualImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
   template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
   ListVirtual(ListInterface<DD,II,T,RR,CRCR,PP,CPCP> const &val)
     : impl(new Detail::ListVirtualImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
