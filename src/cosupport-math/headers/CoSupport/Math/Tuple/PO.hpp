@@ -46,6 +46,7 @@
 #include <utility>
 #include <ostream>
 #include <limits>
+#include <algorithm>
 
 #include <boost/type_traits/integral_constant.hpp>
 #include <boost/mpl/or.hpp>

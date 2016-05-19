@@ -33,6 +33,7 @@
  */
 
 #include <iostream>
+#include <string>
 #include <cassert>
 
 #include <CoSupport/DataTypes/Projection.hpp>

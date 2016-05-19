@@ -78,6 +78,13 @@ public:
         : storage_type(boost::blank())) {}
 
   using base_type::operator =;
+#ifdef _MSC_VER
+  // Visual Studio can't pull the following template assignment operator from base_type.
+  // Hence, we replicate it here.
+  template <class DD, typename TT, typename CRCR>
+  this_type &operator = (const MaybeValueInterface<DD, TT, CRCR> &val)
+    { this->set(val); return *this; }
+#endif //_MSC_VER
 };
 
 } } // namespace CoSupport::DataTypes

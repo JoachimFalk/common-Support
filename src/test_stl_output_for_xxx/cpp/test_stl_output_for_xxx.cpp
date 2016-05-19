@@ -38,6 +38,7 @@
 #include <CoSupport/Streams/stl_output_for_map.hpp>
 
 #include <iostream>
+#include <string>
 
 #include <list>
 #include <vector>

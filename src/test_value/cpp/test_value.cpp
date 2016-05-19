@@ -109,7 +109,7 @@ int main(int argc, char *argv[]) {
     ValueVirtual<unsigned int>  z(y);
     
     ValueVirtual<double> xx;
-    Value<double>        yy(M_PI);
+    Value<double>        yy(3.14159f);
     Value<double>        zz(y);
     
     std::cout << "x(0): " << x << std::endl;
@@ -178,7 +178,7 @@ int main(int argc, char *argv[]) {
     CHECK_OP_VW(x,> ,y); CHECK_OP_VW(x,> ,z); CHECK_OP_VW(z,> ,y);
     CHECK_OP_VW(x,>=,y); CHECK_OP_VW(x,>=,z); CHECK_OP_VW(z,>=,y);
     
-    xx = M_E;
+    xx = 2.71828f;
     x = -1;
     
     std::cout << "x == " << x << std::endl;
