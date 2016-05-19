@@ -411,6 +411,9 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib library: "cosupport-smartptr"
+          lib library: "cosupport-streams"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }

@@ -32,6 +32,7 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
+#include <string>
 #include <iostream>
 #include <cassert>
 #include <algorithm>
@@ -48,7 +49,7 @@
 #include <CoSupport/DataTypes/SetFacade.hpp>
 #include <CoSupport/DataTypes/Iter/BidirectionalTraversalExampleImpl.hpp>
 
-#include <cstring>
+//#include <cstring>
 
 #include <set>
 
