@@ -38,6 +38,7 @@
 #define _INCLUDED_COSUPPORT_DATATYPES_MAYBEVALUEINTERFACE_HPP
 
 #include <ostream>
+#include <string>
 
 #include <boost/blank.hpp>
 #include <boost/variant.hpp>

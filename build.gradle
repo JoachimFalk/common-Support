@@ -323,6 +323,7 @@ model {
           lib library: "cosupport-base"
           lib library: "cosupport-smartptr"
           lib library: "cosupport-systemc"
+          lib library: "cosupport-streams"
           lib project: ':PrebuiltLibraries', library: "boost_headers"
           lib project: ':PrebuiltLibraries', library: "systemc"
         }
@@ -376,6 +377,8 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib library: "cosupport-smartptr"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
@@ -383,6 +386,8 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib library: "cosupport-math"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
@@ -390,6 +395,8 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib library: "cosupport-path"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
@@ -397,6 +404,9 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib library: "cosupport-math"
+          lib library: "cosupport-streams"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
@@ -404,6 +414,8 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib library: "cosupport-streams"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
@@ -421,6 +433,7 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib library: "cosupport-streams"
         }
       }
     }
@@ -428,6 +441,7 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib library: "cosupport-string"
         }
       }
     }
@@ -435,6 +449,8 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib library: "cosupport-smartptr"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
