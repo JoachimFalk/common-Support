@@ -34,6 +34,7 @@
 
 #include <iostream>
 #include <cassert>
+#include <algorithm>
 
 #include <map>
 
@@ -112,21 +113,24 @@ protected:
   }
 };
 
-typedef Set<int>            TSet;
-typedef std::map<TSet, int> TSetInMap;
+typedef Set<int>               TIntSet;
+typedef std::map<TIntSet, int> TIntSetInMap;
 
 //typedef CoSupport::DataTypes::Set<std::string, CoSupport::DataTypes::SetVirtualInterface> VSetImpl;
 //typedef std::map<VSetImpl, int>                                                           VSetImplInMap;
 
+typedef Set<std::string>                              TSet;
+typedef std::map<TSet, int>                           TSetInMap;
+
 typedef CoSupport::DataTypes::SetVirtual<std::string> VSet;
 typedef std::map<VSet, int>                           VSetInMap;
 
-typedef CoSupport::DataTypes::SetFacade<std::string> FSet;
-typedef std::map<FSet, int>                          FSetInMap;
+typedef CoSupport::DataTypes::SetFacade<std::string>  FSet;
+typedef std::map<FSet, int>                           FSetInMap;
 
 int main(int argc, char *argv[]) {
   {
-    TSet set;
+    TIntSet set;
     set.insert(3);
     set.insert(1);
     std::cout << "set: " << set << ", set.size(): " << set.size() << std::endl;
@@ -151,9 +155,9 @@ int main(int argc, char *argv[]) {
     assert(set.size() == 1);
     assert(*set.begin() == 2);
 
-    TSetInMap  map;
+    TIntSetInMap  map;
     map.insert(std::make_pair(set, 13));
-    for(TSet::iterator iter = set.begin();
+    for(TIntSet::iterator iter = set.begin();
         iter != set.end();
         ++iter) {
       if (iter != set.begin())
@@ -165,7 +169,7 @@ int main(int argc, char *argv[]) {
       map.insert(std::make_pair(set, 13));
     }
     std::cout << std::endl;
-    for(TSet::const_iterator iter = set.begin();
+    for(TIntSet::const_iterator iter = set.begin();
         iter != set.end();
         ++iter) {
       if (iter != set.begin())
@@ -176,6 +180,12 @@ int main(int argc, char *argv[]) {
     set.erase(set.begin(), set.end());
     assert(set.empty());
     map.insert(std::make_pair(set, 33));
+    {
+      TIntSet::iterator iter(set.begin());
+      iter = set.begin();
+      TIntSet::const_iterator citer(iter);
+      citer = iter;
+    }
   }
 /*{
     VSetImpl set;
@@ -299,6 +309,35 @@ int main(int argc, char *argv[]) {
     }
     map.insert(std::make_pair(set, 33));
     std::cout << map << std::endl;
+    for(VSet::iterator iter = set.begin();
+        iter != set.end();
+        ++iter) {
+      if (iter != set.begin())
+        std::cout << ", ";
+      std::cout << *iter;
+      std::string v = *iter;
+      set.erase(iter);
+      std::reverse(v.begin(), v.end());
+      iter = set.insert(v).first;
+      map.insert(std::make_pair(set, 13));
+    }
+    std::cout << std::endl;
+    for(VSet::const_iterator iter = set.begin();
+        iter != set.end();
+        ++iter) {
+      if (iter != set.begin())
+        std::cout << ", ";
+      std::cout << *iter;
+    }
+    std::cout << std::endl;
+    set.erase(set.begin(), set.end());
+    assert(set.empty());
+    {
+      VSet::iterator iter(set.begin());
+      iter = set.begin();
+      VSet::const_iterator citer(iter);
+      citer = iter;
+    }
   }
   {
     FSet set;
@@ -337,6 +376,11 @@ int main(int argc, char *argv[]) {
     assert(set.empty());
     set.insert("hko");
 
+    {
+      FSet::iterator iter = ++set.begin();
+      FSet::const_iterator citer(iter);
+      citer = iter;
+    }
     FSetInMap  map;
     map.insert(std::make_pair(set, 4711));
     for (int i = 4712; i < 4718; ++i) {
@@ -361,6 +405,12 @@ int main(int argc, char *argv[]) {
     }
     map.insert(std::make_pair(set, 33));
     std::cout << map << std::endl;
+    {
+      FSet::iterator iter(set.begin());
+      iter = set.begin();
+      FSet::const_iterator citer(iter);
+      citer = iter;
+    }
   }
   {
     FSet::Ptr pa;
@@ -400,12 +450,64 @@ int main(int argc, char *argv[]) {
       assert(*iter == "bar");
     }
   }
-
-/*    FSet::Ref       ra(a);
-      FSet::ConstRef  cra1(a);
-      FSet::ConstRef  cra2(ra);
-      FSet::Ptr       pa(a.toPtr());
-      FSet::ConstPtr  cpa1(pa);
-      FSet::ConstPtr  cpa2(a.toPtr()); */
+  {
+    // Check various copy operations of sets
+    std::set<std::string>       sSet;
+    TSet                        tSet;
+    VSet                        vSet;
+    FSet                        fSet;
+    std::set<std::string> const csSet;
+    TSet                  const ctSet;
+    VSet                  const cvSet;
+    FSet                  const cfSet;
+    {
+      std::set<std::string> dst1(sSet);
+      std::set<std::string> dst2(tSet);
+      std::set<std::string> dst3(vSet);
+      std::set<std::string> dst4(fSet);
+    }
+    {
+      std::set<std::string> dst1(csSet);
+      std::set<std::string> dst2(ctSet);
+      std::set<std::string> dst3(cvSet);
+      std::set<std::string> dst4(cfSet);
+    }
+    {
+      TSet dst1(sSet);
+      TSet dst2(tSet);
+      TSet dst3(vSet);
+      TSet dst4(fSet);
+    }
+    {
+      TSet dst1(csSet);
+      TSet dst2(ctSet);
+      TSet dst3(cvSet);
+      TSet dst4(cfSet);
+    }
+    {
+      VSet dst1(sSet);
+      VSet dst2(tSet);
+      VSet dst3(vSet);
+      VSet dst4(fSet);
+    }
+    {
+      VSet dst1(csSet);
+      VSet dst2(ctSet);
+      VSet dst3(cvSet);
+      VSet dst4(cfSet);
+    }
+    {
+      FSet dst1(sSet);
+      FSet dst2(tSet);
+      FSet dst3(vSet);
+      FSet dst4(fSet);
+    }
+    {
+      FSet dst1(csSet);
+      FSet dst2(ctSet);
+      FSet dst3(cvSet);
+      FSet dst4(cfSet);
+    }
+  }
   return 0;
 }
