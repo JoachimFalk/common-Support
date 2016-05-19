@@ -161,12 +161,7 @@ namespace Detail {
   class SetVirtualUser;
 
   template <class CONTAINER>
-  struct SetVirtualIterBaseAccessor {
-    typedef typename CONTAINER::template IterBase<CONTAINER>::type type;
-  };
-
-  template <class CONTAINER>
-  class SetVirtualIter: public SetVirtualIterBaseAccessor<CONTAINER>::type {
+  class SetVirtualIter: public Iter::Detail::BidirectionalTraversalBase<CONTAINER> {
     typedef SetVirtualIter<CONTAINER> this_type;
 
     template <
@@ -179,10 +174,17 @@ namespace Detail {
     >
     friend class SetVirtualUser;
     friend class boost::iterator_core_access;
-    friend class SetVirtualIterBaseAccessor<CONTAINER>::type;
+    friend class Iter::Detail::BidirectionalTraversalBase<CONTAINER>;
+// NOTE: This code is disabled as std::set<T>::iterator and std::set<T>::const_iterator are the same type!
+//  friend class ListVirtualIter<typename boost::add_const<CONTAINER>::type>;
   public:
     SetVirtualIter(): impl(nullptr) {}
     SetVirtualIter(this_type const &rhs): impl(rhs.impl->duplicate()) {}
+// NOTE: This code is disabled as std::set<T>::iterator and std::set<T>::const_iterator are the same type!
+//  template <class CC>
+//  ListVirtualIter(ListVirtualIter<CC> const &rhs,typename boost::enable_if<
+//    boost::is_same<typename boost::remove_const<CONTAINER>::type, CC>, void *>::type _dummy = nullptr)
+//    : impl(rhs.impl->duplicate()) {}
 
     this_type &operator =(this_type const &rhs) { impl.reset(rhs.impl->duplicate()); return *this; }
   private:
@@ -261,13 +263,17 @@ class SetVirtual
 
   friend class SetInterface<this_type,Detail::SetVirtualIter,T,R,CR,P,CP>;
   friend class Detail::SetVirtualUser<this_type,T,R,CR,P,CP>;
-  template <class CONTAINER> friend class Detail::SetVirtualIterBaseAccessor;
   template <class CONTAINER> friend class Detail::SetVirtualIter;
 protected:
   boost::scoped_ptr<typename base_type::Impl> impl;
 
   typename base_type::Impl *getImpl() const { return impl.get(); }
 public:
+  template <class DD>
+  SetVirtual(std::set<DD> const &val)
+    : impl(new Detail::SetVirtualImpl<T,R,CR,P,CP>())
+    { static_cast<Detail::SetVirtualImpl<T,R,CR,P,CP> *>(impl.get())->set.insert(val.begin(), val.end()); }
+
   SetVirtual()
     : impl(new Detail::SetVirtualImpl<T,R,CR,P,CP>()) {}
   SetVirtual(this_type const &val)
@@ -277,6 +283,7 @@ public:
   SetVirtual(SetInterface<DD,II,T,RR,CRCR,PP,CPCP> const &val)
     : impl(new Detail::SetVirtualImpl<T,R,CR,P,CP>())
     { static_cast<Detail::SetVirtualImpl<T,R,CR,P,CP> *>(impl.get())->set.insert(val.begin(), val.end()); }
+
   SetVirtual(typename base_type::Impl *impl)
     : impl(impl) {}
 
