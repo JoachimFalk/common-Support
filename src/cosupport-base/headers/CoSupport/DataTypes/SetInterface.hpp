@@ -149,12 +149,6 @@ private:
 
   DERIVED const &derived() const
     { return *static_cast<DERIVED const *>(this); }
-protected:
-  /// Base class for the iterator template given by ITER
-  template <class CONTAINER>
-  struct IterBase {
-    typedef Iter::Detail::BidirectionalTraversalBase<CONTAINER> type;
-  };
 public:
 
   typedef KEY             value_type;
@@ -164,21 +158,23 @@ public:
   typedef PTR             pointer;
   typedef CONSTPTR        const_pointer;
 
-  typedef ITER<const DERIVED> iterator;
-  typedef ITER<const DERIVED> const_iterator;
+  typedef ITER<DERIVED const> iterator;
+  typedef ITER<DERIVED const> const_iterator;
 
   typedef std::ptrdiff_t                                        difference_type;
   typedef typename boost::make_unsigned<difference_type>::type  size_type;
 
-  iterator begin()
-    { return derived().implBegin(); }
+// NOTE: This code is disabled as std::set<T>::iterator and std::set<T>::const_iterator are the same type!
+//iterator begin()
+//  { return derived().implBegin(); }
   const_iterator begin() const
     { return derived().implBegin(); }
   const_iterator cbegin() const
     { return derived().implBegin(); }
 
-  iterator end()
-    { return derived().implEnd(); }
+// NOTE: This code is disabled as std::set<T>::iterator and std::set<T>::const_iterator are the same type!
+//iterator end()
+//  { return derived().implEnd(); }
   const_iterator end() const
     { return derived().implEnd(); }
   const_iterator cend() const
@@ -221,28 +217,32 @@ public:
       derived().implInsert(*iter1);
   }
 
+// NOTE: This code is disabled as std::set<T>::iterator and std::set<T>::const_iterator are the same type!
+//// const key_type &k is correct here this is also used by std::set
+//iterator       lower_bound(const key_type &k)
+//  { return derived().implLowerBound(k); }
   // const key_type &k is correct here this is also used by std::set
-  iterator       lower_bound(const key_type &k)
-    { return derived().implLowerBound(k); }
   const_iterator lower_bound(const key_type &k) const
     { return derived().implLowerBound(k); }
 
-  // const key_type &k is correct here this is also used by std::set
-  iterator       upper_bound(const key_type &k)
-    { return derived().implUpperBound(k); }
+// NOTE: This code is disabled as std::set<T>::iterator and std::set<T>::const_iterator are the same type!
+//// const key_type &k is correct here this is also used by std::set
+//iterator       upper_bound(const key_type &k)
+//  { return derived().implUpperBound(k); }
   // const key_type &k is correct here this is also used by std::set
   const_iterator upper_bound(const key_type &k) const
     { return derived().implUpperBound(k); }
 
-  // const key_type &k is correct here this is also used by std::set
-  std::pair<iterator, iterator>
-  equal_range(const key_type &k) {
-    std::pair<iterator, iterator> retval(lower_bound(k), iterator());
-    retval.second = retval.first;
-    if (*retval.first == k)
-      ++retval.second;
-    return retval;
-  }
+// NOTE: This code is disabled as std::set<T>::iterator and std::set<T>::const_iterator are the same type!
+//// const key_type &k is correct here this is also used by std::set
+//std::pair<iterator, iterator>
+//equal_range(const key_type &k) {
+//  std::pair<iterator, iterator> retval(lower_bound(k), iterator());
+//  retval.second = retval.first;
+//  if (*retval.first == k)
+//    ++retval.second;
+//  return retval;
+//}
   // const key_type &k is correct here this is also used by std::set
   std::pair<const_iterator, const_iterator>
   equal_range(const key_type &k) const {
@@ -253,9 +253,10 @@ public:
     return retval;
   }
 
-  // const key_type &k is correct here this is also used by std::set
-  iterator       find(const key_type &k)
-    { return derived().implFind(k); }
+// NOTE: This code is disabled as std::set<T>::iterator and std::set<T>::const_iterator are the same type!
+//// const key_type &k is correct here this is also used by std::set
+//iterator       find(const key_type &k)
+//  { return derived().implFind(k); }
   // const key_type &k is correct here this is also used by std::set
   const_iterator find(const key_type &k) const
     { return derived().implFind(k); }

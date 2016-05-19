@@ -139,9 +139,13 @@ class SetFacade
 
   friend class SetInterface<this_type,Detail::SetVirtualIter,T,R,CR,P,CP>;
   friend class Detail::SetVirtualUser<this_type,T,R,CR,P,CP>;
-  template <class CONTAINER, bool REVERSE> friend class Detail::SetVirtualIterBaseAccessor;
-  template <class CONTAINER, bool REVERSE> friend class Detail::SetVirtualIter;
+  template <class CONTAINER> friend class Detail::SetVirtualIter;
 public:
+  template <class DD>
+  SetFacade(std::set<DD> const &val)
+    : base1_type(new Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP>())
+    { static_cast<Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP> *>(this->getImpl())->set.insert(val.begin(), val.end()); }
+
   SetFacade()
     : base1_type(new Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP>()) {}
   SetFacade(this_type const &val)
