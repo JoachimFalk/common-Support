@@ -144,17 +144,15 @@ public:
 
   ListFacade()
     : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>()) {}
-  ListFacade(this_type &val)
-    : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
-  ListFacade(typename this_type::Ref const &val)
-    : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(
-        const_cast<typename this_type::Ref &>(val).begin(),
-        const_cast<typename this_type::Ref &>(val).end())) {}
   ListFacade(this_type const &val)
     : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
-  template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
-  ListFacade(ListInterface<DD,II,T,RR,CRCR,PP,CPCP> &val)
-    : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
+//ListFacade(typename this_type::Ref const &val)
+//  : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(
+//      const_cast<typename this_type::Ref &>(val).begin(),
+//      const_cast<typename this_type::Ref &>(val).end())) {}
+//template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
+//ListFacade(ListInterface<DD,II,T,RR,CRCR,PP,CPCP> &val)
+//  : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
   template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
   ListFacade(ListInterface<DD,II,T,RR,CRCR,PP,CPCP> const &val)
     : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
