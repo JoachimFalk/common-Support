@@ -458,6 +458,8 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib library: "cosupport-streams"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
@@ -465,13 +467,19 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
+          lib library: "cosupport-initializer"
+          lib library: "cosupport-string"
+          lib library: "cosupport-streams"
+          lib library: "cosupport-xerces"
+          lib project: ':PrebuiltLibraries', library: "xerces-c"
+          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
   }
   binaries {
     all {
-      println "YYYY: class: " + it.class + ", name: " + it.name
+//    println "YYYY: class: " + it.class + ", name: " + it.name
 //    for (NativeDependencySet lib : it.getBackingNode().getPrivateData().libs) {
 //      println "YYYY:    lib.class: " + lib.getClass();
 //    }
