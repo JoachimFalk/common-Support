@@ -52,6 +52,7 @@
 #include <boost/type_traits/is_reference.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/is_convertible.hpp>
 
 #include <boost/typeof/typeof.hpp>
 
@@ -107,6 +108,7 @@ namespace Detail {
     D const *getDerived() const
       { return static_cast<D const *>(this); }
   public:
+#ifndef _MSC_VER
     D &operator +=(T const &x)
       { getDerived()->set(getDerived()->get() + x); return *getDerived(); }
     D &operator -=(T const &x)
@@ -117,6 +119,28 @@ namespace Detail {
       { getDerived()->set(getDerived()->get() / x); return *getDerived(); }
     D &operator %=(T const &x)
       { getDerived()->set(getDerived()->get() % x); return *getDerived(); }
+#else // defined(_MSC_VER)
+    template <typename TT>
+    typename boost::enable_if<boost::is_convertible<TT, TT>, D &>::type
+    operator +=(TT const &x)
+      { getDerived()->set(getDerived()->get() + x); return *getDerived(); }
+    template <typename TT>
+    typename boost::enable_if<boost::is_convertible<TT, TT>, D &>::type
+    operator -=(TT const &x)
+      { getDerived()->set(getDerived()->get() - x); return *getDerived(); }
+    template <typename TT>
+    typename boost::enable_if<boost::is_convertible<TT, TT>, D &>::type
+    operator *=(TT const &x)
+      { getDerived()->set(getDerived()->get() * x); return *getDerived(); }
+    template <typename TT>
+    typename boost::enable_if<boost::is_convertible<TT, TT>, D &>::type
+    operator /=(TT const &x)
+      { getDerived()->set(getDerived()->get() / x); return *getDerived(); }
+    template <typename TT>
+    typename boost::enable_if<boost::is_convertible<TT, TT>, D &>::type
+    operator %=(TT const &x)
+      { getDerived()->set(getDerived()->get() % x); return *getDerived(); }
+#endif // defined(_MSC_VER)
     D &operator ++()
       { return *this += 1; }
     D &operator --()
