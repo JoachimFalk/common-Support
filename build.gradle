@@ -255,6 +255,7 @@ model {
           }
           lib library: "cosupport-base"
           lib project: ':PrebuiltLibraries', library: "boost_filesystem"
+          lib project: ':PrebuiltLibraries', library: "boost_system"
         }
       }
     }
@@ -396,7 +397,8 @@ model {
         cpp {
           lib library: "cosupport-base"
           lib library: "cosupport-path"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
+          lib project: ':PrebuiltLibraries', library: "boost_filesystem"
+          lib project: ':PrebuiltLibraries', library: "boost_system"
         }
       }
     }
