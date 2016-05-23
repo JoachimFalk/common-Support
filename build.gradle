@@ -43,7 +43,7 @@ apply plugin: 'visual-studio'
 //apply plugin: 'eclipse-cdt' <= This does not really work at the moment
 
 import de.jfalk.GradleJFPlugins.JFHelperFunctions;
-import de.jfalk.GradleJFPlugins.JFalkPrebuiltLibrary;
+//import de.jfalk.GradleJFPlugins.JFalkPrebuiltLibrary;
 import de.jfalk.GradleJFPlugins.JFCppPlugin;
 
 apply plugin: JFHelperFunctions;
@@ -124,6 +124,48 @@ task VisualStudio(
   doLast {
     println 'Created VisualStudio solution files!'
   }
+}
+
+import java.util.regex.Matcher 
+
+class WrapXSDandDTDFiles extends DefaultTask {
+  @InputFiles      FileCollection srcXSDandDTDFiles
+  @OutputDirectory File           headerDir
+  @OutputDirectory File           sourceDir
+
+  @TaskAction
+  void processIdlFiles() {
+    srcXSDandDTDFiles.files.each { File f ->
+      def m = f.name =~ /^(.*)\.(xsd|dtd)$/
+      assert m instanceof Matcher
+      assert m
+      println m.group(1) + ":" + m.group(2)
+      File output = new File(headerDir, m.group(1)+"-"+m.group(2)+".c");
+      output.text = '';
+      if (m.group(2) == 'xsd') {
+        output.append("static char const "+m.group(1)+"XSD[] =\n");
+      } else {
+        output.append("static char const "+m.group(1)+"DTD[] =\n");
+      }
+      f.eachLine { line ->
+        String quotedLine = line.replaceAll(/["\\]/) { c -> '\\'+c }
+        output.append("  \""+quotedLine+"\\n\"\n")
+      }
+      output.append("  ;\n");
+    }
+  }
+}
+
+task genSourceTest(type: WrapXSDandDTDFiles) {
+  description = "Wrap xsd and dtd files in testlog/xerces into c files for consumption by the test_xerces application."
+  srcXSDandDTDFiles = project.fileTree("testlogs/xerces") {
+    include 'test1.xsd'
+    include 'test2.dtd'
+//  include '*.dtd'
+//  include '*.xsd'
+  }
+  headerDir = project.file("${buildDir}/src/test_xerces/headers")
+  sourceDir = project.file("${buildDir}/src/test_xerces/cpp")
 }
 
 model {
@@ -476,6 +518,9 @@ model {
           lib project: ':PrebuiltLibraries', library: "xerces-c"
           lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
+        cpp {
+          generatedBy tasks.genSourceTest
+        }
       }
     }
   }
@@ -488,9 +533,9 @@ model {
 //    for (LanguageSourceSet foo : it.getInputs()) {
 //      println "YYYY:  foo.class: " + foo.getClass();
 //    }
-      for (LanguageSourceSet foo : it.getInputs()) {
-        println "YYYY:  foo.class: " + foo.getClass();
-      }
+//    for (LanguageSourceSet foo : it.getInputs()) {
+//      println "YYYY:  foo.class: " + foo.getClass();
+//    }
 
 //    analysis("binary", it)
 //    println "TOOLCHAIN: " + toolChain
