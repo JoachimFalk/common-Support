@@ -128,23 +128,23 @@ task VisualStudio(
 
 model {
   components {
-//  hello(NativeLibrarySpec)
-//  main(NativeExecutableSpec) {
+//  hello(JFNativeLibrarySpec)
+//  main(JFNativeExecutableSpec) {
 //    sources {
 //      cpp {
 //        lib library: "hello"
 //      }
 //    }
 //  }
-//  main(NativeExecutableSpec) {
+//  main(JFNativeExecutableSpec) {
 //    sources {
 //      cpp.lib library: 'boost', linkage: 'api'
 //      cpp.lib library: 'util', linkage: 'static'
 //    }
 //  }
 
-    "cosupport-base"(NativeLibrarySpec)
-    "cosupport-initializer"(NativeLibrarySpec) {
+    "cosupport-base"(JFNativeLibrarySpec)
+    "cosupport-initializer"(JFNativeLibrarySpec) {
       sources {
         cpp {
           source {
@@ -161,7 +161,7 @@ model {
         }
       }
     }
-    "cosupport-smartptr"(NativeLibrarySpec) {
+    "cosupport-smartptr"(JFNativeLibrarySpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -169,7 +169,7 @@ model {
         }
       }
     }
-    "cosupport-xerces"(NativeLibrarySpec) {
+    "cosupport-xerces"(JFNativeLibrarySpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -180,7 +180,7 @@ model {
         }
       }
     }
-    "cosupport-systemc"(NativeLibrarySpec) {
+    "cosupport-systemc"(JFNativeLibrarySpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -208,7 +208,7 @@ model {
         flammy "-DFLAMMY"
       }
     }
-    "cosupport-string"(NativeLibrarySpec) {
+    "cosupport-string"(JFNativeLibrarySpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -216,7 +216,7 @@ model {
         }
       }
     }
-    "cosupport-math"(NativeLibrarySpec) {
+    "cosupport-math"(JFNativeLibrarySpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -224,7 +224,7 @@ model {
         }
       }
     }
-    "cosupport-random"(NativeLibrarySpec) {
+    "cosupport-random"(JFNativeLibrarySpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -232,7 +232,7 @@ model {
         }
       }
     }
-    "cosupport-allocators"(NativeLibrarySpec) {
+    "cosupport-allocators"(JFNativeLibrarySpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -240,7 +240,7 @@ model {
         }
       }
     }
-    "cosupport-path"(NativeLibrarySpec) { // lib_ ->
+    "cosupport-path"(JFNativeLibrarySpec) { // lib_ ->
 //    analysis("lib_", lib_)
       sources { // src_ ->
 //      analysis("src_", src_)
@@ -259,7 +259,7 @@ model {
         }
       }
     }
-    "cosupport"(NativeLibrarySpec) {
+    "cosupport"(JFNativeLibrarySpec) {
       sources {
         cpp {
           cosupportAllLibs.each {
@@ -268,7 +268,7 @@ model {
         }
       }
     }
-    "test_arrayfifo"(NativeExecutableSpec) {
+    "test_arrayfifo"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -277,7 +277,7 @@ model {
         }
       }
     }
-    "test_dbgstream"(NativeExecutableSpec) {
+    "test_dbgstream"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -286,7 +286,7 @@ model {
         }
       }
     }
-    "test_event_and_list"(NativeExecutableSpec) {
+    "test_event_and_list"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -302,7 +302,7 @@ model {
         }
       }
     }
-    "test_event_or_list"(NativeExecutableSpec) {
+    "test_event_or_list"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -318,7 +318,7 @@ model {
         }
       }
     }
-    "test_nested_event_lists"(NativeExecutableSpec) {
+    "test_nested_event_lists"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -335,7 +335,7 @@ model {
         }
       }
     }
-    "test_facade"(NativeExecutableSpec) {
+    "test_facade"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -345,7 +345,7 @@ model {
         }
       }
     }
-    "test_idpool"(NativeExecutableSpec) {
+    "test_idpool"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -355,7 +355,7 @@ model {
         }
       }
     }
-    "test_interval"(NativeExecutableSpec) {
+    "test_interval"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -364,7 +364,7 @@ model {
         }
       }
     }
-    "test_list"(NativeExecutableSpec) {
+    "test_list"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -374,7 +374,7 @@ model {
         }
       }
     }
-    "test_maybevalue"(NativeExecutableSpec) {
+    "test_maybevalue"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -383,7 +383,7 @@ model {
         }
       }
     }
-    "test_modulo"(NativeExecutableSpec) {
+    "test_modulo"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -392,7 +392,7 @@ model {
         }
       }
     }
-    "test_path"(NativeExecutableSpec) {
+    "test_path"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -402,7 +402,7 @@ model {
         }
       }
     }
-    "test_po"(NativeExecutableSpec) {
+    "test_po"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -412,7 +412,7 @@ model {
         }
       }
     }
-    "test_projection"(NativeExecutableSpec) {
+    "test_projection"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -421,7 +421,7 @@ model {
         }
       }
     }
-    "test_set"(NativeExecutableSpec) {
+    "test_set"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -431,7 +431,7 @@ model {
         }
       }
     }
-    "test_stl_output_for_xxx"(NativeExecutableSpec) {
+    "test_stl_output_for_xxx"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -439,7 +439,7 @@ model {
         }
       }
     }
-    "test_typename"(NativeExecutableSpec) {
+    "test_typename"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -447,7 +447,7 @@ model {
         }
       }
     }
-    "test_value"(NativeExecutableSpec) {
+    "test_value"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -456,7 +456,7 @@ model {
         }
       }
     }
-    "test_vector"(NativeExecutableSpec) {
+    "test_vector"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -465,7 +465,7 @@ model {
         }
       }
     }
-    "test_xerces"(NativeExecutableSpec) {
+    "test_xerces"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-base"
@@ -488,6 +488,9 @@ model {
 //    for (LanguageSourceSet foo : it.getInputs()) {
 //      println "YYYY:  foo.class: " + foo.getClass();
 //    }
+      for (LanguageSourceSet foo : it.getInputs()) {
+        println "YYYY:  foo.class: " + foo.getClass();
+      }
 
 //    analysis("binary", it)
 //    println "TOOLCHAIN: " + toolChain
