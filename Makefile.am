@@ -183,7 +183,7 @@ libcosupport_xerces_la_LDFLAGS = $(AM_LDFLAGS)			\
 
 test_xerces_SOURCES		= src/test_xerces/cpp/test_xerces.cpp
 test_xerces_DEPENDENCIES	= libcosupport-xerces.la libcosupport-streams.la
-test_xerces_CPPFLAGS		= $(AM_CPPFLAGS)
+test_xerces_CPPFLAGS		= $(AM_CPPFLAGS) -Itestlogs/xerces
 test_xerces_LDFLAGS		= $(AM_LDFLAGS)			\
 	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-xerces libcosupport-streams)
 test_xerces_LDADD		= \
