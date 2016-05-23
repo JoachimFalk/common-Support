@@ -48,8 +48,8 @@
 
 #include <boost/filesystem.hpp>
 
-#include "testlogs/xerces/test1-xsd.c" // Get test1.xsd
-#include "testlogs/xerces/test2-dtd.c" // Get test2.dtd
+#include "test1-xsd.c" // Get test1.xsd
+#include "test2-dtd.c" // Get test2.dtd
 
 namespace fs = boost::filesystem;
 
