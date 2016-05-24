@@ -169,6 +169,10 @@ task genSourceTest(type: WrapXSDandDTDFiles) {
 }
 
 model {
+  buildTypes {
+    debug
+    release
+  }
   components {
 //  hello(JFNativeLibrarySpec)
 //  main(JFNativeExecutableSpec) {
