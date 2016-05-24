@@ -307,11 +307,6 @@ namespace CoSupport { namespace XML { namespace Xerces {
     load(src);
   }
 
-  void Handler::load(std::string const &xmlFileName) {
-    XN::LocalFileInputSource src(XStr(xmlFileName).c_str());
-    load(src);
-  }
-
   void Handler::load(std::istream &xmlInputStream) {
     StdIstreamInputSource src(xmlInputStream);
     load(src);

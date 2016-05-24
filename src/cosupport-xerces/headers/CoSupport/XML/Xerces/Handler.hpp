@@ -84,7 +84,6 @@ public:
   void load(std::wstring const &xmlFileName);
 #endif //_WIN32
   void load(XStr const &xmlFileName);
-  void load(std::string const &xmlFileName);
   void load(std::istream &xmlInputStream);
   void createEmpty();
 
