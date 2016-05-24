@@ -522,6 +522,8 @@ model {
           lib library: "cosupport-xerces"
           lib project: ':PrebuiltLibraries', library: "xerces-c"
           lib project: ':PrebuiltLibraries', library: "boost_headers"
+          lib project: ':PrebuiltLibraries', library: "boost_filesystem"
+          lib project: ':PrebuiltLibraries', library: "boost_system"
         }
         cpp {
           generatedBy tasks.genSourceTest
