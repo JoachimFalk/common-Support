@@ -166,7 +166,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
 # error "No support for XMLCH macro"
 #endif
 
-  class COSUPPORT_XERCES_API
+  class
   XStr: public std::basic_string<XMLCh> {
   public:
     XStr()
@@ -284,7 +284,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
     return static_cast<const std::basic_string<XMLCh> &>(lhs) >= rhs;
   }
 
-  class COSUPPORT_XERCES_API
+  class
   NStr: public std::basic_string<char> {
   public:
     NStr(const char  *const str)
@@ -315,7 +315,6 @@ namespace CoSupport { namespace XML { namespace Xerces {
     }
   };
 
-  COSUPPORT_XERCES_API
   inline
   XStr::operator std::string () const
     { return NStr(c_str()); }
