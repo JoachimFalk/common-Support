@@ -139,7 +139,7 @@ class WrapXSDandDTDFiles extends DefaultTask {
       def m = f.name =~ /^(.*)\.(xsd|dtd)$/
       assert m instanceof Matcher
       assert m
-      println m.group(1) + ":" + m.group(2)
+//    println m.group(1) + ":" + m.group(2)
       File output = new File(headerDir, m.group(1)+"-"+m.group(2)+".c");
       output.text = '';
       if (m.group(2) == 'xsd') {
