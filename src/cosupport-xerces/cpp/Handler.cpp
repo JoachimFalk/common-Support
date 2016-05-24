@@ -295,6 +295,17 @@ namespace CoSupport { namespace XML { namespace Xerces {
     xsdSize = xsdBuf != nullptr ? xsdSize_ : 0;
   }
 
+#ifdef _WIN32
+  void Handler::load(std::wstring const &xmlFileName) {
+    XN::LocalFileInputSource src(static_cast<XMLCh const *>(xmlFileName.c_str()));
+    load(src);
+  }
+#endif //_WIN32
+
+  void Handler::load(XStr const &xmlFileName) {
+    XN::LocalFileInputSource src(xmlFileName.c_str());
+    load(src);
+  }
 
   void Handler::load(std::string const &xmlFileName) {
     XN::LocalFileInputSource src(XStr(xmlFileName).c_str());
