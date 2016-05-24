@@ -80,6 +80,10 @@ public:
   void setXSD(char const *xsdBuf_);
   void setXSD(char const *xsdBuf_, size_t xsdSize_);
 
+#ifdef _WIN32
+  void load(std::wstring const &xmlFileName);
+#endif //_WIN32
+  void load(XStr const &xmlFileName);
   void load(std::string const &xmlFileName);
   void load(std::istream &xmlInputStream);
   void createEmpty();
