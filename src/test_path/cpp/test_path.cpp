@@ -183,7 +183,9 @@ int main(int argc, char *argv[]) {
     std::cout << "tmpDir: " << tmpDir << std::endl;
     fs::create_directories(tmpDir/"a/b/c");
     fs::create_directories(tmpDir/"d");
+#if !defined(_WIN32) || defined(__CYGWIN__)
     fs::create_symlink("a/b", tmpDir/"e");
+#endif // !defined(_WIN32) || defined(__CYGWIN__)
     // Now do test of cleanup functionality
     {
       fs::path result = cleanup("/../../.."/tmpDir);
@@ -205,10 +207,12 @@ int main(int argc, char *argv[]) {
       fs::path result = cleanup("c/../c/../../../d", tmpDir/"a/b");
       std::cout << "cleanup(\"c/../c/../../d\", " << tmpDir/"a/b" << "): " << result << std::endl;
     }
+#if !defined(_WIN32) || defined(__CYGWIN__)
     {
       fs::path result = cleanup("e/../../d", tmpDir);
       std::cout << "cleanup(\"e/../../d\", " << tmpDir << "): " << result << std::endl;
     }
+#endif // !defined(_WIN32) || defined(__CYGWIN__)
     // Remove temporary filesystem structure to test cleanup functionality
     fs::remove_all(tmpDir);
   }

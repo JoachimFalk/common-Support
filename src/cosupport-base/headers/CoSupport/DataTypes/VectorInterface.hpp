@@ -119,9 +119,9 @@ public:
     { return *begin(); }
 
   reference back()
-    { return *end(); }
+    { return *--end(); }
   const_reference back() const
-    { return *end(); }
+    { return *--end(); }
 
   size_type size() const  { return end() - begin(); }
   bool      empty() const { return begin() == end(); }
@@ -176,10 +176,11 @@ protected:
   // Default implementation. This should be overwritten for
   // efficiency reasons in DERIVED.
   IterImpl delRange(const IterImpl iter1, IterImpl iter2) {
-    while (!iter1.equal(iter2)) {
-      iter2.advance(-1); iter2 = derived().del(iter2);
+    for (bool finished = iter1.equal(iter2); !finished; ) {
+      iter2.advance(-1); finished = iter1.equal(iter2);
+      iter2 = derived().del(iter2);
     }
-    return iter1;
+    return iter2;
   }
 };
 
