@@ -192,6 +192,7 @@ model {
           source {
             srcDirs "src/cosupport-initializer/cpp"
             include "**/*.cpp"
+//          exclude "**/.*.sw*"
           }
           exportedHeaders {
             srcDirs "src/cosupport-initializer/headers"
