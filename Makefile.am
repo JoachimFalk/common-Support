@@ -65,14 +65,14 @@ nodist_pkgconfig_DATA =			\
 	libcosupport-random.pc		\
 	libcosupport-smartptr.pc	\
 	libcosupport-streams.pc		\
-	libcosupport-string.pc		\
-	libcosupport-tracing.pc
+	libcosupport-string.pc
 if COSUPPORT_ENABLE_XERCES
 nodist_pkgconfig_DATA +=		\
 	libcosupport-xerces.pc
 endif
 if COSUPPORT_ENABLE_SYSTEMC
 nodist_pkgconfig_DATA +=		\
+	libcosupport-tracing.pc		\
 	libcosupport-systemc.pc
 endif
 
@@ -110,7 +110,6 @@ lib_LTLIBRARIES=			\
 	libcosupport-math.la		\
 	libcosupport-random.la		\
 	libcosupport-allocators.la	\
-	libcosupport-tracing.la		\
 	libcosupport-path.la
 if COSUPPORT_ENABLE_XERCES
 lib_LTLIBRARIES +=			\
@@ -118,6 +117,7 @@ lib_LTLIBRARIES +=			\
 endif
 if COSUPPORT_ENABLE_SYSTEMC
 lib_LTLIBRARIES +=			\
+	libcosupport-tracing.la		\
 	libcosupport-systemc.la
 endif
 
@@ -280,6 +280,7 @@ libcosupport_allocators_la_LDFLAGS = $(AM_LDFLAGS)		\
 	-Wl,--no-undefined					\
 	$(filter-out %/libcosupport-allocators.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-allocators))
 
+if COSUPPORT_ENABLE_SYSTEMC
 libcosupport_tracing_la_SOURCES =				\
 	src/cosupport-tracing/cpp/PtpTracer.cpp			\
 	src/cosupport-tracing/cpp/Tracer.cpp			\
@@ -289,6 +290,7 @@ libcosupport_tracing_la_DEPENDENCIES =				\
 libcosupport_tracing_la_LDFLAGS = $(AM_LDFLAGS)			\
 	-Wl,--no-undefined					\
 	$(filter-out %/libcosupport-tracing.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-tracing))
+endif
 
 libcosupport_path_la_SOURCES =					\
 	src/cosupport-path/cpp/manipulation.cpp			\
