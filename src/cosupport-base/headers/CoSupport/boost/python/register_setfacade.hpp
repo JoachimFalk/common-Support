@@ -61,6 +61,7 @@ public:
       .def("_cxx_dereference", &SetIf::VIter::dereference)
       ;
 
+    boost::python::register_ptr_to_python<PSetIf>();
     class_<SetIf, PSetIf, boost::noncopyable>(name, no_init)
       .def("__init__",         make_constructor(&this_type::implSetConstruct, default_call_policies()), "create an empty list object")
       .def("__copy__",         &this_type::implSetDuplicate)
