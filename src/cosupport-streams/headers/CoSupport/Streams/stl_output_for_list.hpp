@@ -37,7 +37,7 @@
 #define _INCLUDED_COSUPPORT_STREAMS_STL_OUTPUT_FOR_LIST_HPP
 
 #include <ostream>
-//#include <list>
+#include <list>
 
 namespace CoSupport { namespace DataTypes {
 
@@ -56,7 +56,7 @@ namespace CoSupport { namespace DataTypes {
 
 namespace std {
 
-  template <class T, class A> class list;
+//template <class T, class A> class list;
 
   template <typename T, class A>
   std::ostream &operator << (std::ostream &out, const std::list<T,A> &l) {
