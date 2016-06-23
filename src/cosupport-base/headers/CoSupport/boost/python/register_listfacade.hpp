@@ -60,8 +60,9 @@ public:
       .def("_cxx_equal",       &ListIf::VIter::equal)
       .def("_cxx_dereference", &ListIf::VIter::dereference)
       ;
-
+#if BOOST_VERSION >= 106000 // See https://github.com/boostorg/python/issues/29 and https://github.com/boostorg/python/issues/56
     boost::python::register_ptr_to_python<PListIf>();
+#endif //BOOST_VERSION >= 106000
     class_<ListIf, PListIf, boost::noncopyable>(name, no_init)
       .def("__init__",         make_constructor(&this_type::implListConstruct, default_call_policies()), "create an empty list object")
       .def("__copy__",         &this_type::implListDuplicate)
