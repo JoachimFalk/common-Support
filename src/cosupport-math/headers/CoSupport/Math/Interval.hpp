@@ -211,8 +211,8 @@ namespace Detail {
   protected:
     T x;
   public:
-    using IntervalConstants<T>::NINF;
-    using IntervalConstants<T>::INF;
+//  using IntervalConstants<T>::NINF;
+//  using IntervalConstants<T>::INF;
 
     IntervalLower():              x(0) {}
     IntervalLower(IntervalEmpty): x(0) {}
@@ -225,8 +225,8 @@ namespace Detail {
       { return x; }
 
     void operator = (T v) {
-      x = v == NINF
-        ? NINF
+      x = v == IntervalConstants<T>::NINF
+        ? IntervalConstants<T>::NINF
         : IntervalBoundCheck<USE_EXCEPTION>::template checkBound<T>(v);
     }
 
@@ -242,7 +242,7 @@ namespace Detail {
     template <typename V, bool E>
     void operator = (IntervalLower<V,E,true> i) {
       x = i.x == IntervalLower<V,E,true>::NINF
-        ? NINF
+        ? IntervalConstants<T>::NINF
         : IntervalBoundCheck<USE_EXCEPTION>::template checkBound<T>(i.x);
     }
 
@@ -271,7 +271,7 @@ namespace Detail {
   protected:
     T x;
   public:
-    using IntervalConstants<T>::INF;
+//  using IntervalConstants<T>::INF;
 
     IntervalLower():              x(0) {}
     IntervalLower(IntervalEmpty): x(0) {}
@@ -313,7 +313,7 @@ namespace Detail {
   protected:
     T x;
   public:
-    using IntervalConstants<T>::INF;
+//  using IntervalConstants<T>::INF;
 
     IntervalUpper():              x(0) {}
     IntervalUpper(IntervalEmpty): x(0) {}
@@ -326,8 +326,8 @@ namespace Detail {
       { return x; }
 
     void operator = (T v) {
-      x = v == INF
-        ? INF
+      x = v == IntervalConstants<T>::INF
+        ? IntervalConstants<T>::INF
         : IntervalBoundCheck<USE_EXCEPTION>::template checkBound<T>(v);
     }
 
@@ -339,7 +339,7 @@ namespace Detail {
     template <typename V, bool E, bool S>
     void operator = (IntervalUpper<V,E,S> i) {
       x = i.x == IntervalUpper<V,E,S>::INF
-        ? INF
+        ? IntervalConstants<T>::INF
         : IntervalBoundCheck<USE_EXCEPTION>::template checkBound<T>(i.x);
     }
 
