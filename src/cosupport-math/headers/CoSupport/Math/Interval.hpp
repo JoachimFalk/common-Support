@@ -216,7 +216,7 @@ namespace Detail {
 
     IntervalLower():              x(0) {}
     IntervalLower(IntervalEmpty): x(0) {}
-    IntervalLower(IntervalAll):   x(NINF) {}
+    IntervalLower(IntervalAll):   x(IntervalConstants<T>::NINF) {}
 
     template <typename V>
     IntervalLower(V v) { *this = v; }
@@ -248,14 +248,14 @@ namespace Detail {
 
     template <typename V>
     void operator += (V v) {
-      if (x != NINF) {
+      if (x != IntervalConstants<T>::NINF) {
         IntervalBoundCheck<USE_EXCEPTION>::checkAdd(x, v);
         x += v;
       }
     }
     template <typename V>
     void operator -= (V v) {
-      if (x != NINF) {
+      if (x != IntervalConstants<T>::NINF) {
         IntervalBoundCheck<USE_EXCEPTION>::checkSub(x, v);
         x -= v;
       }
@@ -317,7 +317,7 @@ namespace Detail {
 
     IntervalUpper():              x(0) {}
     IntervalUpper(IntervalEmpty): x(0) {}
-    IntervalUpper(IntervalAll):   x(INF) {}
+    IntervalUpper(IntervalAll):   x(IntervalConstants<T>::INF) {}
 
     template <typename V>
     IntervalUpper(V v) { *this = v; }
@@ -345,14 +345,14 @@ namespace Detail {
 
     template <typename V>
     void operator += (V v) {
-      if (x != INF) {
+      if (x != IntervalConstants<T>::INF) {
         IntervalBoundCheck<USE_EXCEPTION>::checkAdd(x, v);
         x += v;
       }
     }
     template <typename V>
     void operator -= (V v) {
-      if (x != INF) {
+      if (x != IntervalConstants<T>::INF) {
         IntervalBoundCheck<USE_EXCEPTION>::checkSub(x, v);
         x -= v;
       }
