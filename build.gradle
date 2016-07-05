@@ -43,7 +43,6 @@ apply plugin: 'visual-studio'
 //apply plugin: 'eclipse-cdt' <= This does not really work at the moment
 
 import de.jfalk.GradleJFPlugins.JFHelperFunctions;
-//import de.jfalk.GradleJFPlugins.JFalkPrebuiltLibrary;
 import de.jfalk.GradleJFPlugins.JFCppPlugin;
 
 apply plugin: JFHelperFunctions;
@@ -189,7 +188,17 @@ model {
 //    }
 //  }
 
-    "cosupport-base"(JFNativeLibrarySpec)
+    "cosupport-base"(JFNativeLibrarySpec) {
+      sources {
+        cppx(JFCppSourceSet) {
+          exportedHeaders {
+            srcDirs "src/cosupport-base/headers"
+//          srcDirs exportedHeadersOfLib(project: ':PrebuiltLibraries', library: "boost_headers")
+          }
+          lib project: ':PrebuiltLibraries', library: "boost_headers", exportHeaders: true
+        }
+      }
+    }
     "cosupport-initializer"(JFNativeLibrarySpec) {
       sources {
         cpp {
