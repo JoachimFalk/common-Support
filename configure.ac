@@ -355,7 +355,7 @@ if test x"$acjf_cosupport_a_type_is_missing" = x"yes"; then
         acjf_cosupport_repl_ssize_t="long long";
         ;;
       *)
-        AC_MSG_ERROR([Can't find a replacement type for ssize_t])
+        AC_MSG_ERROR([Can not find a replacement type for ssize_t])
         ;;
     esac
     AC_DEFINE_UNQUOTED([COSUPPORT_REPLTYP_SSIZE_T], [$acjf_cosupport_repl_ssize_t],
@@ -401,7 +401,7 @@ if test x"$acjf_cosupport_a_type_is_missing" = x"yes"; then
         acjf_cosupport_repl_size_t="unsigned long long";
         ;;
       *)
-        AC_MSG_ERROR([Can't find a replacement type for size_t])
+        AC_MSG_ERROR([Can not find a replacement type for size_t])
         ;;
     esac
     AC_DEFINE_UNQUOTED([COSUPPORT_REPLTYP_SIZE_T], [$acjf_cosupport_repl_size_t],
@@ -419,6 +419,8 @@ ACJF_CHECK_VA_COPY
 # This is a hard requirement.
 ACJF_CHECK_LIB_BOOST
 
+SUBDIRS=""
+
 ACJF_CHECK_LIB_SYSTEMC(
   [acjf_cosupport_found_pkg_systemc="yes";],
   [acjf_cosupport_found_pkg_systemc="no";])
@@ -428,7 +430,11 @@ AM_CONDITIONAL([COSUPPORT_ENABLE_SYSTEMC], [test x"$acjf_cosupport_found_pkg_sys
 # consistency for Examples and Testcases
 if test x"$acjf_cosupport_found_pkg_systemc" = x"yes"; then
   AC_DEFINE([COSUPPORT_ENABLE_SYSTEMC], [yes], [Defined if SystemC support is enabled])
-  AC_CONFIG_FILES([pkgconfig/libcosupport-systemc.pc])
+  AC_CONFIG_FILES([
+    pkgconfig/libcosupport-systemc.pc
+    src/cosupport-systemc/headers/Makefile
+  ])
+  SUBDIRS="$SUBDIRS src/cosupport-systemc/headers"
 fi
 
 ACJF_CHECK_LIB_XERCES(
@@ -440,27 +446,50 @@ AM_CONDITIONAL([COSUPPORT_ENABLE_XERCES], [test x"$acjf_cosupport_found_pkg_xerc
 # consistency for Examples and Testcases
 if test x"$acjf_cosupport_found_pkg_xerces" = x"yes"; then
   AC_DEFINE([COSUPPORT_ENABLE_XERCES], [yes], [Defined if xerces support is enabled])
-  AC_CONFIG_FILES([pkgconfig/libcosupport-xerces.pc])
+  AC_CONFIG_FILES([
+    pkgconfig/libcosupport-xerces.pc
+    src/cosupport-xerces/headers/Makefile
+  ])
+  SUBDIRS="$SUBDIRS src/cosupport-xerces/headers"
 fi
 
-SUBDIRS="$subdirs"
-AC_SUBST([SUBDIRS])
+SUBDIRS="$SUBDIRS src/cosupport-allocators/headers"
+SUBDIRS="$SUBDIRS src/cosupport-base/headers"
+SUBDIRS="$SUBDIRS src/cosupport-initializer/headers"
+SUBDIRS="$SUBDIRS src/cosupport-math/headers"
+SUBDIRS="$SUBDIRS src/cosupport-path/headers"
+SUBDIRS="$SUBDIRS src/cosupport-random/headers"
+SUBDIRS="$SUBDIRS src/cosupport-smartptr/headers"
+SUBDIRS="$SUBDIRS src/cosupport-streams/headers"
+SUBDIRS="$SUBDIRS src/cosupport-string/headers"
+SUBDIRS="$SUBDIRS src/cosupport-tracing/headers"
 
 AC_CONFIG_FILES([
-  src/Makefile
-  Makefile
   pkgconfig/libcosupport.pc
+  Makefile
   pkgconfig/libcosupport-allocators.pc
+  src/cosupport-allocators/headers/Makefile
   pkgconfig/libcosupport-base.pc
+  src/cosupport-base/headers/Makefile
   pkgconfig/libcosupport-initializer.pc
+  src/cosupport-initializer/headers/Makefile
   pkgconfig/libcosupport-math.pc
+  src/cosupport-math/headers/Makefile
   pkgconfig/libcosupport-path.pc
+  src/cosupport-path/headers/Makefile
   pkgconfig/libcosupport-random.pc
+  src/cosupport-random/headers/Makefile
   pkgconfig/libcosupport-smartptr.pc
+  src/cosupport-smartptr/headers/Makefile
   pkgconfig/libcosupport-streams.pc
+  src/cosupport-streams/headers/Makefile
   pkgconfig/libcosupport-string.pc
+  src/cosupport-string/headers/Makefile
   pkgconfig/libcosupport-tracing.pc
+  src/cosupport-tracing/headers/Makefile
 ])
+
+AC_SUBST([SUBDIRS])
 
 ACJF_DONE
 
