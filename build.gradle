@@ -33,20 +33,19 @@ dependencies {
 }
 */
 
-// this is a project
-this.buildDir = 'obj'
-
-apply plugin: 'cpp'
-//apply plugin: 'native-component'
-apply plugin: 'visual-studio'
-//apply plugin: 'eclipse'
-//apply plugin: 'eclipse-cdt' <= This does not really work at the moment
-
 import de.jfalk.GradleJFPlugins.JFHelperFunctions;
 import de.jfalk.GradleJFPlugins.JFCppPlugin;
 
 apply plugin: JFHelperFunctions;
 apply plugin: JFCppPlugin;
+
+// Here, ``this'' is the current org.gradle.api.Project
+this.buildDir = 'obj'
+
+//apply plugin: 'cpp' // replaced by JFCppPlugin 
+apply plugin: 'visual-studio'
+//apply plugin: 'eclipse'
+//apply plugin: 'eclipse-cdt' <= This does not really work at the moment
 
 //task hello {
 //  doLast {
@@ -190,10 +189,10 @@ model {
 
     "cosupport-base"(JFNativeLibrarySpec) {
       sources {
-        cppx(JFCppSourceSet) {
+//      cppx(JFCppSourceSet) {
+        cpp {
           exportedHeaders {
             srcDirs "src/cosupport-base/headers"
-//          srcDirs exportedHeadersOfLib(project: ':PrebuiltLibraries', library: "boost_headers")
           }
           lib project: ':PrebuiltLibraries', library: "boost_headers", exportHeaders: true
         }
