@@ -42,6 +42,7 @@
 #include <fstream>
 
 #include <deque>
+#include <vector>
 
 #include <boost/shared_ptr.hpp>
 
