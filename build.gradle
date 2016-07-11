@@ -193,6 +193,12 @@ model {
         cpp {
           exportedHeaders {
             srcDirs "src/cosupport-base/headers"
+            // FIXME: This is a hack, but the CoSupport::DataTypes::ArrayFifo class depends on
+            // the CoSupport::Math::ModuloGroup class.
+            srcDirs "src/cosupport-math/headers"
+            // FIXME: This is a hack, but the CoSupport::DataTypes::*Facade classes depend on
+            // the CoSupport::SmartPtr::RefCount class.
+            srcDirs "src/cosupport-smartptr/headers"
           }
           lib project: ':PrebuiltLibraries', library: "boost_headers", exportHeaders: true
         }
@@ -209,8 +215,7 @@ model {
           exportedHeaders {
             srcDirs "src/cosupport-initializer/headers"
           }
-
-          lib library: "cosupport-base"
+          lib library: "cosupport-base", exportHeaders: true
           lib project: ':PrebuiltLibraries', library: "boost_system"
           lib project: ':PrebuiltLibraries', library: "boost_thread"
         }
@@ -219,46 +224,40 @@ model {
     "cosupport-smartptr"(JFNativeLibrarySpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
+          lib library: "cosupport-base", exportHeaders: true
         }
       }
     }
     "cosupport-xerces"(JFNativeLibrarySpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
-          lib library: "cosupport-initializer"
-          lib library: "cosupport-string"
-          lib project: ':PrebuiltLibraries', library: "xerces-c"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
+          lib library: "cosupport-base", exportHeaders: true
+          lib library: "cosupport-initializer", exportHeaders: true
+          lib library: "cosupport-string", exportHeaders: true
+          lib project: ':PrebuiltLibraries', library: "xerces-c", exportHeaders: true
         }
       }
     }
     "cosupport-systemc"(JFNativeLibrarySpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
-          lib library: "cosupport-smartptr"
-          lib project: ':PrebuiltLibraries', library: "systemc"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
+          lib library: "cosupport-base", exportHeaders: true
+          lib project: ':PrebuiltLibraries', library: "systemc", exportHeaders: true
         }
       }
     }
     "cosupport-tracing"(JFNativeLibrarySpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
-          lib library: "cosupport-smartptr"
-          lib project: ':PrebuiltLibraries', library: "systemc"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
+          lib library: "cosupport-base", exportHeaders: true
+          lib project: ':PrebuiltLibraries', library: "systemc", exportHeaders: true
         }
       }
     }
     "cosupport-streams"(JFNativeLibrarySpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
+          lib library: "cosupport-base", exportHeaders: true
           lib library: "cosupport-string"
           lib project: ':PrebuiltLibraries', library: "boost_iostreams"
           lib project: ':PrebuiltLibraries', library: "boost_system"
@@ -276,7 +275,7 @@ model {
     "cosupport-string"(JFNativeLibrarySpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
+          lib library: "cosupport-base", exportHeaders: true
           lib project: ':PrebuiltLibraries', library: "boost_regex"
         }
       }
@@ -284,15 +283,14 @@ model {
     "cosupport-math"(JFNativeLibrarySpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
+          lib library: "cosupport-base", exportHeaders: true
         }
       }
     }
     "cosupport-random"(JFNativeLibrarySpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
+          lib library: "cosupport-base", exportHeaders: true
           lib project: ':PrebuiltLibraries', library: "boost_random"
         }
       }
@@ -300,7 +298,7 @@ model {
     "cosupport-allocators"(JFNativeLibrarySpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
+          lib library: "cosupport-base", exportHeaders: true
           lib library: "cosupport-math"
         }
       }
@@ -318,9 +316,9 @@ model {
           exportedHeaders {
             srcDirs "src/cosupport-path/headers"
           }
-          lib library: "cosupport-base"
-          lib project: ':PrebuiltLibraries', library: "boost_filesystem"
-          lib project: ':PrebuiltLibraries', library: "boost_system"
+          lib library: "cosupport-base", exportHeaders: true
+          lib project: ':PrebuiltLibraries', library: "boost_filesystem", exportHeaders: true
+          lib project: ':PrebuiltLibraries', library: "boost_system", exportHeaders: true
         }
       }
     }
@@ -328,7 +326,7 @@ model {
       sources {
         cpp {
           cosupportAllLibs.each {
-              lib library: it
+              lib library: it, exportHeaders: true
             }
         }
       }
@@ -337,28 +335,20 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
-          lib library: "cosupport-math"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
     "test_dbgstream"(JFNativeExecutableSpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
           lib library: "cosupport-streams"
-          lib library: "cosupport-string"
         }
       }
     }
     "test_event_and_list"(JFNativeExecutableSpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
-          lib library: "cosupport-smartptr"
           lib library: "cosupport-systemc"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
-          lib project: ':PrebuiltLibraries', library: "systemc"
         }
       }
       binaries.all {
@@ -370,11 +360,7 @@ model {
     "test_event_or_list"(JFNativeExecutableSpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
-          lib library: "cosupport-smartptr"
           lib library: "cosupport-systemc"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
-          lib project: ':PrebuiltLibraries', library: "systemc"
         }
       }
       binaries.all {
@@ -386,12 +372,8 @@ model {
     "test_nested_event_lists"(JFNativeExecutableSpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
-          lib library: "cosupport-smartptr"
           lib library: "cosupport-systemc"
           lib library: "cosupport-streams"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
-          lib project: ':PrebuiltLibraries', library: "systemc"
         }
       }
       binaries.all {
@@ -404,28 +386,21 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
-          lib library: "cosupport-smartptr"
           lib library: "cosupport-string"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
     "test_idpool"(JFNativeExecutableSpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
-          lib library: "cosupport-math"
           lib library: "cosupport-allocators"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
     "test_interval"(JFNativeExecutableSpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
           lib library: "cosupport-math"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
@@ -433,9 +408,7 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
-          lib library: "cosupport-smartptr"
           lib library: "cosupport-streams"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
@@ -443,37 +416,28 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
-          lib library: "cosupport-smartptr"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
     "test_modulo"(JFNativeExecutableSpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
           lib library: "cosupport-math"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
     "test_path"(JFNativeExecutableSpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
           lib library: "cosupport-path"
-          lib project: ':PrebuiltLibraries', library: "boost_filesystem"
-          lib project: ':PrebuiltLibraries', library: "boost_system"
         }
       }
     }
     "test_po"(JFNativeExecutableSpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
           lib library: "cosupport-math"
           lib library: "cosupport-streams"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
@@ -482,7 +446,6 @@ model {
         cpp {
           lib library: "cosupport-base"
           lib library: "cosupport-streams"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
@@ -490,16 +453,13 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
-          lib library: "cosupport-smartptr"
           lib library: "cosupport-streams"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
     "test_stl_output_for_xxx"(JFNativeExecutableSpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
           lib library: "cosupport-streams"
         }
       }
@@ -507,7 +467,6 @@ model {
     "test_typename"(JFNativeExecutableSpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
           lib library: "cosupport-string"
         }
       }
@@ -516,8 +475,6 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base"
-          lib library: "cosupport-smartptr"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
@@ -526,20 +483,14 @@ model {
         cpp {
           lib library: "cosupport-base"
           lib library: "cosupport-streams"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
         }
       }
     }
     "test_xerces"(JFNativeExecutableSpec) {
       sources {
         cpp {
-          lib library: "cosupport-base"
-          lib library: "cosupport-initializer"
-          lib library: "cosupport-string"
-          lib library: "cosupport-streams"
           lib library: "cosupport-xerces"
-          lib project: ':PrebuiltLibraries', library: "xerces-c"
-          lib project: ':PrebuiltLibraries', library: "boost_headers"
+          lib library: "cosupport-streams"
           lib project: ':PrebuiltLibraries', library: "boost_filesystem"
           lib project: ':PrebuiltLibraries', library: "boost_system"
         }
