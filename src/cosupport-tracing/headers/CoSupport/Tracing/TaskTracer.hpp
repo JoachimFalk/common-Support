@@ -48,8 +48,7 @@ namespace CoSupport { namespace Tracing {
  * TaskTracer
  *      Author: streubuehr
  */
-class TaskTracer: private PtpTracer
-{
+class COSUPPORT_TRACING_API TaskTracer: private PtpTracer {
 public:
   typedef boost::shared_ptr<TaskTracer> Ptr;
   typedef PtpTracer::Ticket Ticket;

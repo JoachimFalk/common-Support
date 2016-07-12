@@ -46,13 +46,14 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace Tracing {
 
 /**
  * \brief Enables logging of simulation times
  */
-class Tracer {
-
+class COSUPPORT_TRACING_API Tracer {
 public:
   typedef boost::shared_ptr<Tracer>  Ptr;
 
@@ -77,7 +78,6 @@ public:
    *
    */
   virtual std::string getName() = 0;
-
 
 };
 
