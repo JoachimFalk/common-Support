@@ -69,7 +69,7 @@ namespace CoSupport { namespace Tracing {
  * ptpTracer->stopOoo(ticket1)            #1
  * ptpTracer->stopOoo(ticket0)            #0
  */
-class PtpTracer : public Tracer {
+class COSUPPORT_TRACING_API PtpTracer: public Tracer {
 public:
   typedef boost::shared_ptr<PtpTracer>  Ptr;
   typedef size_t                        Ticket;
