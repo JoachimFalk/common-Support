@@ -203,6 +203,19 @@ model {
           lib project: ':PrebuiltLibraries', library: "boost_headers", exportHeaders: true
         }
       }
+      binaries.withType(SharedLibraryBinarySpec) {
+//      analysis("bin", it);
+        sources {
+          cpp(JFCppSourceSet) {
+            exportedCompilerArgs.define "COSUPPORT_DLL_IMPORT"
+          }
+        }
+//      flummy "-DFLUMMY"
+      }
+//    binaries.withType(StaticLibraryBinarySpec) {
+//      analysis("bin", it);
+//      flammy "-DFLAMMY"
+//    }
     }
     "cosupport-initializer"(JFNativeLibrarySpec) {
       sources {
@@ -263,14 +276,6 @@ model {
           lib project: ':PrebuiltLibraries', library: "boost_iostreams"
           lib project: ':PrebuiltLibraries', library: "boost_system"
         }
-      }
-      binaries.withType(SharedLibraryBinarySpec) {
-//      analysis("bin", it);
-        flummy "-DFLUMMY"
-      }
-      binaries.withType(StaticLibraryBinarySpec) {
-//      analysis("bin", it);
-        flammy "-DFLAMMY"
       }
     }
     "cosupport-string"(JFNativeLibrarySpec) {
@@ -352,21 +357,11 @@ model {
           lib library: "cosupport-systemc"
         }
       }
-      binaries.all {
-        if (toolChain in VisualCpp) {
-          linker.args "/SUBSYSTEM:CONSOLE"
-        }
-      }
     }
     "test_event_or_list"(JFNativeExecutableSpec) {
       sources {
         cpp {
           lib library: "cosupport-systemc"
-        }
-      }
-      binaries.all {
-        if (toolChain in VisualCpp) {
-          linker.args "/SUBSYSTEM:CONSOLE"
         }
       }
     }
@@ -375,11 +370,6 @@ model {
         cpp {
           lib library: "cosupport-systemc"
           lib library: "cosupport-streams"
-        }
-      }
-      binaries.all {
-        if (toolChain in VisualCpp) {
-          linker.args "/SUBSYSTEM:CONSOLE"
         }
       }
     }
@@ -509,24 +499,12 @@ model {
   }
   binaries {
     all {
-//    println "YYYY: class: " + it.class + ", name: " + it.name
-//    for (NativeDependencySet lib : it.getBackingNode().getPrivateData().libs) {
-//      println "YYYY:    lib.class: " + lib.getClass();
-//    }
-//    for (LanguageSourceSet foo : it.getInputs()) {
-//      println "YYYY:  foo.class: " + foo.getClass();
-//    }
-//    for (LanguageSourceSet foo : it.getInputs()) {
-//      println "YYYY:  foo.class: " + foo.getClass();
-//    }
-
 //    analysis("binary", it)
 //    println "TOOLCHAIN: " + toolChain
       // Specify toolchain-agnostic stuff
       if (buildType.name == 'release') {
         cppCompiler.define "NDEBUG"
       }
-//    cppCompiler.define "COSUPPORT_DLL_IMPORT"
       // Define toolchain-specific compiler and linker options
       if (toolChain in VisualCpp) {
         // Enable standard C++ exception for visual studio
@@ -551,26 +529,21 @@ model {
         }
       }
     }
-    // For any shared library binaries built with Visual C++, define the DLL_EXPORT macro
+    // For any shared library binaries built with Visual C++, define the DLL_EXPORT macro.
     withType(SharedLibraryBinarySpec) {
       if (toolChain in VisualCpp) {
         def dllExportDefine = it.component.name.toUpperCase().inject("") {
             result, c -> c >= 'A' && c <= 'Z' ? result + c : result + '_'
           } + "_DLL_EXPORT"
-//      println "FLUMMY: " + dllExportDefine
+  //    println "FLUMMY: " + dllExportDefine
         cppCompiler.define dllExportDefine
-
       }
     }
-    withType(SharedLibraryBinarySpec) {
-      cppCompiler.define "COSUPPORT_DLL_IMPORT"
-      cppCompiler.define "SYSTEMC_DLL_IMPORT"
-      cppCompiler.define "BOOST_ALL_DYN_LINK"
-    }
+    // For any executable built with Visual C++, use the console subsystem of windows!
     withType(NativeExecutableBinarySpec) {
-      cppCompiler.define "COSUPPORT_DLL_IMPORT"
-      cppCompiler.define "SYSTEMC_DLL_IMPORT"
-      cppCompiler.define "BOOST_ALL_DYN_LINK"
+      if (toolChain in VisualCpp) {
+        linker.args "/SUBSYSTEM:CONSOLE"
+      }
     }
   }
 }
