@@ -171,6 +171,24 @@ model {
     debug
     release
   }
+  platforms {
+    "linux_x86" {
+      architecture "x86"
+      operatingSystem "linux"
+    }
+    "linux_x86-64" {
+      architecture "x86-64"
+      operatingSystem "linux"
+    }
+    "windows_x86" {
+      architecture "x86"
+      operatingSystem "windows"
+    }
+    "windows_x86-64" {
+      architecture "x86-64"
+      operatingSystem "windows"
+    }
+  }
   components {
 //  hello(JFNativeLibrarySpec)
 //  main(JFNativeExecutableSpec) {
@@ -201,6 +219,7 @@ model {
             srcDirs "src/cosupport-smartptr/headers"
           }
           lib project: ':PrebuiltLibraries', library: "boost_headers", exportHeaders: true
+//        exportedCompilerArgs.define "FLAMMY_DEFINE=1"
         }
       }
       binaries.withType(SharedLibraryBinarySpec) {
