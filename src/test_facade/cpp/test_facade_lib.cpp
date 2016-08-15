@@ -38,6 +38,8 @@
 
 namespace Something {
 
+using CoSupport::DataTypes::FacadeCoreAccess;
+
 namespace Detail {
 
   class AImpl: public CoSupport::SmartPtr::RefCount {
@@ -78,44 +80,36 @@ AFacade::AFacade(const SmartPtr &p)
  : FFType(p) {}
 
 AFacade::AFacade(const this_type &x)
- : FFType(x.getImpl()->dup()) {}
+ : FFType(FacadeCoreAccess::getImpl(x)->dup()) {}
 
 void AFacade::aNonConst()
-  { return getImpl()->aNonConst(); }
+  { return FacadeCoreAccess::getImpl(*this)->aNonConst(); }
 
 void AFacade::aConst() const
-  { return getImpl()->aConst(); }
+  { return FacadeCoreAccess::getImpl(*this)->aConst(); }
 
 BFacade::BFacade()
  : FFType(new ImplType()) {}
 
 BFacade::BFacade(const SmartPtr &p)
- : FFType(p) {}
+ : FFType(_StorageType(p)) {}
 
 BFacade::BFacade(const this_type &x)
- : FFType(x.getImpl()->dup()) {}
-
-BFacade::ImplType *BFacade::getImpl() const
-  { return static_cast<ImplType *>(this->pImpl.get()); }
+ : FFType(FacadeCoreAccess::getImpl(x)->dup()) {}
 
 BFacade::Ptr BFacade::upcast(const AFacade &x)
-//{ return ::boost::dynamic_pointer_cast<ImplType>(x.pImpl); }
-  { return ::boost::dynamic_pointer_cast<ImplType>(static_cast<const this_type &>(x).pImpl); }
+  { return SmartPtr(dynamic_cast<ImplType *>(FacadeCoreAccess::getImplBase(x))); }
 
 CFacade::CFacade()
  : FFType(new ImplType()) {}
 
 CFacade::CFacade(const SmartPtr &p)
- : FFType(p) {}
+ : FFType(_StorageType(p)) {}
 
 CFacade::CFacade(const this_type &x)
- : FFType(x.getImpl()->dup()) {}
-
-CFacade::ImplType *CFacade::getImpl() const
-  { return static_cast<ImplType *>(this->pImpl.get()); }
+ : FFType(FacadeCoreAccess::getImpl(x)->dup()) {}
 
 CFacade::Ptr CFacade::upcast(const AFacade &x)
-//{ return ::boost::dynamic_pointer_cast<ImplType>(x.pImpl); }
-  { return ::boost::dynamic_pointer_cast<ImplType>(static_cast<const this_type &>(x).pImpl); }
+  { return SmartPtr(dynamic_cast<ImplType *>(FacadeCoreAccess::getImplBase(x))); }
 
 } // namespace Something

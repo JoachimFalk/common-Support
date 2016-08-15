@@ -105,9 +105,10 @@ class ValueFacade
 
   friend class ValueInterface<this_type,T,CR>;
   friend class Detail::ValueVirtualUser<this_type,T,CR>;
-protected:
-  explicit ValueFacade(typename base1_type::_StorageType const &x)
-    : base1_type(x) {}
+private:
+  /// This is required by Detail::ValueVirtualUser.
+  typename base1_type::ImplType *getImpl() const
+    { return FacadeCoreAccess::getImpl(*this); }
 public:
   ValueFacade(T const &value = T())
     : base1_type(new Detail::ValueFacadeImpl<T,CR>(value)) {}
@@ -117,10 +118,12 @@ public:
   ValueFacade(ValueInterface<DD,TT,CRCR> const &value)
     : base1_type(new Detail::ValueFacadeImpl<T,CR>(value)) {}
 
-  ValueFacade(typename base1_type::SmartPtr const &p)
-    : base1_type(p) {}
-  ValueFacade(::boost::intrusive_ptr<MaybeValueFacadeInterface<T,CR> > const &p)
-    : base1_type(p->getValueFacadeInterface()) {}
+  ValueFacade(typename base1_type::_StorageType const &x)
+    : base1_type(x) {}
+//ValueFacade(typename base1_type::SmartPtr const &p)
+//  : base1_type(p) {}
+//ValueFacade(::boost::intrusive_ptr<MaybeValueFacadeInterface<T,CR> > const &p)
+//  : base1_type(p->getValueFacadeInterface()) {}
 
   using base2_type::operator =;
 

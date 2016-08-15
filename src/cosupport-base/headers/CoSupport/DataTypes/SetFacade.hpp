@@ -67,7 +67,6 @@ void intrusive_ptr_release(SetFacadeInterface<T,R,CR,P,CP> *p) {
 namespace Detail {
 
   template <
-    class SET,
     class T,
     class R = typename boost::add_reference<T>::type,
     class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
@@ -75,18 +74,18 @@ namespace Detail {
     class CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
   >
   class SetFacadeImpl: public SetFacadeInterface<T,R,CR,P,CP> {
-    typedef SetFacadeImpl<SET,T,R,CR,P,CP>  this_type;
+    typedef SetFacadeImpl<T,R,CR,P,CP>      this_type;
     typedef SetFacadeInterface<T,R,CR,P,CP> base_type;
   public:
     SetFacadeImpl() {}
-    SetFacadeImpl(SET set): set(set) {}
-    SetFacadeImpl(const SET &set): set(set) {}
+    template <class I>
+    SetFacadeImpl(I const &begin, I const &end): set(begin, end) {}
 
-    SET set;
+    std::set<T> set;
 
     typedef Iter::Detail::BidirectionalTraversalVFImpl<
       CR,
-      typename SET::iterator,
+      typename std::set<T>::iterator,
       boost::intrusive_ptr<this_type> >     VIterImpl;
 
     typename base_type::VIter *implPBegin() const
@@ -94,7 +93,7 @@ namespace Detail {
     typename base_type::VIter *implPEnd() const
       { return new VIterImpl(const_cast<this_type *>(this),set.end()); }
     std::pair<typename base_type::VIter *, bool> implPInsert(T const &v) {
-      std::pair<typename SET::iterator, bool> retval(set.insert(v));
+      std::pair<typename std::set<T>::iterator, bool> retval(set.insert(v));
       return std::pair<typename base_type::VIter *, bool>(
           new VIterImpl(const_cast<this_type *>(this),retval.first), retval.second);
     }
@@ -140,26 +139,26 @@ class SetFacade
   friend class SetInterface<this_type,Detail::SetVirtualIter,T,R,CR,P,CP>;
   friend class Detail::SetVirtualUser<this_type,T,R,CR,P,CP>;
   template <class CONTAINER> friend class Detail::SetVirtualIter;
+private:
+  /// This is required by Detail::SetVirtualUser.
+  typename base1_type::ImplType *getImpl() const
+    { return FacadeCoreAccess::getImpl(*this); }
 public:
+  SetFacade()
+    : base1_type(new Detail::SetFacadeImpl<T,R,CR,P,CP>()) {}
   template <class DD>
   SetFacade(std::set<DD> const &val)
-    : base1_type(new Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP>())
-    { static_cast<Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP> *>(this->getImpl())->set.insert(val.begin(), val.end()); }
-
-  SetFacade()
-    : base1_type(new Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP>()) {}
+    : base1_type(new Detail::SetFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
   SetFacade(this_type const &val)
-    : base1_type(new Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP>())
-    { static_cast<Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP> *>(this->getImpl())->set.insert(val.begin(), val.end()); }
+    : base1_type(new Detail::SetFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
   template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
   SetFacade(SetInterface<DD,II,T,RR,CRCR,PP,CPCP> const &val)
-    : base1_type(new Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP>())
-    { static_cast<Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP> *>(this->getImpl())->set.insert(val.begin(), val.end()); }
+    : base1_type(new Detail::SetFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
 
-  explicit SetFacade(typename base1_type::_StorageType const &x)
+  SetFacade(typename base1_type::_StorageType const &x)
     : base1_type(x) {}
-  SetFacade(typename base1_type::SmartPtr const &p)
-    : base1_type(p) {}
+//SetFacade(typename base1_type::SmartPtr const &p)
+//  : base1_type(p) {}
 
   using base2_type::operator =;
 };

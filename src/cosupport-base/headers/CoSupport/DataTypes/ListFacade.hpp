@@ -137,30 +137,26 @@ class ListFacade
   friend class ListInterface<this_type,Detail::ListVirtualIter,T,R,CR,P,CP>;
   friend class Detail::ListVirtualUser<this_type,T,R,CR,P,CP>;
   template <class CONTAINER> friend class Detail::ListVirtualIter;
+private:
+  /// This is required by Detail::ListVirtualUser.
+  typename base1_type::ImplType *getImpl() const
+    { return FacadeCoreAccess::getImpl(*this); }
 public:
+  ListFacade()
+    : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>()) {}
   template <class DD>
   ListFacade(std::list<DD> const &val)
     : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
-
-  ListFacade()
-    : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>()) {}
   ListFacade(this_type const &val)
     : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
-//ListFacade(typename this_type::Ref const &val)
-//  : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(
-//      const_cast<typename this_type::Ref &>(val).begin(),
-//      const_cast<typename this_type::Ref &>(val).end())) {}
-//template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
-//ListFacade(ListInterface<DD,II,T,RR,CRCR,PP,CPCP> &val)
-//  : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
   template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
   ListFacade(ListInterface<DD,II,T,RR,CRCR,PP,CPCP> const &val)
     : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
 
-  explicit ListFacade(typename base1_type::_StorageType const &x)
+  ListFacade(typename base1_type::_StorageType const &x)
     : base1_type(x) {}
-  ListFacade(typename base1_type::SmartPtr const &p)
-    : base1_type(p) {}
+//ListFacade(typename base1_type::SmartPtr const &p)
+//  : base1_type(p) {}
 
   using base2_type::operator =;
 };
