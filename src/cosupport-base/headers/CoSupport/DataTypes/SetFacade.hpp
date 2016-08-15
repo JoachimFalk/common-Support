@@ -143,7 +143,16 @@ private:
   /// This is required by Detail::SetVirtualUser.
   typename base1_type::ImplType *getImpl() const
     { return FacadeCoreAccess::getImpl(*this); }
+protected:
+  /// This is required by FacadeRef.
+  explicit SetFacade(typename base1_type::_StorageType const &x)
+    : base1_type(x) {}
 public:
+  SetFacade(typename base1_type::SmartPtr const &p)
+    : base1_type(typename base1_type::_StorageType(p)) {}
+  SetFacade(typename base1_type::ImplType *p)
+    : base1_type(typename base1_type::_StorageType(p)) {}
+
   SetFacade()
     : base1_type(new Detail::SetFacadeImpl<T,R,CR,P,CP>()) {}
   template <class DD>
@@ -154,11 +163,6 @@ public:
   template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
   SetFacade(SetInterface<DD,II,T,RR,CRCR,PP,CPCP> const &val)
     : base1_type(new Detail::SetFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
-
-  SetFacade(typename base1_type::_StorageType const &x)
-    : base1_type(x) {}
-//SetFacade(typename base1_type::SmartPtr const &p)
-//  : base1_type(p) {}
 
   using base2_type::operator =;
 };

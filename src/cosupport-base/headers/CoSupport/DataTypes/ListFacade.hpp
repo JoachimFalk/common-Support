@@ -141,7 +141,16 @@ private:
   /// This is required by Detail::ListVirtualUser.
   typename base1_type::ImplType *getImpl() const
     { return FacadeCoreAccess::getImpl(*this); }
+protected:
+  /// This is required by FacadeRef.
+  explicit ListFacade(typename base1_type::_StorageType const &x)
+    : base1_type(x) {}
 public:
+  ListFacade(typename base1_type::SmartPtr const &p)
+    : base1_type(typename base1_type::_StorageType(p)) {}
+  ListFacade(typename base1_type::ImplType *p)
+    : base1_type(typename base1_type::_StorageType(p)) {}
+
   ListFacade()
     : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>()) {}
   template <class DD>
@@ -152,11 +161,6 @@ public:
   template <class DD, template<class> class II, class RR, class CRCR, class PP, class CPCP>
   ListFacade(ListInterface<DD,II,T,RR,CRCR,PP,CPCP> const &val)
     : base1_type(new Detail::ListFacadeImpl<T,R,CR,P,CP>(val.begin(), val.end())) {}
-
-  ListFacade(typename base1_type::_StorageType const &x)
-    : base1_type(x) {}
-//ListFacade(typename base1_type::SmartPtr const &p)
-//  : base1_type(p) {}
 
   using base2_type::operator =;
 };

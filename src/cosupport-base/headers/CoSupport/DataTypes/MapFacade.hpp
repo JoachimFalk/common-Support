@@ -1,4 +1,4 @@
-// vim: map sw=2 sts=2 ts=8 et syn=cpp:
+// vim: set sw=2 sts=2 ts=8 et syn=cpp:
 /*
  * Copyright (c) 2015-2015 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
@@ -141,7 +141,20 @@ class MapFacade
   friend class Detail::MapVirtualUser<this_type,T,R,CR,P,CP>;
   template <class CONTAINER, bool REVERSE> friend class Detail::MapVirtualIterBaseAccessor;
   template <class CONTAINER, bool REVERSE> friend class Detail::MapVirtualIter;
+private:
+  /// This is required by Detail::MapVirtualUser.
+  typename base1_type::ImplType *getImpl() const
+    { return FacadeCoreAccess::getImpl(*this); }
+protected:
+  /// This is required by FacadeRef.
+  explicit MapFacade(typename base1_type::_StorageType const &x)
+    : base1_type(x) {}
 public:
+  MapFacade(typename base1_type::SmartPtr const &p)
+    : base1_type(typename base1_type::_StorageType(p)) {}
+  MapFacade(typename base1_type::ImplType *p)
+    : base1_type(typename base1_type::_StorageType(p)) {}
+
   MapFacade()
     : base1_type(new Detail::MapFacadeImpl<std::map<T>,T,R,CR,P,CP>()) {}
   MapFacade(this_type const &val)
@@ -151,11 +164,6 @@ public:
   MapFacade(MapInterface<DD,II,T,RR,CRCR,PP,CPCP> const &val)
     : base1_type(new Detail::MapFacadeImpl<std::map<T>,T,R,CR,P,CP>())
     { static_cast<Detail::MapFacadeImpl<std::map<T>,T,R,CR,P,CP> *>(this->getImpl())->map.insert(val.begin(), val.end()); }
-
-  explicit MapFacade(typename base1_type::_StorageType const &x)
-    : base1_type(x) {}
-  MapFacade(typename base1_type::SmartPtr const &p)
-    : base1_type(p) {}
 
   using base2_type::operator =;
 };
