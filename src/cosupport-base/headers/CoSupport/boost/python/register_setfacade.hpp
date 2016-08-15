@@ -80,8 +80,8 @@ public:
 protected:
   static
   PSetIf implSetDuplicate(SetIf const *src) {
-    PSetIf retval(new CoSupport::DataTypes::Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP>());
-    std::set<T> &dst = static_cast<CoSupport::DataTypes::Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP> *>(retval.get())->set;
+    PSetIf retval(new CoSupport::DataTypes::Detail::SetFacadeImpl<T,R,CR,P,CP>());
+    std::set<T> &dst = static_cast<CoSupport::DataTypes::Detail::SetFacadeImpl<T,R,CR,P,CP> *>(retval.get())->set;
     boost::scoped_ptr<typename SetIf::VIter > iter(src->implPBegin());
     boost::scoped_ptr<typename SetIf::VIter > end(src->implPEnd());
     for (; !iter->equal(*end); iter->increment())
@@ -91,7 +91,7 @@ protected:
 
   static
   PSetIf implSetConstruct()
-    { return new CoSupport::DataTypes::Detail::SetFacadeImpl<std::set<T>,T,R,CR,P,CP>(); }
+    { return new CoSupport::DataTypes::Detail::SetFacadeImpl<T,R,CR,P,CP>(); }
 
   static
   boost::python::tuple implSetPInsert(SetIf *set, T const &v) {

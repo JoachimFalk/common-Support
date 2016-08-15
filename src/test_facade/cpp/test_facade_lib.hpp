@@ -62,12 +62,11 @@ class AFacade
 
   friend class CoSupport::DataTypes::FacadeFoundation<this_type, ImplType>;
 protected:
-
   explicit AFacade(const _StorageType &x) : FFType(x) {}
-  explicit AFacade(const SmartPtr &p);
 public:
   AFacade();
   AFacade(const this_type &);
+  AFacade(const SmartPtr &);
 
   void aNonConst();
   void aConst() const;
@@ -84,13 +83,11 @@ class BFacade
 
   friend class CoSupport::DataTypes::FacadeFoundation<this_type, ImplType, base_type>;
 protected:
-  ImplType *getImpl() const;
-
   explicit BFacade(const _StorageType &x) : FFType(x) {}
-  explicit BFacade(const SmartPtr &p);
 public:
   BFacade();
   BFacade(const this_type &);
+  BFacade(const SmartPtr &);
 
   static Ptr upcast(const AFacade &);
 };
@@ -106,13 +103,11 @@ class CFacade
 
   friend class CoSupport::DataTypes::FacadeFoundation<this_type, ImplType, base_type>;
 protected:
-  ImplType *getImpl() const;
-
   explicit CFacade(const _StorageType &x) : FFType(x) {}
-  explicit CFacade(const SmartPtr &p);
 public:
   CFacade();
   CFacade(const this_type &);
+  CFacade(const SmartPtr &);
 
   static Ptr upcast(const AFacade &);
 };

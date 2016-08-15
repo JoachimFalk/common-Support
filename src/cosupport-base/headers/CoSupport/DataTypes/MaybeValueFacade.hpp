@@ -120,6 +120,10 @@ class MaybeValueFacade
 
   friend class MaybeValueInterface<this_type,T,CR>;
   friend class Detail::MaybeValueVirtualUser<this_type,T,CR>;
+private:
+  /// This is required by Detail::MaybeValueVirtualUser.
+  typename base1_type::ImplType *getImpl() const
+    { return FacadeCoreAccess::getImpl(*this); }
 public:
   MaybeValueFacade(boost::blank value = boost::blank())
     : base1_type(new Detail::MaybeValueFacadeImpl<T,CR>(value)) {}
@@ -131,10 +135,10 @@ public:
   MaybeValueFacade(MaybeValueInterface<DD,TT,CRCR> const &value)
     : base1_type(new Detail::MaybeValueFacadeImpl<T,CR>(value)) {}
 
-  explicit MaybeValueFacade(typename base1_type::_StorageType const &x)
+  MaybeValueFacade(typename base1_type::_StorageType const &x)
     : base1_type(x) {}
-  MaybeValueFacade(typename base1_type::SmartPtr const &p)
-    : base1_type(p) {}
+//MaybeValueFacade(typename base1_type::SmartPtr const &p)
+//  : base1_type(p) {}
 
   using base2_type::operator =;
 
