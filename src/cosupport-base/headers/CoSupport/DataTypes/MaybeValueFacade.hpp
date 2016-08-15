@@ -124,7 +124,16 @@ private:
   /// This is required by Detail::MaybeValueVirtualUser.
   typename base1_type::ImplType *getImpl() const
     { return FacadeCoreAccess::getImpl(*this); }
+protected:
+  /// This is required by FacadeRef.
+  explicit MaybeValueFacade(typename base1_type::_StorageType const &x)
+    : base1_type(x) {}
 public:
+  MaybeValueFacade(typename base1_type::SmartPtr const &p)
+    : base1_type(typename base1_type::_StorageType(p)) {}
+  MaybeValueFacade(typename base1_type::ImplType *p)
+    : base1_type(typename base1_type::_StorageType(p)) {}
+
   MaybeValueFacade(boost::blank value = boost::blank())
     : base1_type(new Detail::MaybeValueFacadeImpl<T,CR>(value)) {}
   MaybeValueFacade(T const &value)
@@ -134,11 +143,6 @@ public:
   template <class DD, typename TT, typename CRCR>
   MaybeValueFacade(MaybeValueInterface<DD,TT,CRCR> const &value)
     : base1_type(new Detail::MaybeValueFacadeImpl<T,CR>(value)) {}
-
-  MaybeValueFacade(typename base1_type::_StorageType const &x)
-    : base1_type(x) {}
-//MaybeValueFacade(typename base1_type::SmartPtr const &p)
-//  : base1_type(p) {}
 
   using base2_type::operator =;
 

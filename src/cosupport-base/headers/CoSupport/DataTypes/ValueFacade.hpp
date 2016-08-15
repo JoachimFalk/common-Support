@@ -109,7 +109,20 @@ private:
   /// This is required by Detail::ValueVirtualUser.
   typename base1_type::ImplType *getImpl() const
     { return FacadeCoreAccess::getImpl(*this); }
+protected:
+  /// This is required by FacadeRef.
+  explicit ValueFacade(typename base1_type::_StorageType const &x)
+    : base1_type(x) {}
 public:
+  ValueFacade(typename base1_type::SmartPtr const &p)
+    : base1_type(typename base1_type::_StorageType(p)) {}
+  ValueFacade(typename base1_type::ImplType *p)
+    : base1_type(typename base1_type::_StorageType(p)) {}
+  ValueFacade(::boost::intrusive_ptr<MaybeValueFacadeInterface<T,CR> > const &p)
+    : base1_type(typename base1_type::_StorageType(p->getValueFacadeInterface())) {}
+  ValueFacade(MaybeValueFacadeInterface<T,CR> *p)
+    : base1_type(typename base1_type::_StorageType(p->getValueFacadeInterface())) {}
+
   ValueFacade(T const &value = T())
     : base1_type(new Detail::ValueFacadeImpl<T,CR>(value)) {}
   ValueFacade(this_type const &value)
@@ -117,13 +130,6 @@ public:
   template <class DD, typename TT, typename CRCR>
   ValueFacade(ValueInterface<DD,TT,CRCR> const &value)
     : base1_type(new Detail::ValueFacadeImpl<T,CR>(value)) {}
-
-  ValueFacade(typename base1_type::_StorageType const &x)
-    : base1_type(x) {}
-//ValueFacade(typename base1_type::SmartPtr const &p)
-//  : base1_type(p) {}
-//ValueFacade(::boost::intrusive_ptr<MaybeValueFacadeInterface<T,CR> > const &p)
-//  : base1_type(p->getValueFacadeInterface()) {}
 
   using base2_type::operator =;
 
