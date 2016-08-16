@@ -121,23 +121,23 @@ namespace Detail {
       { getDerived()->set(getDerived()->get() % x); return *getDerived(); }
 #else // defined(_MSC_VER)
     template <typename TT>
-    typename boost::enable_if<boost::is_convertible<TT, TT>, D &>::type
+    typename boost::enable_if<boost::is_convertible<TT, T>, D &>::type
     operator +=(TT const &x)
       { getDerived()->set(getDerived()->get() + x); return *getDerived(); }
     template <typename TT>
-    typename boost::enable_if<boost::is_convertible<TT, TT>, D &>::type
+    typename boost::enable_if<boost::is_convertible<TT, T>, D &>::type
     operator -=(TT const &x)
       { getDerived()->set(getDerived()->get() - x); return *getDerived(); }
     template <typename TT>
-    typename boost::enable_if<boost::is_convertible<TT, TT>, D &>::type
+    typename boost::enable_if<boost::is_convertible<TT, T>, D &>::type
     operator *=(TT const &x)
       { getDerived()->set(getDerived()->get() * x); return *getDerived(); }
     template <typename TT>
-    typename boost::enable_if<boost::is_convertible<TT, TT>, D &>::type
+    typename boost::enable_if<boost::is_convertible<TT, T>, D &>::type
     operator /=(TT const &x)
       { getDerived()->set(getDerived()->get() / x); return *getDerived(); }
     template <typename TT>
-    typename boost::enable_if<boost::is_convertible<TT, TT>, D &>::type
+    typename boost::enable_if<boost::is_convertible<TT, T>, D &>::type
     operator %=(TT const &x)
       { getDerived()->set(getDerived()->get() % x); return *getDerived(); }
 #endif // defined(_MSC_VER)

@@ -122,6 +122,10 @@ protected:
 
   typename base_type::Impl *getImpl() const { return impl.get(); }
 public:
+  template <class PImpl>
+  ValueVirtual(PImpl *p, typename boost::enable_if<boost::is_base_of<typename base_type::Impl, PImpl>, int>::type dummy = 0)
+    : impl(p) {}
+
   ValueVirtual(T const &value = T())
     : impl(new Detail::ValueVirtualImpl<T,CR>(value)) {}
   ValueVirtual(this_type const &value)
@@ -129,9 +133,6 @@ public:
   template <class DD, typename TT, typename CRCR>
   ValueVirtual(ValueInterface<DD,TT,CRCR> const &value)
     : impl(new Detail::ValueVirtualImpl<T,CR>(value)) {}
-
-  ValueVirtual(typename base_type::Impl *impl)
-    : impl(impl) {}
 
   using base_type::operator =;
 #ifdef _MSC_VER
@@ -141,6 +142,9 @@ public:
   this_type &operator = (const ValueInterface<DD, TT, CRCR> &val)
     { this->set(val); return *this; }
 #endif //_MSC_VER
+
+  this_type &operator =(const this_type &value)
+    { this->set(value); return *this; }
 };
 
 } } // namespace CoSupport::DataTypes

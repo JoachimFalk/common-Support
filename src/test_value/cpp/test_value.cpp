@@ -417,12 +417,12 @@ int main(int argc, char *argv[]) {
     Value<B *>                  pb1(&b);
     ValueVirtualInterface<C *> *pc1Impl(new Detail::ValueVirtualImpl<C *>(&c));
     ValueVirtual<C *>           pc1(pc1Impl);
-    
+
     sink = pa1->a + pb1->a + pb1->b + pc1->a + pc1->c;
     sink = (*pa1).a + (*pb1).a + (*pb1).b + (*pc1).a + (*pc1).c;
 
     assert(pc1Impl->implGet() == pc1);
-
+   
     CHECK_OP_VW(nullptr,==,pan); CHECK_OP_WV(pan,==,nullptr);
     CHECK_OP_VW(nullptr,!=,pan); CHECK_OP_WV(pan,!=,nullptr);
     CHECK_OP_VW(nullptr,==,pa1); CHECK_OP_WV(pa1,==,nullptr);
@@ -454,6 +454,60 @@ int main(int argc, char *argv[]) {
     CHECK_OP_WW(pa1,<=,pa1); CHECK_OP_WW(pb1,<=,pb1); CHECK_OP_WW(pc1,<=,pc1);
     CHECK_OP_WW(pa1,> ,pa1); CHECK_OP_WW(pb1,> ,pb1); CHECK_OP_WW(pc1,> ,pc1);
     CHECK_OP_WW(pa1,>=,pa1); CHECK_OP_WW(pb1,>=,pb1); CHECK_OP_WW(pc1,>=,pc1);
+    
+    {
+      Value<A *>        p1;
+      ValueVirtual<A *> p2;
+      ValueFacade<A *>  p3;
+    }
+    {
+      Value<A *>        p1(nullptr);
+      ValueVirtual<A *> p2(nullptr);
+      ValueFacade<A *>  p3(nullptr);
+      p1 = nullptr;
+      p2 = nullptr;
+      p3 = nullptr;
+    }
+    {
+      Value<A *>        p1 = nullptr;
+      ValueVirtual<A *> p2 = nullptr;
+      ValueFacade<A *>  p3 = nullptr;
+      p1 = p1;
+      p2 = p2;
+      p3 = p3;
+    }
+    {
+      Value<A *>        p1(&a);
+      ValueVirtual<A *> p2(&a);
+      ValueFacade<A *>  p3(&a);
+      p1 = p2;
+      p2 = p3;
+      p3 = p1;
+    }
+    {
+      Value<A *>        p1 = &a;
+      ValueVirtual<A *> p2 = &a;
+      ValueFacade<A *>  p3 = &a;
+      p1 = p3;
+      p2 = p1;
+      p3 = p2;
+    }
+    {
+      Value<A *>        p1(&b);
+      ValueVirtual<A *> p2(&b);
+      ValueFacade<A *>  p3(&b);
+      p1 = &a;
+      p2 = &a;
+      p3 = &a;
+    }
+    {
+      Value<A *>        p1 = &b;
+      ValueVirtual<A *> p2 = &b;
+      ValueFacade<A *>  p3 = &b;
+      p1 = &b;
+      p2 = &b;
+      p3 = &b;
+    }
   }
   {
     ValueFacade<int>            a(12);
