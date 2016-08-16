@@ -605,26 +605,30 @@ namespace boost {
   const CoSupport::DataTypes::FacadePtr<TT,C> static_pointer_cast(
       const CoSupport::DataTypes::FacadePtr<T,C> &ptr)
     { return &static_cast<typename C<TT>::type &>(*ptr); }
-/*
-  template <class TT, class T>
-  typename TT::Ptr      dynamic_pointer_cast(
-      CoSupport::DataTypes::FacadeRef<T, boost::remove_const> *ptr)
-    { return TT::upcast(*ptr); }
-  template <class TT, class T>
-  typename TT::ConstPtr dynamic_pointer_cast(
-      CoSupport::DataTypes::FacadeRef<T, boost::add_const> const *ptr)
-    { return TT::upcast(*ptr); }
- */
 
-  template <class TT, class T, template <class> class C, class F>
-  const CoSupport::DataTypes::FacadePtr<TT,C> dynamic_pointer_cast(
-      const CoSupport::DataTypes::Detail::FacadeProxyPtr<T,C,F> &ptr)
-    { return TT::upcast(*ptr); }
+//template <class TT, class T, template <class> class C, class F>
+//const CoSupport::DataTypes::FacadePtr<TT,C> dynamic_pointer_cast(
+//    const CoSupport::DataTypes::Detail::FacadeProxyPtr<T,C,F> &ptr)
+//  { return TT::upcast(*ptr); }
 
-  template <class TT, class T, template <class> class C, class F>
-  const CoSupport::DataTypes::FacadePtr<TT,C> static_pointer_cast(
-      const CoSupport::DataTypes::Detail::FacadeProxyPtr<T,C,F> &ptr)
-    { return &static_cast<typename C<TT>::type &>(*ptr); }
+//template <class TT, class T, template <class> class C, class F>
+//const CoSupport::DataTypes::FacadePtr<TT,C> static_pointer_cast(
+//    const CoSupport::DataTypes::Detail::FacadeProxyPtr<T,C,F> &ptr)
+//  { return &static_cast<typename C<TT>::type &>(*ptr); }
+
+  template <typename TT, typename D, typename T, template <class> class C>
+  const CoSupport::DataTypes::FacadePtr<TT, C> dynamic_pointer_cast(
+      CoSupport::DataTypes::ValueInterface<D,
+        CoSupport::DataTypes::FacadePtr<T,C>,
+        CoSupport::DataTypes::FacadePtr<T,C> const> const &ptr)
+    { return dynamic_pointer_cast<TT>(static_cast<CoSupport::DataTypes::FacadePtr<T, C> >(ptr)); }
+
+  template <typename TT, typename D, typename T, template <class> class C>
+  const CoSupport::DataTypes::FacadePtr<TT, C> static_pointer_cast(
+      CoSupport::DataTypes::ValueInterface<D,
+        CoSupport::DataTypes::FacadePtr<T,C>,
+        CoSupport::DataTypes::FacadePtr<T,C> const> const &ptr)
+    { return static_pointer_cast<TT>(static_cast<CoSupport::DataTypes::FacadePtr<T, C> >(ptr)); }
 
 } // namespace boost
 
