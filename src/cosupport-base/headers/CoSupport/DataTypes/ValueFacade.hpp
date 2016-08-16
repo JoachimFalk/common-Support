@@ -114,14 +114,16 @@ protected:
   explicit ValueFacade(typename base1_type::_StorageType const &x)
     : base1_type(x) {}
 public:
-  ValueFacade(typename base1_type::SmartPtr const &p)
+  template <class PImpl>
+  ValueFacade(PImpl *p, typename boost::enable_if<boost::is_base_of<typename base1_type::ImplType, PImpl>, int>::type dummy = 0)
     : base1_type(typename base1_type::_StorageType(p)) {}
-  ValueFacade(typename base1_type::ImplType *p)
+  template <class PImpl>
+  ValueFacade(PImpl const &p, typename boost::enable_if<boost::is_same<PImpl, typename base1_type::SmartPtr>, int>::type dummy = 0)
     : base1_type(typename base1_type::_StorageType(p)) {}
-  ValueFacade(::boost::intrusive_ptr<MaybeValueFacadeInterface<T,CR> > const &p)
-    : base1_type(typename base1_type::_StorageType(p->getValueFacadeInterface())) {}
-  ValueFacade(MaybeValueFacadeInterface<T,CR> *p)
-    : base1_type(typename base1_type::_StorageType(p->getValueFacadeInterface())) {}
+//ValueFacade(::boost::intrusive_ptr<MaybeValueFacadeInterface<T,CR> > const &p)
+//  : base1_type(typename base1_type::_StorageType(p->getValueFacadeInterface())) {}
+//ValueFacade(MaybeValueFacadeInterface<T,CR> *p)
+//  : base1_type(typename base1_type::_StorageType(p->getValueFacadeInterface())) {}
 
   ValueFacade(T const &value = T())
     : base1_type(new Detail::ValueFacadeImpl<T,CR>(value)) {}
