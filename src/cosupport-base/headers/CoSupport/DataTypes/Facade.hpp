@@ -55,6 +55,9 @@ template <class T, template <class> class C>     class FacadeRef;
 template <class T, template <class> class C>     class FacadePtr;
 template <class Derived, class Impl, class Base> class FacadeFoundation;
 
+// Predeclare from #include "MaybeValueInterface.hpp"
+template <class D, class T, class CR>            class MaybeValueInterface;
+
 template <class T>
 struct FacadeTraits {
   typedef const FacadeRef<T, boost::add_const> ConstRef;
@@ -465,6 +468,17 @@ public:
 
   // bounce assign to base class
   using T::operator =;
+#ifdef _MSC_VER
+  // Visual Studio can't pull template assignment operator from base_type
+  // via using T::operator =; Hence, we bounce some of them by replicating
+  // them here.
+  template <class DD, typename TT, typename CRCR>
+  this_type &operator = (const ValueInterface<DD, TT, CRCR> &val)
+    { this->set(val); return *this; }
+  template <class DD, typename TT, typename CRCR>
+  this_type &operator = (const MaybeValueInterface<DD, TT, CRCR> &val)
+    { this->set(val); return *this; }
+#endif // defined(_MSC_VER)
 
   Detail::FacadeProxyPtr<T, boost::add_const, const this_type> operator &() const
     { return Detail::FacadeProxyPtr<T, boost::add_const, const this_type>(this); }
@@ -492,26 +506,9 @@ public:
   typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::Ref       Ref;
   typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::ConstPtr  ConstPtr;
   typedef typename CoSupport::DataTypes::FacadeTraits<Derived>::Ptr       Ptr;
-//private:
-////
-//// Curiously Recurring Template interface.
-////
-//ImplType *_impl() const
-//  { return static_cast<const Derived*>(this)->getImpl(); }
 protected:
-//// may be overridden in derived class
-//ImplType *getImpl() const
-//  { return static_cast<ImplType *>(this->pImpl.get()); }
-
   FacadeFoundation(typename this_type::_StorageType const &x)
     : base_type(x) {}
-//// Constructor converting the SmartPtr of the derived implementation into the StoragePtr.
-//// Note that this constructor may not be implementable if the type hierarchy of the
-//// implementation classes is not available. In this case, the derived class must implement
-//// a constructor in a .cpp file where this information is available and use constructor
-//// given above for its base class.
-//explicit FacadeFoundation(typename this_type::SmartPtr const &p)
-//  : base_type(typename this_type::_StorageType(p)) {}
 public:
   operator ConstRef &() const // do dirty magic
     { return static_cast<ConstRef &>(*this); }
@@ -605,16 +602,6 @@ namespace boost {
   const CoSupport::DataTypes::FacadePtr<TT,C> static_pointer_cast(
       const CoSupport::DataTypes::FacadePtr<T,C> &ptr)
     { return &static_cast<typename C<TT>::type &>(*ptr); }
-
-//template <class TT, class T, template <class> class C, class F>
-//const CoSupport::DataTypes::FacadePtr<TT,C> dynamic_pointer_cast(
-//    const CoSupport::DataTypes::Detail::FacadeProxyPtr<T,C,F> &ptr)
-//  { return TT::upcast(*ptr); }
-
-//template <class TT, class T, template <class> class C, class F>
-//const CoSupport::DataTypes::FacadePtr<TT,C> static_pointer_cast(
-//    const CoSupport::DataTypes::Detail::FacadeProxyPtr<T,C,F> &ptr)
-//  { return &static_cast<typename C<TT>::type &>(*ptr); }
 
   template <typename TT, typename D, typename T, template <class> class C>
   const CoSupport::DataTypes::FacadePtr<TT, C> dynamic_pointer_cast(
