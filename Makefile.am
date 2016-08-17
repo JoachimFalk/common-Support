@@ -218,6 +218,7 @@ test_nested_event_lists_LDFLAGS		= $(AM_LDFLAGS)		\
 endif
 
 libcosupport_streams_la_SOURCES =				\
+	src/cosupport-streams/cpp/AlternateStream.cpp		\
 	src/cosupport-streams/cpp/DebugOStream.cpp		\
 	src/cosupport-streams/cpp/FilterOStream.cpp		\
 	src/cosupport-streams/cpp/ColorStreambuf.cpp		\

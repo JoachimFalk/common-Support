@@ -49,16 +49,16 @@
 
 namespace CoSupport { namespace Streams {
 
-struct COSUPPORT_STREAMS_API
-FileNotOpenException : public std::runtime_error {
-  FileNotOpenException(const char* file) 
-    : std::runtime_error(std::string("Could not open '") + file + "'") {}
+struct COSUPPORT_STREAMS_API FileNotOpenException
+  : public std::runtime_error
+{
+  FileNotOpenException(const char *file);
 };
 
-struct COSUPPORT_STREAMS_API
-FileNotGoodException : public std::runtime_error {
-  FileNotGoodException() 
-    : std::runtime_error("AlternateStream opened is not good!") {}
+struct COSUPPORT_STREAMS_API FileNotGoodException
+: public std::runtime_error
+{
+  FileNotGoodException();
 };
 
 template<class Base, class FStream>
