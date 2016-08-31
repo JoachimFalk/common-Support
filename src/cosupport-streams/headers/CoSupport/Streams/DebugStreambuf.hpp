@@ -91,14 +91,14 @@ public:
       bool visible = true,
       std::streambuf *next = 0);
 
-  void setLevel(const Debug &dbg) COSUPPORT_ATTRIBUTE_DEPRECATED
-    { setStreamLevel(dbg); }
+//void setLevel(const Debug &dbg) COSUPPORT_ATTRIBUTE_DEPRECATED
+//  { setStreamLevel(dbg); }
   /// Set a new stream debug level.
   void setStreamLevel(const Debug &dbg);
   /// Set a new output debug level.
   /// \param dbg
   ///   A debug level to check against the debug level set via setStreamLevel.
-  ///   If dbg is greater than the debug level set via setLevel show output.
+  ///   If dbg is greater than the debug level set via setStreamLevel, then show output.
   void setOutputLevel(const Debug &dbg);
   /// Swap in a new output debug level.
   /// \param dbg
