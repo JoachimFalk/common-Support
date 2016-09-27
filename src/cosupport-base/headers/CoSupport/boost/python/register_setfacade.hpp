@@ -60,9 +60,11 @@ public:
       .def("_cxx_equal",       &SetIf::VIter::equal)
       .def("_cxx_dereference", &SetIf::VIter::dereference)
       ;
-#if BOOST_VERSION >= 106000 // See https://github.com/boostorg/python/issues/29 and https://github.com/boostorg/python/issues/56
+#if BOOST_VERSION >= 106000 && BOOST_VERSION < 106100
+    // See https://github.com/boostorg/python/issues/29
+    // and https://github.com/boostorg/python/issues/56
     boost::python::register_ptr_to_python<PSetIf>();
-#endif //BOOST_VERSION >= 106000
+#endif //BOOST_VERSION >= 106000 && BOOST_VERSION < 106100
     class_<SetIf, PSetIf, boost::noncopyable>(name, no_init)
       .def("__init__",         make_constructor(&this_type::implSetConstruct, default_call_policies()), "create an empty list object")
       .def("__copy__",         &this_type::implSetDuplicate)
