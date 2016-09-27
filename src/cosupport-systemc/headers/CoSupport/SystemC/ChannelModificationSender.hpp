@@ -34,32 +34,53 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#ifndef _INCLUDED_COSUPPORT_SYSTEMC_CHANNELMODIFICATIONLISTENER_HPP
-#define _INCLUDED_COSUPPORT_SYSTEMC_CHANNELMODIFICATIONLISTENER_HPP
+#ifndef _INCLUDED_COSUPPORT_SYSTEMC_CHANNELMODIFICATIONSENDER_HPP
+#define _INCLUDED_COSUPPORT_SYSTEMC_CHANNELMODIFICATIONSENDER_HPP
 
-#include <cstdlib>
-#include <string>
+#include <boost/type_traits.hpp> 
 
 #include "export_config.h"
+#include "ChannelModificationListener.hpp"
 
 namespace CoSupport { namespace SystemC {
 
-typedef size_t ChannelId;
-
-class COSUPPORT_SYSTEMC_API
-ChannelModificationListener {
+template<
+    class T,
+    bool is_subclass =
+      boost::is_base_of<ChannelModificationListener, T>::value
+  >
+class ChannelModificationSender {
 public:
-  ChannelModificationListener() : readCount(0) {}
+  void setChannelID(std::string const &sourceActor,
+                    ChannelId          id,
+                    std::string const &name)
+    {}
+protected:
+  void fireModified( const T &t ) const {}
+};
 
-  virtual void registerChannel(std::string sourceActor,
-                               ChannelId id,
-                               std::string name ) const = 0;
-  virtual void modified(ChannelId id) const = 0 ;
-  virtual ~ChannelModificationListener() {}      
+template<class T>
+class ChannelModificationSender<T, true> {
+public:
+  void setChannelID(std::string const &sourceActor,
+                    ChannelId          id,
+                    std::string const &name)
+  {
+    //FIXME:
+    T t; t.registerChannel(sourceActor, id, name);
+
+    channelId = id;
+    // std::cerr << "2  setChannelID " << sourceActor << " " << name << " " << id << std::endl;
+  }
+protected:
+  void fireModified(const T &t) const {
+    // std::cerr << "2 fireModified(...) " << std::endl;
+    t.modified(channelId);
+  }
 private:
-  size_t readCount;
+  ChannelId channelId;
 };
 
 } } // namespace CoSupport::SystemC
 
-#endif // _INCLUDED_COSUPPORT_SYSTEMC_CHANNELMODIFICATIONLISTENER_HPP
+#endif //_INCLUDED_COSUPPORT_SYSTEMC_CHANNELMODIFICATIONSENDER_HPP
