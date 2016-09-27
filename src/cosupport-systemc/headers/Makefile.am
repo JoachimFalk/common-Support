@@ -27,6 +27,7 @@ SUBDIRS=
 nobase_include_HEADERS = \
 	CoSupport/SystemC/algorithm.hpp \
 	CoSupport/SystemC/ChannelModificationListener.hpp \
+	CoSupport/SystemC/ChannelModificationSender.hpp \
 	CoSupport/SystemC/export_config.h \
 	CoSupport/SystemC/par_manager.hpp \
 	CoSupport/SystemC/PerformanceEvaluation.hpp \
