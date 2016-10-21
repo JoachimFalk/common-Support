@@ -118,7 +118,9 @@ namespace Detail {
   public:
     typedef this_type                                   _StorageType;
     typedef typename _StoragePtrKind<ImplType>::type    _StoragePtr;
+#ifndef SYSTEMOC_ENABLE_MAESTRO
   private:
+#endif
     _StoragePtr pImpl; //< this is the storage smart ptr, its name must be pImpl
   protected:
     Storage() {}
