@@ -43,6 +43,11 @@
 #else
 # define COSUPPORT_ATTRIBUTE_DEPRECATED
 #endif
+#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 0)
+# define COSUPPORT_ATTRIBUTE_UNUSED __attribute__ ((unused))
+#else
+# define COSUPPORT_ATTRIBUTE_UNUSED
+#endif
 
 // Generic helper definitions for shared library support
 #if defined _WIN32 || defined _WIN64 || defined __CYGWIN__ // Windows, either gcc or msvc
