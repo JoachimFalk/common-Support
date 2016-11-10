@@ -117,7 +117,7 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
       }
 
       // calculate inverse throughput
-      sc_core::sc_time averageInverseThroughput = (lastSample - measureStart)/sampleCount;
+      //sc_core::sc_time averageInverseThroughput = (lastSample - measureStart)/sampleCount;
 
       // compute average latency
       averageLatency = averageLatency / sampleCount;
@@ -136,8 +136,8 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
     }
   }
 
-      absoluteStream << std::endl;
-      result << std::endl;
+  absoluteStream << std::endl;
+  result << std::endl;
 }
 
 /**
