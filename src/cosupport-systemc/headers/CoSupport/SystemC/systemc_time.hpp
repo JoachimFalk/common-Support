@@ -38,6 +38,7 @@
 
 #include <CoSupport/compatibility-glue/nullptr.h>
 #include <CoSupport/sassert.h>
+#include <CoSupport/String/convert.hpp>
 
 #include <systemc>
 
@@ -47,15 +48,28 @@
 
 #include "export_config.h"
 
-namespace CoSupport { namespace SystemC {
+namespace CoSupport {
 
-/**
- * \brief Takes a string representation of a time (e.g. a delay)
- *        and constructs a sc_core::sc_time object.
- */
-COSUPPORT_SYSTEMC_API
-sc_core::sc_time createSCTime(const char* timeString) throw(std::string);
+namespace SystemC {
 
-} } // CoSupport::SystemC
+  /**
+   * \brief Takes a string representation of a time (e.g. a delay)
+   *        and constructs a sc_core::sc_time object.
+   */
+  COSUPPORT_SYSTEMC_API
+  sc_core::sc_time createSCTime(const char* timeString) throw(std::string);
+
+} // SystemC
+
+namespace String {
+
+  template <>
+  inline
+  sc_core::sc_time strAs<sc_core::sc_time>(const std::string &str)
+    { return SystemC::createSCTime(str.c_str()); }
+
+} // String
+
+} // CoSupport
 
 #endif // _INCLUDED_COSUPPORT_SYSTEMC_SYSTEMC_TIME_SUPPORT_HPP
