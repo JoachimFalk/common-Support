@@ -122,22 +122,23 @@ lib_LTLIBRARIES +=			\
 endif
 
 noinst_PROGRAMS=			\
-	test_dbgstream			\
-	test_maybevalue			\
 	test_arrayfifo			\
-	test_interval			\
-	test_idpool			\
-	test_stl_output_for_xxx		\
+	test_color			\
+	test_dbgstream			\
 	test_facade			\
+	test_idpool			\
+	test_interval			\
+	test_list			\
+	test_maybevalue			\
+	test_modulo			\
+	test_path			\
+	test_po				\
+	test_projection			\
+	test_set			\
+	test_stl_output_for_xxx		\
 	test_typename			\
 	test_value			\
-	test_list			\
-	test_set			\
-	test_vector			\
-	test_modulo			\
-	test_projection			\
-	test_po				\
-	test_path
+	test_vector
 if COSUPPORT_ENABLE_XERCES
 noinst_PROGRAMS +=			\
 	test_xerces
@@ -332,6 +333,11 @@ test_facade_LDFLAGS		= $(AM_LDFLAGS)		\
 test_typename_SOURCES		= src/test_typename/cpp/test_typename.cpp
 test_typename_DEPENDENCIES	= libcosupport-string.la
 test_typename_LDFLAGS		= $(AM_LDFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-string)
+
+test_color_SOURCES		= src/test_color/cpp/test_color.cpp
+test_color_DEPENDENCIES		= libcosupport-string.la
+test_color_LDFLAGS		= $(AM_LDFLAGS)		\
 	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-string)
 
 test_value_SOURCES		= src/test_value/cpp/test_value.cpp

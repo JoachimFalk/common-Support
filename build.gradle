@@ -486,6 +486,13 @@ model {
         }
       }
     }
+    "test_color"(JFNativeExecutableSpec) {
+      sources {
+        cpp {
+          lib library: "cosupport-string"
+        }
+      }
+    }
     "test_value"(JFNativeExecutableSpec) {
       sources {
         cpp {
