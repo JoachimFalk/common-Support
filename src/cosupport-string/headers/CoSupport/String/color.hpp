@@ -55,11 +55,11 @@ namespace CoSupport { namespace String {
           (static_cast<uint32_t>(g) <<  8) |
           (static_cast<uint32_t>(b) << 16)) {}
 
-    unsigned char r()
+    unsigned char r() const
       { return (color      ) & 0xFF; }
-    unsigned char g()
+    unsigned char g() const
       { return (color >>  8) & 0xFF; }
-    unsigned char b()
+    unsigned char b() const
       { return (color >> 16) & 0xFF; }
 
     bool operator <(this_type const &rhs) const
