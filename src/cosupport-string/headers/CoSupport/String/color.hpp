@@ -38,12 +38,34 @@
 
 #include <string>
 
+#include <stdint.h>
+
 #include "export_config.h"
 
 namespace CoSupport { namespace String {
 
-  struct Color {
-    const unsigned char rgb[3];
+  class Color {
+    typedef Color this_type;
+  public:
+    Color(uint32_t color)
+      : color(color) {}
+    Color(unsigned char r, unsigned char g, unsigned char b)
+      : color(
+          (static_cast<uint32_t>(r)      ) |
+          (static_cast<uint32_t>(g) <<  8) |
+          (static_cast<uint32_t>(b) << 16)) {}
+
+    unsigned char r()
+      { return (color      ) & 0xFF; }
+    unsigned char g()
+      { return (color >>  8) & 0xFF; }
+    unsigned char b()
+      { return (color >> 16) & 0xFF; }
+
+    bool operator <(this_type const &rhs) const
+      { return color < rhs.color; }
+  protected:
+    const uint32_t color;
   };
 
   COSUPPORT_STRING_API

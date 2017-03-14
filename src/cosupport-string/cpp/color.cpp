@@ -626,11 +626,11 @@ namespace CoSupport { namespace String {
       } else if (cmp < 0) {
         upper = std::min(mid, upper-1);
       } else {
-        return Color({
+        return Color(
             static_cast<unsigned char>(colorNames[mid].rgb[0]),
             static_cast<unsigned char>(colorNames[mid].rgb[1]),
             static_cast<unsigned char>(colorNames[mid].rgb[2])
-          });
+          );
       }
     }
     return Color({ 0u, 0u, 0u });
@@ -659,19 +659,19 @@ namespace CoSupport { namespace String {
         { '\x9A', '\x98', '\x7F' },
     };
     if (colorIndex < sizeof(colorEntries)/sizeof(colorEntries[0])) {
-      return Color({
+      return Color(
           static_cast<unsigned char>(colorEntries[colorIndex].rgb[0]),
           static_cast<unsigned char>(colorEntries[colorIndex].rgb[1]),
           static_cast<unsigned char>(colorEntries[colorIndex].rgb[2])
-        });
+        );
     } else {
       colorIndex -= sizeof(colorEntries)/sizeof(colorEntries[0]);
       colorIndex = colorIndex % (sizeof(colorNames)/sizeof(colorNames[0]));
-      return Color({
+      return Color(
           static_cast<unsigned char>(colorNames[colorIndex].rgb[0]),
           static_cast<unsigned char>(colorNames[colorIndex].rgb[1]),
           static_cast<unsigned char>(colorNames[colorIndex].rgb[2])
-        });
+        );
     }
   }
 
