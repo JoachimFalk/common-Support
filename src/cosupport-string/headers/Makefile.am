@@ -26,6 +26,7 @@ SUBDIRS=
 
 nobase_include_HEADERS = \
 	CoSupport/String/Concat.hpp \
+	CoSupport/String/color.hpp \
 	CoSupport/String/convert.hpp \
 	CoSupport/String/DoubleQuotedString.hpp \
 	CoSupport/String/export_config.h \
