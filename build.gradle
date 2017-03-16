@@ -284,6 +284,7 @@ model {
       sources {
         cpp {
           lib library: "cosupport-base", exportHeaders: true
+          lib library: "cosupport-string", exportHeaders: true
           lib project: ':PrebuiltLibraries', library: "systemc", exportHeaders: true
         }
       }
