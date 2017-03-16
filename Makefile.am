@@ -285,6 +285,7 @@ libcosupport_allocators_la_LDFLAGS = $(AM_LDFLAGS)		\
 
 if COSUPPORT_ENABLE_SYSTEMC
 libcosupport_tracing_la_SOURCES =				\
+	src/cosupport-tracing/cpp/PajeTracer.cpp		\
 	src/cosupport-tracing/cpp/PtpTracer.cpp			\
 	src/cosupport-tracing/cpp/Tracer.cpp			\
 	src/cosupport-tracing/cpp/TracingFactory.cpp

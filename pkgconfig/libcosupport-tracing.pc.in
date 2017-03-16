@@ -22,7 +22,7 @@ Description: Library of supporting infrastructure of the chair of HW/SW CoDesign
 Version: @PACKAGE_VERSION@
 URL: http://www12.informatik.uni-erlangen.de/research/systemoc
 #Conflicts: foobar <= 4.5
-Requires: libcosupport-base = ${PACKAGE_VERSION}
+Requires: libcosupport-base = ${PACKAGE_VERSION}, libcosupport-string = ${PACKAGE_VERSION}
 #Requires.private:
 Libs: -L${srctreemode_libdir} @SYSTEMC_LDFLAGS@ ${srctreemode_libdir}/libcosupport-tracing.la -lsystemc
 #Libs.private: -lm

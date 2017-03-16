@@ -26,6 +26,7 @@ SUBDIRS=
 
 nobase_include_HEADERS = \
 	CoSupport/Tracing/export_config.h \
+	CoSupport/Tracing/PajeTracer.hpp \
 	CoSupport/Tracing/PtpTracer.hpp \
 	CoSupport/Tracing/TaskTracer.hpp \
 	CoSupport/Tracing/Tracer.hpp \
