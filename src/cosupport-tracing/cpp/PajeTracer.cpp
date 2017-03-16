@@ -126,6 +126,8 @@ namespace CoSupport { namespace Tracing {
         "% Container string\n"
         "% Value string\n"
         "%EndEventDef\n"
+        "100 " ALIAS_RESOURCE " 0 \"Top Resource\"\n"
+        "101 " ALIAS_RESOURCE_STATE " " ALIAS_RESOURCE " \"Activity\"\n"
         ;
   }
 
@@ -165,7 +167,9 @@ namespace CoSupport { namespace Tracing {
     Resource &newRes = success.first->second;
     newRes.alias  = getNextAlias();
     newRes.parent = parent;
-    out << "103 0 " <<  newRes.alias << " " ALIAS_RESOURCE " " << parent->alias << " " << String::DoubleQuotedString(name) << "\n";
+    out << "103 0 " <<  newRes.alias << " " ALIAS_RESOURCE " "
+        << (parent ? parent->alias : "0") << " "
+        << String::DoubleQuotedString(name) << "\n";
     return &newRes;
   }
 
