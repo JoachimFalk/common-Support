@@ -44,6 +44,7 @@ namespace CoSupport { namespace Tracing {
   using String::Color;
   using String::lookupColor;
   using String::getColor;
+  using namespace std;
 
   struct PajeTracer::Resource {
     std::string   alias;
@@ -59,14 +60,21 @@ namespace CoSupport { namespace Tracing {
     std::string   alias;
   };
 
+  struct PajeTracer::Link {
+    std::string   alias;
+  };
 
-#define ALIAS_RESOURCE       "a"
-#define ALIAS_RESOURCE_STATE "b"
+#define ALIAS_ARCHITECTURE   "a"
+#define ALIAS_RESOURCE       "b"
+#define ALIAS_RESOURCE_STATE "c"
+#define ALIAS_CREATE_CON     "d"
+#define ALIAS_LINKDEF        "e"
 
   PajeTracer::PajeTracer(std::string const &traceFilename)
     : out(traceFilename)
     , aliasCounter(26) // a-z are for fixed aliases
     , colorCounter(0)
+    , linkCounter(0)
   {
     out << std::fixed << std::setprecision(9) <<
         "%EventDef PajeDefineContainerType 100\n"
@@ -97,6 +105,13 @@ namespace CoSupport { namespace Tracing {
         "% Name string\n"
         "% Type string\n"
         "%EndEventDef\n"
+        "%EventDef PajeDefineLinkType 105\n"
+        "% Alias string\n"
+        "% Type string\n"
+        "% StartContainerType string\n"
+        "% EndContainerType string\n"
+        "% Name string\n"
+        "%EndEventDef\n"
         "%EventDef PajeDefineEntityValue 1\n"
         "% Alias string\n"
         "% Type string\n"
@@ -126,9 +141,28 @@ namespace CoSupport { namespace Tracing {
         "% Container string\n"
         "% Value string\n"
         "%EndEventDef\n"
-        "100 " ALIAS_RESOURCE " 0 \"Top Resource\"\n"
+        "%EventDef PajeStartLink 6\n"
+        "% Time date\n"
+        "% Type string\n"
+        "% Container string\n"
+        "% StartContainer string\n"
+        "% Value string\n"
+        "% Key string\n"
+        "%EndEventDef\n"
+        "%EventDef PajeEndLink 7\n"
+        "% Time date\n"
+        "% Type string\n"
+        "% Container string\n"
+        "% EndContainer string\n"
+        "% Value string\n"
+        "% Key string\n"
+        "%EndEventDef\n"
+        "100 " ALIAS_ARCHITECTURE " \"0\" \"Architecture\" \n"
+        "100 " ALIAS_RESOURCE " " ALIAS_ARCHITECTURE " \"Top Resource\"\n"
         "101 " ALIAS_RESOURCE_STATE " " ALIAS_RESOURCE " \"Activity\"\n"
-        ;
+        "103 0 " ALIAS_CREATE_CON " " ALIAS_ARCHITECTURE " \"0\" \"Architecture\"\n"
+        "105 " ALIAS_LINKDEF " " ALIAS_ARCHITECTURE " " ALIAS_RESOURCE " " ALIAS_RESOURCE " \"LinkDef\" \n"
+        ;//
   }
 
   PajeTracer::~PajeTracer()
@@ -147,13 +181,18 @@ namespace CoSupport { namespace Tracing {
     return retval;
   }
 
+  string PajeTracer::getNextValue() {
+    string value;
+    unsigned long linkCount = linkCounter++;
+    value = "Link" + to_string(linkCount);
+    return value;
+  }
+
   Color PajeTracer::getNextColor()
     { return getColor(colorCounter++); }
 
   PajeTracer::Resource *PajeTracer::registerResource(const char *name, Resource *parent)
     { return registerResource(name, getNextColor(), parent); }
-
-
 
   PajeTracer::Resource *PajeTracer::registerResource(const char *name, String::Color const color, Resource *parent) {
     ResourceMap &parentResourceMap = parent
@@ -168,7 +207,7 @@ namespace CoSupport { namespace Tracing {
     newRes.alias  = getNextAlias();
     newRes.parent = parent;
     out << "103 0 " <<  newRes.alias << " " ALIAS_RESOURCE " "
-        << (parent ? parent->alias : "0") << " "
+        << (parent ? parent->alias : "d") << " "
         << String::DoubleQuotedString(name) << "\n";
     return &newRes;
   }
@@ -187,10 +226,10 @@ namespace CoSupport { namespace Tracing {
     return &newAct;
   }
 
-  PajeTracer::Event    *PajeTracer::registerEvent(const char *description)
+  PajeTracer::Event *PajeTracer::registerEvent(const char *description)
     { return registerEvent(description, getNextColor()); }
 
-  PajeTracer::Event    *PajeTracer::registerEvent(const char *description, String::Color const color) {
+  PajeTracer::Event *PajeTracer::registerEvent(const char *description, String::Color const color) {
     eventList.push_back(Event());
     Event &newEv = eventList.back();
     newEv.alias = getNextAlias();
@@ -202,9 +241,32 @@ namespace CoSupport { namespace Tracing {
     return &newEv;
   }
 
+//  PajeTracer::Link     *registerLink(const char *name) {
+//    return registerLink(name, getNextColor());
+//  }
+//
+//  PajeTracer::Link     *registerLink(const char *name, String::Color const color){
+//    linkList.push_back(Link());
+//    Link &newLink = linkList.back();
+//    newLink.alias = getNextAlias();
+//    out << "1 " << newLink.alias << " " ALIAS_LINKDEF " " << String::DoubleQuotedString(name) << " \""
+//            << static_cast<float>(color.r())/255 << " "
+//            << static_cast<float>(color.g())/255 << " "
+//            << static_cast<float>(color.b())/255 << "\"\n";
+//    return &newLink;
+//  }
+//
+//  void traceLinkBegin(const char *name, Resource const *resource, int key, sc_core::sc_time const start){
+//    out << "6 " << start.to_seconds() << " " ALIAS_LINKDEF " "ALIAS_CREATE_CON " " << resource->alias << " "  << key << "\n";
+//  }
+//
+//  void traceLinkEnd(const char *name, Resource const *resource, int key, sc_core::sc_time const end){
+//    out << "7 " << end.to_seconds() << " " ALIAS_LINKDEF " " ALIAS_CREATE_CON " " << resource->alias << " " << getNextValue() <<" " << key << "\n";
+//  }
+
   void PajeTracer::traceActivity(Resource const *resource, Activity const *activity, sc_core::sc_time const start, sc_core::sc_time const end) {
-    out << "3 " << start.to_seconds() << " " ALIAS_RESOURCE_STATE " " << resource->alias << " " << activity->alias << "\n";
-    out << "4 " << end.to_seconds() << " " ALIAS_RESOURCE_STATE " " << resource->alias << "\n";
+      out << "3 " << start.to_seconds() << " " ALIAS_RESOURCE_STATE " " << resource->alias << " " << activity->alias << "\n";
+      out << "4 " << end.to_seconds() << " " ALIAS_RESOURCE_STATE " " << resource->alias << "\n";
   }
 
   void PajeTracer::traceEvent(Resource const *resouce, Event const *event, sc_core::sc_time const time) {

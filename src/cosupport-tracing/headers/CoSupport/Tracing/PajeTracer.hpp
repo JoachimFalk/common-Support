@@ -52,6 +52,7 @@ namespace CoSupport { namespace Tracing {
     struct Resource;
     struct Activity;
     struct Event;
+    struct Link;
 
     PajeTracer(const std::string &traceFilename);
 
@@ -61,7 +62,11 @@ namespace CoSupport { namespace Tracing {
     Activity *registerActivity(const char *description, String::Color const color);
     Event    *registerEvent(const char *description);
     Event    *registerEvent(const char *description, String::Color const color);
+    Link     *registerLink(const char *name);
+    Link     *registerLink(const char *name, String::Color const color);
 
+    void traceLinkBegin(const char *name, Resource const *resource, int key, sc_core::sc_time const start);
+    void traceLinkEnd(const char *name, Resource const *resource, int key, sc_core::sc_time const end);
     void traceActivity(Resource const *resouce, Activity const *activity, sc_core::sc_time const start, sc_core::sc_time const end);
     void traceEvent(Resource const *resouce, Event const *event, sc_core::sc_time const time);
 
@@ -80,11 +85,17 @@ namespace CoSupport { namespace Tracing {
     typedef std::list<Event>                EventList;
     EventList eventList;
 
+    typedef std::list<Link>                 LinkList;
+    LinkList linkList;
+
     unsigned long aliasCounter;
     std::string getNextAlias();
 
     unsigned int colorCounter;
     String::Color getNextColor();
+
+    unsigned int linkCounter;
+    std::string getNextValue();
 
 /*  // Map from gate state string to event type alias
     typedef std::map<std::string, std::string> GateEventMap;
