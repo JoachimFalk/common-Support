@@ -428,6 +428,17 @@ namespace CoSupport { namespace XML { namespace Xerces {
         assert(attrValueText != nullptr);
         return CoSupport::String::strAs<T>(NStr(attrValueText));
       }
+      static
+      result_type apply(XN::DOMNode const *const node,
+          T const &defaultValue)
+      {
+        if (node == nullptr)
+          return defaultValue;
+        XMLCh const *const attrValueText = node->getNodeValue();
+        assert(attrValueText != nullptr);
+        return CoSupport::String::strAs<T>(NStr(attrValueText));
+      }
+
     };
 
     template <typename T>
@@ -454,6 +465,17 @@ namespace CoSupport { namespace XML { namespace Xerces {
         assert(attrValueText != nullptr || !"WTF?! Missing node value!");
         return attrValueText;
       }
+      static
+      result_type apply(XN::DOMNode const *const node,
+          result_type const defaultValue)
+      {
+        if (node == nullptr)
+          return defaultValue;
+        XMLCh const *const attrValueText = node->getNodeValue();
+        assert(attrValueText != nullptr);
+        return attrValueText;
+      }
+
     };
     template <>
     struct GetNodeValueAs<XMLCh const *>
@@ -470,6 +492,17 @@ namespace CoSupport { namespace XML { namespace Xerces {
         assert(attrValueText != nullptr || !"WTF?! Missing node value!");
         return XStr(attrValueText);
       }
+      static
+      result_type apply(XN::DOMNode const *const node,
+          result_type const &defaultValue)
+      {
+        if (node == nullptr)
+          return defaultValue;
+        XMLCh const *const attrValueText = node->getNodeValue();
+        assert(attrValueText != nullptr);
+        return XStr(attrValueText);
+      }
+
     };
 
     template <>
@@ -483,6 +516,17 @@ namespace CoSupport { namespace XML { namespace Xerces {
         assert(attrValueText != nullptr || !"WTF?! Missing node value!");
         return NStr(attrValueText);
       }
+      static
+      result_type apply(XN::DOMNode const *const node,
+          result_type const &defaultValue)
+      {
+        if (node == nullptr)
+          return defaultValue;
+        XMLCh const *const attrValueText = node->getNodeValue();
+        assert(attrValueText != nullptr);
+        return NStr(attrValueText);
+      }
+
     };
 
     template <typename T>
@@ -548,8 +592,16 @@ namespace CoSupport { namespace XML { namespace Xerces {
       typedef T result_type;
 
       static
-      result_type apply(XN::DOMNode const *const node, const XMLCh *const attr)
+      result_type apply(XN::DOMNode const *const node,
+          const XMLCh *const attr)
         { return GetNodeValueAs<result_type>::apply(getAttrNode(node, attr)); }
+      static
+      result_type apply(XN::DOMNode const *const node,
+          const XMLCh *const attr, T const &defaultValue)
+      {
+        return GetNodeValueAs<result_type>::apply(getMaybeAttrNode(node, attr),
+            defaultValue);
+      }
     };
 
     template <typename T>
@@ -596,15 +648,69 @@ namespace CoSupport { namespace XML { namespace Xerces {
 
   /// Convert value in node to type T.
   /// This throws an exception if the conversion is invalid.
+
+  // The node must have a value.
   template <typename T>
-  T getNodeValueAs(XN::DOMNode const *const node)
+  T                        getNodeValueAs(XN::DOMNode const *const node)
     { return Detail::GetNodeValueAs<T>::apply(node); }
+  // If no node value is defined, return the provided default value.
   template <typename T>
-  T getAttrValueAs(XN::DOMNode const *const node, XMLCh const *const attr)
+  T                        getNodeValueAs(XN::DOMNode const *const node,
+      T const &defaultValue)
+  {
+    return Detail::GetNodeValueAs<T>::apply(node,
+        defaultValue);
+  }
+  // If no node value is defined, return boost::blank();
+  template <typename T>
+  DataTypes::MaybeValue<T> getMaybeNodeValueAs(XN::DOMNode const *const node)
+  {
+    return Detail::GetNodeValueAs<DataTypes::MaybeValue<T> >::apply(node);
+  }
+
+  // Attribute must be present.
+  template <typename T>
+  T                        getAttrValueAs(XN::DOMNode const *const node,
+      XMLCh const *const attr)
     { return Detail::GetAttrValueAs<T>::apply(node, attr); }
+  // If attribute is not present, use the provided default value.
   template <typename T>
-  T getAttrValueAs(XN::DOMNode const *const node, char const *const attr)
+  T                        getAttrValueAs(XN::DOMNode const *const node,
+      XMLCh const *const attr, T const &defaultValue)
+  {
+    return Detail::GetAttrValueAs<T>::apply(node,
+        attr, defaultValue);
+  }
+  // If attribute is not present, returns boost::blank().
+  template <typename T>
+  DataTypes::MaybeValue<T> getMaybeAttrValueAs(XN::DOMNode const *const node,
+      XMLCh const *const attr)
+  {
+    return Detail::GetAttrValueAs<DataTypes::MaybeValue<T> >::apply(node,
+        attr);
+  }
+
+  // Attribute must be present.
+  template <typename T>
+  T                        getAttrValueAs(XN::DOMNode const *const node,
+      char const *const attr)
     { return Detail::GetAttrValueAs<T>::apply(node, XStr(attr).c_str()); }
+  // If attribute is not present, use the provided default value.
+  template <typename T>
+  T                        getAttrValueAs(XN::DOMNode const *const node,
+      char const *const attr, T const &defaultValue)
+  {
+    return Detail::GetAttrValueAs<T>::apply(node,
+        XStr(attr).c_str(), defaultValue);
+  }
+  // If attribute is not present, returns boost::blank().
+  template <typename T>
+  DataTypes::MaybeValue<T> getMaybeAttrValueAs(XN::DOMNode const *const node,
+      char const *const attr)
+  {
+    return Detail::GetAttrValueAs<DataTypes::MaybeValue<T> >::apply(node,
+        XStr(attr).c_str());
+  }
 
   /// Convert set value in node from type T.
   /// This throws an exception if the conversion is invalid.
