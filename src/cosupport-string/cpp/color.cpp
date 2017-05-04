@@ -618,7 +618,7 @@ namespace CoSupport { namespace String {
     }
 #endif //NDEBUG
 
-    while (upper > lower) {
+    while (upper >= lower) {
       unsigned int mid = (lower+upper)/2;
       int cmp = strcmp(colorName, colorNames[mid].colorName);
       if (cmp > 0) {
