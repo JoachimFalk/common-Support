@@ -74,7 +74,6 @@ namespace CoSupport { namespace Tracing {
     : out(traceFilename)
     , aliasCounter(26) // a-z are for fixed aliases
     , colorCounter(0)
-    , linkCounter(0)
   {
     out << std::fixed << std::setprecision(9) <<
         "%EventDef PajeDefineContainerType 100\n"
@@ -181,13 +180,6 @@ namespace CoSupport { namespace Tracing {
     return retval;
   }
 
-  string PajeTracer::getNextValue() {
-    string value;
-    unsigned long linkCount = linkCounter++;
-    value = "Link" + to_string(linkCount);
-    return value;
-  }
-
   Color PajeTracer::getNextColor()
     { return getColor(colorCounter++); }
 
@@ -212,8 +204,19 @@ namespace CoSupport { namespace Tracing {
     return &newRes;
   }
 
-  PajeTracer::Activity *PajeTracer::registerActivity(const char *description)
-    { return registerActivity(description, getNextColor()); }
+  PajeTracer::Activity *PajeTracer::registerActivity(const char *description, bool useCache) {
+    if (useCache) {
+      std::pair<ActivityMap::iterator, bool> insertStatus(
+          activityMap.find(description), true);
+      if (insertStatus.first == activityMap.end()) {
+        insertStatus = activityMap.insert(ActivityMap::value_type(
+            description, registerActivity(description, getNextColor())));
+        assert(insertStatus.second && "Oops: description not in map, but insertion failed?!");
+      }
+      return insertStatus.first->second;
+    } else
+      return registerActivity(description, getNextColor());
+  }
 
   PajeTracer::Activity *PajeTracer::registerActivity(const char *description, String::Color const color) {
     activityList.push_back(Activity());
@@ -226,8 +229,19 @@ namespace CoSupport { namespace Tracing {
     return &newAct;
   }
 
-  PajeTracer::Event *PajeTracer::registerEvent(const char *description)
-    { return registerEvent(description, getNextColor()); }
+  PajeTracer::Event *PajeTracer::registerEvent(const char *description, bool useCache) {
+    if (useCache) {
+      std::pair<EventMap::iterator, bool> insertStatus(
+          eventMap.find(description), true);
+      if (insertStatus.first == eventMap.end()) {
+        insertStatus = eventMap.insert(EventMap::value_type(
+            description, registerEvent(description, getNextColor())));
+        assert(insertStatus.second && "Oops: description not in map, but insertion failed?!");
+      }
+      return insertStatus.first->second;
+    } else
+      return registerEvent(description, getNextColor());
+  }
 
   PajeTracer::Event *PajeTracer::registerEvent(const char *description, String::Color const color) {
     eventList.push_back(Event());
@@ -241,28 +255,25 @@ namespace CoSupport { namespace Tracing {
     return &newEv;
   }
 
-//  PajeTracer::Link     *registerLink(const char *name) {
-//    return registerLink(name, getNextColor());
-//  }
-//
-//  PajeTracer::Link     *registerLink(const char *name, String::Color const color){
-//    linkList.push_back(Link());
-//    Link &newLink = linkList.back();
-//    newLink.alias = getNextAlias();
-//    out << "1 " << newLink.alias << " " ALIAS_LINKDEF " " << String::DoubleQuotedString(name) << " \""
-//            << static_cast<float>(color.r())/255 << " "
-//            << static_cast<float>(color.g())/255 << " "
-//            << static_cast<float>(color.b())/255 << "\"\n";
-//    return &newLink;
-//  }
-//
-//  void traceLinkBegin(const char *name, Resource const *resource, int key, sc_core::sc_time const start){
-//    out << "6 " << start.to_seconds() << " " ALIAS_LINKDEF " "ALIAS_CREATE_CON " " << resource->alias << " "  << key << "\n";
-//  }
-//
-//  void traceLinkEnd(const char *name, Resource const *resource, int key, sc_core::sc_time const end){
-//    out << "7 " << end.to_seconds() << " " ALIAS_LINKDEF " " ALIAS_CREATE_CON " " << resource->alias << " " << getNextValue() <<" " << key << "\n";
-//  }
+  PajeTracer::Link *PajeTracer::registerLink(const char *name){
+    linkList.push_back(Link());
+    Link &newLink = linkList.back();
+    newLink.alias = getNextAlias();
+
+    out << "1 " << newLink.alias << " " ALIAS_LINKDEF " " << String::DoubleQuotedString(name) << " \""
+            << 0 << " "
+            << 0 << " "
+            << 0 << "\"\n";
+    return &newLink;
+  }
+
+  void PajeTracer::traceLinkBegin(const char *name, Resource const *resource, int key, sc_core::sc_time const start){
+    out << "6 " << start.to_seconds() << " " ALIAS_LINKDEF " " ALIAS_CREATE_CON " " << resource->alias << " " << name << " "  << key << "\n";
+  }
+
+  void PajeTracer::traceLinkEnd(const char *name, const char *resource, int key, sc_core::sc_time const end){
+    out << "7 " << end.to_seconds() << " " ALIAS_LINKDEF " " ALIAS_CREATE_CON " " << resource << " " << name << " " << key << "\n";
+  }
 
   void PajeTracer::traceActivity(Resource const *resource, Activity const *activity, sc_core::sc_time const start, sc_core::sc_time const end) {
       out << "3 " << start.to_seconds() << " " ALIAS_RESOURCE_STATE " " << resource->alias << " " << activity->alias << "\n";

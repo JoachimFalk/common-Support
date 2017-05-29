@@ -58,15 +58,14 @@ namespace CoSupport { namespace Tracing {
 
     Resource *registerResource(const char *name, Resource *parent = nullptr);
     Resource *registerResource(const char *name, String::Color const color, Resource *parent = nullptr);
-    Activity *registerActivity(const char *description);
+    Activity *registerActivity(const char *description, bool useCache = false);
     Activity *registerActivity(const char *description, String::Color const color);
-    Event    *registerEvent(const char *description);
+    Event    *registerEvent(const char *description, bool useCache = false);
     Event    *registerEvent(const char *description, String::Color const color);
     Link     *registerLink(const char *name);
-    Link     *registerLink(const char *name, String::Color const color);
 
     void traceLinkBegin(const char *name, Resource const *resource, int key, sc_core::sc_time const start);
-    void traceLinkEnd(const char *name, Resource const *resource, int key, sc_core::sc_time const end);
+    void traceLinkEnd(const char *name, const char *resource, int key, sc_core::sc_time const end);
     void traceActivity(Resource const *resouce, Activity const *activity, sc_core::sc_time const start, sc_core::sc_time const end);
     void traceEvent(Resource const *resouce, Event const *event, sc_core::sc_time const time);
 
@@ -75,27 +74,32 @@ namespace CoSupport { namespace Tracing {
     std::ofstream out;
 
 
-    typedef std::map<std::string, Resource> ResourceMap;
-    typedef ResourceMap::iterator           ResourceIter;
+    typedef std::map<std::string, Resource>     ResourceMap;
+    typedef ResourceMap::iterator               ResourceIter;
     ResourceMap topResouces;
 
-    typedef std::list<Activity>             ActivityList;
+    typedef std::list<Activity>                 ActivityList;
     ActivityList activityList;
+    /// Use this map to cache activity descriptions to their Activity
+    /// if useCache is true in registerActivity.
+    typedef std::map<std::string, Activity *>   ActivityMap;
+    ActivityMap                                 activityMap;
 
-    typedef std::list<Event>                EventList;
-    EventList eventList;
+    typedef std::list<Event>                    EventList;
+    EventList                                   eventList;
+    /// Use this map to cache event descriptions to their Event
+    /// if useCache is true in registerEvent.
+    typedef std::map<std::string, Event *>      EventMap;
+    EventMap                                    eventMap;
 
-    typedef std::list<Link>                 LinkList;
-    LinkList linkList;
+    typedef std::list<Link>                     LinkList;
+    LinkList                                    linkList;
 
     unsigned long aliasCounter;
     std::string getNextAlias();
 
     unsigned int colorCounter;
     String::Color getNextColor();
-
-    unsigned int linkCounter;
-    std::string getNextValue();
 
 /*  // Map from gate state string to event type alias
     typedef std::map<std::string, std::string> GateEventMap;
