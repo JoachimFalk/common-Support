@@ -35,7 +35,7 @@
 		<link>
 			<name>obj</name>
 			<type>2</type>
-			<locationURI>$%7BWORKSPACE_LOC%7D/obj/Support</locationURI>
+			<locationURI>WORKSPACE_LOC/obj/Support</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
