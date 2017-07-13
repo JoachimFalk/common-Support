@@ -64,8 +64,8 @@ namespace CoSupport { namespace Tracing {
     Event    *registerEvent(const char *description, String::Color const color);
     Link     *registerLink(const char *name);
 
-    void traceLinkBegin(const char *name, Resource const *resource, int key, sc_core::sc_time const start);
-    void traceLinkEnd(const char *name, const char *resource, int key, sc_core::sc_time const end);
+    void traceLinkBegin(const char *name, Resource const *resource, sc_core::sc_time const start);
+    void traceLinkEnd(const char *name, Resource const *resource, sc_core::sc_time const end);
     void traceActivity(Resource const *resouce, Activity const *activity, sc_core::sc_time const start, sc_core::sc_time const end);
     void traceEvent(Resource const *resouce, Event const *event, sc_core::sc_time const time);
 
@@ -85,6 +85,9 @@ namespace CoSupport { namespace Tracing {
     typedef std::map<std::string, Activity *>   ActivityMap;
     ActivityMap                                 activityMap;
 
+    typedef std::map<char, int>                 LinkMap;
+    LinkMap                                     linkMap;
+
     typedef std::list<Event>                    EventList;
     EventList                                   eventList;
     /// Use this map to cache event descriptions to their Event
@@ -95,11 +98,15 @@ namespace CoSupport { namespace Tracing {
     typedef std::list<Link>                     LinkList;
     LinkList                                    linkList;
 
+
     unsigned long aliasCounter;
     std::string getNextAlias();
 
     unsigned int colorCounter;
     String::Color getNextColor();
+
+    unsigned int keyCounter;
+    int getNextKey();
 
 /*  // Map from gate state string to event type alias
     typedef std::map<std::string, std::string> GateEventMap;
