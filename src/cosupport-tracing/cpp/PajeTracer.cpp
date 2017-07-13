@@ -183,6 +183,10 @@ namespace CoSupport { namespace Tracing {
   Color PajeTracer::getNextColor()
     { return getColor(colorCounter++); }
 
+  int PajeTracer::getNextKey() {
+    return (keyCounter++);
+  }
+
   PajeTracer::Resource *PajeTracer::registerResource(const char *name, Resource *parent)
     { return registerResource(name, getNextColor(), parent); }
 
@@ -200,7 +204,7 @@ namespace CoSupport { namespace Tracing {
     newRes.parent = parent;
     out << "103 0 " <<  newRes.alias << " " ALIAS_RESOURCE " "
         << (parent ? parent->alias : "d") << " "
-        << String::DoubleQuotedString(name) << "\n";
+        << String::DoubleQuotedString(name) << "\n" << std::flush;
     return &newRes;
   }
 
@@ -225,7 +229,7 @@ namespace CoSupport { namespace Tracing {
     out << "1 " << newAct.alias << " " ALIAS_RESOURCE_STATE " " << String::DoubleQuotedString(description) << " \""
         << static_cast<float>(color.r())/255 << " "
         << static_cast<float>(color.g())/255 << " "
-        << static_cast<float>(color.b())/255 << "\"\n";
+        << static_cast<float>(color.b())/255 << "\"\n" << std::flush;
     return &newAct;
   }
 
@@ -251,7 +255,7 @@ namespace CoSupport { namespace Tracing {
     out << "102 " << newEv.alias << " " ALIAS_RESOURCE " " << String::DoubleQuotedString(description) << " \""
         << static_cast<float>(color.r())/255 << " "
         << static_cast<float>(color.g())/255 << " "
-        << static_cast<float>(color.b())/255 << "\"\n";
+        << static_cast<float>(color.b())/255 << "\"\n" << std::flush;
     return &newEv;
   }
 
@@ -260,28 +264,33 @@ namespace CoSupport { namespace Tracing {
     Link &newLink = linkList.back();
     newLink.alias = getNextAlias();
 
+    LinkMap::const_iterator iterLink = linkMap.find(*name);
+    if (iterLink == linkMap.end()) {
+      linkMap[*name] = getNextKey();
+    }
+
     out << "1 " << newLink.alias << " " ALIAS_LINKDEF " " << String::DoubleQuotedString(name) << " \""
             << 0 << " "
             << 0 << " "
-            << 0 << "\"\n";
+            << 0 << "\"\n" << std::flush;
     return &newLink;
   }
 
-  void PajeTracer::traceLinkBegin(const char *name, Resource const *resource, int key, sc_core::sc_time const start){
-    out << "6 " << start.to_seconds() << " " ALIAS_LINKDEF " " ALIAS_CREATE_CON " " << resource->alias << " " << name << " "  << key << "\n";
+  void PajeTracer::traceLinkBegin(const char *name, Resource const *resource, sc_core::sc_time const start){
+    out << "6 " << start.to_seconds() << " " ALIAS_LINKDEF " " ALIAS_CREATE_CON " " << resource->alias << " " << name << " "  << linkMap.find(*name)->second << "\n" << std::flush;
   }
 
-  void PajeTracer::traceLinkEnd(const char *name, const char *resource, int key, sc_core::sc_time const end){
-    out << "7 " << end.to_seconds() << " " ALIAS_LINKDEF " " ALIAS_CREATE_CON " " << resource << " " << name << " " << key << "\n";
+  void PajeTracer::traceLinkEnd(const char *name, Resource const *resource, sc_core::sc_time const end){
+    out << "7 " << end.to_seconds() << " " ALIAS_LINKDEF " " ALIAS_CREATE_CON " " << resource->alias << " " << name << " " << linkMap.find(*name)->second << "\n" << std::flush;
   }
 
   void PajeTracer::traceActivity(Resource const *resource, Activity const *activity, sc_core::sc_time const start, sc_core::sc_time const end) {
       out << "3 " << start.to_seconds() << " " ALIAS_RESOURCE_STATE " " << resource->alias << " " << activity->alias << "\n";
-      out << "4 " << end.to_seconds() << " " ALIAS_RESOURCE_STATE " " << resource->alias << "\n";
+      out << "4 " << end.to_seconds() << " " ALIAS_RESOURCE_STATE " " << resource->alias << "\n" << std::flush;
   }
 
   void PajeTracer::traceEvent(Resource const *resouce, Event const *event, sc_core::sc_time const time) {
-    out << "2 " << time.to_seconds() << " " << event->alias << " " << resouce->alias << "\n";
+    out << "2 " << time.to_seconds() << " " << event->alias << " " << resouce->alias << "\n" << std::flush;
   }
 
 } } // namespace CoSupport::Tracing
