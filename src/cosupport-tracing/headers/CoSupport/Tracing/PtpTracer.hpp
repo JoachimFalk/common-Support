@@ -84,9 +84,8 @@ public:
    * if interleaving should be support we would need an identifier
    * but thats future work
    */
-  void start(){
-    startTimes.push_back(sc_core::sc_time_stamp());
-  }
+  void start()
+    { startTimes.push_back(sc_core::sc_time_stamp()); }
 
   /**
    * trace the end/stop of an unit
@@ -94,9 +93,8 @@ public:
    * if interleaving should be support we would need an identifier
    * but thats future work
    */
-  void stop(){
-    stopTimes.push_back(sc_core::sc_time_stamp());
-  }
+  void stop()
+    { stopTimes.push_back(sc_core::sc_time_stamp()); }
 
   /**
    * optionally you may want to signal another time of simulation startup
@@ -128,10 +126,10 @@ public:
   /**
    * trace the end of a ticket
    */
-  void stopOoo(const Ticket& ticket){
-    //  if (ticket>= stopTimes.size()){
-    //    stopTimes.resize(ticket+ 100, SC_ZERO_TIME);
-    //  }
+  void stopOoo(Ticket const ticket) {
+    assert(ticket < stopTimes.size());
+//  if (ticket>= stopTimes.size())
+//    stopTimes.resize(ticket+ 100, sc_core::SC_ZERO_TIME);
     stopTimes[ticket] = sc_core::sc_time_stamp();
   }
 private:
