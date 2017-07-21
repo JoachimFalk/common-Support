@@ -365,7 +365,7 @@ test_path_LDFLAGS		= $(AM_LDFLAGS)			\
 #  possible, too (e.g., Perl).
 noinst_SCRIPTS=autotest.sh
 
-CLEANFILES=$(noinst_SCRIPTS) $(nodist_pkgconfig_DATA)
+CLEANFILES=$(noinst_SCRIPTS) $(nodist_pkgconfig_DATA) $(BUILT_SOURCES)
 
 autotest.sh: $(srcdir)/autotest-sh
 	rm -f $@
