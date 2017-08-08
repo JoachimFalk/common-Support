@@ -197,7 +197,9 @@ libcosupport_systemc_la_SOURCES =				\
 	src/cosupport-systemc/cpp/PerformanceEvaluation.cpp	\
 	src/cosupport-systemc/cpp/systemc_time.cpp
 libcosupport_systemc_la_DEPENDENCIES =				\
-	libcosupport-base.la
+	libcosupport-base.la					\
+	libcosupport-smartptr.la				\
+	libcosupport-string.la
 libcosupport_systemc_la_LDFLAGS = $(AM_LDFLAGS)			\
 	-Wl,--no-undefined					\
 	$(filter-out %/libcosupport-systemc.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-systemc))
@@ -290,7 +292,8 @@ libcosupport_tracing_la_SOURCES =				\
 	src/cosupport-tracing/cpp/Tracer.cpp			\
 	src/cosupport-tracing/cpp/TracingFactory.cpp
 libcosupport_tracing_la_DEPENDENCIES =				\
-	libcosupport-base.la
+	libcosupport-base.la					\
+	libcosupport-string.la
 libcosupport_tracing_la_LDFLAGS = $(AM_LDFLAGS)			\
 	-Wl,--no-undefined					\
 	$(filter-out %/libcosupport-tracing.la, $(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --static --libs libcosupport-tracing))
