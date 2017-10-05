@@ -16,7 +16,7 @@ srctreemode_includedir=${srctreemode_srcdir}/src/cosupport-path/headers
 
 # pkg-config fields
 # human-readable name
-Name: libcosupport-string
+Name: libcosupport-path
 # human-readable description
 Description: Library of supporting infrastructure of the chair of HW/SW CoDesign at Uni Erlangen
 Version: @PACKAGE_VERSION@
