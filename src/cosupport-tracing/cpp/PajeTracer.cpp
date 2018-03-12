@@ -38,6 +38,7 @@
 #include <CoSupport/String/DoubleQuotedString.hpp>
 
 #include <iomanip>
+#include <stdexcept>
 
 namespace CoSupport { namespace Tracing {
 
