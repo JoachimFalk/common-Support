@@ -97,36 +97,51 @@ namespace Detail {
 //
 // ParamAccumulator: binds parameter via operator()
 // 
-template<template <class,class> class A, class F, class ML, class PL>
-struct ParamAccumulator;
-
-template<template <class,class> class A, class F, class ML = typename F::MissingList, class PL = Detail::ParamNode<void> >
+template<
+  template <class,class> class A,
+  class F,
+  bool  X  = false,
+  class ML = typename F::MissingList,
+  class PL = Detail::ParamNode<void>
+>
 struct ParamAccumulator
 {
-  typedef ParamAccumulator<A, F, ML, PL>    this_type;
-  typedef this_type                         accumulated_type;
-  
-  typedef ParamAccumulator<A, F,
+  typedef ParamAccumulator<A, F, X, ML, PL>         accumulated_type;
+  typedef ParamAccumulator<A, F, X,
     typename ML::ListTail,
     Detail::ParamNode<typename ML::ListHead, PL> >  accumulated_next_type;
-  
-  typedef typename accumulated_next_type::accumulated_type  return_type;
   
   F  f;
   PL pl;
   
   ParamAccumulator(const F& _f, const PL &_pl = PL()) : f(_f), pl(_pl) {}
   
-  return_type operator()(typename ML::ListHead p) {
-    return return_type(f, Detail::ParamNode<typename ML::ListHead, PL>(p, pl));
-  }
+  static
+  accumulated_type build(const F &_f, const PL &_pl = PL())
+    { return accumulated_type(_f, _pl); }
+
+  typename accumulated_next_type::accumulated_type operator()(typename ML::ListHead p)
+    { return accumulated_next_type::build(f, Detail::ParamNode<typename ML::ListHead, PL>(p, pl)); }
 };
 
 template<template <class,class> class A, class F, class PL>
-struct ParamAccumulator<A, F, Detail::MissingNode<void>, PL>
+struct ParamAccumulator<A, F, false, Detail::MissingNode<void>, PL>
 {
-  typedef ParamAccumulator<A, F, Detail::MissingNode<void>, PL> this_type;
-  typedef typename A<F,PL>::type                                accumulated_type;
+  typedef typename A<F,PL>::type                    accumulated_type;
+
+  static
+  accumulated_type build(const F &_f, const PL &_pl = PL())
+    { return accumulated_type(_f, _pl); }
+};
+
+template<template <class,class> class A, class F, class PL>
+struct ParamAccumulator<A, F, true, Detail::MissingNode<void>, PL>
+{
+  typedef typename A<F,PL>::result_type             accumulated_type;
+
+  static
+  accumulated_type build(const F &_f, const PL &_pl = PL())
+    { return A<F,PL>::build(_f, _pl); }
 };
 
 //
