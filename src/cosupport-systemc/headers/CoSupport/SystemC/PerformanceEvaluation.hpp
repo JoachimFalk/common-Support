@@ -57,11 +57,6 @@ private:
   /**
    * Singleton design pattern
    */
-  static std::auto_ptr<PerformanceEvaluation> singleton;
-
-  /**
-   * Singleton design pattern
-   */
   PerformanceEvaluation();
     
     
@@ -75,7 +70,7 @@ public:
   /**
    * Singleton design pattern
    */
-  static PerformanceEvaluation& getInstance();
+  static PerformanceEvaluation &getInstance();
   
   /**
    *
