@@ -79,7 +79,7 @@ public:
     if (file == cmp)
       open(def);
     else {
-      std::auto_ptr<FStream> fs(new FStream(file.c_str()));
+      std::unique_ptr<FStream> fs(new FStream(file.c_str()));
       if (!fs->is_open())
         throw FileNotOpenException(file.c_str());
       open(fs.release());

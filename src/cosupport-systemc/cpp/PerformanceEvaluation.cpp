@@ -36,13 +36,9 @@
 
 #include <CoSupport/SystemC/PerformanceEvaluation.hpp>
 #include <fstream>
+#include <memory>
 
 namespace CoSupport { namespace SystemC {
-
-/**
- *
- */
-std::auto_ptr<PerformanceEvaluation> PerformanceEvaluation::singleton(new PerformanceEvaluation());
 
 /**
  *
@@ -51,9 +47,10 @@ PerformanceEvaluation::PerformanceEvaluation()
   : measureStart(sc_core::SC_ZERO_TIME) {};
 
 /**
- *
+ * Singleton design pattern
  */
-PerformanceEvaluation& PerformanceEvaluation::getInstance(){
+PerformanceEvaluation &PerformanceEvaluation::getInstance() {
+  static std::unique_ptr<PerformanceEvaluation> singleton(new PerformanceEvaluation());
   return *singleton;
 }
 

@@ -39,6 +39,7 @@
 #include <CoSupport/Tracing/PtpTracer.hpp>
 #include <fstream>
 #include <vector>
+#include <memory>
 
 namespace CoSupport { namespace Tracing {
 
@@ -50,14 +51,11 @@ TracingFactory::TracingFactory()
 {};
 
 /**
- *
+ * Singleton design pattern
  */
-TracingFactory& TracingFactory::getInstance(){
-	/**
-   * Singleton design pattern
-   */
-	static std::auto_ptr<TracingFactory> singleton(new TracingFactory());
-	return *singleton;
+TracingFactory &TracingFactory::getInstance() {
+  static std::unique_ptr<TracingFactory> singleton(new TracingFactory());
+  return *singleton;
 }
 
 //

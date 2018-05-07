@@ -43,7 +43,7 @@
 #include <map>
 
 #include <boost/scoped_ptr.hpp>
-#include <memory> // for std::auto_ptr
+#include <memory> // for std::unique_ptr
 
 #include "Iter/BidirectionalTraversalVIf.hpp"
 #include "Iter/Detail/BidirectionalTraversalVImpl.hpp"
@@ -88,7 +88,7 @@ public:
   }
   // Default implementation.
   virtual VIter *implPLowerBound(T const &k) const {
-    std::auto_ptr<VIter >     iter(implPBegin());
+    std::unique_ptr<VIter >   iter(implPBegin());
     boost::scoped_ptr<VIter > end(implPEnd());
     for (; !iter->equal(*end); iter->increment())
       if (!(iter->dereference() < k)) //FIXME: comparision semantics may differ from interally implemented one
@@ -97,15 +97,15 @@ public:
   }
   // Default implementation.
   virtual VIter *implPUpperBound(T const &k) const {
-    std::auto_ptr<VIter > retval(implPLowerBound(k));
+    std::unique_ptr<VIter > retval(implPLowerBound(k));
     if (retval->dereference() == k)
       retval->increment();
     return retval.release();
   }
   // Default implementation.
   virtual VIter *implPFind(T const &k) const {
-    std::auto_ptr<VIter > retval(implPLowerBound(k));
-    std::auto_ptr<VIter > end(implPEnd());
+    std::unique_ptr<VIter > retval(implPLowerBound(k));
+    std::unique_ptr<VIter > end(implPEnd());
     if (!retval->equal(*end) && !(retval->dereference() == k))
       retval = end;
     return retval.release();

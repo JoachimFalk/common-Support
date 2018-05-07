@@ -43,7 +43,7 @@
 #include <list>
 
 #include <boost/scoped_ptr.hpp>
-#include <memory> // for std::auto_ptr
+#include <memory> // for std::unique_ptr
 
 #include "Iter/BidirectionalTraversalVIf.hpp"
 #include "Iter/Detail/BidirectionalTraversalVImpl.hpp"
@@ -71,7 +71,7 @@ public:
 
   // Default implementation.
   virtual VIter *implPErase(VIter const &iter1, const VIter &iter2) {
-    std::auto_ptr<VIter > iter(iter1.duplicate());
+    std::unique_ptr<VIter > iter(iter1.duplicate());
     while (!iter->equal(iter2)) {
       iter.reset(implPErase(*iter));
     }
