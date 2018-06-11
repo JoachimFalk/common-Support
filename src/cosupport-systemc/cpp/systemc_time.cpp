@@ -35,9 +35,11 @@
 
 #include <CoSupport/SystemC/systemc_time.hpp>
 
+#include <stdexcept>
+
 namespace CoSupport { namespace SystemC {
 
-sc_core::sc_time createSCTime(const char* timeString) throw (std::string) {
+sc_core::sc_time createSCTime(const char* timeString) {
   assert(timeString != nullptr);
   double value = -1;
   std::string unit;
@@ -51,13 +53,13 @@ sc_core::sc_time createSCTime(const char* timeString) throw (std::string) {
     std::string msg("Parsing Error: Unknown argument: <");
     msg += timeString;
     msg += "> How to creating a sc_core::sc_time from?";
-    throw msg;
+    throw std::runtime_error(msg.c_str());
   }
   if( data.fail() ){
     std::string msg("Parsing Error: Unknown argument: <");
     msg += timeString;
     msg += "> How to creating a sc_core::sc_time from?";
-    throw msg;
+    throw std::runtime_error(msg.c_str());
   }
   if(data.good()){
     data >> unit;

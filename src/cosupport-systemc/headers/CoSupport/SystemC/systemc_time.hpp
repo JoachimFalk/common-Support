@@ -57,7 +57,7 @@ namespace SystemC {
    *        and constructs a sc_core::sc_time object.
    */
   COSUPPORT_SYSTEMC_API
-  sc_core::sc_time createSCTime(const char* timeString) throw(std::string);
+  sc_core::sc_time createSCTime(const char* timeString);
 
 } // SystemC
 
