@@ -594,7 +594,7 @@ public:
     return *this;
   }
 
-  EventType *reset(EventListener *el = nullptr) {
+  EventWaiter *reset(EventListener *el = nullptr) {
     EventWaiter *ret = nullptr;
     if (!missing) {
       for(ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
