@@ -99,30 +99,26 @@ boost::filesystem::path getExecutableLocation(const char *argv0) {
     fsPrg = cwd.get() / fsPrg;
   }
   
-  // Handle magic .libs/lt-xxxx stuff
   {
     fs::path::iterator iter = fsPrg.end();
     if (iter != fsPrg.begin()) {
       --iter;
 #if BOOST_FILESYSTEM_VERSION > 2
-      if (iter->native().length() >= 3 && iter->native().substr(0,3) == "lt-")
+      std::string prgName = iter->native();
 #else 
-      if (iter->length() >= 3 && iter->substr(0,3) == "lt-")
+      std::string prgName = *iter;
 #endif
-      {
-        if (iter != fsPrg.begin()) {
-#if BOOST_FILESYSTEM_VERSION > 2
-          std::string prgNameNoLt = iter->native().substr(3, std::string::npos);
-#else 
-          std::string prgNameNoLt = iter->substr(3, std::string::npos);
-#endif
-          --iter;
-          if (*iter == ".libs") {
-            // ok fsPrg is of type .../.libs/lt-prgNameNoLt => change this to .../prgNameNoLt
-            fs::path fsPrgNew = fsPrg.parent_path().parent_path() / prgNameNoLt;
-            if (exists(fsPrgNew))
-              fsPrg = fsPrgNew;
-          }
+      if (iter != fsPrg.begin()) {
+        --iter;
+        if (*iter == ".libs") {
+          fs::path fsPrgNew = fsPrg.parent_path().parent_path() / 
+            ((prgName.length() >= 3 && prgName.substr(0,3) == "lt-")
+              // fsPrg is of type .../.libs/lt-prgNameNoLt => change this to .../prgNameNoLt
+              ? prgName.substr(3, std::string::npos)
+              // fsPrg is of type .../.libs/prgName => change this to .../prgName
+              : prgName);
+          if (exists(fsPrgNew))
+            fsPrg = fsPrgNew;
         }
       }
     }
