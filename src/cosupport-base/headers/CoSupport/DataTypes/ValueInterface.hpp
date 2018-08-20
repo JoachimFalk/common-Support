@@ -58,6 +58,8 @@
 
 #include <boost/static_assert.hpp>
 
+#include <boost/any.hpp>
+
 #include <ostream>
 #include <cassert>
 
@@ -158,43 +160,29 @@ namespace Detail {
     }
   };
 
+  struct value_type_boost_any_tag_t {};
+
+  COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(boost::any,value_type_boost_any_tag_t);
+
+  template <class D, typename T, typename CR>
+  class ValueTypeDecorator<value_type_boost_any_tag_t, D, T, CR> {
+    typedef ValueTypeDecorator<value_type_boost_any_tag_t, D, T, CR> this_type;
+
+  protected:
+    D       *getDerived()
+      { return static_cast<D *>(this); }
+
+    D const *getDerived() const
+      { return static_cast<D const *>(this); }
+  public:
+
+    bool empty() const
+      { return getDerived()->get().empty(); }
+    std::type_info const &type() const
+      { return getDerived()->get().type(); }
+  };
+
   struct value_type_pointer_tag_t {};
-/*
-  struct value_type_charptr_tag_t
-    : public value_type_pointer_tag_t {};
-
-  COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(char *,value_type_charptr_tag_t);
-  COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(const char *,value_type_charptr_tag_t);
-
-  template <class D, typename T, typename CR>
-  class ValueTypeDecorator<value_type_charptr_tag_t, D, T, CR> {
-    typedef ValueTypeDecorator<value_type_charptr_tag_t, D, T, CR> this_type;
-
-  protected:
-    D       *getDerived()
-      { return static_cast<D *>(this); }
-
-    D const *getDerived() const
-      { return static_cast<D const *>(this); }
-  public:
-  };
-
-  struct value_type_std_string_tag_t {};
-
-  COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(std::string,value_type_std_string_tag_t);
-
-  template <class D, typename T, typename CR>
-  class ValueTypeDecorator<value_type_std_string_tag_t, D, T, CR> {
-    typedef ValueTypeDecorator<value_type_std_string_tag_t, D, T, CR> this_type;
-  protected:
-    D       *getDerived()
-      { return static_cast<D *>(this); }
-
-    D const *getDerived() const
-      { return static_cast<D const *>(this); }
-  public:
-  };
- */
 
   struct value_type_plain_pointer_t
     : public value_type_pointer_tag_t {};
@@ -282,6 +270,43 @@ namespace Detail {
     }
   };
 
+  /*
+    struct value_type_charptr_tag_t
+      : public value_type_pointer_tag_t {};
+
+    COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(char *,value_type_charptr_tag_t);
+    COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(const char *,value_type_charptr_tag_t);
+
+    template <class D, typename T, typename CR>
+    class ValueTypeDecorator<value_type_charptr_tag_t, D, T, CR> {
+      typedef ValueTypeDecorator<value_type_charptr_tag_t, D, T, CR> this_type;
+
+    protected:
+      D       *getDerived()
+        { return static_cast<D *>(this); }
+
+      D const *getDerived() const
+        { return static_cast<D const *>(this); }
+    public:
+    };
+
+    struct value_type_std_string_tag_t {};
+
+    COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION(std::string,value_type_std_string_tag_t);
+
+    template <class D, typename T, typename CR>
+    class ValueTypeDecorator<value_type_std_string_tag_t, D, T, CR> {
+      typedef ValueTypeDecorator<value_type_std_string_tag_t, D, T, CR> this_type;
+    protected:
+      D       *getDerived()
+        { return static_cast<D *>(this); }
+
+      D const *getDerived() const
+        { return static_cast<D const *>(this); }
+    public:
+    };
+   */
+
 #undef COSUPPORT_CREATE_VALUETYPE_TAG_ASSOCIATION
 
 } // namespace Detail
@@ -345,6 +370,35 @@ public:
 template <class DD, typename TT, typename CRCR>
 std::ostream &operator << (std::ostream &out, ValueInterface<DD,TT,CRCR> const &x)
   { return out << x.get(); }
+
+
+//template <typename TT, class D>
+//TT *any_cast(ValueInterface<D, boost::any, boost::any const &> *operand) {
+//  if (!operand)
+//    return nullptr;
+//  boost::any const &value = operand->get();
+//  return boost::any_cast<TT>(&value);
+//}
+
+template <typename TT, class D>
+TT *any_cast(ValueInterface<D, boost::any, boost::any const &> const *operand) {
+  if (!operand)
+    return nullptr;
+  boost::any const &value = operand->get();
+  return boost::any_cast<TT>(&value);
+}
+
+//template <typename TT, class D>
+//TT any_cast(ValueInterface<D, boost::any, boost::any const &> &operand) {
+//  boost::any const &value = operand.get();
+//  return boost::any_cast<TT>(value);
+//}
+
+template <typename TT, class D>
+TT any_cast(ValueInterface<D, boost::any, boost::any const &> const &operand) {
+  boost::any const &value = operand.get();
+  return boost::any_cast<TT>(value);
+}
 
 template <class D1, typename T1, typename TCR1, class D2, typename T2, typename TCR2>
 bool
