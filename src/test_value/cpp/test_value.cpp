@@ -32,16 +32,19 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#include <iostream>
-#include <string>
-#include <cassert>
-#include <cmath>
-
 #include <CoSupport/compatibility-glue/nullptr.h>
 
 #include <CoSupport/DataTypes/ValueInterface.hpp>
 #include <CoSupport/DataTypes/ValueVirtual.hpp>
 #include <CoSupport/DataTypes/ValueFacade.hpp>
+
+#include <boost/any.hpp>
+
+#include <iostream>
+#include <string>
+#include <cassert>
+#include <cmath>
+#include <typeinfo>
 
 /// This class implements the interface for a storage which contains a value of type T.
 /// \example test_value.cpp
@@ -616,6 +619,18 @@ int main(int argc, char *argv[]) {
     CHECK_OP_WW(*cpb2,<=,ra); CHECK_OP_WW(*cpb2,<=,cra1); CHECK_OP_WW(*cpb2,<=,*pa); CHECK_OP_WW(*cpb2,<=,*cpa1);
     CHECK_OP_WW(*cpb2,> ,ra); CHECK_OP_WW(*cpb2,> ,cra1); CHECK_OP_WW(*cpb2,> ,*pa); CHECK_OP_WW(*cpb2,> ,*cpa1);
     CHECK_OP_WW(*cpb2,>=,ra); CHECK_OP_WW(*cpb2,>=,cra1); CHECK_OP_WW(*cpb2,>=,*pa); CHECK_OP_WW(*cpb2,>=,*cpa1);
+  }
+  {
+    Value<boost::any> something;
+
+    assert(something.empty());
+    assert(something.type() == typeid(void));
+    assert(any_cast<const int>(&something) == nullptr);
+    something = 4711;
+    assert(!something.empty());
+    assert(something.type() == typeid(int));
+    assert(any_cast<int>(something) == 4711);
+    assert(*any_cast<const int>(&something) == 4711);
   }
   return 0;
 }
