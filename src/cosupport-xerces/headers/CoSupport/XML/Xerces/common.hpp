@@ -628,7 +628,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
 
       static
       void apply(XN::DOMNode *node, const XMLCh *const attr, value_type value) {
-        if (value.isDefined)
+        if (value.isDefined())
           SetNodeValueFrom<T>::apply(createAttrNode(node, attr), value.get());
         else
           destroyAttrNode(node, attr);
