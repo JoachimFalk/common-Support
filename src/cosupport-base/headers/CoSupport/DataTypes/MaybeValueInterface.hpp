@@ -105,6 +105,8 @@ protected:
   D const *getDerived() const
     { return static_cast<D const *>(this); }
 public:
+  typedef T value_type;
+
   template <class DD, typename TT, typename CRCR>
   D &operator = (const MaybeValueInterface<DD, TT, CRCR> &val)
     { this->set(val); return *getDerived(); }

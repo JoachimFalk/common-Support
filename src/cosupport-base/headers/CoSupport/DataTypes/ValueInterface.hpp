@@ -111,6 +111,8 @@ namespace Detail {
     D const *getDerived() const
       { return static_cast<D const *>(this); }
   public:
+    typedef T value_type;
+
 #ifndef _MSC_VER
     D &operator +=(T const &x)
       { getDerived()->set(getDerived()->get() + x); return *getDerived(); }
