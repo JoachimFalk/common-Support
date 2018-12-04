@@ -46,7 +46,7 @@
 
 #define BITS_TYPE(TYPE) (sizeof(TYPE)*CHAR_BIT)
 
-#ifdef HAVE_LONG_LONG
+#ifdef COSUPPORT_HAVE_LONG_LONG
 # define MAX_STYPE(TYPE) ((long long) ((unsigned long long) -1 >>			\
                             ((sizeof(unsigned long long)-sizeof(TYPE))*CHAR_BIT+1)))
 # define MIN_STYPE(TYPE) ((long long) ((long long) -1 <<				\
@@ -59,7 +59,7 @@
 //# define LONGLONG_MIN  MIN_STYPE(long long)
 //# define ULONGLONG_MAX MAX_UTYPE(unsigned long long)
 
-#else // !defined(HAVE_LONG_LONG)
+#else // !defined(COSUPPORT_HAVE_LONG_LONG)
 # define MAX_STYPE(TYPE) ((long) ((unsigned long) -1 >>					\
                             ((sizeof(unsigned long)-sizeof(TYPE))*CHAR_BIT+1)))
 # define MIN_STYPE(TYPE) ((long) ((long) -1 <<						\
@@ -67,7 +67,7 @@
 # define MAX_UTYPE(TYPE) ((unsigned long) ((unsigned long) -1 >>			\
                             ((sizeof(unsigned long)-sizeof(TYPE))*CHAR_BIT)))
 # define MIN_UTYPE(TYPE) ((unsigned long) 0 )
-#endif // !defined(HAVE_LONG_LONG)
+#endif // !defined(COSUPPORT_HAVE_LONG_LONG)
 
 #define ISSIGNED_TYPE(TYPE) ((TYPE)-1 < 0)
 
