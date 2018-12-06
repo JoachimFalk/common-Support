@@ -35,10 +35,12 @@
  */
 
 #include <CoSupport/Tracing/PtpTracer.hpp>
+
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <map>
+#include <algorithm>
 
 namespace CoSupport { namespace Tracing {
 
@@ -83,19 +85,14 @@ void PtpTracer::createCsvReport(std::ostream &result, std::ostream &absoluteStre
       std::string start_stop = "";
 
       // sum up latencies
-      size_t countMax = 0;
-      if(stopTimes.size() < startTimes.size()){
-        countMax = stopTimes.size();
-      }else{
-        countMax = startTimes.size();
-      }
-      for(size_t count = 0; count < countMax; ++count){
-        const sc_core::sc_time& start = startTimes[count];
-        const sc_core::sc_time& stop  = stopTimes[count];
-        if(&start == 0){
-          std::cout<<"strange error for " << this->name << " no startTime, but a stopTime (" << stop << "!" << " last start was: " << startTimes[count-1] << std::endl;
-          std::cout<<"and it has: " << startTimes.size() << " start and stop: " << stopTimes.size() << std::endl;
-        }
+      size_t const countMax = std::min(startTimes.size(), stopTimes.size());
+      for (size_t count = 0; count < countMax; ++count) {
+        const sc_core::sc_time &start = startTimes[count];
+        const sc_core::sc_time &stop  = stopTimes[count];
+//      if(&start == 0){
+//        std::cout<<"strange error for " << this->name << " no startTime, but a stopTime (" << stop << "!" << " last start was: " << startTimes[count-1] << std::endl;
+//        std::cout<<"and it has: " << startTimes.size() << " start and stop: " << stopTimes.size() << std::endl;
+//      }
         if(start > stop) {
           continue;
         }
