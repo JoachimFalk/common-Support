@@ -14,12 +14,25 @@ err_log=stderr.log
 
 # testing binaries
 bins="test_arrayfifo"
-bins="$bins test_interval"
-bins="$bins test_nested_event_lists"
+bins="$bins test_color"
+bins="$bins test_dbgstream"
 bins="$bins test_event_and_list"
 bins="$bins test_event_or_list"
 bins="$bins test_facade"
+bins="$bins test_idpool"
+bins="$bins test_interval"
+bins="$bins test_list"
+bins="$bins test_maybevalue"
+bins="$bins test_modulo"
+bins="$bins test_nested_event_lists"
+bins="$bins test_path"
+bins="$bins test_po"
+bins="$bins test_projection"
+bins="$bins test_set"
+bins="$bins test_stl_output_for_xxx"
 bins="$bins test_typename"
+bins="$bins test_value"
+bins="$bins test_vector"
 bins="$bins test_xerces"
 
 for bin in $bins;
