@@ -94,12 +94,12 @@ void testModuloGroup(T1 const &m1 = T1(), T2 const &m2 = T2(), T3 const &m3 = T3
   // assert(a1 == 2);
   // assert(a2 == 3);
   // assert(a3 == 4);
-  assert(a1 += 3 == 0);
-  assert(a2 += 4 == 2);
-  assert(a3 += -1 == 3);
-  assert(a1 -= a3 == 2);
-  assert(a3 -= 4 == 4);
-  assert(a2 -= a3 == 3);
+  assert((a1 += 3) == 0);
+  assert((a2 += 4) == 2);
+  assert((a3 += -1) == 3);
+  assert((a1 -= a3) == 2);
+  assert((a3 -= 4) == 4);
+  assert((a2 -= a3) == 3);
 }
 
 template <typename T>
