@@ -36,7 +36,7 @@
 #include <CoSupport/String/UniquePool.hpp>
 #include <CoSupport/String/Concat.hpp>
 
-#include <assert.h>
+#include <cassert>
 
 namespace CoSupport { namespace String {
 

@@ -38,8 +38,8 @@
 
 #include <sstream>
 #include <stdexcept>
+#include <cassert>
 
-#include <assert.h>
 #include <string.h>
 #include <errno.h>
 

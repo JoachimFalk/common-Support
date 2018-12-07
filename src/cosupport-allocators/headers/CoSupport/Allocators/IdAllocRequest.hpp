@@ -37,7 +37,7 @@
 #define _INCLUDED_COSUPPORT_ALLOCATORS_IDALLOCREQUEST_HPP
 
 #include <string>
-#include <assert.h>
+#include <cassert>
 
 #include <CoSupport/limits.h>
 #include <CoSupport/Math/string_hash.hpp>

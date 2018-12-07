@@ -49,7 +49,7 @@
 
 #include <boost/utility/enable_if.hpp>
 
-#include <assert.h>
+#include <cassert>
 
 namespace CoSupport { namespace DataTypes {
 
