@@ -38,6 +38,7 @@
 #define _INCLUDED_COSUPPORT_DATATYPES_VALUEINTERFACE_HPP
 
 #include "../compatibility-glue/nullptr.h"
+#include "../commondefs.h"
 
 #include <boost/utility/enable_if.hpp>
 #include <boost/mpl/or.hpp>
@@ -432,7 +433,7 @@ typename boost::enable_if<boost::is_base_of<
     typename Detail::ValueTypeClassifier<T2>::tag
   >, bool>::type
 operator ==(
-    std::nullptr_t null,
+    std::nullptr_t null COSUPPORT_ATTRIBUTE_UNUSED,
     const ValueInterface<D2, T2, TCR2> &rhs)
   { assert(null == nullptr); return !rhs.get(); }
 template <class D1, typename T1, typename TCR1, typename T2>
@@ -460,7 +461,7 @@ typename boost::enable_if<boost::is_base_of<
   >, bool>::type
 operator ==(
     const ValueInterface<D1, T1, TCR1> &lhs,
-    std::nullptr_t null)
+    std::nullptr_t null COSUPPORT_ATTRIBUTE_UNUSED)
   { assert(null == nullptr); return !lhs.get(); }
 
 template <class D1, typename T1, typename TCR1, class D2, typename T2, typename TCR2>
@@ -493,7 +494,7 @@ typename boost::enable_if<boost::is_base_of<
     typename Detail::ValueTypeClassifier<T2>::tag
   >, bool>::type
 operator !=(
-    std::nullptr_t null,
+    std::nullptr_t null COSUPPORT_ATTRIBUTE_UNUSED,
     const ValueInterface<D2, T2, TCR2> &rhs)
   { assert(null == nullptr); return rhs.get(); }
 template <class D1, typename T1, typename TCR1, typename T2>
@@ -521,7 +522,7 @@ typename boost::enable_if<boost::is_base_of<
   >, bool>::type
 operator !=(
     const ValueInterface<D1, T1, TCR1> &lhs,
-    std::nullptr_t null)
+    std::nullptr_t null COSUPPORT_ATTRIBUTE_UNUSED)
   { assert(null == nullptr); return lhs.get(); }
 
 
