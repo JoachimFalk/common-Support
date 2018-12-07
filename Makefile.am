@@ -173,7 +173,7 @@ libcosupport_xerces_la_SOURCES =				\
 	src/cosupport-xerces/cpp/Handler.cpp			\
 	src/cosupport-xerces/cpp/StdIstreamInputSource.cpp	\
 	src/cosupport-xerces/cpp/StdIstreamInputStream.cpp	\
-	src/cosupport-xerces/cpp/StdOstreamFormatTarget.cpp	\
+	src/cosupport-xerces/cpp/StdOstreamFormatTarget.cpp
 libcosupport_xerces_la_DEPENDENCIES =				\
 	libcosupport-base.la					\
 	libcosupport-initializer.la				\
