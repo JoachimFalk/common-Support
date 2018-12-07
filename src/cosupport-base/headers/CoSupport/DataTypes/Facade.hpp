@@ -49,6 +49,8 @@
 
 #include <boost/utility/enable_if.hpp>
 
+#include <assert.h>
+
 namespace CoSupport { namespace DataTypes {
 
 template <class T, template <class> class C>     class FacadeRef;
@@ -238,13 +240,13 @@ bool operator ==(
   { return FacadeCoreAccess::getImplBase(lhs) == rhs.get(); }
 template <class T2, template <class> class C2>
 bool operator ==(
-    std::nullptr_t null,
+    std::nullptr_t null COSUPPORT_ATTRIBUTE_UNUSED,
     FacadePtr<T2,C2> const &rhs)
   { assert(null == nullptr); return !rhs; }
 template <class T1, template <class> class C1>
 bool operator ==(
     FacadePtr<T1,C1> const &lhs,
-    std::nullptr_t null)
+    std::nullptr_t null COSUPPORT_ATTRIBUTE_UNUSED)
   { assert(null == nullptr); return !lhs; }
 
 template <class T1, template <class> class C1, class T2, template <class> class C2>
@@ -274,13 +276,13 @@ bool operator !=(
   { return FacadeCoreAccess::getImplBase(lhs) != rhs.get(); }
 template <class T2, template <class> class C2>
 bool operator !=(
-    std::nullptr_t null,
+    std::nullptr_t null COSUPPORT_ATTRIBUTE_UNUSED,
     FacadePtr<T2,C2> const &rhs)
   { assert(null == nullptr); return rhs; }
 template <class T1, template <class> class C1>
 bool operator !=(
     FacadePtr<T1,C1> const &lhs,
-    std::nullptr_t null)
+    std::nullptr_t null COSUPPORT_ATTRIBUTE_UNUSED)
   { assert(null == nullptr); return lhs; }
 
 template <class T1, template <class> class C1, class T2, template <class> class C2>
