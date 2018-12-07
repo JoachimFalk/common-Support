@@ -43,7 +43,7 @@ using String::asStr;
 using String::strAs;
   
 Color::Color(size_t color, size_t attr) :
-  escape("\e[" + asStr(attr) + ";" + asStr(color) + "m")
+  escape("\027[" + asStr(attr) + ";" + asStr(color) + "m")
 {
   // std::cerr << "Enter Color::Color(size_t color, size_t attr)" << std::endl;
   // std::cerr << "this = " << this << std::endl;
@@ -53,7 +53,7 @@ Color::Color(size_t color, size_t attr) :
 }
 
 Color::Color(size_t attr) :
-  escape("\e[" + asStr(attr) + "m")
+  escape("\027[" + asStr(attr) + "m")
 {  
   // std::cerr << "Enter Color::Color(size_t attr)" << std::endl;
   // std::cerr << "this = " << this << std::endl;

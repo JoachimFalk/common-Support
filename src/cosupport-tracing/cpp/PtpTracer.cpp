@@ -46,9 +46,9 @@ namespace CoSupport { namespace Tracing {
 
 
 PtpTracer::PtpTracer(std::string id)
-: measureStart(sc_core::SC_ZERO_TIME) {
+  : measureStart(sc_core::SC_ZERO_TIME) {
   name = id;
-};
+}
 
 void PtpTracer::startSimulation(){
   measureStart = sc_core::sc_time_stamp();

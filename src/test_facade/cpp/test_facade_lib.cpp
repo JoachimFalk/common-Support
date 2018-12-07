@@ -53,7 +53,7 @@ namespace Detail {
 
     virtual ~AImpl() {}
   };
-  IMPL_INTRUSIVE_REFCOUNT_PTR(AImpl);
+  IMPL_INTRUSIVE_REFCOUNT_PTR(AImpl)
 
   class BImpl: public AImpl {
     typedef BImpl this_type;
@@ -61,7 +61,7 @@ namespace Detail {
     virtual this_type *dup() const
       { return new this_type(*this); }
   };
-  IMPL_INTRUSIVE_REFCOUNT_PTR(BImpl);
+  IMPL_INTRUSIVE_REFCOUNT_PTR(BImpl)
 
   class CImpl: public AImpl {
     typedef CImpl this_type;
@@ -69,7 +69,7 @@ namespace Detail {
     virtual this_type *dup() const
       { return new this_type(*this); }
   };
-  IMPL_INTRUSIVE_REFCOUNT_PTR(CImpl);
+  IMPL_INTRUSIVE_REFCOUNT_PTR(CImpl)
 
 } // namespace Detail
 

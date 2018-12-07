@@ -72,7 +72,7 @@ namespace Detail {
     result_type apply(const A &a) { return op *a; }                           \
   };
 
-  MAKE_UN_OP(OpNeg, -);
+  MAKE_UN_OP(OpNeg, -)
 
 #undef MAKE_UN_OP
 

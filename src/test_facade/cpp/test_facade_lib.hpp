@@ -43,13 +43,13 @@ namespace Something {
 namespace Detail {
 
   class AImpl;
-  DECL_INTRUSIVE_REFCOUNT_PTR(AImpl, PAImpl);
+  DECL_INTRUSIVE_REFCOUNT_PTR(AImpl, PAImpl)
 
   class BImpl;
-  DECL_INTRUSIVE_REFCOUNT_PTR(BImpl, PBImpl);
+  DECL_INTRUSIVE_REFCOUNT_PTR(BImpl, PBImpl)
 
   class CImpl;
-  DECL_INTRUSIVE_REFCOUNT_PTR(CImpl, PCImpl);
+  DECL_INTRUSIVE_REFCOUNT_PTR(CImpl, PCImpl)
 
 } // namespace Detail
 

@@ -210,6 +210,6 @@ namespace std {
   proj(std::vector<T1, A1> const &v, std::vector<T2, A2> const &idx)
     { return CoSupport::DataTypes::Projection<std::vector<T1, A1> const &, std::vector<T2, A2> const &>(v, idx); }
 
-};
+} // namespace std
 
 #endif // _INCLUDED_COSUPPORT_DATATYPES_VECTORPROJECTION_HPP
