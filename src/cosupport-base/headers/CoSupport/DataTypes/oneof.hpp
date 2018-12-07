@@ -36,7 +36,7 @@
 #ifndef _INCLUDED_COSUPPORT_DATATYPES_ONEOF_HPP
 #define _INCLUDED_COSUPPORT_DATATYPES_ONEOF_HPP
 
-#include <assert.h>
+#include <cassert>
 #include <new>
 #include <iostream>
 #include <typeinfo>

@@ -33,7 +33,7 @@
  * ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 
 #include <CoSupport/DataTypes/ArrayFifo.hpp>
