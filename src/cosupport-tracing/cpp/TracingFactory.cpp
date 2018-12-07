@@ -48,7 +48,7 @@ namespace CoSupport { namespace Tracing {
  *
  */
 TracingFactory::TracingFactory()
-{};
+  {}
 
 /**
  * Singleton design pattern

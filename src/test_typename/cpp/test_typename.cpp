@@ -42,7 +42,7 @@ using namespace CoSupport::String;
 
 class A;
 
-COSUPPORT_REGISTER_TYPENAME(A);
+COSUPPORT_REGISTER_TYPENAME(A)
 
 template <typename T>
 void check_typename_for(const std::string &expected) {

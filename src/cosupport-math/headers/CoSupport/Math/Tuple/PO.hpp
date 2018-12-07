@@ -661,6 +661,6 @@ namespace std {
     CoSupport::Math::Tuple::Detail::is_po_type<TB> >, bool>::type
   operator> (const pair<TA, TB> &, const pair<TA, TB> &);
 
-};
+} // namespace std
 
 #endif // _INCLUDED_COSUPPORT_MATH_TUPLE_PO_HPP

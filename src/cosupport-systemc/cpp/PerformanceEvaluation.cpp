@@ -44,7 +44,7 @@ namespace CoSupport { namespace SystemC {
  *
  */
 PerformanceEvaluation::PerformanceEvaluation()
-  : measureStart(sc_core::SC_ZERO_TIME) {};
+  : measureStart(sc_core::SC_ZERO_TIME) {}
 
 /**
  * Singleton design pattern

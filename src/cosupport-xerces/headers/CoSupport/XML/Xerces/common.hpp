@@ -644,7 +644,7 @@ namespace CoSupport { namespace XML { namespace Xerces {
         { destroyAttrNode(node, attr); }
     };
 
-  };
+  } // namespace Detail
 
   /// Convert value in node to type T.
   /// This throws an exception if the conversion is invalid.

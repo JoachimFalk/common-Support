@@ -85,10 +85,10 @@ namespace Detail {
       { return *aIter op *bIter; }                                            \
   };
 
-  MAKE_BIN_OP(OpAdd, +);
-  MAKE_BIN_OP(OpSub, -);
-  MAKE_BIN_OP(OpMul, *);
-  MAKE_BIN_OP(OpDiv, /);
+  MAKE_BIN_OP(OpAdd, +)
+  MAKE_BIN_OP(OpSub, -)
+  MAKE_BIN_OP(OpMul, *)
+  MAKE_BIN_OP(OpDiv, /)
 
 #undef MAKE_BIN_OP
 
