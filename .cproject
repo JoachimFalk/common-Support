@@ -67,6 +67,7 @@
 							</tool>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gpp.1333118161" name="GCC C++ Compiler" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gpp">
 								<option id="gnu.cpp.compiler.option.include.paths.789764801" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Support/obj/src/cosupport-base/headers}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Support/src/cosupport-base/headers}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Support/src/cosupport-allocators/headers}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Support/src/cosupport-initializer/headers}&quot;"/>
@@ -79,23 +80,34 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Support/src/cosupport-systemc/headers}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Support/src/cosupport-tracing/headers}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Support/src/cosupport-xerces/headers}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Support/obj/src/cosupport-base/headers}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1146284546" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-allocators/headers"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-base/headers"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-initializer/cpp"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-initializer/headers"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-math/cpp"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-math/headers"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-path/cpp"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-path/headers"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-random/cpp"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-random/headers"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-smartptr/cpp"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-smartptr/headers"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-streams/cpp"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-streams/headers"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-string/cpp"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-string/headers"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-systemc/cpp"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-systemc/headers"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-tracing/cpp"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-tracing/headers"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-xerces/cpp"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-xerces/headers"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
