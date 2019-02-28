@@ -62,10 +62,10 @@ template <class D, class T, class CR>            class MaybeValueInterface;
 
 template <class T>
 struct FacadeTraits {
-  typedef const FacadeRef<T, boost::add_const> ConstRef;
-  typedef FacadeRef<T, boost::remove_const>    Ref;
-  typedef FacadePtr<T, boost::add_const>       ConstPtr;
-  typedef FacadePtr<T, boost::remove_const>    Ptr;
+  typedef const FacadeRef<T, ::boost::add_const> ConstRef;
+  typedef FacadeRef<T, ::boost::remove_const>    Ref;
+  typedef FacadePtr<T, ::boost::add_const>       ConstPtr;
+  typedef FacadePtr<T, ::boost::remove_const>    Ptr;
 };
 
 template <class T>
@@ -179,7 +179,7 @@ public:
     : storage(ptr.storage) {}
   template <class DD, typename TT, typename CRCR>
   FacadePtr(ValueInterface<DD,TT,CRCR> const &value,
-      typename boost::enable_if<boost::is_convertible<
+      typename ::boost::enable_if<::boost::is_convertible<
         TT,
         this_type>, void
       >::type *dummy = nullptr)
@@ -484,10 +484,10 @@ public:
     { this->set(val); return *this; }
 #endif // defined(_MSC_VER)
 
-  Detail::FacadeProxyPtr<T, boost::add_const, const this_type> operator &() const
-    { return Detail::FacadeProxyPtr<T, boost::add_const, const this_type>(this); }
-  Detail::FacadeProxyPtr<T, boost::remove_const, this_type> operator &()
-    { return Detail::FacadeProxyPtr<T, boost::remove_const, this_type>(this); }
+  Detail::FacadeProxyPtr<T, ::boost::add_const, const this_type> operator &() const
+    { return Detail::FacadeProxyPtr<T, ::boost::add_const, const this_type>(this); }
+  Detail::FacadeProxyPtr<T, ::boost::remove_const, this_type> operator &()
+    { return Detail::FacadeProxyPtr<T, ::boost::remove_const, this_type>(this); }
 };
 
 template <class Derived, class Impl, class Base = Detail::Storage<Impl> >
@@ -524,10 +524,10 @@ public:
   Ptr toPtr()
     { return Ptr(this); }
 
-  Detail::FacadeProxyPtr<Derived, boost::add_const, const Derived> operator &() const
-    { return Detail::FacadeProxyPtr<Derived, boost::add_const, const Derived>(static_cast<const Derived *>(this)); }
-  Detail::FacadeProxyPtr<Derived, boost::remove_const, Derived> operator &()
-    { return Detail::FacadeProxyPtr<Derived, boost::remove_const, Derived>(static_cast<Derived *>(this)); }
+  Detail::FacadeProxyPtr<Derived, ::boost::add_const, const Derived> operator &() const
+    { return Detail::FacadeProxyPtr<Derived, ::boost::add_const, const Derived>(static_cast<const Derived *>(this)); }
+  Detail::FacadeProxyPtr<Derived, ::boost::remove_const, Derived> operator &()
+    { return Detail::FacadeProxyPtr<Derived, ::boost::remove_const, Derived>(static_cast<Derived *>(this)); }
 private:
   // default no copy no assign
   FacadeFoundation(const this_type &);
