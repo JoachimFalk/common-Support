@@ -135,10 +135,10 @@ template <
   class DERIVED,                          // The derived set container being constructed
   template <class CONTAINER> class ITER,  // The iterator used by the derived set container
   class KEY,
-  class REFERENCE = typename boost::add_reference<KEY>::type,
-  class CONSTREFERENCE = typename boost::add_reference<typename boost::add_const<KEY>::type>::type,
-  class PTR = typename boost::add_pointer<KEY>::type,
-  class CONSTPTR = typename boost::add_pointer<typename boost::add_const<KEY>::type>::type
+  class REFERENCE = typename ::boost::add_reference<KEY>::type,
+  class CONSTREFERENCE = typename ::boost::add_reference<typename ::boost::add_const<KEY>::type>::type,
+  class PTR = typename ::boost::add_pointer<KEY>::type,
+  class CONSTPTR = typename ::boost::add_pointer<typename ::boost::add_const<KEY>::type>::type
 >
 class SetInterface {
   typedef SetInterface                                     this_type;
@@ -161,8 +161,8 @@ public:
   typedef ITER<DERIVED const> iterator;
   typedef ITER<DERIVED const> const_iterator;
 
-  typedef std::ptrdiff_t                                        difference_type;
-  typedef typename boost::make_unsigned<difference_type>::type  size_type;
+  typedef std::ptrdiff_t                                          difference_type;
+  typedef typename ::boost::make_unsigned<difference_type>::type  size_type;
 
 // NOTE: This code is disabled as std::set<T>::iterator and std::set<T>::const_iterator are the same type!
 //iterator begin()
@@ -211,7 +211,7 @@ public:
   insert(iterator iter, const value_type &v)
     { return derived().implInsert(v).first; }
   template <class IITER>
-  typename boost::disable_if<boost::is_integral<IITER>, void>::type
+  typename ::boost::disable_if<::boost::is_integral<IITER>, void>::type
   insert(IITER iter1, IITER const &iter2) {
     for (; iter1 != iter2; ++iter1)
       derived().implInsert(*iter1);

@@ -52,10 +52,10 @@ namespace CoSupport { namespace DataTypes {
 
 template <
   class T,
-  class R = typename boost::add_reference<T>::type,
-  class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
-  class P = typename boost::add_pointer<T>::type,
-  class CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
+  class R = typename ::boost::add_reference<T>::type,
+  class CR = typename ::boost::add_reference<typename ::boost::add_const<T>::type>::type,
+  class P = typename ::boost::add_pointer<T>::type,
+  class CP = typename ::boost::add_pointer<typename ::boost::add_const<T>::type>::type
 >
 class SetVirtualInterface {
   typedef SetVirtualInterface<T,R,CR,P,CP> this_type;
@@ -72,24 +72,24 @@ public:
   // Default implementation.
   virtual size_t implSize() const {
     size_t                          retval = 0;
-    boost::scoped_ptr<VIter > iter(implPBegin());
-    boost::scoped_ptr<VIter > end(implPEnd());
+    ::boost::scoped_ptr<VIter > iter(implPBegin());
+    ::boost::scoped_ptr<VIter > end(implPEnd());
     for (; !iter->equal(*end); iter->increment())
       ++retval;
     return retval;
   }
   // Default implementation.
   virtual void implErase(VIter const &iter1, const VIter &iter2) {
-    boost::scoped_ptr<VIter > iter(iter1.duplicate());
+    ::boost::scoped_ptr<VIter > iter(iter1.duplicate());
     while (!iter->equal(iter2)) {
-      boost::scoped_ptr<VIter > iterl(iter->duplicate()); iter->increment();
+      ::boost::scoped_ptr<VIter > iterl(iter->duplicate()); iter->increment();
       implErase(*iterl);
     }
   }
   // Default implementation.
   virtual VIter *implPLowerBound(T const &k) const {
     std::unique_ptr<VIter >   iter(implPBegin());
-    boost::scoped_ptr<VIter > end(implPEnd());
+    ::boost::scoped_ptr<VIter > end(implPEnd());
     for (; !iter->equal(*end); iter->increment())
       if (!(iter->dereference() < k)) //FIXME: comparision semantics may differ from interally implemented one
         break;
@@ -116,10 +116,10 @@ namespace Detail {
 
   template <
     class T,
-    class R = typename boost::add_reference<T>::type,
-    class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
-    class P = typename boost::add_pointer<T>::type,
-    class CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
+    class R = typename ::boost::add_reference<T>::type,
+    class CR = typename ::boost::add_reference<typename ::boost::add_const<T>::type>::type,
+    class P = typename ::boost::add_pointer<T>::type,
+    class CP = typename ::boost::add_pointer<typename ::boost::add_const<T>::type>::type
   >
   class SetVirtualImpl: public SetVirtualInterface<T,R,CR,P,CP> {
     typedef SetVirtualImpl<T,R,CR,P,CP>       this_type;
@@ -189,7 +189,7 @@ namespace Detail {
     this_type &operator =(this_type const &rhs) { impl.reset(rhs.impl->duplicate()); return *this; }
   private:
     typedef typename CONTAINER::Impl::VIter Impl;
-    boost::scoped_ptr<Impl> impl;
+    ::boost::scoped_ptr<Impl> impl;
 
     SetVirtualIter(Impl *impl): impl(impl) {}
 
@@ -203,10 +203,10 @@ namespace Detail {
   template <
     class    D,
     typename T,
-    typename R  = typename boost::add_reference<T>::type,
-    typename CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
-    typename P  = typename boost::add_pointer<T>::type,
-    typename CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
+    typename R  = typename ::boost::add_reference<T>::type,
+    typename CR = typename ::boost::add_reference<typename ::boost::add_const<T>::type>::type,
+    typename P  = typename ::boost::add_pointer<T>::type,
+    typename CP = typename ::boost::add_pointer<typename ::boost::add_const<T>::type>::type
   >
   class SetVirtualUser
   : public SetInterface<D,SetVirtualIter,T,R,CR,P,CP>
@@ -232,11 +232,11 @@ namespace Detail {
           retval.second);
     }
     void                          implErase(const typename this_type::iterator &iter)
-      { return _impl()->implErase(*iter.impl); }
+      { _impl()->implErase(*iter.impl); }
     size_t                        implSize() const
       { return _impl()->implSize(); }
     void                          implErase(typename this_type::iterator iter1, const typename this_type::iterator &iter2)
-      { return _impl()->implErase(*iter1.impl, *iter2.impl); }
+      { _impl()->implErase(*iter1.impl, *iter2.impl); }
     typename this_type::iterator  implLowerBound(const typename this_type::key_type &k) const
       { return _impl()->implPLowerBound(k); }
     typename this_type::iterator  implUpperBound(const typename this_type::key_type &k) const
@@ -250,10 +250,10 @@ namespace Detail {
 /// This class implements the interface for a std::set containing values of type T.
 template <
   typename T,
-  typename R  = typename boost::add_reference<T>::type,
-  typename CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
-  typename P  = typename boost::add_pointer<T>::type,
-  typename CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
+  typename R  = typename ::boost::add_reference<T>::type,
+  typename CR = typename ::boost::add_reference<typename ::boost::add_const<T>::type>::type,
+  typename P  = typename ::boost::add_pointer<T>::type,
+  typename CP = typename ::boost::add_pointer<typename ::boost::add_const<T>::type>::type
 >
 class SetVirtual
 : public Detail::SetVirtualUser<SetVirtual<T,R,CR,P,CP>,T,R,CR,P,CP>
@@ -265,7 +265,7 @@ class SetVirtual
   friend class Detail::SetVirtualUser<this_type,T,R,CR,P,CP>;
   template <class CONTAINER> friend class Detail::SetVirtualIter;
 protected:
-  boost::scoped_ptr<typename base_type::Impl> impl;
+  ::boost::scoped_ptr<typename base_type::Impl> impl;
 
   typename base_type::Impl *getImpl() const { return impl.get(); }
 public:
