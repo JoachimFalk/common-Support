@@ -111,7 +111,8 @@ namespace Detail {
 
 //  template <class T, template <class> class C> friend class FacadeRef;
     template <class T, template <class> class C> friend class FacadePtr;
-    template <class IImpl>                       friend IImpl *FacadeCoreAccess::getImplBase(Storage<IImpl> const &);
+    template <class IImpl>
+      friend IImpl *FacadeCoreAccess::getImplBase(Detail::Storage<IImpl> const &);
   public:
     template <class T>
     struct _StoragePtrKind { typedef ::boost::intrusive_ptr<T> type; };
@@ -156,7 +157,8 @@ class FacadePtr {
   typedef value_type          &deref_type;
 
   template <class TT, template <class> class CC> friend class FacadePtr;
-  template <class TT, template <class> class CC> friend typename TT::_StorageType::ImplType *FacadeCoreAccess::getImplBase(FacadePtr<TT,CC> const &);
+  template <class TT, template <class> class CC>
+    friend typename TT::_StorageType::ImplType *FacadeCoreAccess::getImplBase(FacadePtr<TT,CC> const &);
 
   typedef deref_type (this_type::*unspecified_bool_type)() const;
 private:
