@@ -47,10 +47,10 @@ namespace CoSupport { namespace DataTypes {
 
 template <
   class T,
-  class R = typename boost::add_reference<T>::type,
-  class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
-  class P = typename boost::add_pointer<T>::type,
-  class CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
+  class R = typename ::boost::add_reference<T>::type,
+  class CR = typename ::boost::add_reference<typename ::boost::add_const<T>::type>::type,
+  class P = typename ::boost::add_pointer<T>::type,
+  class CP = typename ::boost::add_pointer<typename ::boost::add_const<T>::type>::type
 >
 class ListFacadeInterface
 : public ListVirtualInterface<T,R,CR,P,CP>,
@@ -68,10 +68,10 @@ namespace Detail {
 
   template <
     class T,
-    class R = typename boost::add_reference<T>::type,
-    class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
-    class P = typename boost::add_pointer<T>::type,
-    class CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
+    class R = typename ::boost::add_reference<T>::type,
+    class CR = typename ::boost::add_reference<typename ::boost::add_const<T>::type>::type,
+    class P = typename ::boost::add_pointer<T>::type,
+    class CP = typename ::boost::add_pointer<typename ::boost::add_const<T>::type>::type
   >
   class ListFacadeImpl: public ListFacadeInterface<T,R,CR,P,CP> {
     typedef ListFacadeImpl<T,R,CR,P,CP>       this_type;
@@ -86,7 +86,7 @@ namespace Detail {
     typedef Iter::Detail::BidirectionalTraversalVFImpl<
       R,
       typename std::list<T>::iterator,
-      boost::intrusive_ptr<this_type> >     VIterImpl;
+      ::boost::intrusive_ptr<this_type> >   VIterImpl;
 
     typename base_type::VIter *implPBegin()
       { return new VIterImpl(this, list.begin()); }
@@ -118,10 +118,10 @@ namespace Detail {
 /// \example test_set.cpp
 template <
   typename T,
-  typename R  = typename boost::add_reference<T>::type,
-  typename CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
-  typename P  = typename boost::add_pointer<T>::type,
-  typename CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
+  typename R  = typename ::boost::add_reference<T>::type,
+  typename CR = typename ::boost::add_reference<typename ::boost::add_const<T>::type>::type,
+  typename P  = typename ::boost::add_pointer<T>::type,
+  typename CP = typename ::boost::add_pointer<typename ::boost::add_const<T>::type>::type
 >
 class ListFacade
 : public FacadeFoundation<

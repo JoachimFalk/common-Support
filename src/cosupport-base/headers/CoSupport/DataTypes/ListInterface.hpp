@@ -65,10 +65,10 @@ template <
   class DERIVED,                          // The derived list container being constructed
   template <class CONTAINER> class ITER,  // The iterator used by the derived list container
   class VALUE,
-  class REFERENCE = typename boost::add_reference<VALUE>::type,
-  class CONSTREFERENCE = typename boost::add_reference<typename boost::add_const<VALUE>::type>::type,
-  class PTR_ = typename boost::add_pointer<VALUE>::type,
-  class CONSTPTR_ = typename boost::add_pointer<typename boost::add_const<VALUE>::type>::type
+  class REFERENCE = typename ::boost::add_reference<VALUE>::type,
+  class CONSTREFERENCE = typename ::boost::add_reference<typename ::boost::add_const<VALUE>::type>::type,
+  class PTR_ = typename ::boost::add_pointer<VALUE>::type,
+  class CONSTPTR_ = typename ::boost::add_pointer<typename ::boost::add_const<VALUE>::type>::type
 >
 class ListInterface {
   typedef ListInterface                                     this_type;
@@ -90,8 +90,8 @@ public:
   typedef ITER<DERIVED>       iterator;
   typedef ITER<DERIVED const> const_iterator;
 
-  typedef std::ptrdiff_t                                        difference_type;
-  typedef typename boost::make_unsigned<difference_type>::type  size_type;
+  typedef std::ptrdiff_t                                          difference_type;
+  typedef typename ::boost::make_unsigned<difference_type>::type  size_type;
 
   iterator begin()
     { return derived().implBegin(); }
@@ -135,7 +135,7 @@ public:
       iter = insert(iter, v);
   }
   template <class IITER>
-  typename boost::disable_if<boost::is_integral<IITER>, void>::type
+  typename ::boost::disable_if<::boost::is_integral<IITER>, void>::type
   insert(iterator iter, IITER first, IITER const &last) {
     for (; first != last; ++first)
       iter = insert(iter, *first);
