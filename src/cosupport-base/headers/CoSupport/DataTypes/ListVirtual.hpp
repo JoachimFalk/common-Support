@@ -52,10 +52,10 @@ namespace CoSupport { namespace DataTypes {
 
 template <
   class T,
-  class R = typename boost::add_reference<T>::type,
-  class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
-  class P = typename boost::add_pointer<T>::type,
-  class CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
+  class R = typename ::boost::add_reference<T>::type,
+  class CR = typename ::boost::add_reference<typename ::boost::add_const<T>::type>::type,
+  class P = typename ::boost::add_pointer<T>::type,
+  class CP = typename ::boost::add_pointer<typename ::boost::add_const<T>::type>::type
 >
 class ListVirtualInterface {
   typedef ListVirtualInterface<T,R,CR,P,CP> this_type;
@@ -83,10 +83,10 @@ namespace Detail {
 
   template <
     class T,
-    class R = typename boost::add_reference<T>::type,
-    class CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
-    class P = typename boost::add_pointer<T>::type,
-    class CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
+    class R = typename ::boost::add_reference<T>::type,
+    class CR = typename ::boost::add_reference<typename ::boost::add_const<T>::type>::type,
+    class P = typename ::boost::add_pointer<T>::type,
+    class CP = typename ::boost::add_pointer<typename ::boost::add_const<T>::type>::type
   >
   class ListVirtualImpl: public ListVirtualInterface<T,R,CR,P,CP> {
     typedef ListVirtualImpl<T,R,CR,P,CP>      this_type;
@@ -144,20 +144,20 @@ namespace Detail {
     friend class ListVirtualUser;
     friend class boost::iterator_core_access;
     friend class Iter::Detail::BidirectionalTraversalBase<CONTAINER>;
-    friend class ListVirtualIter<typename boost::add_const<CONTAINER>::type>;
+    friend class ListVirtualIter<typename ::boost::add_const<CONTAINER>::type>;
   public:
     ListVirtualIter(): impl(nullptr) {}
     ListVirtualIter(this_type const &rhs)
       : impl(rhs.impl->duplicate()) {}
     template <class CC>
-    ListVirtualIter(ListVirtualIter<CC> const &rhs,typename boost::enable_if<
-      boost::is_same<typename boost::remove_const<CONTAINER>::type, CC>, void *>::type _dummy = nullptr)
+    ListVirtualIter(ListVirtualIter<CC> const &rhs,typename ::boost::enable_if<
+      ::boost::is_same<typename ::boost::remove_const<CONTAINER>::type, CC>, void *>::type _dummy = nullptr)
       : impl(rhs.impl->duplicate()) {}
 
     this_type &operator =(this_type const &rhs) { impl.reset(rhs.impl->duplicate()); return *this; }
   private:
     typedef typename CONTAINER::Impl::VIter Impl;
-    boost::scoped_ptr<Impl> impl;
+    ::boost::scoped_ptr<Impl> impl;
 
     ListVirtualIter(Impl *impl): impl(impl) {}
 
@@ -171,10 +171,10 @@ namespace Detail {
   template <
     class    D,
     typename T,
-    typename R  = typename boost::add_reference<T>::type,
-    typename CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
-    typename P  = typename boost::add_pointer<T>::type,
-    typename CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
+    typename R  = typename ::boost::add_reference<T>::type,
+    typename CR = typename ::boost::add_reference<typename ::boost::add_const<T>::type>::type,
+    typename P  = typename ::boost::add_pointer<T>::type,
+    typename CP = typename ::boost::add_pointer<typename ::boost::add_const<T>::type>::type
   >
   class ListVirtualUser
   : public ListInterface<D,ListVirtualIter,T,R,CR,P,CP>
@@ -206,10 +206,10 @@ namespace Detail {
 /// This class implements the interface for a std::list containing values of type T.
 template <
   typename T,
-  typename R  = typename boost::add_reference<T>::type,
-  typename CR = typename boost::add_reference<typename boost::add_const<T>::type>::type,
-  typename P  = typename boost::add_pointer<T>::type,
-  typename CP = typename boost::add_pointer<typename boost::add_const<T>::type>::type
+  typename R  = typename ::boost::add_reference<T>::type,
+  typename CR = typename ::boost::add_reference<typename ::boost::add_const<T>::type>::type,
+  typename P  = typename ::boost::add_pointer<T>::type,
+  typename CP = typename ::boost::add_pointer<typename ::boost::add_const<T>::type>::type
 >
 class ListVirtual
 : public Detail::ListVirtualUser<ListVirtual<T,R,CR,P,CP>,T,R,CR,P,CP>
@@ -221,7 +221,7 @@ class ListVirtual
   friend class Detail::ListVirtualUser<this_type,T,R,CR,P,CP>;
   template <class CONTAINER> friend class Detail::ListVirtualIter;
 protected:
-  boost::scoped_ptr<typename base_type::Impl> impl;
+  ::boost::scoped_ptr<typename base_type::Impl> impl;
 
   typename base_type::Impl *getImpl() const { return impl.get(); }
 public:
