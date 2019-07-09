@@ -52,6 +52,9 @@ public:
 
   compose_property_map(FPMap const &f, GPMap const &g)
     : f(f), g(g) {}
+
+  reference operator[](const key_type &key) const
+    { return get(f, get(g, key)); }
 public:
   FPMap f;
   GPMap g;
