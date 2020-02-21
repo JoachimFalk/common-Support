@@ -75,6 +75,7 @@ namespace CoSupport { namespace Tracing {
     : out(traceFilename)
     , aliasCounter(26) // a-z are for fixed aliases
     , colorCounter(0)
+    , keyCounter(0)
   {
     out << std::fixed << std::setprecision(9) <<
         "%EventDef PajeDefineContainerType 100\n"
@@ -291,7 +292,7 @@ namespace CoSupport { namespace Tracing {
   }
 
   void PajeTracer::traceEvent(Resource const *resouce, Event const *event, sc_core::sc_time const time) {
-    out << "2 " << time.to_seconds() << " " << event->alias << " " << resouce->alias << "\n" << std::flush;
+    out << "2 " << time.to_seconds() << " " << event->alias << " " << resouce->alias << " -\n" << std::flush;
   }
 
 } } // namespace CoSupport::Tracing
