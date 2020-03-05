@@ -47,7 +47,7 @@ namespace CoSupport { namespace String {
   class Color {
     typedef Color this_type;
   public:
-    Color(uint32_t color)
+    Color(uint32_t color = 0)
       : color(color) {}
     Color(unsigned char r, unsigned char g, unsigned char b)
       : color(
@@ -65,7 +65,7 @@ namespace CoSupport { namespace String {
     bool operator <(this_type const &rhs) const
       { return color < rhs.color; }
   protected:
-    const uint32_t color;
+    uint32_t color;
   };
 
   COSUPPORT_STRING_API

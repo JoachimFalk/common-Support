@@ -44,21 +44,21 @@ namespace CoSupport { namespace Tracing {
 
   using String::Color;
   using String::lookupColor;
-  using String::getColor;
-  using namespace std;
+//using namespace std;
 
   struct PajeTracer::Resource {
     std::string   alias;
-    Resource     *parent;
-    ResourceMap   children;
+    ResourceMap   resourceMap;
   };
 
   struct PajeTracer::Activity {
     std::string   alias;
+    String::Color color;
   };
 
   struct PajeTracer::Event {
     std::string   alias;
+    String::Color color;
   };
 
   struct PajeTracer::Link {
@@ -183,28 +183,32 @@ namespace CoSupport { namespace Tracing {
   }
 
   Color PajeTracer::getNextColor()
-    { return getColor(colorCounter++); }
+    { return String::getColor(colorCounter++); }
 
   int PajeTracer::getNextKey() {
     return (keyCounter++);
   }
 
-  PajeTracer::Resource *PajeTracer::registerResource(const char *name, Resource *parent)
-    { return registerResource(name, getNextColor(), parent); }
+  PajeTracer::Resource *PajeTracer::registerResource(const char *name, bool useCache, Resource *parent) {
+    if (useCache) {
+      ResourceMap &parentResourceMap = parent
+          ? parent->resourceMap
+          : resourceMap;
 
-  PajeTracer::Resource *PajeTracer::registerResource(const char *name, String::Color const color, Resource *parent) {
-    ResourceMap &parentResourceMap = parent
-        ? parent->children
-        : topResouces;
+      std::pair<ResourceMap::iterator, bool> success =
+          parentResourceMap.insert(ResourceMap::value_type(name, nullptr));
+      if (success.second)
+        success.first->second = registerResource(name, parent);
+      return success.first->second;
+    } else
+      return registerResource(name, parent);
+  }
 
-    std::pair<ResourceIter, bool> success =
-        parentResourceMap.insert(ResourceMap::value_type(name, Resource()));
-    if (!success.second)
-      throw std::runtime_error(("Can't register duplicate resource "+std::string(name)).c_str());
-    Resource &newRes = success.first->second;
+  PajeTracer::Resource *PajeTracer::registerResource(const char *name, Resource *parent) {
+    resourceList.push_back(Resource());
+    Resource &newRes = resourceList.back();
     newRes.alias  = getNextAlias();
-    newRes.parent = parent;
-    out << "103 0 " <<  newRes.alias << " " ALIAS_RESOURCE " "
+    out << "103 0 " << newRes.alias << " " ALIAS_RESOURCE " "
         << (parent ? parent->alias : "d") << " "
         << String::DoubleQuotedString(name) << "\n" << std::flush;
     return &newRes;
@@ -212,14 +216,11 @@ namespace CoSupport { namespace Tracing {
 
   PajeTracer::Activity *PajeTracer::registerActivity(const char *description, bool useCache) {
     if (useCache) {
-      std::pair<ActivityMap::iterator, bool> insertStatus(
-          activityMap.find(description), true);
-      if (insertStatus.first == activityMap.end()) {
-        insertStatus = activityMap.insert(ActivityMap::value_type(
-            description, registerActivity(description, getNextColor())));
-        assert(insertStatus.second && "Oops: description not in map, but insertion failed?!");
-      }
-      return insertStatus.first->second;
+      std::pair<ActivityMap::iterator, bool> success =
+          activityMap.insert(ActivityMap::value_type(description, nullptr));
+      if (success.second)
+        success.first->second = registerActivity(description, getNextColor());
+      return success.first->second;
     } else
       return registerActivity(description, getNextColor());
   }
@@ -228,6 +229,7 @@ namespace CoSupport { namespace Tracing {
     activityList.push_back(Activity());
     Activity &newAct = activityList.back();
     newAct.alias = getNextAlias();
+    newAct.color = color;
     out << "1 " << newAct.alias << " " ALIAS_RESOURCE_STATE " " << String::DoubleQuotedString(description) << " \""
         << static_cast<float>(color.r())/255 << " "
         << static_cast<float>(color.g())/255 << " "
@@ -237,14 +239,11 @@ namespace CoSupport { namespace Tracing {
 
   PajeTracer::Event *PajeTracer::registerEvent(const char *description, bool useCache) {
     if (useCache) {
-      std::pair<EventMap::iterator, bool> insertStatus(
-          eventMap.find(description), true);
-      if (insertStatus.first == eventMap.end()) {
-        insertStatus = eventMap.insert(EventMap::value_type(
-            description, registerEvent(description, getNextColor())));
-        assert(insertStatus.second && "Oops: description not in map, but insertion failed?!");
-      }
-      return insertStatus.first->second;
+      std::pair<EventMap::iterator, bool> success =
+          eventMap.insert(EventMap::value_type(description, nullptr));
+      if (success.second)
+        success.first->second =  registerEvent(description, getNextColor());
+      return success.first->second;
     } else
       return registerEvent(description, getNextColor());
   }
@@ -253,7 +252,7 @@ namespace CoSupport { namespace Tracing {
     eventList.push_back(Event());
     Event &newEv = eventList.back();
     newEv.alias = getNextAlias();
-
+    newEv.color = color;
     out << "102 " << newEv.alias << " " ALIAS_RESOURCE " " << String::DoubleQuotedString(description) << " \""
         << static_cast<float>(color.r())/255 << " "
         << static_cast<float>(color.g())/255 << " "
@@ -277,6 +276,11 @@ namespace CoSupport { namespace Tracing {
             << 0 << "\"\n" << std::flush;
     return &newLink;
   }
+
+  Color const &PajeTracer::getColor(Activity *a) const
+    { return a->color; }
+  Color const &PajeTracer::getColor(Event    *e) const
+    { return e->color; }
 
   void PajeTracer::traceLinkBegin(const char *name, Resource const *resource, sc_core::sc_time const start){
     out << "6 " << start.to_seconds() << " " ALIAS_LINKDEF " " ALIAS_CREATE_CON " " << resource->alias << " " << name << " "  << linkMap.find(*name)->second << "\n" << std::flush;
