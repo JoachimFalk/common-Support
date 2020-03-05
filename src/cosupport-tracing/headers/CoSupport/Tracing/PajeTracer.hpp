@@ -56,13 +56,16 @@ namespace CoSupport { namespace Tracing {
 
     PajeTracer(const std::string &traceFilename);
 
+    Resource *registerResource(const char *name, bool useCache, Resource *parent = nullptr);
     Resource *registerResource(const char *name, Resource *parent = nullptr);
-    Resource *registerResource(const char *name, String::Color const color, Resource *parent = nullptr);
     Activity *registerActivity(const char *description, bool useCache = false);
     Activity *registerActivity(const char *description, String::Color const color);
     Event    *registerEvent(const char *description, bool useCache = false);
     Event    *registerEvent(const char *description, String::Color const color);
     Link     *registerLink(const char *name);
+
+    String::Color const &getColor(Activity *a) const;
+    String::Color const &getColor(Event    *e) const;
 
     void traceLinkBegin(const char *name, Resource const *resource, sc_core::sc_time const start);
     void traceLinkEnd(const char *name, Resource const *resource, sc_core::sc_time const end);
@@ -73,13 +76,16 @@ namespace CoSupport { namespace Tracing {
   protected:
     std::ofstream out;
 
+    typedef std::list<Resource>                 ResourceList;
+    ResourceList                                resourceList;
 
-    typedef std::map<std::string, Resource>     ResourceMap;
-    typedef ResourceMap::iterator               ResourceIter;
-    ResourceMap topResouces;
+    /// Use this map to cache resource name to their Resource
+    /// if useCache is true and parent is nullptr in registerResource.
+    typedef std::map<std::string, Resource *>   ResourceMap;
+    ResourceMap                                 resourceMap;
 
     typedef std::list<Activity>                 ActivityList;
-    ActivityList activityList;
+    ActivityList                                activityList;
     /// Use this map to cache activity descriptions to their Activity
     /// if useCache is true in registerActivity.
     typedef std::map<std::string, Activity *>   ActivityMap;
