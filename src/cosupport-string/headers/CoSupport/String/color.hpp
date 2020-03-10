@@ -64,6 +64,11 @@ namespace CoSupport { namespace String {
 
     bool operator <(this_type const &rhs) const
       { return color < rhs.color; }
+
+    bool operator ==(this_type const &rhs) const
+      { return color == rhs.color; }
+    bool operator !=(this_type const &rhs) const
+      { return color != rhs.color; }
   protected:
     uint32_t color;
   };
