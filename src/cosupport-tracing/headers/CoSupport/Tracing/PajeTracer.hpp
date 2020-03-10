@@ -1,7 +1,7 @@
 //  -*- tab-width:8; intent-tabs-mode:nil;  c-basic-offset:2; -*-
 // vim: set sw=2 ts=8 sts=2 et:
 /*
- * Copyright (c) 2017 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2017-2020 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  *
  *   This library is free software; you can redistribute it and/or modify it under
@@ -47,63 +47,172 @@
 namespace CoSupport { namespace Tracing {
 
   class PajeTracer {
+  protected:
+    struct ContainerType;
+    struct ActivityType;
+    struct EventType;
+    struct GaugeType;
   public:
 
-    struct Resource;
+    typedef String::Color Color;
+    typedef GaugeType     Gauge;
+
+    struct Container;
     struct Activity;
     struct Event;
     struct Link;
 
     PajeTracer(const std::string &traceFilename);
 
-    Resource *registerResource(const char *name, bool useCache, Resource *parent = nullptr);
-    Resource *registerResource(const char *name, Resource *parent = nullptr);
-    Activity *registerActivity(const char *description, bool useCache = false);
-    Activity *registerActivity(const char *description, String::Color const color);
-    Event    *registerEvent(const char *description, bool useCache = false);
-    Event    *registerEvent(const char *description, String::Color const color);
-    Link     *registerLink(const char *name);
+    Container *getOrCreateContainer(
+        const char *name
+      , Container  *parent = nullptr
+      , const char *type = nullptr)
+      { return registerContainer(name, true, parent, type); }
+    Container *createContainer(
+        const char *name
+      , Container  *parent = nullptr
+      , const char *type = nullptr)
+      { return registerContainer(name, false, parent, type); }
 
-    String::Color const &getColor(Activity *a) const;
-    String::Color const &getColor(Event    *e) const;
+    Activity *getOrCreateActivity(
+        const char *name
+      , Container  *parent = nullptr
+      , const char *type = nullptr)
+      { return registerActivity(name, nullptr, true, parent, type); }
+    Activity *getOrCreateActivity(
+        const char *name
+      , Color       color
+      , Container  *parent = nullptr
+      , const char *type = nullptr)
+      { return registerActivity(name, &color, true, parent, type); }
+    Activity *createActivity(
+        const char *name
+      , Container  *parent = nullptr
+      , const char *type = nullptr)
+      { return registerActivity(name, nullptr, false, parent, type); }
+    Activity *createActivity(
+        const char *name
+      , Color       color
+      , Container  *parent = nullptr
+      , const char *type = nullptr)
+      { return registerActivity(name, &color, false, parent, type); }
 
-    void traceLinkBegin(const char *name, Resource const *resource, sc_core::sc_time const start);
-    void traceLinkEnd(const char *name, Resource const *resource, sc_core::sc_time const end);
-    void traceActivity(Resource const *resouce, Activity const *activity, sc_core::sc_time const start, sc_core::sc_time const end);
-    void traceEvent(Resource const *resouce, Event const *event, sc_core::sc_time const time);
+    Event *getOrCreateEvent(
+        const char *name
+      , Container  *parent = nullptr
+      , const char *type = nullptr)
+      { return registerEvent(name, nullptr, true, parent, type); }
+    Event *getOrCreateEvent(
+        const char *name
+      , Color       color
+      , Container  *parent = nullptr
+      , const char *type = nullptr)
+      { return registerEvent(name, &color, true, parent, type); }
+    Event *createEvent(
+        const char *name
+      , Container  *parent = nullptr
+      , const char *type = nullptr)
+      { return registerEvent(name, nullptr, false, parent, type); }
+    Event *createEvent(
+        const char *name
+      , Color       color
+      , Container  *parent = nullptr
+      , const char *type = nullptr)
+      { return registerEvent(name, &color, false, parent, type); }
+
+    Gauge *getOrCreateGauge(
+        const char *type
+      , Container  *parent = nullptr)
+      { return registerGauge(type, parent); }
+
+//  Link      *registerLink(const char *name);
+
+    Color const &getColor(Activity *a) const;
+    Color const &getColor(Event    *e) const;
+
+//  void traceLinkBegin(const char *name, Container const *resource, sc_core::sc_time const start);
+//  void traceLinkEnd(const char *name, Container const *resource, sc_core::sc_time const end);
+    void traceActivity(Container const *resouce, Activity const *activity, sc_core::sc_time const start, sc_core::sc_time const end);
+    void traceEvent(Container const *resouce, Event const *event, sc_core::sc_time const time);
+    void traceGauge(Container const *resouce, Gauge const *gauge, sc_core::sc_time const time, double value);
 
     ~PajeTracer();
   protected:
+
+    Container *registerContainer(
+        const char *name
+      , bool        unique
+      , Container  *parent
+      , const char *type);
+
+    Activity  *registerActivity(
+        const char  *name
+      , Color       *color
+      , bool         unique
+      , Container   *parent
+      , const char  *type);
+
+    Event     *registerEvent(
+        const char  *name
+      , Color       *color
+      , bool         unique
+      , Container   *parent
+      , const char  *type);
+
+    Gauge     *registerGauge(
+        const char *type
+      , Container  *parent);
+
     std::ofstream out;
 
-    typedef std::list<Resource>                 ResourceList;
-    ResourceList                                resourceList;
+    typedef std::list<ContainerType> ContainerTypeList;
+    ContainerTypeList                containerTypeList;
+    typedef std::map<std::string
+      , ContainerType *>             ContainerTypeMap;
+    ContainerTypeMap                 containerTypeMap;
 
+    typedef std::list<ActivityType>  ActivityTypeList;
+    ActivityTypeList                 activityTypeList;
+    typedef std::map<std::string
+      , ActivityType *>              ActivityTypeMap;
+
+
+    typedef std::list<EventType>     EventTypeList;
+    EventTypeList                    eventTypeList;
+    typedef std::map<
+        std::pair<std::string, Color>
+      , EventType *>                 EventTypeMap;
+
+    typedef std::list<GaugeType>     GaugeTypeList;
+    GaugeTypeList                    gaugeTypeList;
+    typedef std::map<std::string
+      , GaugeType *>                 GaugeTypeMap;
+
+    typedef std::list<Container>     ContainerList;
+    ContainerList                    containerList;
+    typedef std::map<std::string
+      , Container *>                 ContainerMap;
     /// Use this map to cache resource name to their Resource
-    /// if useCache is true and parent is nullptr in registerResource.
-    typedef std::map<std::string, Resource *>   ResourceMap;
-    ResourceMap                                 resourceMap;
+    /// if useCache is true and parent is nullptr in registerContainer.
+    ContainerMap                     containerMap;
 
-    typedef std::list<Activity>                 ActivityList;
-    ActivityList                                activityList;
-    /// Use this map to cache activity descriptions to their Activity
-    /// if useCache is true in registerActivity.
-    typedef std::map<std::string, Activity *>   ActivityMap;
-    ActivityMap                                 activityMap;
+    typedef std::list<Activity>      ActivityList;
+    ActivityList                     activityList;
+    typedef std::map<
+        std::pair<std::string, std::string>
+      , Activity *>                  ActivityMap;
 
-    typedef std::map<char, int>                 LinkMap;
-    LinkMap                                     linkMap;
+    typedef std::list<Event>         EventList;
+    EventList                        eventList;
+    typedef std::map<
+        std::pair<std::string, std::string>
+      , Event *>                     EventMap;
 
-    typedef std::list<Event>                    EventList;
-    EventList                                   eventList;
-    /// Use this map to cache event descriptions to their Event
-    /// if useCache is true in registerEvent.
-    typedef std::map<std::string, Event *>      EventMap;
-    EventMap                                    eventMap;
-
-    typedef std::list<Link>                     LinkList;
-    LinkList                                    linkList;
-
+    typedef std::list<Link>          LinkList;
+    LinkList                         linkList;
+    typedef std::map<char, int>      LinkMap;
+    LinkMap                          linkMap;
 
     unsigned long aliasCounter;
     std::string getNextAlias();
@@ -113,12 +222,6 @@ namespace CoSupport { namespace Tracing {
 
     unsigned int keyCounter;
     int getNextKey();
-
-/*  // Map from gate state string to event type alias
-    typedef std::map<std::string, std::string> GateEventMap;
-    GateEventMap gateEventMap;
-    unsigned int gateEventNextColor; */
-
   };
 
 } } // namespace CoSupport::Tracing
