@@ -43,6 +43,7 @@
 
 #include <map>
 #include <list>
+#include <fstream>
 
 namespace CoSupport { namespace Tracing {
 
