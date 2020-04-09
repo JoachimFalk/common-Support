@@ -19,7 +19,7 @@ typedef Detail::IntervalLower<unsigned int, true, false> UILower;
     typedef T IT; \
     IT x I; C; \
     assert(!"WTF?! " #T " x " #I "; " #C "; passed!"); \
-  } catch (Exception::E) { \
+  } catch (Exception::E const &) { \
   } catch (...) { \
     assert(!"WTF?! " #T " x " #I "; " #C "; failed with unexpected exception!"); \
   }

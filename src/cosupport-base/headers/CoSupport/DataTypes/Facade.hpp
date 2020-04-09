@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2014 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2020 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -109,8 +109,8 @@ namespace Detail {
   class Storage {
     typedef Storage<Impl>                     this_type;
 
-//  template <class T, template <class> class C> friend class FacadeRef;
-    template <class T, template <class> class C> friend class FacadePtr;
+//  template <class T, template <class> class C> friend class DataTypes::FacadeRef;
+    template <class T, template <class> class C> friend class DataTypes::FacadePtr;
     template <class IImpl>
       friend IImpl *FacadeCoreAccess::getImplBase(Detail::Storage<IImpl> const &);
   public:
