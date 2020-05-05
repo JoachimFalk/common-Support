@@ -82,7 +82,6 @@ nobase_include_HEADERS = \
 	CoSupport/DataTypes/VectorInterface.hpp \
 	CoSupport/DataTypes/VectorProjection.hpp \
 	CoSupport/endianess.h \
-	CoSupport/Lambda/functor.hpp \
 	CoSupport/limits.h \
 	CoSupport/sassert.h \
 	CoSupport/Type/constpropagate.hpp \
