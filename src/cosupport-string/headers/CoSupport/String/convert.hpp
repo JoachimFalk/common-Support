@@ -94,6 +94,30 @@ std::string asStr(const T &value) {
 
 template <>
 inline
+std::string asStr<char>(const char &value)
+  { return std::string(1, value); }
+inline
+std::string asStr(const char value)
+  { return std::string(1, value); }
+
+template <>
+inline
+std::string asStr<signed char>(const signed char &value)
+  { return std::string(1, static_cast<char>(value)); }
+inline
+std::string asStr(const signed char value)
+  { return std::string(1, static_cast<char>(value)); }
+
+template <>
+inline
+std::string asStr<short>(const short &value)
+  { return std::to_string(value); }
+inline
+std::string asStr(const short value)
+  { return std::to_string(value); }
+
+template <>
+inline
 std::string asStr<int>(const int &value)
   { return std::to_string(value); }
 inline
@@ -115,6 +139,22 @@ std::string asStr<long long>(const long long &value)
 inline
 std::string asStr(const long long value)
   { return std::to_string(value); }
+
+template <>
+inline
+std::string asStr<unsigned char>(const unsigned char &value)
+  { return std::string(1, static_cast<char>(value)); }
+inline
+std::string asStr(const unsigned char value)
+  { return std::string(1, static_cast<char>(value)); }
+
+template <>
+inline
+std::string asStr<unsigned short>(const unsigned short &value)
+  { return std::to_string(static_cast<unsigned>(value)); }
+inline
+std::string asStr(const unsigned short value)
+  { return std::to_string(static_cast<unsigned>(value)); }
 
 template <>
 inline
@@ -165,24 +205,5 @@ std::string asStr(const long double  value)
   { return std::to_string(value); }
 
 } } // namespace CoSupport::String
-
-/*
-#include <iostream>
-
-using namespace CoSupport;
-
-int main() {
-  
-  // parameter type automatically deduced
-  std::string s = string_cast(99);
-  std::cout << s << std::endl;
-  
-  // need to provide return type!
-  double d = string_cast<double>(" 50.5e-1 blub");
-  std::cout << d << std::endl;
-
-  return 0;
-}
-*/
 
 #endif // _INCLUDED_COSUPPORT_STRING_CONVERT_HPP
