@@ -108,6 +108,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-tracing/headers"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-xerces/cpp"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cosupport-xerces/headers"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="testcases/src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
