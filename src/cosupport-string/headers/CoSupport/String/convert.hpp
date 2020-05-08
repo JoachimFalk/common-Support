@@ -1,6 +1,6 @@
 // vim: set sw=2 ts=8:
 /*
- * Copyright (c) 2004-2009 Hardware-Software-CoDesign, University of
+ * Copyright (c) 2004-2020 Hardware-Software-CoDesign, University of
  * Erlangen-Nuremberg. All rights reserved.
  * 
  *   This library is free software; you can redistribute it and/or modify it under
@@ -91,7 +91,79 @@ std::string asStr(const T &value) {
   str << value;
   return str.str();
 }
-  
+
+template <>
+inline
+std::string asStr<int>(const int &value)
+  { return std::to_string(value); }
+inline
+std::string asStr(const int value)
+  { return std::to_string(value); }
+
+template <>
+inline
+std::string asStr<long>(const long &value)
+  { return std::to_string(value); }
+inline
+std::string asStr(const long value)
+  { return std::to_string(value); }
+
+template <>
+inline
+std::string asStr<long long>(const long long &value)
+  { return std::to_string(value); }
+inline
+std::string asStr(const long long value)
+  { return std::to_string(value); }
+
+template <>
+inline
+std::string asStr<unsigned int>(const unsigned int &value)
+  { return std::to_string(value); }
+inline
+std::string asStr(const unsigned int value)
+  { return std::to_string(value); }
+
+template <>
+inline
+std::string asStr<unsigned long>(const unsigned long &value)
+  { return std::to_string(value); }
+inline
+std::string asStr(const unsigned long value)
+  { return std::to_string(value); }
+
+template <>
+inline
+std::string asStr<unsigned long long>(const unsigned long long &value)
+  { return std::to_string(value); }
+inline
+std::string asStr(const unsigned long long value)
+  { return std::to_string(value); }
+
+template <>
+inline
+std::string asStr<float>(const float &value)
+  { return std::to_string(value); }
+inline
+std::string asStr(const float value)
+  { return std::to_string(value); }
+
+template <>
+inline
+std::string asStr<double>(const double &value)
+  { return std::to_string(value); }
+inline
+std::string asStr(const double value)
+  { return std::to_string(value); }
+
+template <>
+inline
+std::string asStr<long double>(const long double  &value)
+  { return std::to_string(value); }
+inline
+std::string asStr(const long double  value)
+  { return std::to_string(value); }
+
 } } // namespace CoSupport::String
 
 /*
