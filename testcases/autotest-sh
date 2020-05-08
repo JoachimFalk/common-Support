@@ -3,52 +3,34 @@
 #
 # CoSupport autotest: We just start the binaries and check the output.
 #
-# autovars like $srcdir are inserted by make.
-#
 
-#
-golden_logs_dir=$srcdir/testlogs
+builddir="@builddir@"
+top_builddir="@top_builddir@"
+srcdir="@srcdir@"
+top_srcdir="@top_srcdir@"
+
+# testing binaries
+tests="@tests@"
+
+golden_logs_dir="$srcdir/testlogs"
 
 logoutfile=autotest.log
 err_log=stderr.log
 
-# testing binaries
-bins="test_arrayfifo"
-bins="$bins test_color"
-bins="$bins test_dbgstream"
-bins="$bins test_event_and_list"
-bins="$bins test_event_or_list"
-bins="$bins test_facade"
-bins="$bins test_idpool"
-bins="$bins test_interval"
-bins="$bins test_list"
-bins="$bins test_maybevalue"
-bins="$bins test_modulo"
-bins="$bins test_nested_event_lists"
-bins="$bins test_path"
-bins="$bins test_po"
-bins="$bins test_projection"
-bins="$bins test_set"
-bins="$bins test_stl_output_for_xxx"
-bins="$bins test_typename"
-bins="$bins test_value"
-bins="$bins test_vector"
-bins="$bins test_xerces"
-
-for bin in $bins;
+for test in $tests;
 do
   # set absolute path
-  test_bin=$builddir/$bin
-  gold=$golden_logs_dir/$bin.log #logfile has the name of the binary as prefix
+  test_bin=$builddir/$test
+  gold=$golden_logs_dir/$test.log #logfile has the name of the binary as prefix
 
-  TESTDATA=$golden_logs_dir/${bin##test_}
+  TESTDATA=$golden_logs_dir/${test##test_}
   export TESTDATA
 
   # call binary
   $test_bin > $logoutfile 2> $err_log
 
   if [ $? -gt 0 ]; then # if binary crashes
-      echo " $bin: Support autotest failed: test crashed.";
+      echo " $test: Support autotest failed: test crashed.";
       cat $err_log;
       test_failed=1
   fi
@@ -60,7 +42,7 @@ do
       diff $logoutfile $gold > /dev/null
   
       if [ $? -gt 0 ]; then
-          echo " $bin: Support autotest failed: logfiles differ."
+          echo " $test: Support autotest failed: logfiles differ."
           test_failed=1
       fi
   fi
