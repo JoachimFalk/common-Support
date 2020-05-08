@@ -495,4 +495,4 @@ AC_SUBST([SUBDIRS])
 
 ACJF_DONE
 
-AC_OUTPUT([testcases/autovars.sh])
+AC_OUTPUT
