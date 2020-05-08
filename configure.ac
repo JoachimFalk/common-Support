@@ -3,7 +3,7 @@
 
 AC_INIT(
   [HscdSupport Devel Branch], [1.0],
-  [joachim.falk@informatik.uni-erlangen.de christian.zebelein@informatik.uni-erlangen.de],
+  [joachim.falk@fau.de],
   [HscdSupport--devel-])
 
 AC_PREREQ(2.57)
@@ -463,6 +463,7 @@ SUBDIRS="$SUBDIRS src/cosupport-smartptr/headers"
 SUBDIRS="$SUBDIRS src/cosupport-streams/headers"
 SUBDIRS="$SUBDIRS src/cosupport-string/headers"
 SUBDIRS="$SUBDIRS src/cosupport-tracing/headers"
+SUBDIRS="$SUBDIRS . testcases"
 
 AC_CONFIG_FILES([
   pkgconfig/libcosupport.pc
@@ -487,10 +488,11 @@ AC_CONFIG_FILES([
   src/cosupport-string/headers/Makefile
   pkgconfig/libcosupport-tracing.pc
   src/cosupport-tracing/headers/Makefile
+  testcases/Makefile
 ])
 
 AC_SUBST([SUBDIRS])
 
 ACJF_DONE
 
-AC_OUTPUT([autovars.sh])
+AC_OUTPUT([testcases/autovars.sh])

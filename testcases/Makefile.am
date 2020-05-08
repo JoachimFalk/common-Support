@@ -1,0 +1,217 @@
+## Process this file with automake to produce Makefile.in
+# vim: set noet sw=2 ts=8 sts=0:
+#
+# Copyright (C) Joachim Falk <joachim.falk@gmx.de> $Date: 2003/01/15 16:43:20 $
+#
+# Makefile.am is part of the jflib distribution of Joachim Falk;
+# you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation;
+# either version 2 of the License, or (at your option) any later version.
+#
+# The jflib distributio is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public
+# License along with this program; If not, write to
+# the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+# Boston, MA 02111-1307, USA.
+#
+# $Log$
+
+include $(auxdir)/jfrules.mk
+
+SUBDIRS=
+
+AM_CPPFLAGS=@AM_CPPFLAGS@
+
+AM_LDFLAGS=@AM_LDFLAGS@
+
+#%-xsd.c: %.xsd Makefile
+%-xsd.c: %.xsd
+	test -d  $(dir $*) || mkdir -p $(dir $*)
+	{ set -e; echo "static char const $(notdir $*)XSD[] ="; \
+	  sed -e 's/\(["\\]\)/\\\1/g' -e 's/^\(.*\)$$/  "\1\\n"/' $<; \
+	  echo ";"; \
+	} > $@
+#%-dtd.c: %.dtd Makefile
+%-dtd.c: %.dtd
+	test -d  $(dir $*) || mkdir -p $(dir $*)
+	{ set -e; echo "static char const $(notdir $*)DTD[] ="; \
+	  sed -e 's/\(["\\]\)/\\\1/g' -e 's/^\(.*\)$$/  "\1\\n"/' $<; \
+	  echo ";"; \
+	} > $@
+
+BUILT_SOURCES=				\
+	testlogs/xerces/test1-xsd.c	\
+	testlogs/xerces/test2-dtd.c
+
+noinst_PROGRAMS=			\
+	test_arrayfifo			\
+	test_color			\
+	test_dbgstream			\
+	test_facade			\
+	test_idpool			\
+	test_interval			\
+	test_list			\
+	test_maybevalue			\
+	test_modulo			\
+	test_path			\
+	test_po				\
+	test_projection			\
+	test_set			\
+	test_stl_output_for_xxx		\
+	test_typename			\
+	test_value			\
+	test_vector
+if COSUPPORT_ENABLE_XERCES
+noinst_PROGRAMS +=			\
+	test_xerces
+endif
+if COSUPPORT_ENABLE_SYSTEMC
+noinst_PROGRAMS +=			\
+	test_event_and_list		\
+	test_event_or_list		\
+	test_nested_event_lists
+endif
+
+if COSUPPORT_ENABLE_XERCES
+test_xerces_SOURCES		= src/test_xerces/cpp/test_xerces.cpp
+test_xerces_DEPENDENCIES	= ../libcosupport-xerces.la ../libcosupport-streams.la
+test_xerces_CPPFLAGS		= $(AM_CPPFLAGS) -Itestlogs/xerces \
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-xerces libcosupport-streams)
+test_xerces_LDFLAGS		= $(AM_LDFLAGS)			\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-xerces libcosupport-streams)
+test_xerces_LDADD		= \
+	-lboost_filesystem@BOOST_LIBMTPOSTFIX@ -lboost_system@BOOST_LIBMTPOSTFIX@
+endif
+
+if COSUPPORT_ENABLE_SYSTEMC
+test_event_and_list_SOURCES		= src/test_event_and_list/cpp/test_event_and_list.cpp
+test_event_and_list_DEPENDENCIES	= ../libcosupport-systemc.la
+test_event_and_list_CPPFLAGS		= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-systemc)
+test_event_and_list_LDFLAGS		= $(AM_LDFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-systemc)
+
+test_event_or_list_SOURCES		= src/test_event_or_list/cpp/test_event_or_list.cpp
+test_event_or_list_DEPENDENCIES		= ../libcosupport-systemc.la
+test_event_or_list_CPPFLAGS		= $(AM_CPPFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-systemc)
+test_event_or_list_LDFLAGS		= $(AM_LDFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-systemc)
+
+test_nested_event_lists_SOURCES		= src/test_nested_event_lists/cpp/test_nested_event_lists.cpp
+test_nested_event_lists_DEPENDENCIES	= ../libcosupport-systemc.la ../libcosupport-streams.la
+test_nested_event_lists_CPPFLAGS	= $(AM_CPPFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-systemc libcosupport-streams)
+test_nested_event_lists_LDFLAGS		= $(AM_LDFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-systemc libcosupport-streams)
+endif
+
+test_dbgstream_SOURCES		= src/test_dbgstream/cpp/test_dbgstream.cpp
+test_dbgstream_DEPENDENCIES	= ../libcosupport-streams.la
+test_dbgstream_CPPFLAGS		= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-streams)
+test_dbgstream_LDFLAGS		= $(AM_LDFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-streams)
+
+test_maybevalue_SOURCES		= src/test_maybevalue/cpp/test_maybevalue.cpp
+test_maybevalue_CPPFLAGS	= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-base libcosupport-smartptr)
+
+test_arrayfifo_SOURCES		= src/test_arrayfifo/cpp/test_arrayfifo.cpp
+test_arrayfifo_CPPFLAGS		= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-base libcosupport-math)
+
+test_interval_SOURCES		= src/test_interval/cpp/test_interval.cpp
+test_interval_DEPENDENCIES	= ../libcosupport-math.la
+test_interval_CPPFLAGS		= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-math)
+test_interval_LDFLAGS		= $(AM_LDFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-math)
+
+test_idpool_SOURCES		= src/test_idpool/cpp/test_idpool.cpp
+test_idpool_DEPENDENCIES	= ../libcosupport-allocators.la
+test_idpool_CPPFLAGS		= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-allocators)
+test_idpool_LDFLAGS		= $(AM_LDFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-allocators)
+
+test_stl_output_for_xxx_SOURCES	= src/test_stl_output_for_xxx/cpp/test_stl_output_for_xxx.cpp
+test_stl_output_for_xxx_CPPFLAGS= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-streams)
+
+test_facade_SOURCES		= src/test_facade/cpp/test_facade.cpp src/test_facade/cpp/test_facade_lib.cpp
+test_facade_DEPENDENCIES	= ../libcosupport-smartptr.la ../libcosupport-string.la
+test_facade_CPPFLAGS		= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-string libcosupport-base libcosupport-smartptr)
+test_facade_LDFLAGS		= $(AM_LDFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-string libcosupport-base libcosupport-smartptr)
+
+test_typename_SOURCES		= src/test_typename/cpp/test_typename.cpp
+test_typename_DEPENDENCIES	= ../libcosupport-string.la
+test_typename_CPPFLAGS		= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-string)
+test_typename_LDFLAGS		= $(AM_LDFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-string)
+
+test_color_SOURCES		= src/test_color/cpp/test_color.cpp
+test_color_DEPENDENCIES		= ../libcosupport-string.la
+test_color_CPPFLAGS		= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-string)
+test_color_LDFLAGS		= $(AM_LDFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-string)
+
+test_value_SOURCES		= src/test_value/cpp/test_value.cpp
+test_value_CPPFLAGS		= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-base libcosupport-streams libcosupport-smartptr)
+
+test_list_SOURCES		= src/test_list/cpp/test_list.cpp
+test_list_CPPFLAGS		= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-base libcosupport-streams libcosupport-smartptr)
+
+test_set_SOURCES		= src/test_set/cpp/test_set.cpp
+test_set_CPPFLAGS		= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-base libcosupport-streams libcosupport-smartptr)
+
+test_vector_SOURCES		= src/test_vector/cpp/test_vector.cpp
+test_vector_CPPFLAGS		= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-base libcosupport-streams libcosupport-smartptr)
+
+test_modulo_SOURCES		= src/test_modulo/cpp/test_modulo.cpp
+test_modulo_CPPFLAGS		= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-math)
+
+test_projection_SOURCES		= src/test_projection/cpp/test_projection.cpp
+test_projection_CPPFLAGS	= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-math libcosupport-streams)
+
+test_po_SOURCES			= src/test_po/cpp/test_po.cpp
+test_po_CPPFLAGS		= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-math libcosupport-streams)
+
+test_path_SOURCES		= src/test_path/cpp/test_path.cpp
+test_path_DEPENDENCIES		= ../libcosupport-path.la
+test_path_CPPFLAGS		= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-path)
+test_path_LDFLAGS		= $(AM_LDFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-path)
+
+# autotest script is build by some source file. #! line is generated by
+#  automake to guarantee proper path. Other scripting languages are easy
+#  possible, too (e.g., Perl).
+noinst_SCRIPTS=autotest.sh
+
+CLEANFILES=$(noinst_SCRIPTS) $(BUILT_SOURCES)
+
+autotest.sh: $(srcdir)/autotest-sh
+	rm -f $@
+	echo "#!" $(BASH) > $@
+	cat autovars.sh $(srcdir)/autotest-sh >> $@
+	chmod +x $@
+
+# to check we just call the 'autotest.sh' script
+check-local: autotest.sh $(noinst_PROGRAMS)
+	./autotest.sh
