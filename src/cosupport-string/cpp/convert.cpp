@@ -34,3 +34,36 @@
  */
 
 #include <CoSupport/String/convert.hpp>
+
+#include <cstdlib>
+#include <limits>
+
+namespace CoSupport { namespace String {
+
+template <>
+int8_t strAs<int8_t>(std::string const &str) {
+  char *endptr = nullptr;
+
+  long value = strtol(str.c_str(), &endptr, 0);
+  if (str.empty() || !endptr || endptr != str.c_str() + str.size())
+    throw InvalidConversionTo<int8_t>();
+  if (value < std::numeric_limits<int8_t>::min())
+    throw InvalidConversionTo<int8_t>();
+  if (value > std::numeric_limits<int8_t>::max())
+    throw InvalidConversionTo<int8_t>();
+  return value;
+}
+
+template <>
+uint8_t strAs<uint8_t>(std::string const &str) {
+  char *endptr = nullptr;
+
+  unsigned long value = strtoul(str.c_str(), &endptr, 0);
+  if (str.empty() || !endptr || endptr != str.c_str() + str.size())
+    throw InvalidConversionTo<uint8_t>();
+  if (value > std::numeric_limits<uint8_t>::max())
+    throw InvalidConversionTo<uint8_t>();
+  return value;
+}
+
+} } // namespace CoSupport::String
