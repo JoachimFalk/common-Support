@@ -172,6 +172,7 @@ libcosupport_streams_la_LDFLAGS = $(AM_LDFLAGS)			\
 libcosupport_string_la_SOURCES =				\
 	src/cosupport-string/cpp/TemplateProcessor.cpp		\
 	src/cosupport-string/cpp/color.cpp			\
+	src/cosupport-string/cpp/convert.cpp			\
 	src/cosupport-string/cpp/UniquePool.cpp			\
 	src/cosupport-string/cpp/UniqueCIdentifierPool.cpp	\
 	src/cosupport-string/cpp/DoubleQuotedString.cpp		\

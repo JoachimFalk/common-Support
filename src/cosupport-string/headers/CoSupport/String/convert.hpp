@@ -63,7 +63,7 @@ struct InvalidConversionTo: public InvalidConversion {
 };
 
 template <typename T>
-T strAs(const std::string &str) {
+T strAs(std::string const &str) {
   T                   retval;
   std::istringstream  in(str);
   
@@ -85,6 +85,12 @@ T strAs(const std::string &str) {
   }
   return retval;
 }
+
+template <>
+int8_t strAs<int8_t>(std::string const &str);
+
+template <>
+uint8_t strAs<uint8_t>(std::string const &str);
 
 template <typename T>
 std::string asStr(const T &value) {
