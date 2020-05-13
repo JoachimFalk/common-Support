@@ -36,13 +36,14 @@
 #ifndef _INCLUDED_COSUPPORT_STRING_CONVERT_HPP
 #define _INCLUDED_COSUPPORT_STRING_CONVERT_HPP
 
-#include <cctype>
+//#include <cctype>
 #include <sstream>
 #include <string>
 #include <exception>
 #include <typeinfo>
+#include <cstdint>
 
-#include "TypeName.hpp"
+//#include "TypeName.hpp"
 
 #include "export_config.h"
 
@@ -102,11 +103,11 @@ std::string asStr(const char value)
 
 template <>
 inline
-std::string asStr<signed char>(const signed char &value)
-  { return std::string(1, static_cast<char>(value)); }
+std::string asStr<int8_t>(const int8_t &value)
+  { return std::to_string(value); }
 inline
-std::string asStr(const signed char value)
-  { return std::string(1, static_cast<char>(value)); }
+std::string asStr(const int8_t value)
+  { return std::to_string(value); }
 
 template <>
 inline
@@ -142,11 +143,11 @@ std::string asStr(const long long value)
 
 template <>
 inline
-std::string asStr<unsigned char>(const unsigned char &value)
-  { return std::string(1, static_cast<char>(value)); }
+std::string asStr<uint8_t>(const uint8_t &value)
+  { return std::to_string(value); }
 inline
-std::string asStr(const unsigned char value)
-  { return std::string(1, static_cast<char>(value)); }
+std::string asStr(const uint8_t value)
+  { return std::to_string(value); }
 
 template <>
 inline
