@@ -18,9 +18,6 @@ std::ostream &operator <<(std::ostream &out, Dummy const &) {
 
 int main(int argc, char *argv[]) {
   std::cout << asStr(Dummy()) << std::endl;
-  std::cout << asStr('A') << std::endl;
-  std::cout << asStr(static_cast<signed char>('B')) << std::endl;
-  std::cout << asStr(static_cast<unsigned char>('C')) << std::endl;
   std::cout << asStr(1) << std::endl;
   std::cout << asStr(-1) << std::endl;
   std::cout << asStr(2U) << std::endl;
@@ -53,8 +50,8 @@ int main(int argc, char *argv[]) {
   std::cout << asStr(static_cast<long long>(9223372036854775807LL)) << std::endl;
   std::cout << asStr(static_cast<signed long long>(9223372036854775807LL)) << std::endl;
   std::cout << asStr(static_cast<unsigned long long>(18446744073709551615ULL)) << std::endl;
-  std::cout << asStr(static_cast<int8_t>('X')) << std::endl;
-  std::cout << asStr(static_cast<uint8_t>('Y')) << std::endl;
+  std::cout << asStr(static_cast<int8_t>(127)) << std::endl;
+  std::cout << asStr(static_cast<uint8_t>(255)) << std::endl;
   std::cout << asStr(static_cast<int16_t>(32767)) << std::endl;
   std::cout << asStr(static_cast<uint16_t>(65535)) << std::endl;
   std::cout << asStr(static_cast<int32_t>(2147483647L)) << std::endl;
