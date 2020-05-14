@@ -48,6 +48,7 @@
 #include "PtpTracer.hpp"
 #include "TaskTracer.hpp"
 
+#include "export_config.h"
 
 namespace CoSupport { namespace Tracing {
 
@@ -55,8 +56,8 @@ namespace CoSupport { namespace Tracing {
  * \brief Enables logging of simulation times
  * @author graf
  */
-class TracingFactory {
-
+class COSUPPORT_TRACING_API
+TracingFactory {
 private:
   /**
    * Singleton design pattern

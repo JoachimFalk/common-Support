@@ -37,17 +37,20 @@
 #ifndef _INCLUDED_COSUPPORT_TRACING_PAJETRACER_HPP
 #define _INCLUDED_COSUPPORT_TRACING_PAJETRACER_HPP
 
-#include <systemc>
-
 #include <CoSupport/String/color.hpp>
+
+#include <systemc>
 
 #include <map>
 #include <list>
 #include <fstream>
 
+#include "export_config.h"
+
 namespace CoSupport { namespace Tracing {
 
-  class PajeTracer {
+  class COSUPPORT_TRACING_API
+  PajeTracer {
   protected:
     struct ContainerType;
     struct ActivityType;
