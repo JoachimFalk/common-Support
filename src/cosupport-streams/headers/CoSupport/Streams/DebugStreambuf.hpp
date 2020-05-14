@@ -153,6 +153,7 @@ private:
 };
 
 /// output operator for the Debug manipulator
+COSUPPORT_STREAMS_API
 std::ostream &operator << (std::ostream &os, const Debug &d);
 
 /**

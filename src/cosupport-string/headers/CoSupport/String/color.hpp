@@ -44,7 +44,8 @@
 
 namespace CoSupport { namespace String {
 
-  class Color {
+  class COSUPPORT_STRING_API
+  Color {
     typedef Color this_type;
   public:
     Color(uint32_t color = 0)
