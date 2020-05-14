@@ -39,27 +39,33 @@
 //#include <cctype>
 #include <sstream>
 #include <string>
-#include <exception>
+#include <stdexcept>
 #include <typeinfo>
 #include <cstdint>
 
 //#include "TypeName.hpp"
 
 #include "export_config.h"
+#include "Concat.hpp"
 
 namespace CoSupport { namespace String {
 
-struct COSUPPORT_STRING_API
-InvalidConversion: public std::exception {
+class COSUPPORT_STRING_API
+InvalidConversion
+  : public std::runtime_error
+{
+public:
+  InvalidConversion(std::string const &msg)
+      : std::runtime_error(msg) {}
 };
 
 template <typename T>
-struct InvalidConversionTo: public InvalidConversion {
-  const char *what() const throw() {
-    std::stringstream str;
-    str << "CoSupport::String::InvalidConversionTo<" << typeid(T).name() << ">";
-    return str.str().c_str();
-  }
+class InvalidConversionTo
+  : public InvalidConversion
+{
+public:
+  InvalidConversionTo()
+    : InvalidConversion(Concat("CoSupport::String::InvalidConversionTo<")(typeid(T).name())(">")) {}
 };
 
 template <typename T>
@@ -87,9 +93,11 @@ T strAs(std::string const &str) {
 }
 
 template <>
+COSUPPORT_STRING_API
 int8_t strAs<int8_t>(std::string const &str);
 
 template <>
+COSUPPORT_STRING_API
 uint8_t strAs<uint8_t>(std::string const &str);
 
 template <typename T>
