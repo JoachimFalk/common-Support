@@ -33,7 +33,7 @@ template <typename T>
 struct TypeName;
 
 #define COSUPPORT_REGISTER_TYPENAME(T)                    \
-namespace CoSupport { namespace String {                    \
+namespace CoSupport { namespace String {                  \
   template <>                                             \
   struct TypeName<T> {                                    \
     static const std::string name() { return #T; }        \
@@ -79,6 +79,7 @@ COSUPPORT_REGISTER_TYPENAME(short)
 COSUPPORT_REGISTER_TYPENAME(int)
 COSUPPORT_REGISTER_TYPENAME(long)
 COSUPPORT_REGISTER_TYPENAME(long long)
+COSUPPORT_REGISTER_TYPENAME(signed char)
 COSUPPORT_REGISTER_TYPENAME(unsigned char)
 COSUPPORT_REGISTER_TYPENAME(unsigned short)
 COSUPPORT_REGISTER_TYPENAME(unsigned int)
