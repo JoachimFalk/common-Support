@@ -33,8 +33,6 @@
 #include <typeinfo>
 #include <cstdint>
 
-//#include "TypeName.hpp"
-
 #include "export_config.h"
 #include "Concat.hpp"
 
@@ -54,8 +52,26 @@ class InvalidConversionTo
   : public InvalidConversion
 {
 public:
-  InvalidConversionTo()
-    : InvalidConversion(Concat("CoSupport::String::InvalidConversionTo<")(typeid(T).name())(">")) {}
+  InvalidConversionTo(std::string const &value)
+    : InvalidConversion("Could not convert '"+value+"' to a "+typeid(T).name()) {}
+};
+
+class COSUPPORT_STRING_API
+InvalidConversionUnderflow
+  : public InvalidConversion
+{
+public:
+  InvalidConversionUnderflow(std::string const &msg)
+      : InvalidConversion(msg) {}
+};
+
+class COSUPPORT_STRING_API
+InvalidConversionOverflow
+  : public InvalidConversion
+{
+public:
+  InvalidConversionOverflow(std::string const &msg)
+      : InvalidConversion(msg) {}
 };
 
 template <typename T>
@@ -74,10 +90,7 @@ T strAs(std::string const &str) {
       in.clear(std::ios::eofbit);
   }
   if (in.fail() || !in.eof()) {
-    throw InvalidConversionTo<T>();
-//  std::ostringstream msg;
-//  msg << "Invalid conversion from '" << str << "' to " << TypeName<T>::name() << " !";
-//  throw std::runtime_error(msg.str());
+    throw InvalidConversionTo<T>(str);
   }
   return retval;
 }
@@ -88,7 +101,39 @@ int8_t strAs<int8_t>(std::string const &str);
 
 template <>
 COSUPPORT_STRING_API
+short strAs<short>(std::string const &str);
+
+template <>
+COSUPPORT_STRING_API
+int strAs<int>(std::string const &str);
+
+template <>
+COSUPPORT_STRING_API
+long strAs<long>(std::string const &str);
+
+template <>
+COSUPPORT_STRING_API
+long long strAs<long long>(std::string const &str);
+
+template <>
+COSUPPORT_STRING_API
 uint8_t strAs<uint8_t>(std::string const &str);
+
+template <>
+COSUPPORT_STRING_API
+unsigned short strAs<unsigned short>(std::string const &str);
+
+template <>
+COSUPPORT_STRING_API
+unsigned int strAs<unsigned int>(std::string const &str);
+
+template <>
+COSUPPORT_STRING_API
+unsigned long strAs<unsigned long>(std::string const &str);
+
+template <>
+COSUPPORT_STRING_API
+unsigned long long strAs<unsigned long long>(std::string const &str);
 
 template <typename T>
 std::string asStr(const T &value) {

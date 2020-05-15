@@ -24,36 +24,217 @@
  */
 
 #include <CoSupport/String/convert.hpp>
+#include <CoSupport/String/TypeName.hpp>
 
 #include <cstdlib>
 #include <limits>
 
 namespace CoSupport { namespace String {
 
+template <typename T>
+class InvalidConversionUnderflowOf
+  : public InvalidConversionUnderflow
+{
+public:
+  InvalidConversionUnderflowOf(std::string const &value)
+      : InvalidConversionUnderflow(
+          "Value "+value+" is too negative "
+          "(< "+std::to_string(std::numeric_limits<T>::min())+")"
+          " to fit the range of a "+TypeName<T>::name()) {}
+};
+
+template <typename T>
+class InvalidConversionOverflowOf
+  : public InvalidConversionOverflow
+{
+public:
+  InvalidConversionOverflowOf(std::string const &value)
+      : InvalidConversionOverflow(
+          "Value "+value+" is too large "
+          "(> "+std::to_string(std::numeric_limits<T>::max())+")"
+          " to fit the range of a "+TypeName<T>::name()) {}
+};
+
+template <
+    typename T
+  , bool     USELL = sizeof(T) >= sizeof(long)
+  , bool     ERRNO = sizeof(T) >= sizeof(long long)
+  >
+struct ToSigned;
+
+template <typename T>
+struct ToSigned<T, false, false> {
+
+  static T convert(std::string const &str) {
+    char *endptr = nullptr;
+
+    long value = strtol(str.c_str(), &endptr, 0);
+    if (str.empty() || !endptr || endptr != str.c_str() + str.size())
+      throw InvalidConversionTo<T>(str);
+    if (value < std::numeric_limits<T>::min())
+      throw InvalidConversionUnderflowOf<T>(str);
+    if (value > std::numeric_limits<T>::max())
+      throw InvalidConversionOverflowOf<T>(str);
+    return value;
+  }
+
+};
+
+template <typename T>
+struct ToSigned<T, true, false> {
+
+  static T convert(std::string const &str) {
+    char *endptr = nullptr;
+
+    long long value = strtoll(str.c_str(), &endptr, 0);
+    if (str.empty() || !endptr || endptr != str.c_str() + str.size())
+      throw InvalidConversionTo<T>(str);
+    if (value < std::numeric_limits<T>::min())
+      throw InvalidConversionUnderflowOf<T>(str);
+    if (value > std::numeric_limits<T>::max())
+      throw InvalidConversionOverflowOf<T>(str);
+    return value;
+  }
+
+};
+
+template <typename T>
+struct ToSigned<T, true, true> {
+
+  static T convert(std::string const &str) {
+    char *endptr = nullptr;
+
+    errno = 0;
+    long long value = strtoll(str.c_str(), &endptr, 0);
+    if (str.empty() || !endptr || endptr != str.c_str() + str.size())
+      throw InvalidConversionTo<T>(str);
+    if (value <  std::numeric_limits<T>::min() ||
+        (value == std::numeric_limits<long long>::min() && errno == ERANGE))
+      throw InvalidConversionUnderflowOf<short>(str);
+    if (value >  std::numeric_limits<T>::max() ||
+        (value == std::numeric_limits<long long>::max() && errno == ERANGE))
+      throw InvalidConversionOverflowOf<T>(str);
+    return value;
+  }
+
+};
+
+template <
+    typename T
+  , bool     USELL = sizeof(T) >= sizeof(unsigned long)
+  , bool     ERRNO = sizeof(T) >= sizeof(unsigned long long)
+  >
+struct ToUnsigned;
+
+template <typename T>
+struct ToUnsigned<T, false, false> {
+
+  static T convert(std::string const &str) {
+    char *endptr = nullptr;
+
+    unsigned int start;
+    for (start = 0;
+         start < str.size() && isspace(str[start]);
+         ++start)
+      ;
+    if (start == str.size() || str[start] == '-')
+      throw InvalidConversionTo<T>(str);
+    unsigned long value = strtoul(str.c_str(), &endptr, 0);
+    if (!endptr || endptr != str.c_str() + str.size())
+      throw InvalidConversionTo<T>(str);
+    if (value > std::numeric_limits<T>::max())
+      throw InvalidConversionOverflowOf<T>(str);
+    return value;
+  }
+
+};
+
+template <typename T>
+struct ToUnsigned<T, true, false> {
+
+  static T convert(std::string const &str) {
+    char *endptr = nullptr;
+
+    unsigned int start;
+    for (start = 0;
+         start < str.size() && isspace(str[start]);
+         ++start)
+      ;
+    if (start == str.size() || str[start] == '-')
+      throw InvalidConversionTo<T>(str);
+    unsigned long long value = strtoull(str.c_str(), &endptr, 0);
+    if (!endptr || endptr != str.c_str() + str.size())
+      throw InvalidConversionTo<T>(str);
+    if (value > std::numeric_limits<T>::max())
+      throw InvalidConversionOverflowOf<T>(str);
+    return value;
+  }
+
+};
+
+template <typename T>
+struct ToUnsigned<T, true, true> {
+
+  static T convert(std::string const &str) {
+    char *endptr = nullptr;
+
+    unsigned int start;
+    for (start = 0;
+         start < str.size() && isspace(str[start]);
+         ++start)
+      ;
+    if (start == str.size() || str[start] == '-')
+      throw InvalidConversionTo<T>(str);
+    errno = 0;
+    unsigned long long value = strtoull(str.c_str(), &endptr, 0);
+    if (!endptr || endptr != str.c_str() + str.size())
+      throw InvalidConversionTo<T>(str);
+    if (value >  std::numeric_limits<T>::max() ||
+        (value == std::numeric_limits<unsigned long long>::max() && errno == ERANGE))
+      throw InvalidConversionOverflowOf<T>(str);
+    return value;
+  }
+
+};
+
 template <>
-int8_t strAs<int8_t>(std::string const &str) {
-  char *endptr = nullptr;
-
-  long value = strtol(str.c_str(), &endptr, 0);
-  if (str.empty() || !endptr || endptr != str.c_str() + str.size())
-    throw InvalidConversionTo<int8_t>();
-  if (value < std::numeric_limits<int8_t>::min())
-    throw InvalidConversionTo<int8_t>();
-  if (value > std::numeric_limits<int8_t>::max())
-    throw InvalidConversionTo<int8_t>();
-  return value;
-}
+int8_t strAs<int8_t>(std::string const &str)
+  { return ToSigned<int8_t>::convert(str); }
 
 template <>
-uint8_t strAs<uint8_t>(std::string const &str) {
-  char *endptr = nullptr;
+short strAs<short>(std::string const &str)
+  { return ToSigned<short>::convert(str); }
 
-  unsigned long value = strtoul(str.c_str(), &endptr, 0);
-  if (str.empty() || !endptr || endptr != str.c_str() + str.size())
-    throw InvalidConversionTo<uint8_t>();
-  if (value > std::numeric_limits<uint8_t>::max())
-    throw InvalidConversionTo<uint8_t>();
-  return value;
-}
+template <>
+int strAs<int>(std::string const &str)
+  { return ToSigned<int>::convert(str); }
+
+template <>
+long strAs<long>(std::string const &str)
+  { return ToSigned<long>::convert(str); }
+
+template <>
+long long strAs<long long>(std::string const &str)
+  { return ToSigned<long long>::convert(str); }
+
+template <>
+uint8_t strAs<uint8_t>(std::string const &str)
+  { return ToUnsigned<uint8_t>::convert(str); }
+
+template <>
+unsigned short strAs<unsigned short>(std::string const &str)
+  { return ToUnsigned<unsigned short>::convert(str); }
+
+template <>
+unsigned int strAs<unsigned int>(std::string const &str)
+  { return ToUnsigned<unsigned int>::convert(str); }
+
+template <>
+unsigned long strAs<unsigned long>(std::string const &str)
+  { return ToUnsigned<unsigned long>::convert(str); }
+
+template <>
+unsigned long long strAs<unsigned long long>(std::string const &str)
+  { return ToUnsigned<unsigned long long>::convert(str); }
 
 } } // namespace CoSupport::String
