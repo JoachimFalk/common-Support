@@ -26,15 +26,17 @@
 #ifndef _INCLUDED_COSUPPORT_STRING_CONVERT_HPP
 #define _INCLUDED_COSUPPORT_STRING_CONVERT_HPP
 
-//#include <cctype>
+#include <CoSupport/commondefs.h>
+
+#include "Concat.hpp"
+
+#include "export_config.h"
+
 #include <sstream>
 #include <string>
 #include <stdexcept>
 #include <typeinfo>
 #include <cstdint>
-
-#include "export_config.h"
-#include "Concat.hpp"
 
 namespace CoSupport { namespace String {
 
@@ -54,6 +56,9 @@ class InvalidConversionTo
 public:
   InvalidConversionTo(std::string const &value)
     : InvalidConversion("Could not convert '"+value+"' to a "+typeid(T).name()) {}
+  COSUPPORT_ATTRIBUTE_DEPRECATED
+  InvalidConversionTo()
+    : InvalidConversion(std::string("Invalid conversion to type ")+typeid(T).name()) {}
 };
 
 class COSUPPORT_STRING_API
