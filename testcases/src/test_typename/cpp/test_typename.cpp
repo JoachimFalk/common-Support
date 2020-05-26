@@ -102,5 +102,19 @@ int main(int argc, char *argv[]) {
   CHECK_TYPENAME_FOR(const A **const &);
   CHECK_TYPENAME_FOR(A *const *const &);
   CHECK_TYPENAME_FOR(const A *const *const &);
+
+  CHECK_TYPENAME_FOR(bool);
+  CHECK_TYPENAME_FOR(char);
+  CHECK_TYPENAME_FOR(short);
+  CHECK_TYPENAME_FOR(int);
+  CHECK_TYPENAME_FOR(long);
+  CHECK_TYPENAME_FOR(long long);
+  CHECK_TYPENAME_FOR(signed char);
+  CHECK_TYPENAME_FOR(unsigned char);
+  CHECK_TYPENAME_FOR(unsigned short);
+  CHECK_TYPENAME_FOR(unsigned int);
+  CHECK_TYPENAME_FOR(unsigned long);
+  CHECK_TYPENAME_FOR(unsigned long long);
+
   return 0;
 }
