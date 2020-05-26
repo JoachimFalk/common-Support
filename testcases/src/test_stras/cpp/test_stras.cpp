@@ -137,6 +137,20 @@ void testInteger() {
   }
 }
 
+template <typename T>
+void testValue(T const &expected, std::string const &value) {
+  std::cout << "Testing value " << value << " with type " << TypeName<T>::name() << std::endl;
+  T x = strAs<T>(value);
+  std::cout << "Result " << asStr(x) << std::endl;
+  assert(x == expected);
+  if (x != expected)
+    throw std::runtime_error("test error");
+}
+
+template <typename T>
+void testValue(T const &expected)
+  { testValue(expected, asStr(expected)); }
+
 int main(int argc, char *argv[]) {
   testInteger<int8_t>();
   testInteger<uint8_t>();
@@ -158,5 +172,11 @@ int main(int argc, char *argv[]) {
   testInteger<long long>();
   testInteger<signed long long>();
   testInteger<unsigned long long>();
+  testValue(true);
+  testValue(false);
+  testValue(true, "true");
+  testValue(false, "false");
+  testValue(true, "1");
+  testValue(false, "0");
   return 0;
 }

@@ -102,6 +102,10 @@ T strAs(std::string const &str) {
 
 template <>
 COSUPPORT_STRING_API
+bool strAs<bool>(std::string const &str);
+
+template <>
+COSUPPORT_STRING_API
 int8_t strAs<int8_t>(std::string const &str);
 
 template <>
@@ -149,11 +153,11 @@ std::string asStr(const T &value) {
 
 template <>
 inline
-std::string asStr<char>(const char &value)
-  { return std::string(1, value); }
+std::string asStr<bool>(const bool &value)
+  { return value ? "true" : "false"; }
 inline
 std::string asStr(const char value)
-  { return std::string(1, value); }
+  { return value ? "true" : "false"; }
 
 template <>
 inline

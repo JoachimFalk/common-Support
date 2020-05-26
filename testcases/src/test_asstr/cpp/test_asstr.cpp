@@ -79,5 +79,7 @@ int main(int argc, char *argv[]) {
   std::cout << asStr(static_cast<uint32_t>(4294967295U)) << std::endl;
   std::cout << asStr(static_cast<int64_t>(9223372036854775807LL)) << std::endl;
   std::cout << asStr(static_cast<uint64_t>(18446744073709551615ULL)) << std::endl;
+  std::cout << asStr(true) << std::endl;
+  std::cout << asStr(false) << std::endl;
   return 0;
 }

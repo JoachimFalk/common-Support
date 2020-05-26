@@ -31,6 +31,29 @@
 
 namespace CoSupport { namespace String {
 
+template <>
+class InvalidConversionTo<bool>
+  : public InvalidConversion
+{
+public:
+  InvalidConversionTo(std::string const &value)
+    : InvalidConversion("Could not convert '"+value+"' to a "+TypeName<bool>::name()) {}
+  COSUPPORT_ATTRIBUTE_DEPRECATED
+  InvalidConversionTo()
+    : InvalidConversion(std::string("Invalid conversion to type ")+TypeName<bool>::name()) {}
+};
+
+template <>
+bool strAs<bool>(std::string const &str)
+{
+  if (str == "1" || str == "true")
+    return true;
+  else if (str == "0" || str == "false")
+    return false;
+  else
+    throw InvalidConversionTo<bool>(str);
+}
+
 template <typename T>
 class InvalidConversionUnderflowOf
   : public InvalidConversionUnderflow
