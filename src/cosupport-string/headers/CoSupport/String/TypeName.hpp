@@ -74,6 +74,7 @@ struct TypeName<T **const> {
 } } // namespace CoSupport::String
 
 /// Known C++ PODs
+COSUPPORT_REGISTER_TYPENAME(bool)
 COSUPPORT_REGISTER_TYPENAME(char)
 COSUPPORT_REGISTER_TYPENAME(short)
 COSUPPORT_REGISTER_TYPENAME(int)
