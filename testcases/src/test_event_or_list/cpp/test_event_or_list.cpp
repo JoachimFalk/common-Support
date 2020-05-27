@@ -224,8 +224,8 @@ public:
 };
 
 struct blub : public EventListener {
-  void signaled(EventWaiter* e)
-  { std::cout << "--> blub::signaled(): e = " << *e << std::endl; }
+  bool signaled(EventWaiter* e)
+  { std::cout << "--> blub::signaled(): e = " << *e << std::endl; return false; }
   void eventDestroyed(EventWaiter *e)
   { std::cout << "blub::eventDestroyed(): e = " << *e << std::endl; }
 };
