@@ -68,17 +68,6 @@ static Detail::DebugOStream outDbg(std::cout);
 
 namespace CoSupport { namespace SystemC {
 
-// In some strange cases, an EventWaiter is deleted, but code of the object
-// to be deleted is still executed (e.g. signalNotifyListener). This
-// behaviour is undefined and causes errors on some platforms (Visual
-// Studio). CHECK_SIGNALED_CONSISTENCY uses a counter to assert the absence
-// of such scenarios. 
-#ifdef COSUPPORT_ENABLE_DEBUG
-# define CHECK_SIGNALED_CONSISTENCY
-#else
-# undef CHECK_SIGNALED_CONSISTENCY
-#endif
-
 /**
  * forward declarations
  */
@@ -97,8 +86,10 @@ private:
 
 protected:
   // Tell this listener about an event changing in EventWaiter e
-  // (e.g. the waiter was reseted or notified; check e->isActive()(
-  virtual void signaled(EventWaiter *e) = 0;
+  // (e.g. the waiter was reseted or notified; check e->isActive().
+  // Must return true if this EventListener should be removed from
+  // the EventWaiter e, false otherwise.
+  virtual bool signaled(EventWaiter *e) = 0;
 
   // The lifetime of the given EventWaiter is over
   virtual void eventDestroyed(EventWaiter *e) = 0;
@@ -128,47 +119,45 @@ public:
 protected:
   // forward event notifications to all listeners
   void notifyListener() {
-#ifdef CHECK_SIGNALED_CONSISTENCY
+#ifdef COSUPPORT_ENABLE_DEBUG
     usedCounter++;
-#endif //CHECK_SIGNALED_CONSISTENCY 
-    ell_ty::iterator iter, niter;
-    for(iter = ell.begin();
-        iter != ell.end();
-        iter = niter)
-    {
-      ++(niter = iter);
-      (*iter)->signaled(this);
+#endif //COSUPPORT_ENABLE_DEBUG
+    for (ell_ty::iterator iter = ell.begin(); iter != ell.end();) {
+      if ((*iter)->signaled(this))
+        iter = ell.erase(iter);
+      else
+        iter++;
     }
-#ifdef CHECK_SIGNALED_CONSISTENCY
+#ifdef COSUPPORT_ENABLE_DEBUG
     usedCounter--;
-#endif //CHECK_SIGNALED_CONSISTENCY 
+#endif //COSUPPORT_ENABLE_DEBUG
   }
 
   // forward event resets to all listeners except the specified one
   void resetListener(EventListener *el = nullptr) {
-#ifdef CHECK_SIGNALED_CONSISTENCY
+#ifdef COSUPPORT_ENABLE_DEBUG
     usedCounter++;
-#endif //CHECK_SIGNALED_CONSISTENCY 
-    ell_ty::iterator iter, niter;
-    for(iter = ell.begin();
-        iter != ell.end();
-        iter = niter)
-    {
-      ++(niter = iter);
-      if(*iter != el)
-        (*iter)->signaled(this);
+#endif //COSUPPORT_ENABLE_DEBUG
+    for (ell_ty::iterator iter = ell.begin(); iter != ell.end();) {
+      if (*iter != el) {
+        if ((*iter)->signaled(this))
+          iter = ell.erase(iter);
+        else
+          iter++;
+      } else
+        iter++;
     }
-#ifdef CHECK_SIGNALED_CONSISTENCY
+#ifdef COSUPPORT_ENABLE_DEBUG
     usedCounter--;
-#endif //CHECK_SIGNALED_CONSISTENCY 
+#endif //COSUPPORT_ENABLE_DEBUG
   }
 
 public:
   // default constructor
   EventWaiter()
-#ifdef CHECK_SIGNALED_CONSISTENCY
+#ifdef COSUPPORT_ENABLE_DEBUG
     : usedCounter(0)
-#endif //CHECK_SIGNALED_CONSISTENCY 
+#endif //COSUPPORT_ENABLE_DEBUG
     {}
   // determines if this instance is active
   virtual bool isActive() const = 0;
@@ -181,37 +170,33 @@ public:
   virtual EventWaiter *reset(EventListener *el = nullptr) = 0;
 
   // el must NOT be in set previously
-  void addListener(EventListener *el, bool laxly = false)
-    { sassert(ell.insert(el).second || laxly); }
+  void addListener(EventListener *el, bool laxly = false) {
+#ifdef COSUPPORT_ENABLE_DEBUG
+    assert(usedCounter == 0);
+#endif //COSUPPORT_ENABLE_DEBUG
+    sassert(ell.insert(el).second || laxly);
+  }
 
   // el must be in set previously
-  void delListener(EventListener *el, bool laxly = false)
-    { sassert(ell.erase(el) == 1 || laxly); }
+  void delListener(EventListener *el, bool laxly = false) {
+#ifdef COSUPPORT_ENABLE_DEBUG
+    assert(usedCounter == 0);
+#endif //COSUPPORT_ENABLE_DEBUG
+    sassert(ell.erase(el) == 1 || laxly);
+  }
   
   // notify listeners that this event is destroyed
   virtual ~EventWaiter() {
-#ifdef CHECK_SIGNALED_CONSISTENCY
+#ifdef COSUPPORT_ENABLE_DEBUG
     assert(usedCounter == 0);
-#endif //CHECK_SIGNALED_CONSISTENCY 
-    ell_ty::iterator iter, niter;
-    for(iter = ell.begin();
-        iter != ell.end();
-        iter = niter)
-    {
-      ++(niter = iter);
-      (*iter)->eventDestroyed(this);
-    }
+#endif //COSUPPORT_ENABLE_DEBUG
+    for (EventListener *e : ell)
+      e->eventDestroyed(this);
   }
 
   void renotifyListener() {
-    ell_ty::iterator iter, niter;
-    for(iter = ell.begin();
-        iter != ell.end();
-        iter = niter)
-    {
-      ++(niter = iter);
-      (*iter)->renotified(this);
-    }
+    for (EventListener *e : ell)
+      e->renotified(this);
   }
 
   virtual void dump(std::ostream &out) const
@@ -220,9 +205,13 @@ private:
   // registered listeners
   typedef std::set<EventListener *> ell_ty;
   ell_ty ell;
-#ifdef CHECK_SIGNALED_CONSISTENCY
+#ifdef COSUPPORT_ENABLE_DEBUG
+  // In some strange cases, an EventWaiter is deleted, but code of the
+  // object to be deleted is still executed (e.g. signalNotifyListener).
+  // This behavior is undefined and causes errors on some platforms, e.g.,
+  // Microsoft Visual Studio.
   unsigned int usedCounter;
-#endif //CHECK_SIGNALED_CONSISTENCY 
+#endif //COSUPPORT_ENABLE_DEBUG
 
   // unimplemented
   EventWaiter(const this_type &);
@@ -294,9 +283,9 @@ protected:
   EventList eventList;
 
   // this list is a listener for each contained event, so it gets
-  // notified if any event was notifed / reset, which will update
+  // notified if any event was notified / reset, which will update
   // this list in turn
-  void signaled(EventWaiter *ew) {
+  bool signaled(EventWaiter *ew) {
     // must be compatible with our list type
     EventType *e = dynamic_cast<EventType *>(ew);
     assert(e);
@@ -319,6 +308,7 @@ protected:
       if(!--active)
         resetListener();
     }
+    return false;
   }
 
   void eventDestroyed(EventWaiter *ew) {
@@ -474,7 +464,7 @@ protected:
   size_t                                     missing;
   bool                                       lazy;
 
-  void signaled(EventWaiter *ew) {
+  bool signaled(EventWaiter *ew) {
     // must be compatible with our list type and must be in list
     assert(dynamic_cast<EventType *>(ew) &&
       contains(*static_cast<EventType *>(ew)));
@@ -485,7 +475,8 @@ protected:
 #ifdef DEBUG_COSUPPORT_SYSTEMC_SUPPORT
       std::cerr << "  ew is active; missing: " << (missing-1) << std::endl;
 #endif // DEBUG_COSUPPORT_SYSTEMC_SUPPORT      
-      oneLessMissing();
+      oneLessMissing(ew);
+      return false;
     } else {
       if (missing == 0) { // 0 -> 1
         assert(!lazy); missing = 1;
@@ -493,15 +484,16 @@ protected:
         std::cerr << "  ew is not active; missing: " << missing << std::endl;
 #endif // DEBUG_COSUPPORT_SYSTEMC_SUPPORT      
         resetListener();
+        return false;
       } else {
 #ifdef DEBUG_COSUPPORT_SYSTEMC_SUPPORT
         std::cerr << "  ew is not active; going lazy; missing: " << missing << std::endl;
 #endif // DEBUG_COSUPPORT_SYSTEMC_SUPPORT      
         lazy = true;
-        ew->delListener(this); // Still blocked on something else.
+        return true; // Still blocked on something else.
       }
     }
-    //std::cerr << "  -> " << *this << std::endl;
+    // Not reached
   }
 
   void eventDestroyed(EventWaiter *ew) {
@@ -518,13 +510,14 @@ protected:
     if(!missing)
       renotifyListener();
   }
-
-  void oneLessMissing() {
+private:
+  void oneLessMissing(EventWaiter *ew = nullptr) {
     if (--missing == 0) {
       if (lazy) {
         // 1 -> 0 => check with deregistered EventWaiters if they are active
         for (ELCIter i = eventList.begin(); i != eventList.end(); ++i) {
-          (*i)->addListener(this, true);
+          if (*i != ew)
+            (*i)->addListener(this, true);
           if (!(*i)->isActive())
             ++missing;
         }
@@ -688,8 +681,8 @@ protected:
   }
 
   // see EventListener
-  void signaled(EventWaiter *e)
-  { assert(e == ew); update(); }
+  bool signaled(EventWaiter *e)
+  { assert(e == ew); update(); return false; }
 
   // see EventListener
   void eventDestroyed(EventWaiter *e)
@@ -743,9 +736,10 @@ public:
 
 protected:
   /// @brief see EventListener
-  void signaled(EventWaiter* e) {
+  bool signaled(EventWaiter* e) {
     assert(e == &_e);
     update();
+    return false;
   }
 
   /// @brief see EventListener
@@ -804,12 +798,11 @@ void wait(EventWaiter &e) {
       {
         e.addListener(this);
       }
-      void signaled(EventWaiter *_e) {
+      bool signaled(EventWaiter *_e) {
         assert(_e == &e);
         assert(_e->isActive());
-        _e->delListener(this);
         sce.notify();
-        return;// false;
+        return true;
       }
       void eventDestroyed(EventWaiter *_e) {
         // waiting for destroyed events will hang forever
