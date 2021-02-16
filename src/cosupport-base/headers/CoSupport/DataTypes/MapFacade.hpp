@@ -108,7 +108,6 @@ namespace Detail {
 } // namespace Detail
 
 /// This class is a facade for a std::map look alike containing values of type T.
-/// \example test_map.cpp
 template <
   typename T,
   typename R  = typename boost::add_reference<T>::type,

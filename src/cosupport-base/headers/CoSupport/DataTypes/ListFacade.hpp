@@ -109,7 +109,7 @@ namespace Detail {
 } // namespace Detail
 
 /// This class is a facade for a std::list look alike containing values of type T.
-/// \example test_set.cpp
+/// \example test_list.cpp
 template <
   typename T,
   typename R  = typename ::boost::add_reference<T>::type,
