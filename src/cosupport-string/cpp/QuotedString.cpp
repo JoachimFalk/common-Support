@@ -24,8 +24,10 @@
 
 #include <iostream>
 #include <string>
+#include <cstring>
 
 #include <CoSupport/String/QuotedString.hpp>
+#include <CoSupport/String/quoting.hpp>
 
 namespace CoSupport { namespace String {
 
@@ -33,13 +35,14 @@ std::istream &operator >>(std::istream &in, QuotedString &dst) {
   std::istream::sentry sentry(in, false);
   
   if (sentry) {
-    int ch = in.peek();
-    if (ch == '\'')
-      in >> reinterpret_cast<SingleQuotedString &>(dst);
-    else if (ch == '"')
-      in >> reinterpret_cast<DoubleQuotedString &>(dst);
-    else
-      in >> reinterpret_cast<UnQuotedString &>(dst);
+    dequote(dst, in, QuoteMode::AUTO);
+//  int ch = in.peek();
+//  if (ch == '\'')
+//    in >> reinterpret_cast<SingleQuotedString &>(dst);
+//  else if (ch == '"')
+//    in >> reinterpret_cast<DoubleQuotedString &>(dst);
+//  else
+//    in >> reinterpret_cast<UnQuotedString &>(dst);
   }
   return in;
 }
@@ -48,20 +51,27 @@ std::ostream &operator <<(std::ostream &out, const QuotedString &src) {
   std::ostream::sentry sentry(out);
   
   if (sentry) {
-    bool hasSpace = false;
-    bool hasCtrl  = false;
+    bool needQuote = false;
+    bool hasCtrl   = false;
     for (QuotedString::size_type n = 0;
          n < src.length() && !hasCtrl;
          ++n) {
-      hasSpace |= isspace(src[n]);
-      hasCtrl  |= !isprint(src[n]) || src[n] == '\'';
+      if (src[n] >= 'a' && src[n] <= 'z')
+        continue;
+      if (src[n] >= 'A' && src[n] <= 'Z')
+        continue;
+      if (src[n] >= '0' && src[n] <= '9')
+        continue;
+      if (strchr("_.,:-+/", src[n]))
+        continue;
+      needQuote = true;
+      hasCtrl   |= !isprint(src[n]) || src[n] == '\'';
     }
-    if (!hasCtrl) {
-      if (!hasSpace)
-        out << reinterpret_cast<const UnQuotedString &>(src);
-      else
-        out << reinterpret_cast<const SingleQuotedString &>(src);
-    } else
+    if (!needQuote)
+      out << reinterpret_cast<const UnQuotedString &>(src);
+    else if (!hasCtrl)
+      out << reinterpret_cast<const SingleQuotedString &>(src);
+    else
       out << reinterpret_cast<const DoubleQuotedString &>(src);
   }
   return out;

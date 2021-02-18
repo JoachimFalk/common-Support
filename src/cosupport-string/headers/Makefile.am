@@ -32,6 +32,7 @@ nobase_include_HEADERS = \
 	CoSupport/String/DoubleQuotedString.hpp \
 	CoSupport/String/export_config.h \
 	CoSupport/String/identifiermanipulation.hpp \
+	CoSupport/String/quoting.hpp \
 	CoSupport/String/QuotedString.hpp \
 	CoSupport/String/SingleQuotedString.hpp \
 	CoSupport/String/TemplateProcessor.hpp \
