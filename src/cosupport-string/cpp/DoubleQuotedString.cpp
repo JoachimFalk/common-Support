@@ -44,15 +44,21 @@ std::istream &operator >>(std::istream &in, DoubleQuotedString &dst) {
         while ((ch = in.get()) != EOF && ch != '"') {
           if (ch == '\\') {
             switch (ch = in.get()) {
-              case 'n':
-                ch = '\n'; break;
-              case 't':
-                ch = '\t'; break;
-              case 'f':
+              case 'a': // Alert (Beep, Bell) (added in C89)
+                ch = '\a'; break;
+              case 'b': // Backspace
+                ch = '\b'; break;
+              case 'e': // Escape character
+                ch = '\x1B'; break;
+              case 'f': // Formfeed Page Break
                 ch = '\f'; break;
-              case 'r':
+              case 'n': // Newline (Line Feed)
+                ch = '\n'; break;
+              case 'r': // Carriage Return
                 ch = '\r'; break;
-              case 'v':
+              case 't': // Horizontal Tab
+                ch = '\t'; break;
+              case 'v': // Vertical Tab
                 ch = '\v'; break;
               case 'x': { // hex
                 ch = 0;
@@ -75,7 +81,9 @@ std::istream &operator >>(std::istream &in, DoubleQuotedString &dst) {
                 }
                 break;
               }
-              case '0': // oct
+              case '0': case '1': case '2': case '3':
+              case '4': case '5': case '6': case '7': // oct
+                in.unget();
                 ch = 0;
                 for (int i = 0; i < (CHAR_BIT+2)/3; ++i) {
                   int oct = in.get();
@@ -122,18 +130,33 @@ std::ostream &operator <<(std::ostream &out, const DoubleQuotedString &src) {
       out << '"';
       for (DoubleQuotedString::size_type n = 0; out.good() && n < src.length(); ++n) {
         switch (src[n]) {
-          case '\n':
-            out << "\\n"; break;
-          case '\t':
-            out << "\\t"; break;
-          case '\f':
+          case '\a': // Alert (Beep, Bell) (added in C89)
+            out << "\\a"; break;
+          case '\b': // Backspace
+            out << "\\b"; break;
+//        case '\x1B': // Escape character
+//          out << "\\e"; break;
+          case '\f': // Formfeed Page Break
             out << "\\f"; break;
-          case '\r':
+          case '\n': // Newline (Line Feed)
+            out << "\\n"; break;
+          case '\r': // Carriage Return
             out << "\\r"; break;
-          case '\v':
+          case '\t': // Horizontal Tab
+            out << "\\t"; break;
+          case '\v': // Vertical Tab
             out << "\\v"; break;
           case '"':
             out << "\\\""; break;
+          case '\\':
+            out << "\\\\"; break;
+          // Paranoia, in case this string finds a way to a shell!
+          case '$':
+            out << "\\x24"; break;
+          case '`':
+            out << "\\x60"; break;
+          case '!':
+            out << "\\x21"; break;
           default:
             if (isprint(src[n]))
               out << src[n];
