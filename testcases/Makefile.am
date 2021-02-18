@@ -61,6 +61,7 @@ noinst_PROGRAMS=			\
 	test_path			\
 	test_po				\
 	test_projection			\
+	test_quoting			\
 	test_set			\
 	test_stl_output_for_xxx		\
 	test_stras			\
@@ -234,4 +235,11 @@ test_stras_DEPENDENCIES		= ../libcosupport-string.la
 test_stras_CPPFLAGS		= $(AM_CPPFLAGS)	\
 	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-string)
 test_stras_LDFLAGS		= $(AM_LDFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-string)
+
+test_quoting_SOURCES		= src/test_quoting/cpp/test_quoting.cpp
+test_quoting_DEPENDENCIES	= ../libcosupport-string.la
+test_quoting_CPPFLAGS		= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-string)
+test_quoting_LDFLAGS		= $(AM_LDFLAGS)		\
 	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-string)
