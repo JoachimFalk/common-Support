@@ -27,30 +27,15 @@
 #include <cstdio> // For EOF
 
 #include <CoSupport/String/SingleQuotedString.hpp>
+#include <CoSupport/String/quoting.hpp>
 
 namespace CoSupport { namespace String {
 
 std::istream &operator >>(std::istream &in, SingleQuotedString &dst) {
   std::istream::sentry sentry(in, false);
   
-  if (sentry) {
-    try {
-      int ch = in.get();
-      if (ch == '\'') {
-          dst.clear();
-          while ((ch = in.get()) != EOF && ch != '\'')
-            dst.append(1, ch);
-          if (ch != '\'')
-            in.setstate(std::ios_base::badbit);
-      } else {
-        if (ch != EOF)
-          in.unget();
-        in.setstate(std::ios_base::failbit);
-      }
-    } catch (...) {
-      in.setstate(std::ios_base::badbit);
-    }
-  }
+  if (sentry)
+    dequote(dst, in, QuoteMode::SINGLE_WITH_QUOTES);
   return in;
 }
 
