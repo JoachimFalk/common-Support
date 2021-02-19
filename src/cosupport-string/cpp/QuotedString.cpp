@@ -59,7 +59,7 @@ std::ostream &operator <<(std::ostream &out, const QuotedString &src) {
       needQuote = true;
       hasCtrl   |= !isprint(src[n]) || src[n] == '\'';
     }
-    if (!needQuote)
+    if (!needQuote && !src.empty())
       out << reinterpret_cast<const UnQuotedString &>(src);
     else if (!hasCtrl)
       out << reinterpret_cast<const SingleQuotedString &>(src);
