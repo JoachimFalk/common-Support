@@ -34,16 +34,8 @@ namespace CoSupport { namespace String {
 std::istream &operator >>(std::istream &in, QuotedString &dst) {
   std::istream::sentry sentry(in, false);
   
-  if (sentry) {
+  if (sentry)
     dequote(dst, in, QuoteMode::AUTO);
-//  int ch = in.peek();
-//  if (ch == '\'')
-//    in >> reinterpret_cast<SingleQuotedString &>(dst);
-//  else if (ch == '"')
-//    in >> reinterpret_cast<DoubleQuotedString &>(dst);
-//  else
-//    in >> reinterpret_cast<UnQuotedString &>(dst);
-  }
   return in;
 }
 

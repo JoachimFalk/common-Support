@@ -30,95 +30,15 @@
 #include <ctype.h>
 
 #include <CoSupport/String/DoubleQuotedString.hpp>
+#include <CoSupport/String/quoting.hpp>
 
 namespace CoSupport { namespace String {
 
 std::istream &operator >>(std::istream &in, DoubleQuotedString &dst) {
   std::istream::sentry sentry(in, false);
   
-  if (sentry) {
-    try {
-      int ch = in.get();
-      if (ch == '"') {
-        dst.clear();
-        while ((ch = in.get()) != EOF && ch != '"') {
-          if (ch == '\\') {
-            switch (ch = in.get()) {
-              case 'a': // Alert (Beep, Bell) (added in C89)
-                ch = '\a'; break;
-              case 'b': // Backspace
-                ch = '\b'; break;
-              case 'e': // Escape character
-                ch = '\x1B'; break;
-              case 'f': // Formfeed Page Break
-                ch = '\f'; break;
-              case 'n': // Newline (Line Feed)
-                ch = '\n'; break;
-              case 'r': // Carriage Return
-                ch = '\r'; break;
-              case 't': // Horizontal Tab
-                ch = '\t'; break;
-              case 'v': // Vertical Tab
-                ch = '\v'; break;
-              case 'x': { // hex
-                ch = 0;
-                for (int i = 0; i < (CHAR_BIT+3)/4; ++i) {
-                  int hex = in.get();
-                  // FIXME:
-                  if (hex >= '0' && hex <= '9')
-                    ch = (ch << 4) | (hex - '0');
-                  else if (hex >= 'A' && hex <= 'F')
-                    ch = (ch << 4) | (hex - 'A' + 10);
-                  else if (hex >= 'a' && hex <= 'f')
-                    ch = (ch << 4) | (hex - 'a' + 10);
-                  else if (i == 0)
-                    goto error;
-                  else {
-                    if (hex != EOF)
-                      in.unget();
-                    break;
-                  }
-                }
-                break;
-              }
-              case '0': case '1': case '2': case '3':
-              case '4': case '5': case '6': case '7': // oct
-                in.unget();
-                ch = 0;
-                for (int i = 0; i < (CHAR_BIT+2)/3; ++i) {
-                  int oct = in.get();
-                  // FIXME:
-                  if (oct >= '0' && oct <= '7')
-                    ch = (ch << 3) | (oct - '0');
-                  else {
-                    if (oct != EOF)
-                      in.unget();
-                    break;
-                  }
-                }
-                if (ch > UCHAR_MAX)
-                  goto error;
-                break;
-              default:
-                if (ch == EOF || !ispunct(ch))
-                  goto error;
-                break;
-            }
-          }
-          dst.append(1, ch);
-        }
-        if (ch != '"')
-error:
-          in.setstate(std::ios_base::badbit);
-      } else {
-        if (ch != EOF)
-          in.unget();
-        in.setstate(std::ios_base::failbit);
-      }
-    } catch (...) {
-      in.setstate(std::ios_base::badbit);
-    }
-  }
+  if (sentry)
+    dequote(dst, in, QuoteMode::DOUBLE_WITH_QUOTES);
   return in;
 }
 
