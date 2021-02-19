@@ -289,6 +289,7 @@ int main(int argc, char *argv[]) {
       , "\"\\9\""
       , "\"\\400\""
       , "\"\\777\""
+      , "\"XXX", "'XXX"
       }));
 
   std::cout << "Testing CoSupport::String::SingleQuotedString" << std::endl;
@@ -334,7 +335,7 @@ int main(int argc, char *argv[]) {
       , "\\400"
       }
     , {
-        "X'A'", "\"'XX'\""
+        "X'A'", "\"'XX'\"", "'XXX"
       }));
 
   std::cout << "Testing CoSupport::String::DoubleQuotedString" << std::endl;
@@ -414,6 +415,7 @@ int main(int argc, char *argv[]) {
       , "\"\\9\""
       , "\"\\400\""
       , "\"\\777\""
+      , "\"XXX"
       }));
 
   return error ? -1 : 0;
