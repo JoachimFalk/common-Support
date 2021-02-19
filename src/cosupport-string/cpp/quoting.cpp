@@ -71,33 +71,37 @@ namespace {
   class StreamWhiteSpaceDelim {
   public:
     StreamWhiteSpaceDelim(std::istream const &in)
-      : in(in) {}
+      : facet(std::use_facet<std::ctype<char> >(in.getloc())) {}
 
     bool operator()(int ch) const
-      { return isspace(static_cast<char>(ch), in.getloc()); }
+      { return facet.is(std::ctype<char>::space, static_cast<char>(ch)); }
   private:
-    std::istream const &in;
+    std::ctype<char> const &facet;
   };
 
   template <typename INPUT, typename DELIM>
-  bool dequoteImpl(std::string &dst, INPUT in, DELIM delim, QuoteMode qm) {
-    int quote = EOF;
-
-    switch (qm) {
-      case QuoteMode::DOUBLE_WITH_QUOTES: quote = '"';  break;
-      case QuoteMode::SINGLE_WITH_QUOTES: quote = '\''; break;
-      default: break;
-    }
-
+  DequotingStatus dequoteImpl(std::string &dst, INPUT in, DELIM delim, QuoteMode qm) {
     int ch = in.get();
 
-    if (quote != EOF) {
-      if (ch !=  quote) {
-        if (ch != EOF)
-          in.unget();
-        return false;
-      } else
+    switch (qm) {
+      case QuoteMode::DOUBLE_WITH_QUOTES:
+        if (ch != '"') {
+          if (ch != EOF)
+            in.unget();
+          return DequotingStatus::MISSING_OPENING_DOUBLE_QUOTE;
+        }
         ch = in.get();
+        break;
+      case QuoteMode::SINGLE_WITH_QUOTES:
+        if (ch != '\'') {
+          if (ch != EOF)
+            in.unget();
+          return DequotingStatus::MISSING_OPENING_SINGLE_QUOTE;
+        }
+        ch = in.get();
+        break;
+      default:
+        break;
     }
 
     dst.clear();
@@ -140,7 +144,7 @@ namespace {
                       else if (hex >= 'a' && hex <= 'f')
                         ch = (ch << 4) | (hex - 'a' + 10);
                       else if (i == 0)
-                        return false;
+                        return DequotingStatus::HEX_ESCAPE_WITHOUT_HEX_DIGIT;
                       else {
                         if (hex != EOF)
                           in.unget();
@@ -165,11 +169,13 @@ namespace {
                       }
                     }
                     if (ch > UCHAR_MAX)
-                      return false;
+                      return DequotingStatus::OCT_ESCAPE_EXCEEDS_CHAR_RANGE;
                     break;
                   default:
-                    if (ch == EOF || !ispunct(ch))
-                      return false;
+                    if (ch == EOF)
+                      return DequotingStatus::MISSING_ESCAPE_CHAR;
+                    if (!ispunct(ch))
+                      return DequotingStatus::ILLEGAL_ESCAPE_CHAR;
                     break;
                 }
                 dst.append(1, ch);
@@ -184,7 +190,6 @@ namespace {
           if (qm != QuoteMode::AUTO || ch == EOF)
             goto EndLoop;
           qmActive = QuoteMode::AUTO;
-          quote    = EOF;
           ch       = in.get();
           break;
         case QuoteMode::SINGLE_WITH_QUOTES:
@@ -196,7 +201,6 @@ namespace {
           if (qm != QuoteMode::AUTO || ch == EOF)
             goto EndLoop;
           qmActive = QuoteMode::AUTO;
-          quote    = EOF;
           ch       = in.get();
           break;
         case QuoteMode::AUTO:
@@ -204,17 +208,15 @@ namespace {
             case '\\':
               ch = in.get();
               if (ch == EOF)
-                return false;
+                return DequotingStatus::MISSING_ESCAPE_CHAR;
               else if (ch != '\n')
                 dst.append(1, ch);
               break;
             case '"':
               qmActive = QuoteMode::DOUBLE_WITH_QUOTES;
-              quote = '"';
               break;
             case '\'':
               qmActive = QuoteMode::SINGLE_WITH_QUOTES;
-              quote = '\'';
               break;
             default:
               if (delim(ch)) {
@@ -228,51 +230,194 @@ namespace {
           break;
         default:
           assert(!"Oops, unknown quote mode!");
-          return false;
+          return DequotingStatus::GENERIC_ERROR;
       }
     }
 EndLoop:
-    if (quote != EOF && ch != quote) {
-      return false;
+    switch (qmActive) {
+      case QuoteMode::DOUBLE_WITH_QUOTES:
+        if (ch != '"')
+          return DequotingStatus::MISSING_CLOSING_DOUBLE_QUOTE;
+        break;
+      case QuoteMode::SINGLE_WITH_QUOTES:
+        if (ch != '\'')
+          return DequotingStatus::MISSING_CLOSING_SINGLE_QUOTE;
+        break;
+      default:
+        break;
     }
-    return true;
+    return DequotingStatus::OK;
+  }
+
+  static
+  std::string composeErrorMessage(DequotingStatus error, const char *from, const char *to) {
+    std::string msg;
+    switch (error) {
+      case DequotingStatus::GENERIC_ERROR:
+        msg = "Generic dequoting error";
+        break;
+      case DequotingStatus::MISSING_OPENING_SINGLE_QUOTE:
+        msg = "Expecting opening single quote \"'\"";
+        break;
+      case DequotingStatus::MISSING_CLOSING_SINGLE_QUOTE:
+        msg = "Expecting closing single quote \"'\"";
+        break;
+      case DequotingStatus::MISSING_OPENING_DOUBLE_QUOTE:
+        msg = "Expecting opening double quote '\"'";
+        break;
+      case DequotingStatus::MISSING_CLOSING_DOUBLE_QUOTE:
+        msg = "Expecting closing double quote '\"'";
+        break;
+      case DequotingStatus::HEX_ESCAPE_WITHOUT_HEX_DIGIT:
+        msg = "Expecting hex digits after \\x escape sequence";
+        break;
+      case DequotingStatus::OCT_ESCAPE_EXCEEDS_CHAR_RANGE:
+        msg = "Octal escape must encode character within char range";
+        break;
+      case DequotingStatus::MISSING_ESCAPE_CHAR:
+        msg = "Expecting escaped character after escape char, i.e, '\\'";
+        break;
+      case DequotingStatus::ILLEGAL_ESCAPE_CHAR:
+        msg = "Illegal escape sequence";
+        break;
+      default:
+        assert(error != DequotingStatus::OK);
+        assert(!"Unknown DequotingStatus!");
+        return "Internal error: unknown DequotingStatus!";
+    }
+    if (from != nullptr && from != to) {
+      assert(to != nullptr);
+      msg.append(": ");
+      msg.append(from, to);
+      msg.append(" <= HERE!");
+    } else {
+      msg.append("!");
+    }
+    return msg;
   }
 
 } // anonymous namespace
 
-bool dequote(std::string &str, const char *&in, const char *end, QuoteMode qm) throw() {
-  CharRange inStream(in, end);
-  bool      success = dequoteImpl<CharRange &>(str, inStream, WhiteSpaceDelim(), qm);
-  in = inStream.in;
-  return success;
+std::ostream &operator <<(std::ostream &out, DequotingStatus status) {
+  switch (status) {
+    case DequotingStatus::OK:
+      return out << "DequotingStatus::OK";
+    case DequotingStatus::GENERIC_ERROR:
+      return out << "DequotingStatus::GENERIC_ERROR";
+    case DequotingStatus::MISSING_OPENING_SINGLE_QUOTE:
+      return out << "DequotingStatus::MISSING_OPENING_SINGLE_QUOTE";
+    case DequotingStatus::MISSING_CLOSING_SINGLE_QUOTE:
+      return out << "DequotingStatus::MISSING_CLOSING_SINGLE_QUOTE";
+    case DequotingStatus::MISSING_OPENING_DOUBLE_QUOTE:
+      return out << "DequotingStatus::MISSING_OPENING_DOUBLE_QUOTE";
+    case DequotingStatus::MISSING_CLOSING_DOUBLE_QUOTE:
+      return out << "DequotingStatus::MISSING_CLOSING_DOUBLE_QUOTE";
+    case DequotingStatus::HEX_ESCAPE_WITHOUT_HEX_DIGIT:
+      return out << "DequotingStatus::HEX_ESCAPE_WITHOUT_HEX_DIGIT";
+    case DequotingStatus::OCT_ESCAPE_EXCEEDS_CHAR_RANGE:
+      return out << "DequotingStatus::OCT_ESCAPE_EXCEEDS_CHAR_RANGE";
+    case DequotingStatus::MISSING_ESCAPE_CHAR:
+      return out << "DequotingStatus::MISSING_ESCAPE_CHAR";
+    case DequotingStatus::ILLEGAL_ESCAPE_CHAR:
+      return out << "DequotingStatus::ILLEGAL_ESCAPE_CHAR";
+    default:
+      assert(!"Unknown DequotingStatus!");
+      return out;
+  }
 }
 
-bool dequote(std::string &str, const char *in, const char *end, QuoteMode qm) throw() {
+DequotingError::DequotingError(DequotingStatus error, const char *from, const char *to)
+  : std::runtime_error(composeErrorMessage(error, from, to)), error(error) {}
+
+DequotingStatus dequote(std::string &str, const char *&in, const char *end, QuoteMode qm) throw() {
+  CharRange inStream(in, end);
+  DequotingStatus status = dequoteImpl<CharRange &>(str, inStream, WhiteSpaceDelim(), qm);
+  in = inStream.in;
+  return status;
+}
+
+std::string dequote(const char *&in, const char *end, QuoteMode qm) {
+  std::string str;
+  CharRange inStream(in, end);
+  DequotingStatus status = dequoteImpl<CharRange &>(str, inStream, WhiteSpaceDelim(), qm);
+  const char *start = in;
+  in = inStream.in;
+  if (status != DequotingStatus::OK)
+    throw DequotingError(status, start, inStream.in);
+  return str;
+}
+
+DequotingStatus dequote(std::string &str, QuoteMode qm, const char *in, const char *end) throw() {
   return dequoteImpl(str, CharRange(in, end), WhiteSpaceDelim(), qm);
 }
 
-bool dequote(std::string &str, const char *&in, QuoteMode qm) throw() {
-  CString inStream(in);
-  bool    success = dequoteImpl<CString &>(str, inStream, WhiteSpaceDelim(), qm);
-  in = inStream.in;
-  return success;
+std::string dequote(QuoteMode qm, const char *in, const char *end) {
+  std::string str;
+  CharRange inStream(in, end);
+  DequotingStatus status = dequoteImpl<CharRange &>(str, inStream, WhiteSpaceDelim(), qm);
+  if (status != DequotingStatus::OK)
+    throw DequotingError(status, in, inStream.in);
+  return str;
 }
 
-bool dequote(std::string &str, const char *in, QuoteMode qm) throw() {
+DequotingStatus dequote(std::string &str, const char *&in, QuoteMode qm) throw() {
+  CString inStream(in);
+  DequotingStatus status = dequoteImpl<CString &>(str, inStream, WhiteSpaceDelim(), qm);
+  in = inStream.in;
+  return status;
+}
+
+std::string  dequote(const char *&in, QuoteMode qm) {
+  std::string str;
+  CString inStream(in);
+  DequotingStatus status = dequoteImpl<CString &>(str, inStream, WhiteSpaceDelim(), qm);
+  const char *start = in;
+  in = inStream.in;
+  if (status != DequotingStatus::OK)
+    throw DequotingError(status, start, inStream.in);
+  return str;
+}
+
+DequotingStatus dequote(std::string &str, QuoteMode qm, const char *in) throw() {
   return dequoteImpl(str, CString(in), WhiteSpaceDelim(), qm);
 }
 
-bool dequote(std::string &str, std::istream &in, QuoteMode qm) throw() {
+std::string dequote(QuoteMode qm, const char *in) {
+  std::string str;
+  CString inStream(in);
+  DequotingStatus status = dequoteImpl<CString &>(str, inStream, WhiteSpaceDelim(), qm);
+  if (status != DequotingStatus::OK)
+    throw DequotingError(status, in, inStream.in);
+  return str;
+}
+
+DequotingStatus dequote(std::string &str, std::istream &in, QuoteMode qm) throw() {
   try {
-    bool success = dequoteImpl<std::istream &>(str, in, StreamWhiteSpaceDelim(in),  qm);
-    if (!success)
+    DequotingStatus status = dequoteImpl<std::istream &>(str, in, StreamWhiteSpaceDelim(in),  qm);
+    if (status != DequotingStatus::OK)
       in.setstate(std::ios_base::failbit);
     else if (in.eof() && !in.bad())
       in.clear();
-    return success;
+    return status;
   } catch (...) {
     in.setstate(std::ios_base::badbit);
-    return false;
+    return DequotingStatus::GENERIC_ERROR;
+  }
+}
+
+std::string dequote(std::istream &in, QuoteMode qm) {
+  try {
+    std::string str;
+    DequotingStatus status = dequoteImpl<std::istream &>(str, in, StreamWhiteSpaceDelim(in),  qm);
+    if (status != DequotingStatus::OK) {
+      in.setstate(std::ios_base::failbit);
+      throw DequotingError(status, nullptr, nullptr);
+    } else if (in.eof() && !in.bad())
+      in.clear();
+    return str;
+  } catch (...) {
+    in.setstate(std::ios_base::badbit);
+    throw;
   }
 }
 
