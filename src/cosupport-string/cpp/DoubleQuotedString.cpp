@@ -128,6 +128,7 @@ std::ostream &operator <<(std::ostream &out, const DoubleQuotedString &src) {
   if (sentry) {
     try {
       out << '"';
+      bool precedingHex = false;
       for (DoubleQuotedString::size_type n = 0; out.good() && n < src.length(); ++n) {
         switch (src[n]) {
           case '\a': // Alert (Beep, Bell) (added in C89)
@@ -158,15 +159,22 @@ std::ostream &operator <<(std::ostream &out, const DoubleQuotedString &src) {
           case '!':
             out << "\\x21"; break;
           default:
-            if (isprint(src[n]))
+            bool hexDigit =
+                (src[n] >= '0' && src[n] <= '9') ||
+                (src[n] >= 'A' && src[n] <= 'F') ||
+                (src[n] >= 'a' && src[n] <= 'f');
+            if (( hexDigit && !precedingHex  ) ||
+                (!hexDigit && isprint(src[n]))) {
               out << src[n];
-            else {
+              precedingHex = false;
+            } else {
               unsigned int shift = static_cast<unsigned char>(src[n]);
               out << "\\x";
               for (int i = (CHAR_BIT+3)/4 - 1; i >= 0; --i) {
                 int digit = (shift >> 4*i) & 0xF;
                 out.put(digit < 10 ? '0' + digit : 'A' + digit - 10);
               }
+              precedingHex = true;
             }
             break;
         }
