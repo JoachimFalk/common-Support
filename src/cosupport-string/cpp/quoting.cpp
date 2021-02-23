@@ -21,7 +21,8 @@
 
 #include <CoSupport/String/quoting.hpp>
 
-#include <cstdlib>
+//#include <cstdlib>
+#include <cstring>
 #include <climits>
 #include <cassert>
 
@@ -62,21 +63,40 @@ namespace {
     const char *in;
   };
 
-  class WhiteSpaceDelim {
+  class NoDelim {
   public:
     bool operator()(int ch) const
-      { return isspace(ch); }
+      { return false; }
+  };
+
+  class WhiteSpaceDelim {
+  public:
+    WhiteSpaceDelim(const char *delim)
+      : delim(delim) {}
+
+    bool operator()(int ch) const {
+      return delim != nullptr
+          ? strchr(delim, ch) != nullptr
+          : isspace(ch);
+    }
+  private:
+    const char *delim;
   };
 
   class StreamWhiteSpaceDelim {
   public:
-    StreamWhiteSpaceDelim(std::istream const &in)
-      : facet(std::use_facet<std::ctype<char> >(in.getloc())) {}
+    StreamWhiteSpaceDelim(std::istream const &in, const char *delim)
+      : facet(std::use_facet<std::ctype<char> >(in.getloc()))
+      , delim(delim) {}
 
-    bool operator()(int ch) const
-      { return facet.is(std::ctype<char>::space, static_cast<char>(ch)); }
+    bool operator()(int ch) const {
+      return delim != nullptr
+          ? strchr(delim, ch) != nullptr
+          : facet.is(std::ctype<char>::space, static_cast<char>(ch));
+    }
   private:
     std::ctype<char> const &facet;
+    const char             *delim;
   };
 
   template <typename INPUT, typename DELIM>
@@ -268,6 +288,9 @@ EndLoop:
       case DequotingStatus::MISSING_CLOSING_DOUBLE_QUOTE:
         msg = "Expecting closing double quote '\"'";
         break;
+      case DequotingStatus::TRAILING_GARBAGE:
+        msg = "Trailing garbage after closing single or double quote";
+        break;
       case DequotingStatus::HEX_ESCAPE_WITHOUT_HEX_DIGIT:
         msg = "Expecting hex digits after \\x escape sequence";
         break;
@@ -329,17 +352,26 @@ std::ostream &operator <<(std::ostream &out, DequotingStatus status) {
 DequotingError::DequotingError(DequotingStatus error, const char *from, const char *to)
   : std::runtime_error(composeErrorMessage(error, from, to)), error(error) {}
 
-DequotingStatus dequote(std::string &str, const char *&in, const char *end, QuoteMode qm) throw() {
+DequotingStatus dequote(
+    std::string &str
+  , const char *&in, const char *end
+  , QuoteMode qm
+  , const char *delim) throw()
+{
   CharRange inStream(in, end);
-  DequotingStatus status = dequoteImpl<CharRange &>(str, inStream, WhiteSpaceDelim(), qm);
+  DequotingStatus status = dequoteImpl<CharRange &>(str, inStream, WhiteSpaceDelim(delim), qm);
   in = inStream.in;
   return status;
 }
 
-std::string dequote(const char *&in, const char *end, QuoteMode qm) {
+std::string dequote(
+    const char *&in, const char *end
+  , QuoteMode qm
+  , const char *delim)
+{
   std::string str;
   CharRange inStream(in, end);
-  DequotingStatus status = dequoteImpl<CharRange &>(str, inStream, WhiteSpaceDelim(), qm);
+  DequotingStatus status = dequoteImpl<CharRange &>(str, inStream, WhiteSpaceDelim(delim), qm);
   const char *start = in;
   in = inStream.in;
   if (status != DequotingStatus::OK)
@@ -347,30 +379,54 @@ std::string dequote(const char *&in, const char *end, QuoteMode qm) {
   return str;
 }
 
-DequotingStatus dequote(std::string &str, QuoteMode qm, const char *in, const char *end) throw() {
-  return dequoteImpl(str, CharRange(in, end), WhiteSpaceDelim(), qm);
+DequotingStatus dequote(
+    std::string &str
+  , QuoteMode qm
+  , const char *in, const char *end) throw()
+{
+  CharRange inStream(in, end);
+  DequotingStatus status = dequoteImpl<CharRange &>(str, inStream, NoDelim(), qm);
+  if (status != DequotingStatus::OK)
+    return status;
+  if (inStream.in != end)
+    return DequotingStatus::TRAILING_GARBAGE;
+  return DequotingStatus::OK;
 }
 
-std::string dequote(QuoteMode qm, const char *in, const char *end) {
+std::string dequote(
+    QuoteMode qm
+  , const char *in, const char *end)
+{
   std::string str;
   CharRange inStream(in, end);
-  DequotingStatus status = dequoteImpl<CharRange &>(str, inStream, WhiteSpaceDelim(), qm);
+  DequotingStatus status = dequoteImpl<CharRange &>(str, inStream, NoDelim(), qm);
   if (status != DequotingStatus::OK)
     throw DequotingError(status, in, inStream.in);
+  if (inStream.in != end)
+    throw DequotingError(DequotingStatus::TRAILING_GARBAGE, in, inStream.in);
   return str;
 }
 
-DequotingStatus dequote(std::string &str, const char *&in, QuoteMode qm) throw() {
+DequotingStatus dequote(
+    std::string &str
+  , const char *&in
+  , QuoteMode qm
+  , const char *delim) throw()
+{
   CString inStream(in);
-  DequotingStatus status = dequoteImpl<CString &>(str, inStream, WhiteSpaceDelim(), qm);
+  DequotingStatus status = dequoteImpl<CString &>(str, inStream, WhiteSpaceDelim(delim), qm);
   in = inStream.in;
   return status;
 }
 
-std::string  dequote(const char *&in, QuoteMode qm) {
+std::string  dequote(
+    const char *&in
+  , QuoteMode qm
+  , const char *delim)
+{
   std::string str;
   CString inStream(in);
-  DequotingStatus status = dequoteImpl<CString &>(str, inStream, WhiteSpaceDelim(), qm);
+  DequotingStatus status = dequoteImpl<CString &>(str, inStream, WhiteSpaceDelim(delim), qm);
   const char *start = in;
   in = inStream.in;
   if (status != DequotingStatus::OK)
@@ -378,22 +434,42 @@ std::string  dequote(const char *&in, QuoteMode qm) {
   return str;
 }
 
-DequotingStatus dequote(std::string &str, QuoteMode qm, const char *in) throw() {
-  return dequoteImpl(str, CString(in), WhiteSpaceDelim(), qm);
+DequotingStatus dequote(
+    std::string &str
+  , QuoteMode qm
+  , const char *in) throw()
+{
+  CString inStream(in);
+  DequotingStatus status = dequoteImpl<CString &>(str, inStream, NoDelim(), qm);
+  if (status != DequotingStatus::OK)
+    return status;
+  if (*inStream.in != '\0')
+    return DequotingStatus::TRAILING_GARBAGE;
+  return DequotingStatus::OK;
 }
 
-std::string dequote(QuoteMode qm, const char *in) {
+std::string dequote(
+    QuoteMode qm
+  , const char *in)
+{
   std::string str;
   CString inStream(in);
-  DequotingStatus status = dequoteImpl<CString &>(str, inStream, WhiteSpaceDelim(), qm);
+  DequotingStatus status = dequoteImpl<CString &>(str, inStream, NoDelim(), qm);
   if (status != DequotingStatus::OK)
     throw DequotingError(status, in, inStream.in);
+  if (*inStream.in != '\0')
+    throw DequotingError(DequotingStatus::TRAILING_GARBAGE, in, inStream.in);
   return str;
 }
 
-DequotingStatus dequote(std::string &str, std::istream &in, QuoteMode qm) throw() {
+DequotingStatus dequote(
+    std::string &str
+  , std::istream &in
+  , QuoteMode qm
+  , const char *delim) throw()
+{
   try {
-    DequotingStatus status = dequoteImpl<std::istream &>(str, in, StreamWhiteSpaceDelim(in),  qm);
+    DequotingStatus status = dequoteImpl<std::istream &>(str, in, StreamWhiteSpaceDelim(in, delim),  qm);
     if (status != DequotingStatus::OK)
       in.setstate(std::ios_base::failbit);
     else if (in.eof() && !in.bad())
@@ -405,10 +481,14 @@ DequotingStatus dequote(std::string &str, std::istream &in, QuoteMode qm) throw(
   }
 }
 
-std::string dequote(std::istream &in, QuoteMode qm) {
+std::string dequote(
+    std::istream &in
+  , QuoteMode qm
+  , const char *delim)
+{
   try {
     std::string str;
-    DequotingStatus status = dequoteImpl<std::istream &>(str, in, StreamWhiteSpaceDelim(in),  qm);
+    DequotingStatus status = dequoteImpl<std::istream &>(str, in, StreamWhiteSpaceDelim(in, delim),  qm);
     if (status != DequotingStatus::OK) {
       in.setstate(std::ios_base::failbit);
       throw DequotingError(status, nullptr, nullptr);

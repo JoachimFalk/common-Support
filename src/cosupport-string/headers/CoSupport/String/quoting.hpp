@@ -46,6 +46,8 @@ enum class DequotingStatus {
   MISSING_OPENING_DOUBLE_QUOTE = 4,
   /// The closing double quote "'" was missing, e.g., "abcd.
   MISSING_CLOSING_DOUBLE_QUOTE = 5,
+  /// Trailing garbage after closing single or double quote.
+  TRAILING_GARBAGE = 10,
   /// No hex digit after \x escape sequence, e.g., "ab\xk".
   HEX_ESCAPE_WITHOUT_HEX_DIGIT = 6,
   /// Octal escape sequence encodes a character outside char range, e.g., "\400".
@@ -88,10 +90,15 @@ enum class QuoteMode {
  * \param[inout] in specifies the input to be dequoted.
  * \param[in] end specifies the end of the input string.
  * \param[in] qm specifies how the input is quoted.
+ * \param[in] delim specifies a set of characters acting as delimiters denoting the end of the quoted string in QuoteMode::AUTO.
  * \return On success, returns DequotingStatus::OK otherwise an error code.
  */
 COSUPPORT_STRING_API
-DequotingStatus dequote(std::string &str, const char *&in, const char *end, QuoteMode qm = QuoteMode::AUTO) throw();
+DequotingStatus dequote(
+    std::string &str
+  , const char *&in, const char *end
+  , QuoteMode qm = QuoteMode::AUTO
+  , const char *delim = nullptr) throw();
 
 /**
  *  Dequote input between in and end given in the specified quote mode.
@@ -99,10 +106,14 @@ DequotingStatus dequote(std::string &str, const char *&in, const char *end, Quot
  * \param[inout] in specifies the input to be dequoted.
  * \param[in] end specifies the end of the input string.
  * \param[in] qm specifies how the input is quoted.
+ * \param[in] delim specifies a set of characters acting as delimiters denoting the end of the quoted string in QuoteMode::AUTO.
  * \return On success, returns the dequoted string; otherwise, throws a DequotingError.
  */
 COSUPPORT_STRING_API
-std::string dequote(const char *&in, const char *end, QuoteMode qm = QuoteMode::AUTO);
+std::string dequote(
+    const char *&in, const char *end
+  , QuoteMode qm = QuoteMode::AUTO
+  , const char *delim = nullptr);
 
 /**
  *  Dequote input between in and end given in the specified quote mode.
@@ -114,7 +125,10 @@ std::string dequote(const char *&in, const char *end, QuoteMode qm = QuoteMode::
  * \return On success, returns DequotingStatus::OK otherwise an error code.
  */
 COSUPPORT_STRING_API
-DequotingStatus dequote(std::string &str, QuoteMode qm, const char *in, const char *end) throw();
+DequotingStatus dequote(
+    std::string &str
+  , QuoteMode qm
+  , const char *in, const char *end) throw();
 
 /**
  *  Dequote input between in and end given in the specified quote mode.
@@ -125,7 +139,9 @@ DequotingStatus dequote(std::string &str, QuoteMode qm, const char *in, const ch
  * \return On success, returns the dequoted string; otherwise, throws a DequotingError.
  */
 COSUPPORT_STRING_API
-std::string dequote(QuoteMode qm, const char *in, const char *end);
+std::string dequote(
+    QuoteMode qm
+  , const char *in, const char *end);
 
 /**
  *  Dequote the null terminate c string given in the specified quote mode.
@@ -133,20 +149,29 @@ std::string dequote(QuoteMode qm, const char *in, const char *end);
  * \param[out] str specifies the output string that will hold the dequoted string.
  * \param[inout] in specifies the null terminate c string to be dequoted.
  * \param[in] qm specifies how the input is quoted.
+ * \param[in] delim specifies a set of characters acting as delimiters denoting the end of the quoted string in QuoteMode::AUTO.
  * \return On success, returns DequotingStatus::OK otherwise an error code.
  */
 COSUPPORT_STRING_API
-DequotingStatus dequote(std::string &str, const char *&in, QuoteMode qm = QuoteMode::AUTO) throw();
+DequotingStatus dequote(
+    std::string &str
+  , const char *&in
+  , QuoteMode qm = QuoteMode::AUTO
+  , const char *delim = nullptr) throw();
 
 /**
  *  Dequote the null terminate c string given in the specified quote mode.
  *
  * \param[inout] in specifies the null terminate c string to be dequoted.
  * \param[in] qm specifies how the input is quoted.
+ * \param[in] delim specifies a set of characters acting as delimiters denoting the end of the quoted string in QuoteMode::AUTO.
  * \return On success, returns the dequoted string; otherwise, throws a DequotingError.
  */
 COSUPPORT_STRING_API
-std::string dequote(const char *&in, QuoteMode qm = QuoteMode::AUTO);
+std::string dequote(
+    const char *&in
+  , QuoteMode qm = QuoteMode::AUTO
+  , const char *delim = nullptr);
 
 /**
  *  Dequote the null terminate c string given in the specified quote mode.
@@ -157,7 +182,10 @@ std::string dequote(const char *&in, QuoteMode qm = QuoteMode::AUTO);
  * \return On success, returns DequotingStatus::OK otherwise an error code.
  */
 COSUPPORT_STRING_API
-DequotingStatus dequote(std::string &str, QuoteMode qm, const char *in) throw();
+DequotingStatus dequote(
+    std::string &str
+  , QuoteMode qm
+  , const char *in) throw();
 
 /**
  *  Dequote the null terminate c string given in the specified quote mode.
@@ -167,32 +195,43 @@ DequotingStatus dequote(std::string &str, QuoteMode qm, const char *in) throw();
  * \return On success, returns the dequoted string; otherwise, throws a DequotingError.
  */
 COSUPPORT_STRING_API
-std::string dequote(QuoteMode qm, const char *in);
+std::string dequote(
+    QuoteMode qm
+  , const char *in);
 
 /**
  *  Dequote a quoted string in the specified quote mode from the input stream in.
  *
  * \param[out] str specifies the output string that will hold the dequoted string.
- * \param[in] in specifies the input stream.
+ * \param[inout] in specifies the input stream.
  * \param[in] qm specifies how the input is quoted.
+ * \param[in] delim specifies a set of characters acting as delimiters denoting the end of the quoted string in QuoteMode::AUTO.
  * \return On success, returns DequotingStatus::OK otherwise an error code.
  *
  * In case of error, the std::ios::failbit will be set for the input stream.
  */
 COSUPPORT_STRING_API
-DequotingStatus dequote(std::string &str, std::istream &in, QuoteMode qm = QuoteMode::AUTO) throw();
+DequotingStatus dequote(
+    std::string &str
+  , std::istream &in
+  , QuoteMode qm = QuoteMode::AUTO
+  , const char *delim = nullptr) throw();
 
 /**
  *  Dequote a quoted string in the specified quote mode from the input stream in.
  *
- * \param[in] in specifies the input stream.
+ * \param[inout] in specifies the input stream.
  * \param[in] qm specifies how the input is quoted.
+ * \param[in] delim specifies a set of characters acting as delimiters denoting the end of the quoted string in QuoteMode::AUTO.
  * \return On success, returns the dequoted string; otherwise, throws a DequotingError.
  *
  * In case of error, the std::ios::failbit will also be set for the input stream before throwing a DequotingError.
  */
 COSUPPORT_STRING_API
-std::string dequote(std::istream &in, QuoteMode qm = QuoteMode::AUTO);
+std::string dequote(
+    std::istream &in
+  , QuoteMode qm = QuoteMode::AUTO
+  , const char *delim = nullptr);
 
 } } // namespace CoSupport::String
 
