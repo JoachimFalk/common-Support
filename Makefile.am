@@ -205,6 +205,7 @@ libcosupport_string_la_SOURCES =				\
 	src/cosupport-string/cpp/UniquePool.cpp			\
 	src/cosupport-string/cpp/UniqueCIdentifierPool.cpp	\
 	src/cosupport-string/cpp/DoubleQuotedString.cpp		\
+	src/cosupport-string/cpp/Environment.cpp		\
 	src/cosupport-string/cpp/identifiermanipulation.cpp	\
 	src/cosupport-string/cpp/quoting.cpp			\
 	src/cosupport-string/cpp/QuotedString.cpp		\

@@ -30,6 +30,7 @@ nobase_include_HEADERS = \
 	CoSupport/String/color.hpp \
 	CoSupport/String/convert.hpp \
 	CoSupport/String/DoubleQuotedString.hpp \
+	CoSupport/String/Environment.hpp \
 	CoSupport/String/export_config.h \
 	CoSupport/String/identifiermanipulation.hpp \
 	CoSupport/String/quoting.hpp \

@@ -1,0 +1,22 @@
+envA:
+  A => B
+  AA => C=X
+envA.getEnv():
+  A=B
+  AA=C=X
+envA:
+  A => B
+  AA => C=X
+  FOO => b=ar
+envA.getEnv():
+  A=B
+  AA=C=X
+  FOO=b=ar
+envA:
+  A => B
+  AA => C=X
+  FOO => b=ar
+  X=Y => Z
+envA.getEnv():
+Not an environment variable: X=Y
+Not an environment string: KKK
