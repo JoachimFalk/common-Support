@@ -52,6 +52,7 @@ noinst_PROGRAMS=			\
 	test_asstr			\
 	test_color			\
 	test_dbgstream			\
+	test_environment		\
 	test_facade			\
 	test_idpool			\
 	test_interval			\
@@ -242,4 +243,11 @@ test_quoting_DEPENDENCIES	= ../libcosupport-string.la
 test_quoting_CPPFLAGS		= $(AM_CPPFLAGS)	\
 	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-string)
 test_quoting_LDFLAGS		= $(AM_LDFLAGS)		\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-string)
+
+test_environment_SOURCES	= src/test_environment/cpp/test_environment.cpp
+test_environment_DEPENDENCIES	= ../libcosupport-string.la
+test_environment_CPPFLAGS	= $(AM_CPPFLAGS)	\
+	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --cflags libcosupport-string)
+test_environment_LDFLAGS	= $(AM_LDFLAGS)		\
 	$(shell PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"; export PKG_CONFIG_PATH; $(PKG_CONFIG) --libs libcosupport-string)
