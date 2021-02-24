@@ -335,6 +335,8 @@ std::ostream &operator <<(std::ostream &out, DequotingStatus status) {
       return out << "DequotingStatus::MISSING_OPENING_DOUBLE_QUOTE";
     case DequotingStatus::MISSING_CLOSING_DOUBLE_QUOTE:
       return out << "DequotingStatus::MISSING_CLOSING_DOUBLE_QUOTE";
+    case DequotingStatus::TRAILING_GARBAGE:
+      return out << "DequotingStatus::TRAILING_GARBAGE";
     case DequotingStatus::HEX_ESCAPE_WITHOUT_HEX_DIGIT:
       return out << "DequotingStatus::HEX_ESCAPE_WITHOUT_HEX_DIGIT";
     case DequotingStatus::OCT_ESCAPE_EXCEEDS_CHAR_RANGE:
