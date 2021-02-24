@@ -92,6 +92,14 @@ enum class QuoteMode {
  * \param[in] qm specifies how the input is quoted.
  * \param[in] delim specifies a set of characters acting as delimiters denoting the end of the quoted string in QuoteMode::AUTO.
  * \return On success, returns DequotingStatus::OK otherwise an error code.
+ *
+ * While dequoting, in will be advanced. On a successful dequoting, one of the following conditions holds:
+ * (i) in is end,
+ * (ii) *in is a delimiter char in case qm is QuoteMode::AUTO,
+ * (iii) in[-1] is '"' in case qm is QuoteMode::DOUBLE_WITH_QUOTES
+ * (iv)  in[-1] is '\'' in case qm is QuoteMode::SINGLE_WITH_QUOTES.
+ * When no delimiter is specified, i.e., delim == nullptr, than any whitespace character will act as a delimiter. Note that
+ * this is locale specific.
  */
 COSUPPORT_STRING_API
 DequotingStatus dequote(
@@ -108,6 +116,14 @@ DequotingStatus dequote(
  * \param[in] qm specifies how the input is quoted.
  * \param[in] delim specifies a set of characters acting as delimiters denoting the end of the quoted string in QuoteMode::AUTO.
  * \return On success, returns the dequoted string; otherwise, throws a DequotingError.
+ *
+ * While dequoting, in will be advanced. On a successful dequoting, one of the following conditions holds:
+ * (i) in is end,
+ * (ii) *in is a delimiter char in case qm is QuoteMode::AUTO,
+ * (iii) in[-1] is '"' in case qm is QuoteMode::DOUBLE_WITH_QUOTES
+ * (iv)  in[-1] is '\'' in case qm is QuoteMode::SINGLE_WITH_QUOTES.
+ * When no delimiter is specified, i.e., delim == nullptr, than any whitespace character will act as a delimiter. Note that
+ * this is locale specific.
  */
 COSUPPORT_STRING_API
 std::string dequote(
@@ -123,6 +139,10 @@ std::string dequote(
  * \param[in] in specifies the input to be dequoted.
  * \param[in] end specifies the end of the input string.
  * \return On success, returns DequotingStatus::OK otherwise an error code.
+ *
+ * This function will try to dequote the whole string between in and end.
+ * In case this fails due to trailing garbage, e.g., after the closing single or
+ * double quotes, a DequotingStatus::TRAILING_GARBAGE error will be returned.
  */
 COSUPPORT_STRING_API
 DequotingStatus dequote(
@@ -137,6 +157,11 @@ DequotingStatus dequote(
  * \param[in] in specifies the input to be dequoted.
  * \param[in] end specifies the end of the input string.
  * \return On success, returns the dequoted string; otherwise, throws a DequotingError.
+ *
+ * This function will try to dequote the whole string between in and end.
+ * In case this fails due to trailing garbage, e.g., after the closing single or
+ * double quotes, a DequotingError exception with DequotingStatus::TRAILING_GARBAGE will be
+ * thrown.
  */
 COSUPPORT_STRING_API
 std::string dequote(
@@ -151,6 +176,14 @@ std::string dequote(
  * \param[in] qm specifies how the input is quoted.
  * \param[in] delim specifies a set of characters acting as delimiters denoting the end of the quoted string in QuoteMode::AUTO.
  * \return On success, returns DequotingStatus::OK otherwise an error code.
+ *
+ * While dequoting, in will be advanced. On a successful dequoting, one of the following conditions holds:
+ * (i) *in is '\0',
+ * (ii) *in is a delimiter char in case qm is QuoteMode::AUTO,
+ * (iii) in[-1] is '"' in case qm is QuoteMode::DOUBLE_WITH_QUOTES
+ * (iv)  in[-1] is '\'' in case qm is QuoteMode::SINGLE_WITH_QUOTES.
+ * When no delimiter is specified, i.e., delim == nullptr, than any whitespace character will act as a delimiter. Note that
+ * this is locale specific.
  */
 COSUPPORT_STRING_API
 DequotingStatus dequote(
@@ -166,6 +199,14 @@ DequotingStatus dequote(
  * \param[in] qm specifies how the input is quoted.
  * \param[in] delim specifies a set of characters acting as delimiters denoting the end of the quoted string in QuoteMode::AUTO.
  * \return On success, returns the dequoted string; otherwise, throws a DequotingError.
+ *
+ * While dequoting, in will be advanced. On a successful dequoting, one of the following conditions holds:
+ * (i) *in is '\0',
+ * (ii) *in is a delimiter char in case qm is QuoteMode::AUTO,
+ * (iii) in[-1] is '"' in case qm is QuoteMode::DOUBLE_WITH_QUOTES
+ * (iv)  in[-1] is '\'' in case qm is QuoteMode::SINGLE_WITH_QUOTES.
+ * When no delimiter is specified, i.e., delim == nullptr, than any whitespace character will act as a delimiter. Note that
+ * this is locale specific.
  */
 COSUPPORT_STRING_API
 std::string dequote(
@@ -180,6 +221,10 @@ std::string dequote(
  * \param[in] qm specifies how the input is quoted.
  * \param[in] in specifies the null terminate c string to be dequoted.
  * \return On success, returns DequotingStatus::OK otherwise an error code.
+ *
+ * This function will try to dequote the whole in string. In case this fails due to
+ * trailing garbage, e.g., after the closing single or double quotes, a
+ * DequotingStatus::TRAILING_GARBAGE error will be returned.
  */
 COSUPPORT_STRING_API
 DequotingStatus dequote(
@@ -193,6 +238,10 @@ DequotingStatus dequote(
  * \param[in] qm specifies how the input is quoted.
  * \param[in] in specifies the null terminate c string to be dequoted.
  * \return On success, returns the dequoted string; otherwise, throws a DequotingError.
+ *
+ * This function will try to dequote the whole in string. In case this fails due to
+ * trailing garbage, e.g., after the closing single or double quotes, a DequotingError
+ * exception with DequotingStatus::TRAILING_GARBAGE will be thrown.
  */
 COSUPPORT_STRING_API
 std::string dequote(
@@ -209,6 +258,13 @@ std::string dequote(
  * \return On success, returns DequotingStatus::OK otherwise an error code.
  *
  * In case of error, the std::ios::failbit will be set for the input stream.
+ * In case of a successful dequoting, in.good() will return true and one of the following conditions holds:
+ * (i) the next char read from in will result in EOF,
+ * (ii) the next char read from in is a delimiter char in case qm is QuoteMode::AUTO,
+ * (iii) the previous char read from in was '"' in case qm is QuoteMode::DOUBLE_WITH_QUOTES
+ * (iv) the previous char read from in was '\'' in case qm is QuoteMode::SINGLE_WITH_QUOTES.
+ * When no delimiter is specified, i.e., delim == nullptr, than any whitespace character will act as a delimiter.
+ * Note that this is locale specific.
  */
 COSUPPORT_STRING_API
 DequotingStatus dequote(
@@ -226,6 +282,13 @@ DequotingStatus dequote(
  * \return On success, returns the dequoted string; otherwise, throws a DequotingError.
  *
  * In case of error, the std::ios::failbit will also be set for the input stream before throwing a DequotingError.
+ * In case of a successful dequoting, in.good() will return true and one of the following conditions holds:
+ * (i) the next char read from in will result in EOF,
+ * (ii) the next char read from in is a delimiter char in case qm is QuoteMode::AUTO,
+ * (iii) the previous char read from in was '"' in case qm is QuoteMode::DOUBLE_WITH_QUOTES
+ * (iv) the previous char read from in was '\'' in case qm is QuoteMode::SINGLE_WITH_QUOTES.
+ * When no delimiter is specified, i.e., delim == nullptr, than any whitespace character will act as a delimiter.
+ * Note that this is locale specific.
  */
 COSUPPORT_STRING_API
 std::string dequote(
