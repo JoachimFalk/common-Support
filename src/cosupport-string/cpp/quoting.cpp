@@ -70,34 +70,38 @@ namespace {
       { return false; }
   };
 
-  class WhiteSpaceDelim {
+  class WhiteSpaceDelim: public Delimiters {
   public:
-    WhiteSpaceDelim(const char *delim)
-      : delim(delim) {}
+    WhiteSpaceDelim(Delimiters const &delims)
+      : Delimiters(delims) {}
 
     bool operator()(int ch) const {
-      return delim != nullptr
-          ? strchr(delim, ch) != nullptr
+      return isGiven()
+          ? delims.find(ch) != std::string::npos
           : isspace(ch);
     }
-  private:
-    const char *delim;
+
+    bool isGiven() const
+      { return given; }
   };
 
-  class StreamWhiteSpaceDelim {
+  class StreamWhiteSpaceDelim: public Delimiters {
   public:
-    StreamWhiteSpaceDelim(std::istream const &in, const char *delim)
-      : facet(std::use_facet<std::ctype<char> >(in.getloc()))
-      , delim(delim) {}
+    StreamWhiteSpaceDelim(Delimiters const &delims, std::istream const &in)
+      : Delimiters(delims)
+      , facet(std::use_facet<std::ctype<char> >(in.getloc())) {}
 
     bool operator()(int ch) const {
-      return delim != nullptr
-          ? strchr(delim, ch) != nullptr
+      return isGiven()
+          ? delims.find(ch) != std::string::npos
           : facet.is(std::ctype<char>::space, static_cast<char>(ch));
     }
+
+    bool isGiven() const
+      { return given; }
+
   private:
     std::ctype<char> const &facet;
-    const char             *delim;
   };
 
 #define VALID_VAR_CHARS(ch) \
@@ -152,202 +156,268 @@ namespace {
   }
 
   template <typename INPUT, typename DELIM>
-  DequotingStatus dequoteImpl(std::string &dst, INPUT &in, QuoteMode qm, DELIM delim, Environment const *env) {
+  DequotingStatus dequoteDoubleNoQuotes(
+      std::string       &dst
+    , INPUT             &in
+    , DELIM const       &delim
+    , Environment const *env
+    , bool               clear = true)
+  {
     int ch = in.get();
 
-    bool variableSubsitution = env != nullptr;
+    bool variableSubstitution = env != nullptr;
 
-    switch (qm) {
-      case QuoteMode::DOUBLE_WITH_QUOTES:
-        if (ch != '"') {
-          if (ch != EOF)
-            in.unget();
-          return DequotingStatus::MISSING_OPENING_DOUBLE_QUOTE;
+    if (clear)
+      dst.clear();
+
+    while (ch != EOF && !delim(ch)) {
+      switch (ch) {
+        case '\\': {
+          switch (ch = in.get()) {
+            case 'a': // Alert (Beep, Bell) (added in C89)
+              ch = '\a'; break;
+            case 'b': // Backspace
+              ch = '\b'; break;
+            case 'e': // Escape character
+              ch = '\x1B'; break;
+            case 'f': // Formfeed Page Break
+              ch = '\f'; break;
+            case 'n': // Newline (Line Feed)
+              ch = '\n'; break;
+            case 'r': // Carriage Return
+              ch = '\r'; break;
+            case 't': // Horizontal Tab
+              ch = '\t'; break;
+            case 'v': // Vertical Tab
+              ch = '\v'; break;
+            case 'x': { // hex
+              ch = 0;
+              for (int i = 0; i < (CHAR_BIT+3)/4; ++i) {
+                int hex = in.get();
+                // FIXME:
+                if (hex >= '0' && hex <= '9')
+                  ch = (ch << 4) | (hex - '0');
+                else if (hex >= 'A' && hex <= 'F')
+                  ch = (ch << 4) | (hex - 'A' + 10);
+                else if (hex >= 'a' && hex <= 'f')
+                  ch = (ch << 4) | (hex - 'a' + 10);
+                else if (i == 0)
+                  return DequotingStatus::HEX_ESCAPE_WITHOUT_HEX_DIGIT;
+                else {
+                  if (hex != EOF)
+                    in.unget();
+                  break;
+                }
+              }
+              break;
+            }
+            case '0': case '1': case '2': case '3':
+            case '4': case '5': case '6': case '7': // oct
+              in.unget();
+              ch = 0;
+              for (int i = 0; i < (CHAR_BIT+2)/3; ++i) {
+                int oct = in.get();
+                // FIXME:
+                if (oct >= '0' && oct <= '7')
+                  ch = (ch << 3) | (oct - '0');
+                else {
+                  if (oct != EOF)
+                    in.unget();
+                  break;
+                }
+              }
+              if (ch > UCHAR_MAX)
+                return DequotingStatus::OCT_ESCAPE_EXCEEDS_CHAR_RANGE;
+              break;
+            default:
+              if (ch == EOF)
+                return DequotingStatus::MISSING_ESCAPE_CHAR;
+              if (!ispunct(ch))
+                return DequotingStatus::ILLEGAL_ESCAPE_CHAR;
+              break;
+          }
+          dst.append(1, ch);
+          break;
         }
-        ch = in.get();
-        break;
-      case QuoteMode::SINGLE_WITH_QUOTES:
-        if (ch != '\'') {
-          if (ch != EOF)
-            in.unget();
-          return DequotingStatus::MISSING_OPENING_SINGLE_QUOTE;
-        }
-        ch = in.get();
-        break;
-      default:
-        break;
+        case '$':
+          if (variableSubstitution) {
+            DequotingStatus status = dequoteVarImpl(dst, in, delim, *env);
+            if (status != DequotingStatus::OK)
+              return status;
+          } else
+            dst.append(1, ch);
+          break;
+        default:
+          dst.append(1, ch);
+          break;
+      }
+      ch = in.get();
     }
+
+    if (ch != EOF)
+      in.unget();
+
+    return DequotingStatus::OK;
+  }
+
+  template <typename INPUT>
+  DequotingStatus dequoteDoubleWithQuotes(
+      std::string       &dst
+    , INPUT             &in
+    , Environment const *env
+    , bool               clear = true)
+  {
+    int ch;
+
+    if ((ch = in.get()) != '"') {
+      if (ch != EOF)
+        in.unget();
+      return DequotingStatus::MISSING_OPENING_DOUBLE_QUOTE;
+    }
+
+    DequotingStatus status = dequoteDoubleNoQuotes(dst, in, WhiteSpaceDelim("\""), env, clear);
+    if (status != DequotingStatus::OK)
+      return status;
+
+    if ((ch = in.get()) != '"') {
+      assert(ch == EOF);
+      return DequotingStatus::MISSING_CLOSING_DOUBLE_QUOTE;
+    }
+
+    return DequotingStatus::OK;
+  }
+
+  template <typename INPUT, typename DELIM>
+  DequotingStatus dequoteSingleNoQuotes(
+      std::string       &dst
+    , INPUT             &in
+    , DELIM const       &delim
+    , Environment const *env
+    , bool               clear = true)
+  {
+    int ch = in.get();
+
+    bool variableSubstitution = env != nullptr;
+
+    if (clear)
+      dst.clear();
+
+    while (ch != EOF && !delim(ch)) {
+      if (ch == '$' && variableSubstitution) {
+        DequotingStatus status = dequoteVarImpl(dst, in, delim, *env);
+        if (status != DequotingStatus::OK)
+          return status;
+      } else
+        dst.append(1, ch);
+      ch = in.get();
+    }
+
+    if (ch != EOF)
+      in.unget();
+
+    return DequotingStatus::OK;
+  }
+
+  template <typename INPUT>
+  DequotingStatus dequoteSingleWithQuotes(
+      std::string       &dst
+    , INPUT             &in
+    , Environment const *env
+    , bool               clear = true)
+  {
+    int ch;
+
+    if ((ch = in.get()) != '\'') {
+      if (ch != EOF)
+        in.unget();
+      return DequotingStatus::MISSING_OPENING_SINGLE_QUOTE;
+    }
+
+    DequotingStatus status = dequoteSingleNoQuotes(dst, in, WhiteSpaceDelim("'"), env, clear);
+    if (status != DequotingStatus::OK)
+      return status;
+
+    if ((ch = in.get()) != '\'') {
+      assert(ch == EOF);
+      return DequotingStatus::MISSING_CLOSING_SINGLE_QUOTE;
+    }
+
+    return DequotingStatus::OK;
+  }
+
+  template <typename INPUT, typename DELIM>
+  DequotingStatus dequoteAuto(
+      std::string       &dst
+    , INPUT             &in
+    , DELIM const       &delim
+    , Environment const *env)
+  {
+    int ch = in.get();
 
     dst.clear();
 
-    QuoteMode qmActive = qm;
-
     while (ch != EOF) {
-      switch (qmActive) {
-        case QuoteMode::DOUBLE_WITH_QUOTES:
-        case QuoteMode::DOUBLE_NO_QUOTES:
-          while (ch != EOF && (ch != '"' || qmActive == QuoteMode::DOUBLE_NO_QUOTES)) {
-            switch (ch) {
-              case '\\': {
-                switch (ch = in.get()) {
-                  case 'a': // Alert (Beep, Bell) (added in C89)
-                    ch = '\a'; break;
-                  case 'b': // Backspace
-                    ch = '\b'; break;
-                  case 'e': // Escape character
-                    ch = '\x1B'; break;
-                  case 'f': // Formfeed Page Break
-                    ch = '\f'; break;
-                  case 'n': // Newline (Line Feed)
-                    ch = '\n'; break;
-                  case 'r': // Carriage Return
-                    ch = '\r'; break;
-                  case 't': // Horizontal Tab
-                    ch = '\t'; break;
-                  case 'v': // Vertical Tab
-                    ch = '\v'; break;
-                  case 'x': { // hex
-                    ch = 0;
-                    for (int i = 0; i < (CHAR_BIT+3)/4; ++i) {
-                      int hex = in.get();
-                      // FIXME:
-                      if (hex >= '0' && hex <= '9')
-                        ch = (ch << 4) | (hex - '0');
-                      else if (hex >= 'A' && hex <= 'F')
-                        ch = (ch << 4) | (hex - 'A' + 10);
-                      else if (hex >= 'a' && hex <= 'f')
-                        ch = (ch << 4) | (hex - 'a' + 10);
-                      else if (i == 0)
-                        return DequotingStatus::HEX_ESCAPE_WITHOUT_HEX_DIGIT;
-                      else {
-                        if (hex != EOF)
-                          in.unget();
-                        break;
-                      }
-                    }
-                    break;
-                  }
-                  case '0': case '1': case '2': case '3':
-                  case '4': case '5': case '6': case '7': // oct
-                    in.unget();
-                    ch = 0;
-                    for (int i = 0; i < (CHAR_BIT+2)/3; ++i) {
-                      int oct = in.get();
-                      // FIXME:
-                      if (oct >= '0' && oct <= '7')
-                        ch = (ch << 3) | (oct - '0');
-                      else {
-                        if (oct != EOF)
-                          in.unget();
-                        break;
-                      }
-                    }
-                    if (ch > UCHAR_MAX)
-                      return DequotingStatus::OCT_ESCAPE_EXCEEDS_CHAR_RANGE;
-                    break;
-                  default:
-                    if (ch == EOF)
-                      return DequotingStatus::MISSING_ESCAPE_CHAR;
-                    if (!ispunct(ch))
-                      return DequotingStatus::ILLEGAL_ESCAPE_CHAR;
-                    break;
-                }
-                dst.append(1, ch);
-                break;
-              }
-              case '$':
-                if (variableSubsitution) {
-                  DequotingStatus status = qmActive == QuoteMode::DOUBLE_NO_QUOTES
-                      ? dequoteVarImpl(dst, in, NoDelim(), *env)
-                      : dequoteVarImpl(dst, in, WhiteSpaceDelim("\""), *env);
-                  if (status != DequotingStatus::OK)
-                    return status;
-                } else
-                  dst.append(1, ch);
-                break;
-              default:
-                dst.append(1, ch);
-                break;
-            }
-            ch = in.get();
-          }
-          if (qm != QuoteMode::AUTO || ch == EOF)
-            goto EndLoop;
-          qmActive = QuoteMode::AUTO;
-          ch       = in.get();
-          break;
-        case QuoteMode::SINGLE_WITH_QUOTES:
-        case QuoteMode::SINGLE_NO_QUOTES:
-          while (ch != EOF && (ch != '\'' || qmActive == QuoteMode::SINGLE_NO_QUOTES)) {
-            if (ch == '$' && variableSubsitution) {
-              DequotingStatus status = qmActive == QuoteMode::SINGLE_NO_QUOTES
-                  ? dequoteVarImpl(dst, in, NoDelim(), *env)
-                  : dequoteVarImpl(dst, in, WhiteSpaceDelim("'"), *env);
-              if (status != DequotingStatus::OK)
-                return status;
-            } else
-              dst.append(1, ch);
-            ch = in.get();
-          }
-          if (qm != QuoteMode::AUTO || ch == EOF)
-            goto EndLoop;
-          qmActive = QuoteMode::AUTO;
-          ch       = in.get();
-          break;
-        case QuoteMode::AUTO:
-          if (delim(ch)) {
-            in.unget();
-            goto EndLoop;
-          }
-          switch (ch) {
-            case '\\':
-              ch = in.get();
-              if (ch == EOF)
-                return DequotingStatus::MISSING_ESCAPE_CHAR;
-              else if (ch != '\n')
-                dst.append(1, ch);
-              break;
-            case '"':
-              variableSubsitution = env != nullptr;
-              qmActive = QuoteMode::DOUBLE_WITH_QUOTES;
-              break;
-            case '\'':
-              variableSubsitution = false;
-              qmActive = QuoteMode::SINGLE_WITH_QUOTES;
-              break;
-            case '$':
-              if (env != nullptr) {
-                DequotingStatus status = dequoteVarImpl(dst, in, delim, *env);
-                if (status != DequotingStatus::OK)
-                  return status;
-              } else
-                dst.append(1, ch);
-              break;
-            default:
-              dst.append(1, ch);
-              break;
-          }
+      if (delim(ch)) {
+        in.unget();
+        break;
+      }
+      switch (ch) {
+        case '\\':
           ch = in.get();
+          if (ch == EOF)
+            return DequotingStatus::MISSING_ESCAPE_CHAR;
+          else if (ch != '\n')
+            dst.append(1, ch);
+          break;
+        case '"': {
+          in.unget();
+          DequotingStatus status = dequoteDoubleWithQuotes(dst, in, env, false);
+          if (status != DequotingStatus::OK)
+            return status;
+          break;
+        }
+        case '\'': {
+          in.unget();
+          DequotingStatus status = dequoteSingleWithQuotes(dst, in, nullptr, false);
+          if (status != DequotingStatus::OK)
+            return status;
+          break;
+        }
+        case '$':
+          if (env != nullptr) {
+            DequotingStatus status = dequoteVarImpl(dst, in, delim, *env);
+            if (status != DequotingStatus::OK)
+              return status;
+          } else
+            dst.append(1, ch);
           break;
         default:
-          assert(!"Oops, unknown quote mode!");
-          return DequotingStatus::GENERIC_ERROR;
+          dst.append(1, ch);
+          break;
       }
-    }
-EndLoop:
-    switch (qmActive) {
-      case QuoteMode::DOUBLE_WITH_QUOTES:
-        if (ch != '"')
-          return DequotingStatus::MISSING_CLOSING_DOUBLE_QUOTE;
-        break;
-      case QuoteMode::SINGLE_WITH_QUOTES:
-        if (ch != '\'')
-          return DequotingStatus::MISSING_CLOSING_SINGLE_QUOTE;
-        break;
-      default:
-        break;
+      ch = in.get();
     }
     return DequotingStatus::OK;
+  }
+
+  template <typename INPUT, typename DELIM>
+  DequotingStatus dequoteImpl(std::string &dst, INPUT &in, QuoteMode qm, DELIM const &delim, Environment const *env) {
+    switch (qm) {
+      case QuoteMode::DOUBLE_NO_QUOTES:
+        return dequoteDoubleNoQuotes(dst, in, NoDelim(), env);
+      case QuoteMode::DOUBLE_WITH_QUOTES:
+        return dequoteDoubleWithQuotes(dst, in, env);
+      case QuoteMode::SINGLE_NO_QUOTES:
+        return dequoteSingleNoQuotes(dst, in, NoDelim(), env);
+      case QuoteMode::SINGLE_WITH_QUOTES:
+        return dequoteSingleWithQuotes(dst, in, env);
+      case QuoteMode::AUTO:
+//      return dequoteSpecialization<QuoteMode::AUTO>(dst, in, delim, env);
+        return dequoteAuto(dst, in, delim, env);
+      default:
+        assert(!"Unknown QuoteMode!");
+        return DequotingStatus::GENERIC_ERROR;
+    }
   }
 
   static
@@ -449,13 +519,14 @@ DequotingStatus dequote(
     std::string &str
   , const char *&in, const char *end
   , QuoteMode qm
-  , const char *delim
+  , Delimiters const &delims_
   , Environment const *env) throw()
 {
-  if (qm != QuoteMode::AUTO && delim)
+  WhiteSpaceDelim const &delims = static_cast<WhiteSpaceDelim const &>(delims_);
+  if (qm != QuoteMode::AUTO && delims.isGiven())
     return DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM;
   CharRange inStream(in, end);
-  DequotingStatus status = dequoteImpl(str, inStream, qm, WhiteSpaceDelim(delim), env);
+  DequotingStatus status = dequoteImpl(str, inStream, qm, delims, env);
   in = inStream.in;
   return status;
 }
@@ -463,14 +534,15 @@ DequotingStatus dequote(
 std::string dequote(
     const char *&in, const char *end
   , QuoteMode qm
-  , const char *delim
+  , Delimiters const &delims_
   , Environment const *env)
 {
-  if (qm != QuoteMode::AUTO && delim)
+  WhiteSpaceDelim const &delims = static_cast<WhiteSpaceDelim const &>(delims_);
+  if (qm != QuoteMode::AUTO && delims.isGiven())
     throw DequotingError(DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM, nullptr, nullptr);
   std::string str;
   CharRange inStream(in, end);
-  DequotingStatus status = dequoteImpl(str, inStream, qm, WhiteSpaceDelim(delim), env);
+  DequotingStatus status = dequoteImpl(str, inStream, qm, delims, env);
   const char *start = in;
   in = inStream.in;
   if (status != DequotingStatus::OK)
@@ -512,13 +584,14 @@ DequotingStatus dequote(
     std::string &str
   , const char *&in
   , QuoteMode qm
-  , const char *delim
+  , Delimiters const &delims_
   , Environment const *env) throw()
 {
-  if (qm != QuoteMode::AUTO && delim)
+  WhiteSpaceDelim const &delims = static_cast<WhiteSpaceDelim const &>(delims_);
+  if (qm != QuoteMode::AUTO && delims.isGiven())
     return DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM;
   CString inStream(in);
-  DequotingStatus status = dequoteImpl(str, inStream, qm, WhiteSpaceDelim(delim), env);
+  DequotingStatus status = dequoteImpl(str, inStream, qm, delims, env);
   in = inStream.in;
   return status;
 }
@@ -526,14 +599,15 @@ DequotingStatus dequote(
 std::string  dequote(
     const char *&in
   , QuoteMode qm
-  , const char *delim
+  , Delimiters const &delims_
   , Environment const *env)
 {
-  if (qm != QuoteMode::AUTO && delim)
+  WhiteSpaceDelim const &delims = static_cast<WhiteSpaceDelim const &>(delims_);
+  if (qm != QuoteMode::AUTO && delims.isGiven())
     throw DequotingError(DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM, nullptr, nullptr);
   std::string str;
   CString inStream(in);
-  DequotingStatus status = dequoteImpl(str, inStream, qm, WhiteSpaceDelim(delim), env);
+  DequotingStatus status = dequoteImpl(str, inStream, qm, delims, env);
   const char *start = in;
   in = inStream.in;
   if (status != DequotingStatus::OK)
@@ -575,15 +649,16 @@ DequotingStatus dequote(
     std::string &str
   , std::istream &in
   , QuoteMode qm
-  , const char *delim
+  , Delimiters const &delims_
   , Environment const *env) throw()
 {
   DequotingStatus status;
-  if (qm != QuoteMode::AUTO && delim)
+  StreamWhiteSpaceDelim delims(delims_, in);
+  if (qm != QuoteMode::AUTO && delims.isGiven())
     status = DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM;
   else
     try {
-      status = dequoteImpl(str, in, qm, StreamWhiteSpaceDelim(in, delim), env);
+      status = dequoteImpl(str, in, qm, delims, env);
       if (status == DequotingStatus::OK) {
         if (in.eof() && !in.bad())
             in.clear();
@@ -600,16 +675,17 @@ DequotingStatus dequote(
 std::string dequote(
     std::istream &in
   , QuoteMode qm
-  , const char *delim
+  , Delimiters const &delims_
   , Environment const *env)
 {
   DequotingStatus status;
-  if (qm != QuoteMode::AUTO && delim)
+  StreamWhiteSpaceDelim delims(delims_, in);
+  if (qm != QuoteMode::AUTO && delims.isGiven())
     status = DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM;
   else
     try {
       std::string str;
-      status = dequoteImpl(str, in, qm, StreamWhiteSpaceDelim(in, delim), env);
+      status = dequoteImpl(str, in, qm, delims, env);
       if (status == DequotingStatus::OK) {
         if (in.eof() && !in.bad())
           in.clear();
