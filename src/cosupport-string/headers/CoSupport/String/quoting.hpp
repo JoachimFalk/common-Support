@@ -59,8 +59,10 @@ enum class DequotingStatus {
   /// Missing variable name after a '$', e.g., "$\n", or missing
   /// '}' for a ${VAR} substitution, e.g., "${VAR".
   MISSING_VARIABLE_NAME = 11,
+  /// Illegal variable name, i.e., only 0-9, a-z, A-Z, and _ are allowed!
+  ILLEGAL_VARIABLE_NAME = 12,
   /// No delimiters allowed for given quote mode
-  NO_DELIMITERS_ALLOWED_FOR_QM = 12,
+  NO_DELIMITERS_ALLOWED_FOR_QM = 13,
 };
 
 COSUPPORT_STRING_API

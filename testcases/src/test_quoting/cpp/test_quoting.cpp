@@ -368,15 +368,13 @@ TestCases doubleNoQuotesStringFailTests(
     });
 
 const char *var1 = "FOO=BAR";
-const char *var2 = "FOO\"=STRANGEFOOVAR";
-const char *var3 = "BAR=FOO";
-const char *var4 = "BAR'=STRANGEBARVAR";
-const char *var5 = "0=FLUMMY";
-const char *var6 = "9=FLAMMY";
-const char *var7 = "10=FOOBAR";
-const char *var8 = "0FOO=BATZ";
-const char *var9 = "_=UNDERSCORE";
-const char *envArray[] = { var1, var2, var3, var4, var5, var6, var7, var8, var9, nullptr };
+const char *var2 = "BAR=FOO";
+const char *var3 = "0=FLUMMY";
+const char *var4 = "9=FLAMMY";
+const char *var5 = "10=FOOBAR";
+const char *var6 = "0FOO=BATZ";
+const char *var7 = "_=UNDERSCORE";
+const char *envArray[] = { var1, var2, var3, var4, var5, var6, var7, nullptr };
 
 // Delimiters are ":;_" variables are envArray.
 TestCases quotedStringDelimVarTests(
@@ -385,7 +383,6 @@ TestCases quotedStringDelimVarTests(
     "\"\\$FOO$FOO\\${FOO}${FOO}$0FOO${0FOO}$9FOO${9FOO}$10${10}\";"
     "'\\$FOO$FOO\\${FOO}${FOO}$0FOO${0FOO}$9FOO${9FOO}$10${10}';"
     "'$';'$_';'${';'${_';'${}';\"$_\";\"${_}\";"
-    "\"${BAR'}\";${FOO\"}"
   , {
     }
   , {
@@ -397,7 +394,6 @@ TestCases quotedStringDelimVarTests(
     , "$FOO""BAR""${FOO}""BAR""FLUMMY""FOO""BATZ""FLAMMY""FOO""0""FOOBAR"
     , "\\$FOO$FOO\\${FOO}${FOO}$0FOO${0FOO}$9FOO${9FOO}$10${10}"
     , "$", "$_", "${", "${_", "${}", "UNDERSCORE", "UNDERSCORE"
-    , "STRANGEBARVAR", "STRANGEFOOVAR"
     }
   , {
       "$"
@@ -412,6 +408,8 @@ TestCases quotedStringDelimVarTests(
     , "\"${FOO\""
     , "\"${FOO\"}\""
     , "\"${}\""
+    , "\"${BAR'}\""
+    , "\"${BAR\\\"}\""
     });
 
 TestCases doubleQuotedStringVarTests(
@@ -430,44 +428,49 @@ TestCases doubleQuotedStringVarTests(
     });
 
 TestCases singleQuotedStringVarTests(
-    "'${FOO}''${_}''${FOO\"}'"
+    "'${FOO}''${_}'"
   , {
     }
   , {
-      "BAR", "UNDERSCORE", "STRANGEFOOVAR"
+      "BAR", "UNDERSCORE"
     }
   , {
       "'${BAR'}'"
+    , "'${FOO\"}'"
     });
 
 TestCases singleNoQuotesStringVarTests(
     ""
   , {
-      "${FOO}", "${_}", "${FOO\"}", "${BAR'}"
+      "${FOO}", "${_}"
     }
   , {
-      "BAR", "UNDERSCORE", "STRANGEFOOVAR", "STRANGEBARVAR"
+      "BAR", "UNDERSCORE"
     }
   , {
       "$"
     , "${"
     , "${}"
     , "${FOO"
+    , "${FOO\"}"
+    , "${BAR'}"
     });
 
 TestCases doubleNoQuotesStringVarTests(
     ""
   , {
-      "${FOO}", "${_}", "${FOO\"}", "${BAR'}"
+      "${FOO}", "${_}"
     }
   , {
-      "BAR", "UNDERSCORE", "STRANGEFOOVAR", "STRANGEBARVAR"
+      "BAR", "UNDERSCORE"
     }
   , {
       "$"
     , "${"
     , "${}"
     , "${FOO"
+    , "${FOO\"}"
+    , "${BAR'}"
     });
 
 template <typename T>
