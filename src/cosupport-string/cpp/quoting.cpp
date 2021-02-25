@@ -31,6 +31,25 @@
 
 namespace CoSupport { namespace String {
 
+namespace Detail {
+
+  QuoteEnv::QuoteEnv(const char **env)
+    : env(nullptr), owned(false) {
+    if (env) {
+      this->env = new Environment(env);
+      owned = true;
+    }
+  }
+
+  QuoteEnv::~QuoteEnv() {
+    if (owned)
+      delete static_cast<Environment const *>(env);
+    env   = nullptr;
+    owned = false;
+  }
+
+} // namespace Detail
+
 namespace {
 
   class CharRange {
@@ -68,12 +87,15 @@ namespace {
   public:
     bool operator()(int ch) const
       { return false; }
+
+    bool isGiven() const
+      { return false; }
   };
 
-  class WhiteSpaceDelim: public Delimiters {
+  class WhiteSpaceDelim: public Detail::QuoteDelimiters {
   public:
-    WhiteSpaceDelim(Delimiters const &delims)
-      : Delimiters(delims) {}
+    WhiteSpaceDelim(QuoteDelimiters const &delims)
+      : QuoteDelimiters(delims) {}
 
     bool operator()(int ch) const {
       return isGiven()
@@ -85,10 +107,10 @@ namespace {
       { return given; }
   };
 
-  class StreamWhiteSpaceDelim: public Delimiters {
+  class StreamWhiteSpaceDelim: public Detail::QuoteDelimiters {
   public:
-    StreamWhiteSpaceDelim(Delimiters const &delims, std::istream const &in)
-      : Delimiters(delims)
+    StreamWhiteSpaceDelim(QuoteDelimiters const &delims, std::istream const &in)
+      : QuoteDelimiters(delims)
       , facet(std::use_facet<std::ctype<char> >(in.getloc())) {}
 
     bool operator()(int ch) const {
@@ -102,6 +124,14 @@ namespace {
 
   private:
     std::ctype<char> const &facet;
+  };
+
+  typedef std::map<std::string, std::string> Environment;
+
+  class QuoteEnvironment: public Detail::QuoteEnv {
+  public:
+    std::map<std::string, std::string> const *getEnv() const
+      { return env; }
   };
 
 #define VALID_VAR_CHARS(ch) \
@@ -403,19 +433,28 @@ namespace {
   }
 
   template <typename INPUT, typename DELIM>
-  DequotingStatus dequoteImpl(std::string &dst, INPUT &in, QuoteMode qm, DELIM const &delim, Environment const *env) {
+  DequotingStatus dequoteImpl(std::string &dst, INPUT &in, QuoteMode qm, DELIM const &delims, Detail::QuoteEnv const &env_) {
+    Environment const *env = static_cast<QuoteEnvironment const &>(env_).getEnv();
     switch (qm) {
       case QuoteMode::DOUBLE_NO_QUOTES:
+        if (delims.isGiven())
+          return DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM;
         return dequoteDoubleNoQuotes(dst, in, NoDelim(), env);
       case QuoteMode::DOUBLE_WITH_QUOTES:
+        if (delims.isGiven())
+          return DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM;
         return dequoteDoubleWithQuotes(dst, in, env);
       case QuoteMode::SINGLE_NO_QUOTES:
+        if (delims.isGiven())
+          return DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM;
         return dequoteSingleNoQuotes(dst, in, NoDelim(), env);
       case QuoteMode::SINGLE_WITH_QUOTES:
+        if (delims.isGiven())
+          return DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM;
         return dequoteSingleWithQuotes(dst, in, env);
       case QuoteMode::AUTO:
 //      return dequoteSpecialization<QuoteMode::AUTO>(dst, in, delim, env);
-        return dequoteAuto(dst, in, delim, env);
+        return dequoteAuto(dst, in, delims, env);
       default:
         assert(!"Unknown QuoteMode!");
         return DequotingStatus::GENERIC_ERROR;
@@ -464,6 +503,7 @@ namespace {
         break;
       case DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM:
         msg = "Specified quote mode does not allow for delimiters";
+        from = to = nullptr;
         break;
       default:
         assert(error != DequotingStatus::OK);
@@ -526,12 +566,10 @@ DequotingStatus dequote(
     std::string &str
   , const char *&in, const char *end
   , QuoteMode qm
-  , Delimiters const &delims_
-  , Environment const *env) throw()
+  , Detail::QuoteDelimiters const &delims_
+  , Detail::QuoteEnv const &env) throw()
 {
   WhiteSpaceDelim const &delims = static_cast<WhiteSpaceDelim const &>(delims_);
-  if (qm != QuoteMode::AUTO && delims.isGiven())
-    return DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM;
   CharRange inStream(in, end);
   DequotingStatus status = dequoteImpl(str, inStream, qm, delims, env);
   in = inStream.in;
@@ -541,12 +579,10 @@ DequotingStatus dequote(
 std::string dequote(
     const char *&in, const char *end
   , QuoteMode qm
-  , Delimiters const &delims_
-  , Environment const *env)
+  , Detail::QuoteDelimiters const &delims_
+  , Detail::QuoteEnv const &env)
 {
   WhiteSpaceDelim const &delims = static_cast<WhiteSpaceDelim const &>(delims_);
-  if (qm != QuoteMode::AUTO && delims.isGiven())
-    throw DequotingError(DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM, nullptr, nullptr);
   std::string str;
   CharRange inStream(in, end);
   DequotingStatus status = dequoteImpl(str, inStream, qm, delims, env);
@@ -561,7 +597,7 @@ DequotingStatus dequote(
     std::string &str
   , QuoteMode qm
   , const char *in, const char *end
-  , Environment const *env) throw()
+  , Detail::QuoteEnv const &env) throw()
 {
   CharRange inStream(in, end);
   DequotingStatus status = dequoteImpl(str, inStream, qm, NoDelim(), env);
@@ -575,7 +611,7 @@ DequotingStatus dequote(
 std::string dequote(
     QuoteMode qm
   , const char *in, const char *end
-  , Environment const *env)
+  , Detail::QuoteEnv const &env)
 {
   std::string str;
   CharRange inStream(in, end);
@@ -591,12 +627,10 @@ DequotingStatus dequote(
     std::string &str
   , const char *&in
   , QuoteMode qm
-  , Delimiters const &delims_
-  , Environment const *env) throw()
+  , Detail::QuoteDelimiters const &delims_
+  , Detail::QuoteEnv const &env) throw()
 {
   WhiteSpaceDelim const &delims = static_cast<WhiteSpaceDelim const &>(delims_);
-  if (qm != QuoteMode::AUTO && delims.isGiven())
-    return DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM;
   CString inStream(in);
   DequotingStatus status = dequoteImpl(str, inStream, qm, delims, env);
   in = inStream.in;
@@ -606,12 +640,10 @@ DequotingStatus dequote(
 std::string  dequote(
     const char *&in
   , QuoteMode qm
-  , Delimiters const &delims_
-  , Environment const *env)
+  , Detail::QuoteDelimiters const &delims_
+  , Detail::QuoteEnv const &env)
 {
   WhiteSpaceDelim const &delims = static_cast<WhiteSpaceDelim const &>(delims_);
-  if (qm != QuoteMode::AUTO && delims.isGiven())
-    throw DequotingError(DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM, nullptr, nullptr);
   std::string str;
   CString inStream(in);
   DequotingStatus status = dequoteImpl(str, inStream, qm, delims, env);
@@ -626,7 +658,7 @@ DequotingStatus dequote(
     std::string &str
   , QuoteMode qm
   , const char *in
-  , Environment const *env) throw()
+  , Detail::QuoteEnv const &env) throw()
 {
   CString inStream(in);
   DequotingStatus status = dequoteImpl(str, inStream, qm, NoDelim(), env);
@@ -640,7 +672,7 @@ DequotingStatus dequote(
 std::string dequote(
     QuoteMode qm
   , const char *in
-  , Environment const *env)
+  , Detail::QuoteEnv const &env)
 {
   std::string str;
   CString inStream(in);
@@ -656,25 +688,22 @@ DequotingStatus dequote(
     std::string &str
   , std::istream &in
   , QuoteMode qm
-  , Delimiters const &delims_
-  , Environment const *env) throw()
+  , Detail::QuoteDelimiters const &delims_
+  , Detail::QuoteEnv const &env) throw()
 {
   DequotingStatus status;
   StreamWhiteSpaceDelim delims(delims_, in);
-  if (qm != QuoteMode::AUTO && delims.isGiven())
-    status = DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM;
-  else
-    try {
-      status = dequoteImpl(str, in, qm, delims, env);
-      if (status == DequotingStatus::OK) {
-        if (in.eof() && !in.bad())
-            in.clear();
-        return status;
-      }
-    } catch (...) {
-      in.setstate(std::ios_base::badbit);
-      return DequotingStatus::GENERIC_ERROR;
+  try {
+    status = dequoteImpl(str, in, qm, delims, env);
+    if (status == DequotingStatus::OK) {
+      if (in.eof() && !in.bad())
+          in.clear();
+      return status;
     }
+  } catch (...) {
+    in.setstate(std::ios_base::badbit);
+    return DequotingStatus::GENERIC_ERROR;
+  }
   in.setstate(std::ios_base::failbit);
   return status;
 }
@@ -682,26 +711,23 @@ DequotingStatus dequote(
 std::string dequote(
     std::istream &in
   , QuoteMode qm
-  , Delimiters const &delims_
-  , Environment const *env)
+  , Detail::QuoteDelimiters const &delims_
+  , Detail::QuoteEnv const &env)
 {
   DequotingStatus status;
   StreamWhiteSpaceDelim delims(delims_, in);
-  if (qm != QuoteMode::AUTO && delims.isGiven())
-    status = DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM;
-  else
-    try {
-      std::string str;
-      status = dequoteImpl(str, in, qm, delims, env);
-      if (status == DequotingStatus::OK) {
-        if (in.eof() && !in.bad())
-          in.clear();
-        return str;
-      }
-    } catch (...) {
-      in.setstate(std::ios_base::badbit);
-      throw;
+  try {
+    std::string str;
+    status = dequoteImpl(str, in, qm, delims, env);
+    if (status == DequotingStatus::OK) {
+      if (in.eof() && !in.bad())
+        in.clear();
+      return str;
     }
+  } catch (...) {
+    in.setstate(std::ios_base::badbit);
+    throw;
+  }
   in.setstate(std::ios_base::failbit);
   throw DequotingError(status, nullptr, nullptr);
 }

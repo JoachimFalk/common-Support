@@ -24,12 +24,15 @@
 
 #include <CoSupport/commondefs.h>
 
+#include <boost/noncopyable.hpp>
+
 #include "export_config.h"
 
 #include <sstream>
 #include <string>
 #include <stdexcept>
 #include <cassert>
+#include <map>
 
 namespace CoSupport { namespace String {
 
@@ -92,17 +95,39 @@ enum class QuoteMode {
 
 class Environment;
 
-class COSUPPORT_STRING_API
-Delimiters {
-public:
-  Delimiters(char const *str = nullptr)
-    : given(str != nullptr), delims(str ? str : "") {}
-  Delimiters(std::string const &str)
-    : given(true), delims(str) {}
-protected:
-  bool        given;
-  std::string delims;
-};
+namespace Detail {
+
+  class COSUPPORT_STRING_API
+  QuoteDelimiters {
+  public:
+    QuoteDelimiters(char const *str = nullptr)
+      : given(str != nullptr), delims(str ? str : "") {}
+    QuoteDelimiters(std::string const &str)
+      : given(true), delims(str) {}
+  protected:
+    bool        given;
+    std::string delims;
+  };
+
+  class COSUPPORT_STRING_API
+  QuoteEnv: private boost::noncopyable {
+  public:
+    /// Variable definitions from an array of character pointers to environment
+    /// strings. That is from a POSIX environ variable. The QuoteEnv instance
+    /// will not take ownership of the env argument.
+    QuoteEnv(const char **env = nullptr);
+
+    /// Variables from a key (i.e., var name) value (i.e., var value) map.
+    QuoteEnv(std::map<std::string, std::string> const &env)
+      : env(&env), owned(false) {}
+
+    ~QuoteEnv();
+  protected:
+    std::map<std::string, std::string> const *env;
+    bool                                      owned;
+  };
+
+} // namespace Detail
 
 /**
  * Dequote input between in and end given in the specified quote mode.
@@ -133,8 +158,8 @@ DequotingStatus dequote(
     std::string &str
   , const char *&in, const char *end
   , QuoteMode qm = QuoteMode::AUTO
-  , Delimiters const &delims = Delimiters()
-  , Environment const *env = nullptr) throw();
+  , Detail::QuoteDelimiters const &delims = Detail::QuoteDelimiters()
+  , Detail::QuoteEnv const &env = Detail::QuoteEnv()) throw();
 
 /**
  * Dequote input between in and end given in the specified quote mode.
@@ -163,8 +188,8 @@ COSUPPORT_STRING_API
 std::string dequote(
     const char *&in, const char *end
   , QuoteMode qm = QuoteMode::AUTO
-  , Delimiters const &delims = Delimiters()
-  , Environment const *env = nullptr);
+  , Detail::QuoteDelimiters const &delims = Detail::QuoteDelimiters()
+  , Detail::QuoteEnv const &env = Detail::QuoteEnv());
 
 /**
  * Dequote input between in and end given in the specified quote mode.
@@ -185,7 +210,7 @@ DequotingStatus dequote(
     std::string &str
   , QuoteMode qm
   , const char *in, const char *end
-  , Environment const *env = nullptr) throw();
+  , Detail::QuoteEnv const &env = Detail::QuoteEnv()) throw();
 
 /**
  * Dequote input between in and end given in the specified quote mode.
@@ -204,7 +229,7 @@ COSUPPORT_STRING_API
 std::string dequote(
     QuoteMode qm
   , const char *in, const char *end
-  , Environment const *env = nullptr);
+  , Detail::QuoteEnv const &env = Detail::QuoteEnv());
 
 /**
  * Dequote the null terminate c string given in the specified quote mode.
@@ -235,8 +260,8 @@ DequotingStatus dequote(
     std::string &str
   , const char *&in
   , QuoteMode qm = QuoteMode::AUTO
-  , Delimiters const &delims = Delimiters()
-  , Environment const *env = nullptr) throw();
+  , Detail::QuoteDelimiters const &delims = Detail::QuoteDelimiters()
+  , Detail::QuoteEnv const &env = Detail::QuoteEnv()) throw();
 
 /**
  * Dequote the null terminate c string given in the specified quote mode.
@@ -264,8 +289,8 @@ COSUPPORT_STRING_API
 std::string dequote(
     const char *&in
   , QuoteMode qm = QuoteMode::AUTO
-  , Delimiters const &delims = Delimiters()
-  , Environment const *env = nullptr);
+  , Detail::QuoteDelimiters const &delims = Detail::QuoteDelimiters()
+  , Detail::QuoteEnv const &env = Detail::QuoteEnv());
 
 /**
  * Dequote the null terminate c string given in the specified quote mode.
@@ -285,7 +310,7 @@ DequotingStatus dequote(
     std::string &str
   , QuoteMode qm
   , const char *in
-  , Environment const *env = nullptr) throw();
+  , Detail::QuoteEnv const &env = Detail::QuoteEnv()) throw();
 
 /**
  * Dequote the null terminate c string given in the specified quote mode.
@@ -303,7 +328,7 @@ COSUPPORT_STRING_API
 std::string dequote(
     QuoteMode qm
   , const char *in
-  , Environment const *env = nullptr);
+  , Detail::QuoteEnv const &env = Detail::QuoteEnv());
 
 /**
  * Dequote a quoted string in the specified quote mode from the input stream in.
@@ -335,8 +360,8 @@ DequotingStatus dequote(
     std::string &str
   , std::istream &in
   , QuoteMode qm = QuoteMode::AUTO
-  , Delimiters const &delims = Delimiters()
-  , Environment const *env = nullptr) throw();
+  , Detail::QuoteDelimiters const &delims = Detail::QuoteDelimiters()
+  , Detail::QuoteEnv const &env = Detail::QuoteEnv()) throw();
 
 /**
  * Dequote a quoted string in the specified quote mode from the input stream in.
@@ -365,8 +390,8 @@ COSUPPORT_STRING_API
 std::string dequote(
     std::istream &in
   , QuoteMode qm = QuoteMode::AUTO
-  , Delimiters const &delims = Delimiters()
-  , Environment const *env = nullptr);
+  , Detail::QuoteDelimiters const &delims = Detail::QuoteDelimiters()
+  , Detail::QuoteEnv const &env = Detail::QuoteEnv());
 
 } } // namespace CoSupport::String
 

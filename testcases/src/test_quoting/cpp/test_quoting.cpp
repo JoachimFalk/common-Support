@@ -24,8 +24,6 @@
 #include <CoSupport/String/SingleQuotedString.hpp>
 #include <CoSupport/String/QuotedString.hpp>
 
-#include <CoSupport/String/Environment.hpp>
-
 #include <boost/random/mersenne_twister.hpp>
 
 //#include <memory.h>
@@ -636,7 +634,7 @@ bool testQuotingDequotingHelper(
     TestCases const &tc
   , QuoteMode qm
   , const char *delim
-  , Environment const *env
+  , const char **env
   , unsigned int &resultIndex
   , const char *start, const char *end
   , const char       *&in
@@ -772,7 +770,7 @@ bool testQuotingDequoting(
     TestCases const &tc
   , QuoteMode qm
   , const char *delim = nullptr
-  , Environment const *env = nullptr)
+  , const char **env = nullptr)
 {
   bool errorFlag = false;
 
@@ -944,14 +942,12 @@ bool testQuotingDequoting(
 int main(int argc, char *argv[]) {
   bool error = false;
 
-  Environment env(envArray);
-
   std::cout << "Testing CoSupport::String::QuotedString" << std::endl;
   error |= testQuotingDequoting<QuotedString>(quotedStringTests);
   std::cout << "Testing CoSupport::String::QuoteMode::AUTO" << std::endl;
   error |= testQuotingDequoting(quotedStringTests, QuoteMode::AUTO);
   std::cout << "Testing CoSupport::String::QuoteMode::AUTO with delimiters and variables" << std::endl;
-  error |= testQuotingDequoting(quotedStringDelimVarTests, QuoteMode::AUTO, ":;_", &env);
+  error |= testQuotingDequoting(quotedStringDelimVarTests, QuoteMode::AUTO, ":;_", envArray);
 
   std::cout << "Testing CoSupport::String::SingleQuotedString" << std::endl;
   error |= testQuotingDequoting<SingleQuotedString>(singleQuotedStringTests);
@@ -960,13 +956,13 @@ int main(int argc, char *argv[]) {
   std::cout << "CoSupport::String::QuoteMode::SINGLE_WITH_QUOTES and delimiters" << std::endl;
   error |= testQuotingDequoting(singleQuotedStringFailTests, QuoteMode::SINGLE_WITH_QUOTES, ":;_");
   std::cout << "CoSupport::String::QuoteMode::SINGLE_WITH_QUOTES and variables" << std::endl;
-  error |= testQuotingDequoting(singleQuotedStringVarTests, QuoteMode::SINGLE_WITH_QUOTES, nullptr, &env);
+  error |= testQuotingDequoting(singleQuotedStringVarTests, QuoteMode::SINGLE_WITH_QUOTES, nullptr, envArray);
   std::cout << "CoSupport::String::QuoteMode::SINGLE_NO_QUOTES" << std::endl;
   error |= testQuotingDequoting(singleNoQuotesStringTests, QuoteMode::SINGLE_NO_QUOTES);
   std::cout << "CoSupport::String::QuoteMode::SINGLE_NO_QUOTES and delimiters" << std::endl;
   error |= testQuotingDequoting(singleNoQuotesStringFailTests, QuoteMode::SINGLE_NO_QUOTES, "@");
   std::cout << "CoSupport::String::QuoteMode::SINGLE_NO_QUOTES and variables" << std::endl;
-  error |= testQuotingDequoting(singleNoQuotesStringVarTests, QuoteMode::SINGLE_NO_QUOTES, nullptr, &env);
+  error |= testQuotingDequoting(singleNoQuotesStringVarTests, QuoteMode::SINGLE_NO_QUOTES, nullptr, envArray);
 
   std::cout << "Testing CoSupport::String::DoubleQuotedString" << std::endl;
   error |= testQuotingDequoting<DoubleQuotedString>(doubleQuotedStringTests);
@@ -975,13 +971,13 @@ int main(int argc, char *argv[]) {
   std::cout << "CoSupport::String::QuoteMode::DOUBLE_WITH_QUOTES and delimiters" << std::endl;
   error |= testQuotingDequoting(doubleQuotedStringFailTests, QuoteMode::DOUBLE_WITH_QUOTES, "!");
   std::cout << "CoSupport::String::QuoteMode::DOUBLE_WITH_QUOTES and variables" << std::endl;
-  error |= testQuotingDequoting(doubleQuotedStringVarTests, QuoteMode::DOUBLE_WITH_QUOTES, nullptr, &env);
+  error |= testQuotingDequoting(doubleQuotedStringVarTests, QuoteMode::DOUBLE_WITH_QUOTES, nullptr, envArray);
   std::cout << "CoSupport::String::QuoteMode::DOUBLE_NO_QUOTES" << std::endl;
   error |= testQuotingDequoting(doubleNoQuotesStringTests, QuoteMode::DOUBLE_NO_QUOTES);
   std::cout << "CoSupport::String::QuoteMode::DOUBLE_NO_QUOTES and delimiters" << std::endl;
   error |= testQuotingDequoting(doubleNoQuotesStringFailTests, QuoteMode::DOUBLE_NO_QUOTES, "\n");
   std::cout << "CoSupport::String::QuoteMode::DOUBLE_NO_QUOTES and variables" << std::endl;
-  error |= testQuotingDequoting(doubleNoQuotesStringVarTests, QuoteMode::DOUBLE_NO_QUOTES, nullptr, &env);
+  error |= testQuotingDequoting(doubleNoQuotesStringVarTests, QuoteMode::DOUBLE_NO_QUOTES, nullptr, envArray);
 
   return error ? -1 : 0;
 }
