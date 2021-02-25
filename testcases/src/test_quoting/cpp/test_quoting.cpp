@@ -24,6 +24,8 @@
 #include <CoSupport/String/SingleQuotedString.hpp>
 #include <CoSupport/String/QuotedString.hpp>
 
+#include <CoSupport/String/Environment.hpp>
+
 #include <boost/random/mersenne_twister.hpp>
 
 //#include <memory.h>
@@ -35,6 +37,16 @@
 #include <vector>
 
 typedef CoSupport::String::QuotedString QS;
+
+using CoSupport::String::Environment;
+using CoSupport::String::DoubleQuotedString;
+using CoSupport::String::SingleQuotedString;
+using CoSupport::String::QuotedString;
+using CoSupport::String::DequotingStatus;
+using CoSupport::String::DequotingError;
+using CoSupport::String::QuoteMode;
+
+using CoSupport::String::dequote;
 
 struct TestCases {
   TestCases(
@@ -315,8 +327,65 @@ TestCases doubleNoQuotesStringTests(
   , {
     });
 
-TestCases quotedStringDelimTests( // delims ":;"
-    "A\tB:B 'C;C' D;D E;E \"F:F\" G\\:G H"
+TestCases singleQuotedStringFailTests(
+    ""
+  , {
+    }
+  , {
+    }
+  , {
+      "'FAIL'"
+    });
+
+TestCases singleNoQuotesStringFailTests(
+    ""
+  , {
+    }
+  , {
+    }
+  , {
+      "FAIL"
+    });
+
+TestCases doubleQuotedStringFailTests(
+    ""
+  , {
+    }
+  , {
+    }
+  , {
+      "\"FAIL\""
+    });
+
+TestCases doubleNoQuotesStringFailTests(
+    ""
+  , {
+    }
+  , {
+    }
+  , {
+      "FAIL"
+    });
+
+const char *var1 = "FOO=BAR";
+const char *var2 = "FOO\"=STRANGEFOOVAR";
+const char *var3 = "BAR=FOO";
+const char *var4 = "BAR'=STRANGEBARVAR";
+const char *var5 = "0=FLUMMY";
+const char *var6 = "9=FLAMMY";
+const char *var7 = "10=FOOBAR";
+const char *var8 = "0FOO=BATZ";
+const char *var9 = "_=UNDERSCORE";
+const char *envArray[] = { var1, var2, var3, var4, var5, var6, var7, var8, var9, nullptr };
+
+// Delimiters are ":;_" variables are envArray.
+TestCases quotedStringDelimVarTests(
+    "A\tB:B 'C;C' D;D E;E \"F:F\" G\\:G H_"
+    "\\$FOO$FOO\\${FOO}${FOO}$0FOO${0FOO}$9FOO${9FOO}$10${10};"
+    "\"\\$FOO$FOO\\${FOO}${FOO}$0FOO${0FOO}$9FOO${9FOO}$10${10}\";"
+    "'\\$FOO$FOO\\${FOO}${FOO}$0FOO${0FOO}$9FOO${9FOO}$10${10}';"
+    "'$';'$_';'${';'${_';'${}';\"$_\";\"${_}\";"
+    "\"${BAR'}\";${FOO\"}"
   , {
     }
   , {
@@ -324,10 +393,82 @@ TestCases quotedStringDelimTests( // delims ":;"
     , "B C;C D"
     , "D E"
     , "E F:F G:G H"
+    , "$FOO""BAR""${FOO}""BAR""FLUMMY""FOO""BATZ""FLAMMY""FOO""0""FOOBAR"
+    , "$FOO""BAR""${FOO}""BAR""FLUMMY""FOO""BATZ""FLAMMY""FOO""0""FOOBAR"
+    , "\\$FOO$FOO\\${FOO}${FOO}$0FOO${0FOO}$9FOO${9FOO}$10${10}"
+    , "$", "$_", "${", "${_", "${}", "UNDERSCORE", "UNDERSCORE"
+    , "STRANGEBARVAR", "STRANGEFOOVAR"
     }
   , {
+      "$"
+    , "$_"
+    , "${"
+    , "${_"
+    , "${"
+    , "${_"
+    , "${}"
+    , "\"$\""
+    , "\"${\""
+    , "\"${FOO\""
+    , "\"${FOO\"}\""
+    , "\"${}\""
     });
 
+TestCases doubleQuotedStringVarTests(
+    "\"\\$FOO$FOO\\${FOO}${FOO}$0FOO${0FOO}$9FOO${9FOO}$10${10}\""
+  , {
+    }
+  , {
+      "$FOO""BAR""${FOO}""BAR""FLUMMY""FOO""BATZ""FLAMMY""FOO""0""FOOBAR"
+    }
+  , {
+      "\"$\""
+    , "\"${\""
+    , "\"${FOO\""
+    , "\"${FOO\"}\""
+    , "\"${}\""
+    });
+
+TestCases singleQuotedStringVarTests(
+    "'${FOO}''${_}''${FOO\"}'"
+  , {
+    }
+  , {
+      "BAR", "UNDERSCORE", "STRANGEFOOVAR"
+    }
+  , {
+      "'${BAR'}'"
+    });
+
+TestCases singleNoQuotesStringVarTests(
+    ""
+  , {
+      "${FOO}", "${_}", "${FOO\"}", "${BAR'}"
+    }
+  , {
+      "BAR", "UNDERSCORE", "STRANGEFOOVAR", "STRANGEBARVAR"
+    }
+  , {
+      "$"
+    , "${"
+    , "${}"
+    , "${FOO"
+    });
+
+TestCases doubleNoQuotesStringVarTests(
+    ""
+  , {
+      "${FOO}", "${_}", "${FOO\"}", "${BAR'}"
+    }
+  , {
+      "BAR", "UNDERSCORE", "STRANGEFOOVAR", "STRANGEBARVAR"
+    }
+  , {
+      "$"
+    , "${"
+    , "${}"
+    , "${FOO"
+    });
 
 template <typename T>
 bool testQuotingDequoting(TestCases const &tc) {
@@ -490,8 +631,9 @@ bool testQuotingDequoting(TestCases const &tc) {
 
 bool testQuotingDequotingHelper(
     TestCases const &tc
-  , CoSupport::String::QuoteMode qm
+  , QuoteMode qm
   , const char *delim
+  , Environment const *env
   , unsigned int &resultIndex
   , const char *start, const char *end
   , const char       *&in
@@ -501,7 +643,7 @@ bool testQuotingDequotingHelper(
   try {
     ptrdiff_t pos = in - start;
 
-    std::string str = CoSupport::String::dequote(in, end, qm, delim);
+    std::string str = dequote(in, end, qm, delim, env);
 
     if (tc.quotedStringResults[resultIndex] == nullptr) {
       std::cout << "INTERNAL ERROR: " << QS(str) << std::endl;
@@ -515,37 +657,37 @@ bool testQuotingDequotingHelper(
 
     const char                        *inPtr;
     std::string                        other;
-    CoSupport::String::DequotingStatus status;
+    DequotingStatus status;
 
     inPtr = start + pos;
-    status = dequote(other, inPtr, end, qm, delim);
-    if (status != CoSupport::String::DequotingStatus::OK ||
+    status = dequote(other, inPtr, end, qm, delim, env);
+    if (status != DequotingStatus::OK ||
         inPtr != in || other != str) {
       std::cout << "INCONSISTENT1: " << status << ", " << (inPtr != in) << " || " << QS(other) << " != " << QS(str) << std::endl;
       errorFlag = true;
     }
     inPtr = start + pos;
-    other = dequote(inPtr, qm, delim);
+    other = dequote(inPtr, qm, delim, env);
     if (inPtr != in || other != str) {
       std::cout << "INCONSISTENT2: " << (inPtr != in) << " || " << QS(other) << " != " << QS(str) << std::endl;
       errorFlag = true;
     }
     inPtr = start + pos;
-    status = dequote(other, inPtr, qm, delim);
-    if (status != CoSupport::String::DequotingStatus::OK ||
+    status = dequote(other, inPtr, qm, delim, env);
+    if (status != DequotingStatus::OK ||
         inPtr != in || other != str) {
       std::cout << "INCONSISTENT3: " << status << ", " << (inPtr != in) << " || " << QS(other) << " != " << QS(str) << std::endl;
       errorFlag = true;
     }
     inStream.seekg(pos, std::ios::beg);
-    other = dequote(inStream, qm, delim);
+    other = dequote(inStream, qm, delim, env);
     if (!inStream.good() || inStream.tellg() != (in-start) || other != str) {
       std::cout << "INCONSISTENT4: " << inStream.tellg() << " != " << (in-start) << " || " << QS(other) << " != " << QS(str) << std::endl;
       errorFlag = true;
     }
     inStream.seekg(pos, std::ios::beg);
-    status = dequote(other, inStream, qm, delim);
-    if (status != CoSupport::String::DequotingStatus::OK ||
+    status = dequote(other, inStream, qm, delim, env);
+    if (status != DequotingStatus::OK ||
         !inStream.good() || inStream.tellg() != (in-start) || other != str) {
       std::cout << "INCONSISTENT5: " << inStream.tellg() << " != " << (in-start) << " || " << QS(other) << " != " << QS(str) << std::endl;
       errorFlag = true;
@@ -553,24 +695,24 @@ bool testQuotingDequotingHelper(
     std::string duplicate(start+pos, in);
     const char *dupIn  = duplicate.c_str();
     const char *dupEnd = dupIn + duplicate.length();
-    other = dequote(qm, dupIn, dupEnd);
+    other = dequote(qm, dupIn, dupEnd, env);
     if (other != str) {
       std::cout << "INCONSISTENT6: " << QS(other) << " != " << QS(str) << std::endl;
       errorFlag = true;
     }
-    status = dequote(other, qm, dupIn, dupEnd);
-    if (status != CoSupport::String::DequotingStatus::OK ||
+    status = dequote(other, qm, dupIn, dupEnd, env);
+    if (status != DequotingStatus::OK ||
         other != str) {
       std::cout << "INCONSISTENT7: " << QS(other) << " != " << QS(str) << std::endl;
       errorFlag = true;
     }
-    other = dequote(qm, dupIn);
+    other = dequote(qm, dupIn, env);
     if (other != str) {
       std::cout << "INCONSISTENT8: " << QS(other) << " != " << QS(str) << std::endl;
       errorFlag = true;
     }
-    status = dequote(other, qm, dupIn);
-    if (status != CoSupport::String::DequotingStatus::OK ||
+    status = dequote(other, qm, dupIn, env);
+    if (status != DequotingStatus::OK ||
         other != str) {
       std::cout << "INCONSISTENT9: " << QS(other) << " != " << QS(str) << std::endl;
       errorFlag = true;
@@ -580,44 +722,44 @@ bool testQuotingDequotingHelper(
     dupEnd = dupIn + duplicate.length();
     try {
       other.clear();
-      other = dequote(qm, dupIn, dupEnd);
-      status =  CoSupport::String::DequotingStatus::OK;
-    } catch (CoSupport::String::DequotingError const &e) {
+      other = dequote(qm, dupIn, dupEnd, env);
+      status =  DequotingStatus::OK;
+    } catch (DequotingError const &e) {
       status = e.getError();
     }
-    if (status != CoSupport::String::DequotingStatus::TRAILING_GARBAGE &&
-        (status != CoSupport::String::DequotingStatus::OK || other != str + "G A R B A G E")) {
+    if (status != DequotingStatus::TRAILING_GARBAGE &&
+        (status != DequotingStatus::OK || other != str + "G A R B A G E")) {
       std::cout << "INCONSISTENT10: " << QS(other) << " != " << QS(str+"G A R B A G E") << std::endl;
       errorFlag = true;
     }
     other.clear();
-    status = dequote(other, qm, dupIn, dupEnd);
-    if (status != CoSupport::String::DequotingStatus::TRAILING_GARBAGE &&
-        (status != CoSupport::String::DequotingStatus::OK || other != str + "G A R B A G E")) {
+    status = dequote(other, qm, dupIn, dupEnd, env);
+    if (status != DequotingStatus::TRAILING_GARBAGE &&
+        (status != DequotingStatus::OK || other != str + "G A R B A G E")) {
       std::cout << "INCONSISTENT11: " << QS(other) << " != " << QS(str+"G A R B A G E") << std::endl;
       errorFlag = true;
     }
     try {
       other.clear();
-      other = dequote(qm, dupIn);
-      status =  CoSupport::String::DequotingStatus::OK;
-    } catch (CoSupport::String::DequotingError const &e) {
+      other = dequote(qm, dupIn, env);
+      status =  DequotingStatus::OK;
+    } catch (DequotingError const &e) {
       status = e.getError();
     }
-    if (status != CoSupport::String::DequotingStatus::TRAILING_GARBAGE &&
-        (status != CoSupport::String::DequotingStatus::OK || other != str + "G A R B A G E")) {
+    if (status != DequotingStatus::TRAILING_GARBAGE &&
+        (status != DequotingStatus::OK || other != str + "G A R B A G E")) {
       std::cout << "INCONSISTENT12: " << QS(other) << " != " << QS(str+"G A R B A G E") << std::endl;
       errorFlag = true;
     }
     other.clear();
-    status = dequote(other, qm, dupIn);
-    if (status != CoSupport::String::DequotingStatus::TRAILING_GARBAGE &&
-        (status != CoSupport::String::DequotingStatus::OK || other != str + "G A R B A G E")) {
+    status = dequote(other, qm, dupIn, env);
+    if (status != DequotingStatus::TRAILING_GARBAGE &&
+        (status != DequotingStatus::OK || other != str + "G A R B A G E")) {
       std::cout << "INCONSISTENT13: " << QS(other) << " != " << QS(str+"G A R B A G E") << std::endl;
       errorFlag = true;
     }
     ++resultIndex;
-  } catch (CoSupport::String::DequotingError const &e) {
+  } catch (DequotingError const &e) {
     std::cout << "INTERNAL ERROR: " << e.what() << std::endl;
   }
   return errorFlag;
@@ -625,8 +767,9 @@ bool testQuotingDequotingHelper(
 
 bool testQuotingDequoting(
     TestCases const &tc
-  , CoSupport::String::QuoteMode qm
-  , const char *delim = nullptr)
+  , QuoteMode qm
+  , const char *delim = nullptr
+  , Environment const *env = nullptr)
 {
   bool errorFlag = false;
 
@@ -636,12 +779,17 @@ bool testQuotingDequoting(
     {
       const char *start = tc.quotedStrings;
       const char *end   = start + strlen(start);
+
+      if (!delim)
+        while (start != end && isspace(*start))
+          ++start;
+
       std::stringstream inStream(start, std::ios::in);
 
       for (const char *in = start; in != end;) {
         if (in == end)
           break;
-        errorFlag |= testQuotingDequotingHelper(tc, qm, delim, resultIndex, start, end, in, inStream);
+        errorFlag |= testQuotingDequotingHelper(tc, qm, delim, env, resultIndex, start, end, in, inStream);
         if (!delim)
           while (in != end && isspace(*in))
             ++in;
@@ -656,7 +804,7 @@ bool testQuotingDequoting(
       std::stringstream inStream(start, std::ios::in);
 
       const char *in = start;
-      errorFlag |= testQuotingDequotingHelper(tc, qm, delim, resultIndex, start, end, in, inStream);
+      errorFlag |= testQuotingDequotingHelper(tc, qm, delim, env, resultIndex, start, end, in, inStream);
       if (in != end) {
         std::cout << "Read error while reading in string " << QS(*inStrs) << std::endl;
         errorFlag = true;
@@ -682,9 +830,9 @@ bool testQuotingDequoting(
       std::stringstream inStream(in, std::ios::in);
 
       std::string str;
-      CoSupport::String::DequotingStatus error = CoSupport::String::dequote(str, in, end, qm, delim);
+      DequotingStatus error = dequote(str, in, end, qm, delim, env);
 
-      if (error != CoSupport::String::DequotingStatus::OK) {
+      if (error != DequotingStatus::OK) {
         std::cout << "GOOD: " << QS(tc.quotedStringsWithErrors[errorIndex]) << " failed as expected with " << error << "." << std::endl;
       } else {
         std::cout << "BAD: " << QS(tc.quotedStringsWithErrors[errorIndex]) << " did not fail but resulted in " << QS(str) << "!" << std::endl;
@@ -693,14 +841,14 @@ bool testQuotingDequoting(
 
       const char                        *inPtr;
       std::string                        other;
-      CoSupport::String::DequotingStatus status;
+      DequotingStatus status;
 
       inPtr = start;
       try {
         other.clear();
-        other = dequote(inPtr, end, qm, delim);
-        status =  CoSupport::String::DequotingStatus::OK;
-      } catch (CoSupport::String::DequotingError const &e) {
+        other = dequote(inPtr, end, qm, delim, env);
+        status =  DequotingStatus::OK;
+      } catch (DequotingError const &e) {
         status = e.getError();
       }
       if (status != error || inPtr != in) {
@@ -708,7 +856,7 @@ bool testQuotingDequoting(
         errorFlag = true;
       }
       inPtr = start;
-      status = dequote(other, inPtr, qm, delim);
+      status = dequote(other, inPtr, qm, delim, env);
       if (status != error ||
           inPtr != in || other != str) {
         std::cout << "ERROR_INCONSISTENT2: " << status << " != " << error << " || " << (inPtr != in) << " || " << QS(other) << " != " << QS(str) << std::endl;
@@ -717,9 +865,9 @@ bool testQuotingDequoting(
       inPtr = start;
       try {
         other.clear();
-        other = dequote(inPtr, qm, delim);
-        status =  CoSupport::String::DequotingStatus::OK;
-      } catch (CoSupport::String::DequotingError const &e) {
+        other = dequote(inPtr, qm, delim, env);
+        status =  DequotingStatus::OK;
+      } catch (DequotingError const &e) {
         status = e.getError();
       }
       if (status != error || inPtr != in) {
@@ -728,7 +876,7 @@ bool testQuotingDequoting(
       }
       inStream.seekg(0, std::ios::beg);
       inStream.clear();
-      status = dequote(other, inStream, qm, delim);
+      status = dequote(other, inStream, qm, delim, env);
       if (inStream.good() || status != error ||
           (inStream.clear(), inStream.tellg()) != (in-start) || other != str) {
         std::cout << "ERROR_INCONSISTENT4: " << status << " != " << error << " || " << inStream.tellg() << " != " << (in-start) << " || " << QS(other) << " != " << QS(str) << std::endl;
@@ -738,9 +886,9 @@ bool testQuotingDequoting(
       inStream.clear();
       try {
         other.clear();
-        other = dequote(inStream, qm, delim);
-        status =  CoSupport::String::DequotingStatus::OK;
-      } catch (CoSupport::String::DequotingError const &e) {
+        other = dequote(inStream, qm, delim, env);
+        status =  DequotingStatus::OK;
+      } catch (DequotingError const &e) {
         status = e.getError();
       }
       if (inStream.good() || status != error ||
@@ -748,14 +896,20 @@ bool testQuotingDequoting(
         std::cout << "ERROR_INCONSISTENT5: " << status << " != " << error << " || " << inStream.tellg() << " != " << (in-start) << " || " << QS(other) << " != " << QS(str) << std::endl;
         errorFlag = true;
       }
-      status = dequote(other, qm, start, end);
+      if (error == DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM)
+        continue;
+
+      std::string duplicate(start, in);
+      const char *dupStart = duplicate.c_str();
+      const char *dupEnd   = dupStart + duplicate.length();
+      status = dequote(other, qm, dupStart, dupEnd, env);
       if (status != error || other != str) {
         std::cout << "ERROR_INCONSISTENT6: " << status << " != " << error << " || " << QS(other) << " != " << QS(str) << std::endl;
         errorFlag = true;
       }
       try {
-        other = dequote(qm, start, end);
-        status =  CoSupport::String::DequotingStatus::OK;
+        other = dequote(qm, dupStart, dupEnd, env);
+        status =  DequotingStatus::OK;
       } catch (CoSupport::String::DequotingError const &e) {
         status = e.getError();
       }
@@ -763,15 +917,15 @@ bool testQuotingDequoting(
         std::cout << "ERROR_INCONSISTENT7: " << status << " != " << error << " || " << QS(other) << " != " << QS(str) << std::endl;
         errorFlag = true;
       }
-      status = dequote(other, qm, start);
+      status = dequote(other, qm, dupStart, env);
       if (status != error || other != str) {
         std::cout << "ERROR_INCONSISTENT8: " << status << " != " << error << " || " << QS(other) << " != " << QS(str) << std::endl;
         errorFlag = true;
       }
       try {
-        other = dequote(qm, start);
-        status =  CoSupport::String::DequotingStatus::OK;
-      } catch (CoSupport::String::DequotingError const &e) {
+        other = dequote(qm, dupStart, env);
+        status =  DequotingStatus::OK;
+      } catch (DequotingError const &e) {
         status = e.getError();
       }
       if (status != error || other != str) {
@@ -787,26 +941,44 @@ bool testQuotingDequoting(
 int main(int argc, char *argv[]) {
   bool error = false;
 
+  Environment env(envArray);
+
   std::cout << "Testing CoSupport::String::QuotedString" << std::endl;
-  error |= testQuotingDequoting<CoSupport::String::QuotedString>(quotedStringTests);
+  error |= testQuotingDequoting<QuotedString>(quotedStringTests);
   std::cout << "Testing CoSupport::String::QuoteMode::AUTO" << std::endl;
-  error |= testQuotingDequoting(quotedStringTests, CoSupport::String::QuoteMode::AUTO);
-  std::cout << "Testing CoSupport::String::QuoteMode::AUTO with delimeters" << std::endl;
-  error |= testQuotingDequoting(quotedStringDelimTests, CoSupport::String::QuoteMode::AUTO, ":;");
+  error |= testQuotingDequoting(quotedStringTests, QuoteMode::AUTO);
+  std::cout << "Testing CoSupport::String::QuoteMode::AUTO with delimiters and variables" << std::endl;
+  error |= testQuotingDequoting(quotedStringDelimVarTests, QuoteMode::AUTO, ":;_", &env);
 
   std::cout << "Testing CoSupport::String::SingleQuotedString" << std::endl;
-  error |= testQuotingDequoting<CoSupport::String::SingleQuotedString>(singleQuotedStringTests);
+  error |= testQuotingDequoting<SingleQuotedString>(singleQuotedStringTests);
   std::cout << "CoSupport::String::QuoteMode::SINGLE_WITH_QUOTES" << std::endl;
-  error |= testQuotingDequoting(singleQuotedStringTests, CoSupport::String::QuoteMode::SINGLE_WITH_QUOTES);
+  error |= testQuotingDequoting(singleQuotedStringTests, QuoteMode::SINGLE_WITH_QUOTES);
+  std::cout << "CoSupport::String::QuoteMode::SINGLE_WITH_QUOTES and delimiters" << std::endl;
+  error |= testQuotingDequoting(singleQuotedStringFailTests, QuoteMode::SINGLE_WITH_QUOTES, ":;_");
+  std::cout << "CoSupport::String::QuoteMode::SINGLE_WITH_QUOTES and variables" << std::endl;
+  error |= testQuotingDequoting(singleQuotedStringVarTests, QuoteMode::SINGLE_WITH_QUOTES, nullptr, &env);
   std::cout << "CoSupport::String::QuoteMode::SINGLE_NO_QUOTES" << std::endl;
-  error |= testQuotingDequoting(singleNoQuotesStringTests, CoSupport::String::QuoteMode::SINGLE_NO_QUOTES);
+  error |= testQuotingDequoting(singleNoQuotesStringTests, QuoteMode::SINGLE_NO_QUOTES);
+  std::cout << "CoSupport::String::QuoteMode::SINGLE_NO_QUOTES and delimiters" << std::endl;
+  error |= testQuotingDequoting(singleNoQuotesStringFailTests, QuoteMode::SINGLE_NO_QUOTES, "@");
+  std::cout << "CoSupport::String::QuoteMode::SINGLE_NO_QUOTES and variables" << std::endl;
+  error |= testQuotingDequoting(singleNoQuotesStringVarTests, QuoteMode::SINGLE_NO_QUOTES, nullptr, &env);
 
   std::cout << "Testing CoSupport::String::DoubleQuotedString" << std::endl;
-  error |= testQuotingDequoting<CoSupport::String::DoubleQuotedString>(doubleQuotedStringTests);
+  error |= testQuotingDequoting<DoubleQuotedString>(doubleQuotedStringTests);
   std::cout << "CoSupport::String::QuoteMode::DOUBLE_WITH_QUOTES" << std::endl;
-  error |= testQuotingDequoting(doubleQuotedStringTests, CoSupport::String::QuoteMode::DOUBLE_WITH_QUOTES);
+  error |= testQuotingDequoting(doubleQuotedStringTests, QuoteMode::DOUBLE_WITH_QUOTES);
+  std::cout << "CoSupport::String::QuoteMode::DOUBLE_WITH_QUOTES and delimiters" << std::endl;
+  error |= testQuotingDequoting(doubleQuotedStringFailTests, QuoteMode::DOUBLE_WITH_QUOTES, "!");
+  std::cout << "CoSupport::String::QuoteMode::DOUBLE_WITH_QUOTES and variables" << std::endl;
+  error |= testQuotingDequoting(doubleQuotedStringVarTests, QuoteMode::DOUBLE_WITH_QUOTES, nullptr, &env);
   std::cout << "CoSupport::String::QuoteMode::DOUBLE_NO_QUOTES" << std::endl;
-  error |= testQuotingDequoting(doubleNoQuotesStringTests, CoSupport::String::QuoteMode::DOUBLE_NO_QUOTES);
+  error |= testQuotingDequoting(doubleNoQuotesStringTests, QuoteMode::DOUBLE_NO_QUOTES);
+  std::cout << "CoSupport::String::QuoteMode::DOUBLE_NO_QUOTES and delimiters" << std::endl;
+  error |= testQuotingDequoting(doubleNoQuotesStringFailTests, QuoteMode::DOUBLE_NO_QUOTES, "\n");
+  std::cout << "CoSupport::String::QuoteMode::DOUBLE_NO_QUOTES and variables" << std::endl;
+  error |= testQuotingDequoting(doubleNoQuotesStringVarTests, QuoteMode::DOUBLE_NO_QUOTES, nullptr, &env);
 
   return error ? -1 : 0;
 }
