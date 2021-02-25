@@ -90,6 +90,18 @@ enum class QuoteMode {
 
 class Environment;
 
+class COSUPPORT_STRING_API
+Delimiters {
+public:
+  Delimiters(char const *str = nullptr)
+    : given(str != nullptr), delims(str ? str : "") {}
+  Delimiters(std::string const &str)
+    : given(true), delims(str) {}
+protected:
+  bool        given;
+  std::string delims;
+};
+
 /**
  * Dequote input between in and end given in the specified quote mode.
  *
@@ -119,7 +131,7 @@ DequotingStatus dequote(
     std::string &str
   , const char *&in, const char *end
   , QuoteMode qm = QuoteMode::AUTO
-  , const char *delim = nullptr
+  , Delimiters const &delims = Delimiters()
   , Environment const *env = nullptr) throw();
 
 /**
@@ -149,7 +161,7 @@ COSUPPORT_STRING_API
 std::string dequote(
     const char *&in, const char *end
   , QuoteMode qm = QuoteMode::AUTO
-  , const char *delim = nullptr
+  , Delimiters const &delims = Delimiters()
   , Environment const *env = nullptr);
 
 /**
@@ -221,7 +233,7 @@ DequotingStatus dequote(
     std::string &str
   , const char *&in
   , QuoteMode qm = QuoteMode::AUTO
-  , const char *delim = nullptr
+  , Delimiters const &delims = Delimiters()
   , Environment const *env = nullptr) throw();
 
 /**
@@ -250,7 +262,7 @@ COSUPPORT_STRING_API
 std::string dequote(
     const char *&in
   , QuoteMode qm = QuoteMode::AUTO
-  , const char *delim = nullptr
+  , Delimiters const &delims = Delimiters()
   , Environment const *env = nullptr);
 
 /**
@@ -321,7 +333,7 @@ DequotingStatus dequote(
     std::string &str
   , std::istream &in
   , QuoteMode qm = QuoteMode::AUTO
-  , const char *delim = nullptr
+  , Delimiters const &delims = Delimiters()
   , Environment const *env = nullptr) throw();
 
 /**
@@ -351,7 +363,7 @@ COSUPPORT_STRING_API
 std::string dequote(
     std::istream &in
   , QuoteMode qm = QuoteMode::AUTO
-  , const char *delim = nullptr
+  , Delimiters const &delims = Delimiters()
   , Environment const *env = nullptr);
 
 } } // namespace CoSupport::String
