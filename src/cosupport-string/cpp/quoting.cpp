@@ -126,6 +126,8 @@ namespace {
     } else if (ch == '{') {
       ch = in.get();
       while (ch != EOF && !delim(ch) && ch != '}') {
+        if (!VALID_VAR_CHARS(ch))
+          return DequotingStatus::ILLEGAL_VARIABLE_NAME;
         var.append(1, ch);
         ch = in.get();
       }
@@ -457,6 +459,9 @@ namespace {
       case DequotingStatus::MISSING_VARIABLE_NAME:
         msg = "Missing variable name";
         break;
+      case DequotingStatus::ILLEGAL_VARIABLE_NAME:
+        msg = "Illegal variable name";
+        break;
       case DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM:
         msg = "Specified quote mode does not allow for delimiters";
         break;
@@ -504,6 +509,8 @@ std::ostream &operator <<(std::ostream &out, DequotingStatus status) {
       return out << "DequotingStatus::ILLEGAL_ESCAPE_CHAR";
     case DequotingStatus::MISSING_VARIABLE_NAME:
       return out << "DequotingStatus::MISSING_VARIABLE_NAME";
+    case DequotingStatus::ILLEGAL_VARIABLE_NAME:
+      return out << "DequotingStatus::ILLEGAL_VARIABLE_NAME";
     case DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM:
       return out << "DequotingStatus::NO_DELIMITERS_ALLOWED_FOR_QM";
     default:
