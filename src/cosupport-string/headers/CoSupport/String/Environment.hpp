@@ -25,6 +25,7 @@
 #include "export_config.h"
 
 #include <map>
+#include <string>
 
 namespace CoSupport { namespace String {
 
