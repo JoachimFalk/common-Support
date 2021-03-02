@@ -30,8 +30,7 @@
 
 #include <boost/random/normal_distribution.hpp>
 
-#include <boost/bind.hpp>
-
+#include <functional>
 #include <istream>
 
 namespace CoSupport { namespace Random {
@@ -39,7 +38,7 @@ namespace CoSupport { namespace Random {
 template <typename T>
 struct RandomNormal: public RandomGenerator<T> {
   RandomNormal(T const &mean, T const &sigma)
-      : RandomGenerator<T>(boost::bind(
+      : RandomGenerator<T>(std::bind(
           reinterpret_cast<double (boost::random::normal_distribution<>::*)(boost::random::mt19937 &) const>(
             static_cast<double (boost::random::normal_distribution<>::*)(boost::random::mt19937 &)>(
               &boost::random::normal_distribution<>::operator())),

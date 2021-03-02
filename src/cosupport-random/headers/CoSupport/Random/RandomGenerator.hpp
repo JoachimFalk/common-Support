@@ -24,17 +24,17 @@
 #ifndef _INCLUDED_COSUPPORT_RANDOM_RANDOMGENERATOR_HPP
 #define _INCLUDED_COSUPPORT_RANDOM_RANDOMGENERATOR_HPP
 
-#include <boost/function.hpp>
+#include <functional>
 
 namespace CoSupport { namespace Random {
 
 template <typename T>
-struct RandomGenerator: public boost::function<T (void)> {
+struct RandomGenerator: public std::function<T (void)> {
   RandomGenerator() {}
 
   template <typename TT>
   RandomGenerator(TT const &f)
-      : boost::function<T (void)>(f) {}
+      : std::function<T (void)>(f) {}
 };
 
 /*
