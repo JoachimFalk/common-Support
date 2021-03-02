@@ -33,8 +33,7 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/uniform_real_distribution.hpp>
 
-#include <boost/bind.hpp>
-
+#include <functional>
 #include <istream>
 
 namespace CoSupport { namespace Random {
@@ -44,17 +43,17 @@ struct RandomUniform: public RandomGenerator<T> {
   RandomUniform(T const &min, T const &max)
       : RandomGenerator<T>(create(min, max, (typename boost::is_integral<T>::type *) nullptr)) {}
 private:
-  static boost::function<T (void)> create(T const &min, T const &max, boost::true_type *) {
+  static std::function<T (void)> create(T const &min, T const &max, boost::true_type *) {
     boost::random::uniform_int_distribution<> dist(min, max);
     int (boost::random::uniform_int_distribution<>::* fun)(boost::random::mt19937 &) const =
         &boost::random::uniform_int_distribution<>::operator();
-    return boost::bind(fun, dist, randomSource);
+    return std::bind(fun, dist, randomSource);
   }
-  static boost::function<T (void)> create(T const &min, T const &max, boost::false_type *) {
+  static std::function<T (void)> create(T const &min, T const &max, boost::false_type *) {
     boost::random::uniform_real_distribution<> dist(min, max);
     double (boost::random::uniform_real_distribution<>::* fun)(boost::random::mt19937 &) const =
         &boost::random::uniform_real_distribution<>::operator();
-    return boost::bind(fun, dist, randomSource);
+    return std::bind(fun, dist, randomSource);
   }
 };
 
