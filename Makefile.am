@@ -210,7 +210,8 @@ libcosupport_string_la_SOURCES =				\
 	src/cosupport-string/cpp/quoting.cpp			\
 	src/cosupport-string/cpp/QuotedString.cpp		\
 	src/cosupport-string/cpp/SingleQuotedString.cpp		\
-	src/cosupport-string/cpp/UnQuotedString.cpp
+	src/cosupport-string/cpp/UnQuotedString.cpp		\
+	src/cosupport-string/cpp/XMLQuotedString.cpp
 libcosupport_string_la_DEPENDENCIES =				\
 	libcosupport-base.la
 libcosupport_string_la_CPPFLAGS = $(AM_CPPFLAGS)		\

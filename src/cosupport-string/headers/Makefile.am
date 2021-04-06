@@ -40,4 +40,6 @@ nobase_include_HEADERS = \
 	CoSupport/String/TypeName.hpp \
 	CoSupport/String/UniqueCIdentifierPool.hpp \
 	CoSupport/String/UniquePool.hpp \
-	CoSupport/String/UnQuotedString.hpp
+	CoSupport/String/UnQuotedString.hpp \
+	CoSupport/String/XMLQuotedString.hpp
+	
