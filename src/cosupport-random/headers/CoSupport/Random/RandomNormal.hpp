@@ -25,7 +25,6 @@
 #ifndef _INCLUDED_COSUPPORT_RANDOM_RANDOMNORMAL_HPP
 #define _INCLUDED_COSUPPORT_RANDOM_RANDOMNORMAL_HPP
 
-#include "randomSource.hpp"
 #include "RandomGenerator.hpp"
 
 #include <boost/random/normal_distribution.hpp>
@@ -38,14 +37,10 @@ namespace CoSupport { namespace Random {
 template <typename T>
 struct RandomNormal: public RandomGenerator<T> {
   RandomNormal(T const &mean, T const &sigma)
-      : RandomGenerator<T>(std::bind(
-          reinterpret_cast<double (boost::random::normal_distribution<>::*)(boost::random::mt19937 &) const>(
-            static_cast<double (boost::random::normal_distribution<>::*)(boost::random::mt19937 &)>(
-              &boost::random::normal_distribution<>::operator())),
-          boost::random::normal_distribution<>(mean, sigma),
-          randomSource)) {}
+    : RandomGenerator<T>([mean, sigma] (boost::random::mt19937 &rng) -> T {
+        return boost::random::normal_distribution<>(mean, sigma)(rng);
+      }) {}
 };
-
 
 template <typename T>
 std::istream &operator >> (std::istream &in, RandomNormal<T> &v) {

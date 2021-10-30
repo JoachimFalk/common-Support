@@ -27,7 +27,6 @@
 
 #include <CoSupport/compatibility-glue/nullptr.h>
 
-#include "randomSource.hpp"
 #include "RandomGenerator.hpp"
 
 #include <boost/random/uniform_int_distribution.hpp>
@@ -41,19 +40,17 @@ namespace CoSupport { namespace Random {
 template <typename T>
 struct RandomUniform: public RandomGenerator<T> {
   RandomUniform(T const &min, T const &max)
-      : RandomGenerator<T>(create(min, max, (typename boost::is_integral<T>::type *) nullptr)) {}
+    : RandomGenerator<T>(create(min, max, (typename boost::is_integral<T>::type *) nullptr)) {}
 private:
-  static std::function<T (void)> create(T const &min, T const &max, boost::true_type *) {
-    boost::random::uniform_int_distribution<> dist(min, max);
-    int (boost::random::uniform_int_distribution<>::* fun)(boost::random::mt19937 &) const =
-        &boost::random::uniform_int_distribution<>::operator();
-    return std::bind(fun, dist, randomSource);
+  static std::function<T (boost::random::mt19937 &)> create(T const &min, T const &max, boost::true_type *) {
+    return [min, max] (boost::random::mt19937 &rng) -> T {
+      return boost::random::uniform_int_distribution<>(min, max)(rng);
+    };
   }
-  static std::function<T (void)> create(T const &min, T const &max, boost::false_type *) {
-    boost::random::uniform_real_distribution<> dist(min, max);
-    double (boost::random::uniform_real_distribution<>::* fun)(boost::random::mt19937 &) const =
-        &boost::random::uniform_real_distribution<>::operator();
-    return std::bind(fun, dist, randomSource);
+  static std::function<T (boost::random::mt19937 &)> create(T const &min, T const &max, boost::false_type *) {
+    return [min, max] (boost::random::mt19937 &rng) -> T {
+      return boost::random::uniform_real_distribution<>(min, max)(rng);
+    };
   }
 };
 

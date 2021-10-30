@@ -25,16 +25,29 @@
 #define _INCLUDED_COSUPPORT_RANDOM_RANDOMGENERATOR_HPP
 
 #include <functional>
+#include <boost/random/mersenne_twister.hpp>
+
+#include "randomSource.hpp"
 
 namespace CoSupport { namespace Random {
 
 template <typename T>
-struct RandomGenerator: public std::function<T (void)> {
-  RandomGenerator() {}
+struct RandomGenerator {
+  RandomGenerator()
+    : rng(&randomSource) {}
 
   template <typename TT>
   RandomGenerator(TT const &f)
-      : std::function<T (void)>(f) {}
+    : rng(&randomSource), f(f) {}
+
+  T operator()() const
+    { return f(*rng); }
+
+  void setRandomSource(boost::random::mt19937 *rng)
+    { this->rng = rng; }
+private:
+  boost::random::mt19937 *rng;
+  std::function<T (boost::random::mt19937 &)> f;
 };
 
 /*

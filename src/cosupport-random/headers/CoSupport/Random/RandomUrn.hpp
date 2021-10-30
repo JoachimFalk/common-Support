@@ -31,6 +31,7 @@
 #include <boost/random/uniform_int_distribution.hpp>
 
 #include <functional>
+#include <map>
 #include <istream>
 
 namespace CoSupport { namespace Random {
@@ -43,7 +44,7 @@ struct RandomUrn: public RandomGenerator<T> {
   RandomUrn(std::vector<std::pair<size_t, T> > const &urn)
       : RandomGenerator<T>(create(urn)) {}
 private:
-  static std::function<T (void)> create(std::vector<std::pair<size_t, T> > const &urn) {
+  static std::function<T (boost::random::mt19937 &)> create(std::vector<std::pair<size_t, T> > const &urn) {
     std::map<size_t, T> urnMap;
     size_t              urnEndWeight = 0;
     for (typename std::vector<std::pair<size_t, T> >::const_iterator iter = urn.begin();
@@ -52,12 +53,10 @@ private:
       urnEndWeight += iter->first;
       urnMap[urnEndWeight-1] = iter->second;
     }
-    boost::random::uniform_int_distribution<> urnSelection(0, urnEndWeight-1);
-    return std::bind(&pull, urnSelection, urnMap);
-  }
-
-  static T pull(boost::random::uniform_int_distribution<> const &urnSelection, std::map<size_t, T> const &urnMap) {
-    return urnMap.lower_bound(urnSelection(randomSource))->second;
+    return [urnMap, urnEndWeight] (boost::random::mt19937 &rng) -> T {
+      boost::random::uniform_int_distribution<> urnSelection(0, urnEndWeight-1);
+      return urnMap.lower_bound(urnSelection(rng))->second;
+    };
   }
 };
 

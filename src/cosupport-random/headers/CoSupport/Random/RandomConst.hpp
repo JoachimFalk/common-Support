@@ -27,8 +27,6 @@
 
 #include "RandomGenerator.hpp"
 
-#include <boost/lambda/lambda.hpp>
-
 #include <istream>
 
 namespace CoSupport { namespace Random {
@@ -36,7 +34,9 @@ namespace CoSupport { namespace Random {
 template <typename T>
 struct RandomConst: public RandomGenerator<T> {
   RandomConst(T const &val)
-      : RandomGenerator<T>(boost::lambda::constant(val)) {}
+    : RandomGenerator<T>([val] (boost::random::mt19937 &rng) -> T {
+        return val;
+      }) {}
 };
 
 template <typename T>
