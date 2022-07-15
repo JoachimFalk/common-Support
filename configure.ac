@@ -38,19 +38,20 @@ AC_CONFIG_MACRO_DIR([../BuildSystem/m4])
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
+dnl AC_ENABLE_SHARED
+LT_INIT
+
 dnl Checks for programs.
 ACJF_CHECK_CROSSTOOL([CC], [gcc])
 ACJF_CHECK_CROSSTOOL([CXX], [c++])
 ACJF_CHECK_CROSSTOOL([AR], [ar])
 ACJF_CHECK_CROSSTOOL([RANLIB], [ranlib])
-ACJF_CHECK_CROSSTOOL([NM], [nm])
 
 ACJF_ENABLE_DIALECTS_C99_CXX11
 
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_PROG_CXXCPP
 AC_PROG_CPP
-AC_PROG_LIBTOOL
 PKG_PROG_PKG_CONFIG
 
 AC_PATH_PROG([BASH], [bash], [/bin/bash])
@@ -65,8 +66,10 @@ if test x"$enable_debug" = x"yes"; then
   AC_DEFINE([COSUPPORT_ENABLE_DEBUG], [yes], [Defined if debug support is enabled])
 fi
 
-
-AC_CONFIG_HEADER([config.h src/cosupport-base/headers/CoSupport/cosupport_config.h])
+AC_CONFIG_HEADERS(
+  [config.h]dnl
+  [src/cosupport-base/headers/CoSupport/cosupport_config.h]dnl
+)
 
 DX_HTML_FEATURE(ON)
 DX_CHM_FEATURE(OFF)
