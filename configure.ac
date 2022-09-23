@@ -35,31 +35,23 @@ AC_CONFIG_SRCDIR([src/cosupport-string/cpp/TemplateProcessor.cpp])
 AC_CONFIG_AUX_DIR([../BuildSystem])
 AC_CONFIG_MACRO_DIR([../BuildSystem/m4])
 
-AC_CANONICAL_BUILD
-AC_CANONICAL_HOST
-
-dnl AC_ENABLE_SHARED
-LT_INIT
+dnl AC_CANONICAL_BUILD
+dnl AC_CANONICAL_HOST
 
 dnl Checks for programs.
-ACJF_CHECK_CROSSTOOL([CC], [gcc])
-ACJF_CHECK_CROSSTOOL([CXX], [c++])
-ACJF_CHECK_CROSSTOOL([AR], [ar])
-ACJF_CHECK_CROSSTOOL([RANLIB], [ranlib])
+AC_PROG_CXX
 
 ACJF_ENABLE_DIALECTS_C99_CXX11
 
 AM_INIT_AUTOMAKE([subdir-objects])
-AC_PROG_CXXCPP
-AC_PROG_CPP
-PKG_PROG_PKG_CONFIG
-
-AC_PATH_PROG([BASH], [bash], [/bin/bash])
-AC_SUBST([BASH])
 
 dnl AC_DISABLE_STATIC
 # We need AC_ENABLE_SHARED for the libsgx python bindings
 AC_ENABLE_SHARED
+LT_INIT
+
+AC_PATH_PROG([BASH], [bash], [/bin/bash])
+AC_SUBST([BASH])
 
 ACJF_ARG_DEBUG([yes], [], [-DNDEBUG])
 if test x"$enable_debug" = x"yes"; then
