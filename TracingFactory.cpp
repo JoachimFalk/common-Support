@@ -59,6 +59,12 @@ TracingFactory& TracingFactory::getInstance(){
 }
 
 //
+void TracingFactory::setTraceFile(std::string fileName){
+  this->traceStream.close();
+  this->traceStream.open(fileName.c_str());
+}
+
+//
 PtpTracer::Ptr TracingFactory::createPtpTracer(std::string key){
   if (ptpMap.find(key) == ptpMap.end()){
     PtpTracer::Ptr tracer = PtpTracer::Ptr(new PtpTracer(key));
@@ -73,31 +79,30 @@ PtpTracer::Ptr TracingFactory::createPtpTracer(std::string key){
  */
 TracingFactory::~TracingFactory(){
   //assert(startTimes.size() == stopTimes.size());
-  std::ofstream stream("tracing.log");
+  if( traceStream.good() ){
 
-  stream << "#\n"
-         << "# PtpTacer";
-  std::vector<std::string> sequence;
-  sequence.push_back(Tracer::AVG_LATENCY);
-  sequence.push_back(Tracer::MIN_LATENCY);
-  sequence.push_back(Tracer::MAX_LATENCY);
-  sequence.push_back(Tracer::START_STOP);
-  //TODO: sequence.push_back(throughput);
+    this->traceStream << "#\n" << "# PtpTacer";
+    std::vector<std::string> sequence;
+    sequence.push_back(Tracer::AVG_LATENCY);
+    sequence.push_back(Tracer::MIN_LATENCY);
+    sequence.push_back(Tracer::MAX_LATENCY);
+    sequence.push_back(Tracer::START_STOP);
+    //TODO: sequence.push_back(throughput);
 
-  for (std::vector<std::string>::const_iterator iter = sequence.begin(); iter
-          != sequence.end(); ++iter){
-    stream << "\t" << *iter;
+    // write header
+    for (std::vector<std::string>::const_iterator iter = sequence.begin();
+        iter!= sequence.end(); ++iter){
+      this->traceStream << "\t" << *iter;
+    }
+    this->traceStream << std::endl;
+
+    // for each PtpTracer: write data
+    for(PtpMap::const_iterator it = ptpMap.begin(); it != ptpMap.end(); ++it) {
+      it->second->createCsvReport(this->traceStream, sequence);
+    }
+    this->traceStream.close();
   }
-  stream << std::endl;
-    for(PtpMap::const_iterator it = ptpMap.begin(); it != ptpMap.end(); ++it)
-      {
-          //std::string name =(it->second->getName());
-          //name +="result.inversethroughput";
-          it->second->createCsvReport(stream, sequence);
 
-          //it->second->getRAWData();
-      }
-    stream.close();
   ptpMap.clear();
 }
 

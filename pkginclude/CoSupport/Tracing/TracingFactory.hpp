@@ -75,7 +75,7 @@ private:
   // contains all PtpTracer
   typedef std::map<std::string, PtpTracer::Ptr> PtpMap;
   PtpMap ptpMap;
-
+  std::ofstream traceStream;
 
 
 public:
@@ -92,6 +92,11 @@ public:
    */
   virtual ~TracingFactory();
 
+  /**
+   * set file name for trace output
+   * setting a file name is required, no trace output will be written otherwise
+   */
+  void setTraceFile(std::string fileName);
 
   PtpTracer::Ptr createPtpTracer(std::string id);
 
