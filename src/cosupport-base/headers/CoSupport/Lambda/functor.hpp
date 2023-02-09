@@ -144,6 +144,7 @@ struct NAME<R, R (T::*)(PLIST) CONST> {						\
 	CONST T *obj;								\
 	R (T::*func)(PLIST) CONST;						\
 	const char *name;							\
+    bool canRunInParallel;						\
                                                                                 \
 	template<class X>							\
 	NAME(CONST X *_obj, R (T::*_func)(PLIST) CONST, const char *_name)	\

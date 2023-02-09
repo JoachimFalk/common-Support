@@ -36,7 +36,12 @@
 #ifndef _INCLUDED_COSUPPORT_XML_XERCES_SUPPORT_HPP
 #define _INCLUDED_COSUPPORT_XML_XERCES_SUPPORT_HPP
 
-#warning "This is a deprecated header, please use CoSupport/XML/Xerces/common.hpp"
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+	#pragma message("This is a deprecated header, please use CoSupport/XML/Xerces/common.hpp")
+#else
+	#warning "This is a deprecated header, please use CoSupport/XML/Xerces/common.hpp"
+#endif
+
 #include "Xerces/common.hpp"
 
 #endif // _INCLUDED_COSUPPORT_XML_XERCES_SUPPORT_HPP
